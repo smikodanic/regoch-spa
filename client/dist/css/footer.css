@@ -1,0 +1,14 @@
+/*!
+, * Regoch SPA v1.0.0 (http://www.regoch.org/spa)
+, * Copyright 2014-2021, Sasa Mikodanic <smikodanic@gmail.com>
+, * Licensed under AGPL-3.0 
+, */
+
+div#footer {
+  color: blue; }
+  div#footer > p {
+    font-size: larger; }
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZvb3Rlci5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7OztBQUFBLEdBQUcsT0FBTyxDQUFDO0VBQ1QsS0FBSyxFQUFFLElBQUksR0FLWjtFQU5ELEFBR0UsR0FIQyxPQUFPLEdBR0osQ0FBQyxDQUFDO0lBQ0osU0FBUyxFQUFFLE1BQU0sR0FDbEIiLCJmaWxlIjoiZm9vdGVyLmNzcyJ9 */
+
+/*# sourceMappingURL=footer.css.map */

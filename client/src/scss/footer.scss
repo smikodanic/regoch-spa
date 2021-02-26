@@ -1,0 +1,10 @@
+div#footer {
+  color: blue;
+
+  & > p {
+    font-size: larger;
+  }
+}
+
+
+
