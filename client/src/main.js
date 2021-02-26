@@ -2,7 +2,7 @@ const fs = require('fs');
 
 
 
-class RegochSPA {
+class RegochSPA2 {
 
   constructor() {
     console.log('tooo');
@@ -67,4 +67,4 @@ class RegochSPA {
 
 
 
-window.RegochSPA = RegochSPA;
+window.RegochSPA = RegochSPA2;

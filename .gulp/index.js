@@ -39,32 +39,7 @@ task('watcher', async () => {
 
 /***** GULP COMPOUND TASKS *****/
 // first delete then create JS, HTML and CSS files in /client/dist/ directory
-task('build', async () => {
-  await series(rimraf);
-  await new Promise(resolve => setTimeout(resolve, 1300));
-  await parallel(
-  'browserifyMinifyMap',
-  'htmlMinify',
-  'scss'
-  );
-});
+task('build', series('rimraf', parallel('browserifyMinifyMap', 'htmlMinify', 'scss')));
 
 // defult gulp task
-task('default', async () => {
-
-  await watch([
-    'client/src/**/*.js'
-  ], { events: 'all' }, series('browserifyMinifyMap'));
-
-  await watch([
-    'client/src/**/*.html'
-  ], { events: 'all' }, series('htmlMinify'));
-
-  await watch([
-    'client/src/**/*.scss'
-  ], { events: 'all' }, series('scss'));
-
-  await series('build');
-  await new Promise(resolve => setTimeout(resolve, 700));
-  await series('serverNodemon');
-});
+task('default', parallel('watcher', 'build', 'serverNodemon'));

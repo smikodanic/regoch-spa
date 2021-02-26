@@ -29,7 +29,7 @@ const compile = async () => {
 
   gulp
     .src(
-      'client/src/scss/*.scss'
+      'client/src/scss/index.scss'
     )
     .pipe(sourcemaps.init())
   // .pipe(sass({outputStyle: 'compressed'}))
