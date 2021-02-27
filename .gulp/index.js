@@ -6,7 +6,7 @@ const serverNodemon = require('./tasks/serverNodemon.js');
 // const serverNode = require('./tasks/serverNode.js');
 const rimraf = require('./tasks/rimraf.js');
 const htmlMinify = require('./tasks/htmlMinify.js');
-const browserify = require('./tasks/browserify.js');
+// const browserify = require('./tasks/browserify.js');
 const browserifyMinifyMap = require('./tasks/browserifyMinifyMap.js');
 const scss = require('./tasks/scss.js');
 
@@ -23,18 +23,16 @@ task('scss', scss);
 task('watcher', async () => {
   await watch([
     'client/src/**/*.js'
-  ], series('browserifyMinifyMap')),
+  ], series('browserifyMinifyMap'));
 
   await watch([
     'client/src/**/*.html'
-  ], series('htmlMinify')),
+  ], series('htmlMinify'));
 
   await watch([
     'client/src/**/*.scss'
-  ], series('scss'))
+  ], series('scss'));
 });
-
-
 
 
 /***** GULP COMPOUND TASKS *****/

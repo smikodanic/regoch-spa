@@ -2,11 +2,16 @@ const fs = require('fs');
 
 
 
-class RegochSPA2 {
+class System {
 
-  constructor() {
-    console.log('tooo');
+  constructor(app) {
+    this.app = app;
+  }
+
+
+  run() {
     this.inclusions();
+    this.clickListeners();
   }
 
 
@@ -31,18 +36,34 @@ class RegochSPA2 {
 
 
   /**
-   * Include HTML files
+   * Include HTML components with the data-regoch-include attribute.
    */
   inclusions() {
     console.log('inclusions');
-    // find data-regoch-include elements
-    // $('[data-regoch-include]').each(index => {
-    //   console.log('include file:', $(this).attr('data-regoch-include'));
-    // });
     const elems = document.querySelectorAll('[data-regoch-include]');
     for (const elem of elems) {
       const htmlFileName = elem.getAttribute('data-regoch-include');
-      $(`[data-regoch-include="${htmlFileName}"]`).load(htmlFileName);
+      $(`[data-regoch-include="${htmlFileName}"]`).load(htmlFileName, () => {
+        console.log( 'Load was performed.' );
+      });
+    }
+  }
+
+
+  /**
+   * Click listener
+   */
+  clickListeners() {
+    const elems = document.querySelectorAll('[data-regoch-click]');
+    for (const elem of elems) {
+      const funcDef = elem.getAttribute('data-regoch-click').trim(); // string 'fja(x, y, ...arr)'
+      const matched = funcDef.match(/^(.+)\((.*)\)$/);
+      const funcName = matched[1];
+      const funcParams = matched[2].split(',').map(p => p.trim());
+      elem.addEventListener('click', event => {
+        console.log('clicked ', event.target.localName);
+        this.app[funcName](...funcParams);
+      });
     }
   }
 
@@ -67,4 +88,4 @@ class RegochSPA2 {
 
 
 
-window.RegochSPA = RegochSPA2;
+module.exports = System;

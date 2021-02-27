@@ -1,9 +1,9 @@
 const SPAserver = require('single-page-app-server');
 
 const httpOpts = {
-  port: 4520,
+  port: 4400,
   timeout: 0, // if 0 never timeout
-  staticDir: '/dist',
+  staticDir: '/client/dist',
   indexFile: 'index.html',
   acceptEncoding: 'deflate', // gzip, deflate or ''
   headers: {

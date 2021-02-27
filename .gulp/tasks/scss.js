@@ -26,13 +26,9 @@ banner.join();
 // compile scss to css files and
 // create .map files foer easier debugging of scss files
 const compile = async () => {
-
-  gulp
-    .src(
-      'client/src/scss/index.scss'
-    )
+  gulp.src('client/src/application/scss/index.scss')
     .pipe(sourcemaps.init())
-  // .pipe(sass({outputStyle: 'compressed'}))
+    // .pipe(sass({outputStyle: 'compressed'}))
     .pipe(sass())
     .pipe(header(banner, {pkg: pkg}))
     .pipe(sourcemaps.write({includeContent: false}))
@@ -45,12 +41,12 @@ const compile = async () => {
 
 // create .min files
 const minify = async () => {
-
   gulp.src('client/dist/css/*.css')
     .pipe(cssmin())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest('client/dist/css'));
 };
+
 
 module.exports = async () => {
   await compile();
