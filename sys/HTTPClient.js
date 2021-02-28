@@ -267,6 +267,58 @@ class HTTPClient {
 
 
   /**
+   * Sending HTTP request to HTTP server.
+   *  - 301 redirections are handled.
+   *  - retries are handled
+   * @param {String} url - https://www.dex8.com/contact
+   * @param {String} method - GET, POST, PUT, DELETE, PATCH
+   * @param {Object} body_obj - http body
+   */
+  async ask(url, method = 'GET', body_obj) {
+
+    let answer = await this.askOnce(url, method, body_obj);
+    const answers = [answer];
+
+
+    /*** a) HANDLE 3XX REDIRECTS */
+    let redirectCounter = 1;
+
+    while (!!answer && /^3\d{2}/.test(answer.status) && redirectCounter <= this.opts.maxRedirects) { // 300, 301, 302, ...
+
+      const url_new = new URL(url, answer.res.headers.location); // redirected URL is in 'location' header
+      console.log(`#${redirectCounter} redirection ${answer.status} from ${this.url} to ${url_new}`);
+
+      answer = await this.askOnce(url_new, method, body_obj); // repeat request with new url
+      answers.push(answer);
+
+      redirectCounter++;
+    }
+
+
+
+    /*** b) HANDLE RETRIES when status = 408 timeout */
+    let retryCounter = 1;
+
+    while (answer.status === 408 && retryCounter <= this.opts.retry) {
+      console.log(`#${retryCounter} retry due to timeout (${this.opts.timeout}) on ${url}`);
+      await new Promise(resolve => setTimeout(resolve, this.opts.retryDelay)); // delay before retrial
+
+      answer = await this.askOnce(url, method, body_obj);
+      answers.push(answer);
+
+
+      retryCounter++;
+    }
+
+
+
+    return answers;
+
+  }
+
+
+
+  /**
    *
    * @param {String} url - https://api.dex8.com/contact
    * @param {String} method - GET, POST, PUT, DELETE, PATCH

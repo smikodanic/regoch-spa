@@ -14,9 +14,9 @@ class App {
 
   async callAPI() {
     const opts = {
-      encodeURI: false,
-      timeout: 3000,
-      retry: 1,
+      encodeURI: true,
+      timeout: 10000,
+      retry: 5,
       retryDelay: 1300,
       maxRedirects: 0,
       headers: {
@@ -26,11 +26,17 @@ class App {
       }
     };
     const hc = new HTTPClient(opts); // dhc means dex8 http client
-    // const answer = await hc.askOnce('api.dex8.com');
-    // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/todos/1');
+    const answer = await hc.askOnce('api.dex8.com');
 
-    const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/posts', 'POST', {title: 'foo', body: 'bar', userId: 1});
+    // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/todos/1', 'GET');
+    // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/posts?userId=1', 'GET');
+    // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/posts', 'POST', {title: 'foo', body: 'bar', userId: 1});
+    // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/posts/1', 'PUT', {id: 1, title: 'foogoo', body: 'barboo', userId: 3});
+    // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/posts/1', 'DELETE');
 
+    // const answer = await hc.askJSON('https://api.dex8.com?q=my str'); // test encodeURI
+
+    // const answer = await hc.ask('api.dex8.com'); // to test 408 timeout set opts:: timeout:10,retry:5,retryDelay:1300
 
 
     console.log(answer);
