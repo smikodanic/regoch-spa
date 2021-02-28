@@ -11,7 +11,7 @@ class Sys {
 
   run() {
     this.rgInc();
-    this.clickListeners();
+    this.rgClick();
   }
 
 
@@ -54,10 +54,10 @@ class Sys {
   /**
    * Click listener
    */
-  clickListeners() {
-    const elems = document.querySelectorAll('[data-regoch-click]');
+  rgClick() {
+    const elems = document.querySelectorAll('[data-rgClick]');
     for (const elem of elems) {
-      const funcDef = elem.getAttribute('data-regoch-click').trim(); // string 'fja(x, y, ...arr)'
+      const funcDef = elem.getAttribute('data-rgClick').trim(); // string 'fja(x, y, ...arr)'
       const matched = funcDef.match(/^(.+)\((.*)\)$/);
       const funcName = matched[1];
       const funcParams = matched[2].split(',').map(p => p.trim());
