@@ -2,11 +2,11 @@ const gulp = require('gulp');
 const htmlmin = require('gulp-htmlmin');
 
 module.exports = async () => {
-  await gulp.src(['./client/src/application/index.html'])
+  await gulp.src(['./app/src/index.html'])
     .pipe(htmlmin({collapseWhitespace: true}))
-    .pipe(gulp.dest('./client/dist/'));
+    .pipe(gulp.dest('./app/dist/'));
 
-  await gulp.src(['./client/src/application/html/*.html'])
+  await gulp.src(['./app/src/html/*.html'])
     .pipe(htmlmin({collapseWhitespace: true}))
-    .pipe(gulp.dest('./client/dist/html/'));
+    .pipe(gulp.dest('./app/dist/html/'));
 };

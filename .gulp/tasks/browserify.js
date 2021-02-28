@@ -10,11 +10,11 @@ const banner = require('./banner');
 module.exports = async () => {
 
 
-  return browserify('./client/src/main.js')
+  return browserify('./app/src/main.js')
     .bundle()
     .pipe(source('main.js'))
     .pipe(header(banner, {pkg: pkg}))
-    .pipe(gulp.dest('./client/dist/js/'))
+    .pipe(gulp.dest('./app/dist/js/'))
     .on('error', (err) => {
       console.log(err);
     });

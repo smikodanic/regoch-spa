@@ -2,7 +2,7 @@ const fs = require('fs');
 
 
 
-class System {
+class Sys {
 
   constructor(app) {
     this.app = app;
@@ -88,4 +88,4 @@ class System {
 
 
 
-module.exports = System;
+module.exports = Sys;

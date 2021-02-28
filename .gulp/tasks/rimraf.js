@@ -1,12 +1,12 @@
 /**
- * Delete /client/dist/ directory
+ * Delete /app/dist/ directory
  */
 const rimraf = require('rimraf');
 
 module.exports = async () => {
 
-  rimraf('./client/dist', () => {
-    console.log('/client/dist deleted by rimraf');
+  rimraf('./app/dist', () => {
+    console.log('/app/dist deleted by rimraf');
   });
 
   await new Promise(resolve => setTimeout(resolve, 1300));

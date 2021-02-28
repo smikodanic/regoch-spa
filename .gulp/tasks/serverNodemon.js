@@ -9,7 +9,7 @@ module.exports = async () => {
       'LICENSE',
       'package.json',
       'node_modules/**',
-      'client/**',
+      'app/**',
       '.gulp/**',
       '.*/**'
     ],

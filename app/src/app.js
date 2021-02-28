@@ -1,4 +1,4 @@
-const System = require('../system');
+const Sys = require('../../sys');
 
 class App {
 
@@ -12,5 +12,5 @@ class App {
 
 
 window.app = new App();
-const system = new System(window.app);
+const system = new Sys(window.app);
 system.run();
