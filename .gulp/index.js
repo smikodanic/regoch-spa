@@ -22,21 +22,22 @@ task('scss', scss);
 /***** WATCHERS *****/
 task('watcher', async () => {
   await watch([
-    'client/src/**/*.js'
+    'app/src/**/*.js',
+    'sys/**/*.js'
   ], series('browserifyMinifyMap'));
 
   await watch([
-    'client/src/**/*.html'
+    'app/src/**/*.html'
   ], series('htmlMinify'));
 
   await watch([
-    'client/src/**/*.scss'
+    'app/src/**/*.scss'
   ], series('scss'));
 });
 
 
 /***** GULP COMPOUND TASKS *****/
-// first delete then create JS, HTML and CSS files in /client/dist/ directory
+// first delete then create JS, HTML and CSS files in /app/dist/ directory
 task('build', series('rimraf', parallel('browserifyMinifyMap', 'htmlMinify', 'scss')));
 
 // defult gulp task

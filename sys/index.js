@@ -10,7 +10,7 @@ class Sys {
 
 
   run() {
-    this.inclusions();
+    this.rgInc();
     this.clickListeners();
   }
 
@@ -36,15 +36,16 @@ class Sys {
 
 
   /**
-   * Include HTML components with the data-regoch-include attribute.
+   * Include HTML components with the data-rgInc attribute.
    */
-  inclusions() {
+  rgInc() {
     console.log('inclusions');
-    const elems = document.querySelectorAll('[data-regoch-include]');
+    const elems = document.querySelectorAll('[data-rgInc]');
     for (const elem of elems) {
-      const htmlFileName = elem.getAttribute('data-regoch-include');
-      $(`[data-regoch-include="${htmlFileName}"]`).load(htmlFileName, () => {
+      const htmlFileName = elem.getAttribute('data-rgInc');
+      $(`[data-rgInc="${htmlFileName}"]`).load(htmlFileName, (responseText, textStatus,  jqXHR) => {
         console.log( 'Load was performed.' );
+        console.log(textStatus, responseText);
       });
     }
   }
