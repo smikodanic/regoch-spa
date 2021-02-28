@@ -19,6 +19,7 @@
     "dev": "gulp default"
   },
   "dependencies": {
+    "dex8-sdk": "^2.9.4",
     "single-page-app-server": "1.1.4"
   },
   "devDependencies": {

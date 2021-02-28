@@ -2,6 +2,7 @@
 	"globals": {
     "window": true,
     "document": true,
+    "Document": true,
     "$": true,
 		"WebSocket": true,
 		"Blob": true,
@@ -9,6 +10,7 @@
     "Event": true,
     "CustomEvent": true,
     "EventTarget": true,
+    "DOMParser": true,
     "alert": true
 	},
 	"env": {
