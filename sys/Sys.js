@@ -8,7 +8,7 @@ class Sys {
     this.app = app;
     this.baseURL = 'http://localhost:4400';
     this.separator = '@@';
-    this.debug = false;
+    this.debug = true;
 
     const opts = {
       encodeURI: true,
@@ -57,7 +57,13 @@ class Sys {
 
   /**
    * Include HTML components with the data-rg-inc attribute.
-   * example: <header data-rg-inc="/html/header.html| replace | h2 > small ">---header---</header>
+   * examples:
+   * <header data-rg-inc="/html/header.html">---header---</header>
+   * <header data-rg-inc="/html/header.html @@  @@ h2 > small">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ inner">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ prepend">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ append">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
    * @param {Document|DocumentFragment|HTMLElement} domObj - the whole document or html string
    * @returns {void}
    */
@@ -68,11 +74,11 @@ class Sys {
     for (const elem of elems) {
       // extract attribute data
       const attrValue = elem.getAttribute('data-rg-inc');
-      const path_toReplace_cssSel = attrValue.replace(/\s+/g, '').split(this.separator);
-      const path = !!path_toReplace_cssSel && !!path_toReplace_cssSel.length ? path_toReplace_cssSel[0] : '';
-      const toReplace = (!!path_toReplace_cssSel && path_toReplace_cssSel.length >= 2  && path_toReplace_cssSel[1] === 'replace'); // to replace parent node
-      const cssSel = !!path_toReplace_cssSel && path_toReplace_cssSel.length === 3 ? path_toReplace_cssSel[2] : '';
-      this.debugger('path_toReplace_cssSel:: ', path, toReplace, cssSel);
+      const path_act_cssSel = attrValue.replace(/\s+/g, '').split(this.separator);
+      const path = !!path_act_cssSel && !!path_act_cssSel.length ? path_act_cssSel[0] : '';
+      const act = !!path_act_cssSel && path_act_cssSel.length >= 2 ? path_act_cssSel[1] : 'inner';
+      const cssSel = !!path_act_cssSel && path_act_cssSel.length === 3 ? path_act_cssSel[2] : '';
+      this.debugger('path_act_cssSel:: ', path, act, cssSel);
       if (!path) { return; }
 
       // get html file
@@ -82,7 +88,6 @@ class Sys {
 
       // convert answer's content from dom object to string
       const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
-      this.debugger('contentDOM', contentDOM);
       let contentStr = '';
       if (contentDOM.constructor.name === 'HTMLElement') {
         contentStr = contentDOM.outerHTML;
@@ -99,8 +104,20 @@ class Sys {
       // load contentStr into the document
       const sel = `[data-rg-inc="${attrValue}"]`;
       const el = document.querySelector(sel);
-      toReplace ? el.outerHTML = contentStr : el.innerHTML = contentStr;
+      if (act === 'inner') {
+        el.innerHTML = contentStr;
+      } else if (act === 'outer') {
+        el.outerHTML = contentStr;
+      } else if (act === 'prepend') {
+        el.prepend(contentDOM);
+      } else if (act === 'append') {
+        el.append(contentDOM);
+      } else {
+        el.innerHTML = contentStr;
+      }
 
+
+      // continue to parse
       if (/data-rg-inc/.test(contentStr)) {
         this.rgInc(contentDOM);
       }
