@@ -144,7 +144,7 @@ class HTTPClient {
    * Sending one HTTP request to HTTP server.
    *  - 301 redirections are not handled.
    *  - retries are not handled
-   * @param {string} url - https://www.dex8.com/contact
+   * @param {string} url - https://www.example.com/something?q=15
    * @param {string} method - GET, POST, PUT, DELETE, PATCH
    * @param {any} body_obj - http body payload
    * @returns {Promise<any>}
@@ -270,7 +270,7 @@ class HTTPClient {
    * Sending HTTP request to HTTP server.
    *  - 301 redirections are handled.
    *  - retries are handled
-   * @param {String} url - https://www.dex8.com/contact
+   * @param {String} url - https://www.example.com/contact
    * @param {String} method - GET, POST, PUT, DELETE, PATCH
    * @param {Object} body_obj - http body
    */
@@ -320,9 +320,10 @@ class HTTPClient {
 
   /**
    *
-   * @param {String} url - https://api.dex8.com/contact
-   * @param {String} method - GET, POST, PUT, DELETE, PATCH
-   * @param {Object|String} body - http body as Object or String type
+   * @param {string} url - https://api.example.com/someurl
+   * @param {string} method - GET, POST, PUT, DELETE, PATCH
+   * @param {object|string} body - http body as Object or String type
+   * @returns {Promise<string>}
    */
   async askJSON(url, method = 'GET', body) {
 
@@ -355,6 +356,34 @@ class HTTPClient {
 
     return answer;
 
+  }
+
+
+  /**
+   * Get whole HTML file or part marked with css selector.
+   * Notice that returned value is HTML DOM object.
+   * @param {string} url - http://example.com/page.html
+   * @param {string} cssSel - css selector: div>p.alert
+   * @returns {Promise<HTMLElement|DocumentFragment>}
+   */
+  async askHTML(url, cssSel) {
+    const answer = await this.askOnce(url);
+    const range = document.createRange();
+    const frag = range.createContextualFragment(answer.res.content);
+
+    // take part of the HTML
+    let content;
+    if (!!cssSel) {
+      content = frag.querySelector(cssSel); // HTMLElement
+    } else {
+      content = frag; // DocumentFragment
+    }
+
+    // console.log('content::', content.constructor, content);
+    // console.log(content.childNodes);
+
+    answer.res.content = content;
+    return answer;
   }
 
 

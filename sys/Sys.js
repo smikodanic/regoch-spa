@@ -1,4 +1,3 @@
-const fs = require('fs');
 const HTTPClient = require('./HTTPClient');
 
 
@@ -7,6 +6,23 @@ class Sys {
 
   constructor(app) {
     this.app = app;
+    this.baseURL = 'http://localhost:4400';
+    this.separator = '@@';
+    this.debug = false;
+
+    const opts = {
+      encodeURI: true,
+      timeout: 10000,
+      retry: 5,
+      retryDelay: 1300,
+      maxRedirects: 0,
+      headers: {
+        'authorization': '',
+        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+        'content-type': 'text/html; charset=UTF-8'
+      }
+    };
+    this.hc = new HTTPClient(opts); // hc means dex8 http client
   }
 
 
@@ -37,70 +53,71 @@ class Sys {
   }
 
 
-  /**
-   * Include HTML components with the data-rgInc attribute.
-   */
-  rgInc_bak() {
-
-    const f = $(document).find('[data-rgInc]');
-
-    $('[data-rgInc]').each((ind, elem) => {
-
-      const htmlFileName = $(elem).attr('data-rgInc');
-      $(`[data-rgInc="${htmlFileName}"]`).load(htmlFileName, (responseText, textStatus,  jqXHR) => {
-        console.log( 'After load parser...' );
-        // console.log(textStatus, responseText, jqXHR);
-        const parsed = $.parseHTML(responseText);
-        const found = $(parsed).find('[data-rgInc]');
-        const htmlFileName2 = $(found).attr('data-rgInc');
-        if (!!htmlFileName2) { $(`[data-rgInc="${htmlFileName2}"]`).load(htmlFileName2, function () {
-
-        }); }
-      });
-
-    });
-  }
 
 
   /**
-   * Include HTML components with the data-rgInc attribute.
-   * @param {Document|string} htm - the whole document or html string
+   * Include HTML components with the data-rg-inc attribute.
+   * example: <header data-rg-inc="/html/header.html| replace | h2 > small ">---header---</header>
+   * @param {Document|DocumentFragment|HTMLElement} domObj - the whole document or html string
+   * @returns {void}
    */
-  rgInc(htm) {
-    let found;
-    if (htm instanceof Document) {
-      found = $(document).find('[data-rgInc]');
-    } else {
-      const parsed = $.parseHTML(htm);
-      found = $(parsed).find('[data-rgInc]');
+  async rgInc(domObj) {
+    this.debugger('\n---------------');
+    const elems = domObj.querySelectorAll('[data-rg-inc]');
+
+    for (const elem of elems) {
+      // extract attribute data
+      const attrValue = elem.getAttribute('data-rg-inc');
+      const path_toReplace_cssSel = attrValue.replace(/\s+/g, '').split(this.separator);
+      const path = !!path_toReplace_cssSel && !!path_toReplace_cssSel.length ? path_toReplace_cssSel[0] : '';
+      const toReplace = (!!path_toReplace_cssSel && path_toReplace_cssSel.length >= 2  && path_toReplace_cssSel[1] === 'replace'); // to replace parent node
+      const cssSel = !!path_toReplace_cssSel && path_toReplace_cssSel.length === 3 ? path_toReplace_cssSel[2] : '';
+      this.debugger('path_toReplace_cssSel:: ', path, toReplace, cssSel);
+      if (!path) { return; }
+
+      // get html file
+      const url = new URL(path, this.baseURL).toString(); // resolve the URL
+      const answer = await this.hc.askHTML(url, cssSel);
+      if (!answer.res.content | answer.status !== 200) { return; }
+
+      // convert answer's content from dom object to string
+      const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
+      this.debugger('contentDOM', contentDOM);
+      let contentStr = '';
+      if (contentDOM.constructor.name === 'HTMLElement') {
+        contentStr = contentDOM.outerHTML;
+      } else if (contentDOM.constructor.name === 'DocumentFragment') {
+        contentDOM.childNodes.forEach(node => {
+          // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+          if (node.nodeType === 1) { contentStr += node.outerHTML; }
+          else if (node.nodeType === 3){ contentStr += node.data; }
+        });
+      }
+      this.debugger('contentStr::', contentStr, '\n\n');
+
+
+      // load contentStr into the document
+      const sel = `[data-rg-inc="${attrValue}"]`;
+      const el = document.querySelector(sel);
+      toReplace ? el.outerHTML = contentStr : el.innerHTML = contentStr;
+
+      if (/data-rg-inc/.test(contentStr)) {
+        this.rgInc(contentDOM);
+      }
+
     }
-    if (!found.length) { return; }
-
-    $(found).each((ind, elem) => {
-      const htmlFileName = $(elem).attr('data-rgInc');
-      $(`[data-rgInc="${htmlFileName}"]`).load(htmlFileName, (responseText, textStatus,  jqXHR) => {
-        // console.log('responseText::', responseText);
-        // const parsed2 = $.parseHTML(responseText);
-        // console.log('parsed2::', parsed2);
-        // const found2 = $(parsed2).find('[data-rgInc]');
-
-        const domparser = new DOMParser();
-        const doc = domparser.parseFromString(responseText, 'text/html');
-        const found2 = doc.querySelector('[data-rginc]');
-        if (!!found2) { this.rgInc(responseText); }
-      });
-    });
 
   }
 
 
   /**
    * Click listener
+   * @returns {void}
    */
   rgClick() {
-    const elems = document.querySelectorAll('[data-rgClick]');
+    const elems = document.querySelectorAll('[data-rg-click]');
     for (const elem of elems) {
-      const funcDef = elem.getAttribute('data-rgClick').trim(); // string 'fja(x, y, ...arr)'
+      const funcDef = elem.getAttribute('data-rg-click').trim(); // string 'fja(x, y, ...arr)'
       const matched = funcDef.match(/^(.+)\((.*)\)$/);
       const funcName = matched[1];
       const funcParams = matched[2].split(',').map(p => p.trim());
@@ -112,16 +129,16 @@ class Sys {
   }
 
 
-
-
-  readModuleFile(path) {
-    try {
-      // const filename = require.resolve(path);
-      return fs.readFileSync(path, 'utf8');
-    } catch (e) {
-      console.error(e);
-    }
+  /*********** MISC ************/
+  /**
+   * Debugger. Use it as this.debugger(var1, var2, var3)
+   * @returns {void}
+   */
+  debugger(...textParts) {
+    const text = textParts.join(' ');
+    if (this.debug) { console.log(text); }
   }
+
 
 
 

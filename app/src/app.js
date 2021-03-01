@@ -25,7 +25,7 @@ class App {
         'content-type': 'text/html; charset=UTF-8'
       }
     };
-    const hc = new HTTPClient(opts); // dhc means dex8 http client
+    const hc = new HTTPClient(opts); // hc means http client
     const answer = await hc.askOnce('api.dex8.com');
 
     // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/todos/1', 'GET');

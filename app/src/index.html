@@ -5,14 +5,14 @@
     <title>App</title>
   </head>
   <body>
-    <header data-rgInc="/html/header.html h2>small">---header---</header>
+    <header data-rg-inc="/html/header.html @@  @@ h2 > small ">---header---</header>
     <main>
-      This is main.
+      This is <mark>main</mark>.
       <button onclick="app.clickFja(5, 'str', 8, 9)">Click -- onclick</button>
-      <button data-rgClick="clickFja(5, 'str', 8, 9)">Click -- rgClick</button>
+      <button data-rg-click="clickFja(5, 'str', 8, 9)">Click -- rg-click</button>
     </main>
-    <footer data-rgInc="/html/footer.html">---footer---</footer>
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <footer data-rg-inc="/html/footer.html">---footer---</footer>
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script> -->
     <script src="js/app.js"></script>
   </body>
 </html>
