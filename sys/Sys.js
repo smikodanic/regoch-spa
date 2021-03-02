@@ -1,4 +1,6 @@
 const HTTPClient = require('./HTTPClient');
+const RegochRouter = require('regoch-router');
+const EventEmitter = require('./EventEmitter');
 
 
 
@@ -8,7 +10,7 @@ class Sys {
     this.app = app;
     this.baseURL = 'http://localhost:4400';
     this.separator = '@@';
-    this.debug = true;
+    this.debug = false;
 
     const opts = {
       encodeURI: true,
@@ -23,6 +25,9 @@ class Sys {
       }
     };
     this.hc = new HTTPClient(opts); // hc means dex8 http client
+
+    this.regochRouter = new RegochRouter({debug: false});
+    this.eventEmitter = new EventEmitter();
   }
 
 
@@ -30,6 +35,24 @@ class Sys {
   run() {
     this.rgInc(document);
     this.rgClick();
+    this.rgHref();
+    this.rgHrefListener();
+  }
+
+
+
+  /**
+   * Define route
+   * @param {string} route - route, for example: '/page1.html'
+   * @param {string} view - view path, for example: '/pages/page1/page1.html'
+   * @param {Class} Ctrl - route function
+   * @returns{Promise<void>}
+   */
+  async route(route, view, Ctrl) {
+    const controller = new Ctrl();
+    if (!!route && !!controller.init) {
+      this.regochRouter.def(route, controller.init.bind(controller));
+    }
   }
 
 
@@ -68,7 +91,7 @@ class Sys {
    * @returns {void}
    */
   async rgInc(domObj) {
-    this.debugger('\n---------------');
+    this.debugger('\n--------- rgInc ------');
     const elems = domObj.querySelectorAll('[data-rg-inc]');
 
     for (const elem of elems) {
@@ -144,6 +167,43 @@ class Sys {
       });
     }
   }
+
+
+  rgHref() {
+    const elems = document.querySelectorAll('[data-rg-href]');
+    for (const elem of elems) {
+      const href = elem.getAttribute('href').trim() || elem.getAttribute('data-rg-href').trim();
+
+      elem.addEventListener('click', event => {
+        event.preventDefault();
+
+        // push state and change browser's address bar
+        const state = { href };
+        const title = 'some title';
+        const url = href;
+        window.history.pushState(state, title, url);
+
+        // fire event
+        this.eventEmitter.emit('pushstate', state);
+      });
+    }
+  }
+
+
+  rgHrefListener() {
+    this.eventEmitter.on('pushstate', event => {
+      const uri = event.detail.href;
+      this.regochRouter.trx = { uri };
+      this.regochRouter.exe()
+        .then(trx => console.log('then(trx):: ', trx))
+        .catch(err => console.log('ERRrouter:: ', err));
+    });
+  }
+
+
+
+
+
 
 
   /*********** MISC ************/

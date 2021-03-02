@@ -1,11 +1,10 @@
 const { Sys, HTTPClient } = require('../../sys');
+const Page1Ctrl = require('./pages/page1/Page1Ctrl');
+const Page2Ctrl = require('./pages/page2/Page2Ctrl');
 
 
 class App {
 
-  constructor() {
-
-  }
 
   clickFja(n, str, ...rest) {
     console.log('This is a click. Params::', n, str, rest);
@@ -44,9 +43,9 @@ class App {
 
 
 
-
-
-
+  historyData() {
+    console.log('window.history::', window.history);
+  }
 
 
 
@@ -58,4 +57,12 @@ class App {
 
 window.app = new App();
 const system = new Sys(window.app);
+
+
+
+
+system.route('/page1.html', '/pages/page1/page1.html', Page1Ctrl);
+system.route('/page2.html', '/pages/page2/page2.html', Page2Ctrl);
+
 system.run();
+
