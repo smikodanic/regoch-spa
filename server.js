@@ -1,11 +1,11 @@
-const SPAserver = require('single-page-app-server');
+const HTTPServer = require('./sys/HTTPServer.js');
 
 const httpOpts = {
   port: 4400,
   timeout: 0, // if 0 never timeout
   staticDir: '/app/dist',
   indexFile: 'index.html',
-  acceptEncoding: 'deflate', // gzip, deflate or ''
+  acceptEncoding: 'gzip', // gzip, deflate or ''
   headers: {
     // CORS Headers
     'Access-Control-Allow-Origin': '*',
@@ -13,8 +13,8 @@ const httpOpts = {
     'Access-Control-Allow-Methods': 'GET', // 'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, HEAD',
     'Access-Control-Max-Age': '3600'
   },
-  debug: false
+  debug: true
 };
 
-const spaServer = new SPAserver(httpOpts);
-spaServer.start();
+const httpServer = new HTTPServer(httpOpts);
+httpServer.start();
