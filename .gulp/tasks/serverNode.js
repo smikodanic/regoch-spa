@@ -1,30 +1,70 @@
 const gulp = require('gulp');
-const exec = require('child_process').exec;
+const { spawn } = require("child_process");
 
 
-module.exports = (config) => {
-  const app_name = config.app_name.replace(/\s/g, '-');
+module.exports.start = async () => {
+  global.nodeProc = spawn('node', ['server']);
 
-  console.log('Application name: ' + app_name);
 
-  gulp.task('node-start', () => {
-    exec('node server', (err, stdout) => {
-      if (err) {
-        console.log(err);
-      } else {
-         console.log('SERVER STARTED with: node start');
-        console.log(stdout);
-      }
-    });
+  /*** EVENTS ***/
+  global.nodeProc.stdout.on('data', async dataBuff => {
+    const dataStr = dataBuff.toString();
+    if (!!dataStr) {
+      await new Promise(resolve => setTimeout(resolve, 1300));
+      console.log(dataStr);
+    }
+
   });
 
-  gulp.task('node-stop', () => {
-    console.log('SERVER STOPPED');
+  global.nodeProc.stderr.on('data', dataBuff => {
+    console.log(`stderr: ${dataBuff}`);
+    if (/is already in use/i.test(dataBuff.toString())) {
+      spawn('killall', ['-9v', 'node']);
+      console.log('😒  Killed all nodejs processes!');
+      module.exports.start();
+      }
+  });
+
+  global.nodeProc.on('error', (error) => {
+    console.log(`error: ${error.message}`);
+    module.exports.stop();
     process.exit();
   });
 
-  gulp.task('node-restart', ['node-stop', 'node-start'], () => {
-    console.log('SERVER RESTARTED');
+  global.nodeProc.on('close', code => {
+    // console.log(`child process exited with code ${code}`);
+  });
+
+
+
+  /*** exit with CTRL+c ***/
+  const stdin = process.stdin;
+  stdin.setRawMode(true);
+  stdin.on('data', async data => {
+    // console.log(data); // hex binary
+    if (data.length === 1 && data[0] === 0x03) { // 0x03 is CTRL+c
+      await new Promise(resolve => setTimeout(resolve, 400));
+      console.log('\n💥  Server process is killed !\n');
+      module.exports.stop();
+      await new Promise(resolve => setTimeout(resolve, 400));
+      process.exit();
+    } else if (data.length === 1 && data[0] === 0x0d) { // 0x0d is Enter
+      console.log('☺'); // https://unicode.org/emoji/charts/full-emoji-list.html
+    }
   });
 
 };
+
+
+
+
+module.exports.stop = async () => {
+  global.nodeProc.kill('SIGINT');
+}
+
+
+
+module.exports.restart = async () => {
+  await module.exports.stop();
+  await module.exports.start();
+}

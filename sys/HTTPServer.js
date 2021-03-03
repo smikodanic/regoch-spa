@@ -32,7 +32,6 @@ class HTTPServer {
     } else {
       throw new Error('HTTP options are not defined.');
     }
-
     this.httpServer;
   }
 
@@ -106,7 +105,7 @@ class HTTPServer {
       let filePath = path.join(process.cwd(), this.opts.staticDir, reqFile);
 
       // prevent Single Page App to show Error 404 when URL is reloaded (click on browser's reload button)
-      if (fs.existsSync(filePath) || (!fileExt || fileExt === 'html' || fileExt === 'htm')) {
+      if (!fs.existsSync(filePath) && (!fileExt || fileExt === 'html' || fileExt === 'htm')) {
         const reqFileIndex = this.opts.indexFile || 'index.html';
         filePath = path.join(process.cwd(), this.opts.staticDir, reqFileIndex);
       }
@@ -219,14 +218,14 @@ class HTTPServer {
       const addr = this.httpServer.address();
       const ip = addr.address === '::' ? '127.0.0.1' : addr.address;
       const port = addr.port;
-      console.log(`HTTP Server is started on ${ip}:${port}`);
+      console.log(`👌  HTTP Server is started on ${ip}:${port}`);
     });
   }
 
 
   _onClose() {
     this.httpServer.on('close', () => {
-      console.log(`HTTP Server is stopped.`);
+      console.log(`✋  HTTP Server is stopped.`);
     });
   }
 

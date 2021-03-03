@@ -1,9 +1,7 @@
 const { task, watch, series, parallel } = require('gulp');
 
 // tasks
-const serverNodemon = require('./tasks/serverNodemon.js');
-// const serverPm2 = require('./tasks/serverPm2.js');
-// const serverNode = require('./tasks/serverNode.js');
+const serverNode = require('./tasks/serverNode.js');
 const rimraf = require('./tasks/rimraf.js');
 const htmlMinify = require('./tasks/htmlMinify.js');
 // const browserify = require('./tasks/browserify.js');
@@ -11,8 +9,11 @@ const browserifyMinifyMap = require('./tasks/browserifyMinifyMap.js');
 const scss = require('./tasks/scss.js');
 
 
+
 /***** GULP BASIC TASKS *****/
-task('serverNodemon', serverNodemon);
+task('serverStart', serverNode.start);
+task('serverStop', serverNode.stop);
+task('serverRestart', serverNode.restart);
 task('rimraf', rimraf);
 task('htmlMinify', htmlMinify);
 task('browserifyMinifyMap', browserifyMinifyMap);
@@ -23,7 +24,8 @@ task('scss', scss);
 task('watcher', async () => {
   await watch([
     'app/src/**/*.js',
-    'sys/**/*.js'
+    'sys/**/*.js',
+    '!sys/HTTPServer.js'
   ], series('browserifyMinifyMap'));
 
   await watch([
@@ -33,6 +35,11 @@ task('watcher', async () => {
   await watch([
     'app/src/**/*.scss'
   ], series('scss'));
+
+  await watch([
+    'sys/HTTPServer.js',
+    'server.js'
+  ], series('serverRestart'));
 });
 
 
@@ -41,4 +48,4 @@ task('watcher', async () => {
 task('build', series('rimraf', parallel('browserifyMinifyMap', 'htmlMinify', 'scss')));
 
 // defult gulp task
-task('default', parallel('watcher', 'build', 'serverNodemon'));
+task('default', parallel('watcher', 'build', 'serverStart'));
