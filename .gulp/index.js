@@ -23,7 +23,7 @@ task('scss', scss);
 /***** WATCHERS *****/
 task('watcher', async () => {
   await watch([
-    'app/src/**/*.js',
+    'app/src/controllers/**/*.js',
     'sys/**/*.js',
     '!sys/HTTPServer.js'
   ], series('browserifyMinifyMap'));

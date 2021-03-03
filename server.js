@@ -4,7 +4,7 @@ const httpOpts = {
   port: 4400,
   timeout: 0, // if 0 never timeout
   staticDir: '/app/dist',
-  indexFile: 'index.html',
+  indexFile: 'views/index.html',
   acceptEncoding: 'gzip', // gzip, deflate or ''
   headers: {
     // CORS Headers

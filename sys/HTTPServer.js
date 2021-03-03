@@ -105,7 +105,7 @@ class HTTPServer {
       let filePath = path.join(process.cwd(), this.opts.staticDir, reqFile);
 
       // prevent Single Page App to show Error 404 when URL is reloaded (click on browser's reload button)
-      if (!fs.existsSync(filePath) && (!fileExt || fileExt === 'html' || fileExt === 'htm')) {
+      if (!fs.existsSync(filePath) && !fileExt) {
         const reqFileIndex = this.opts.indexFile || 'index.html';
         filePath = path.join(process.cwd(), this.opts.staticDir, reqFileIndex);
       }
