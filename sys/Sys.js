@@ -101,8 +101,8 @@ class Sys {
     for (const elem of elems) {
       // extract attribute data
       const attrValue = elem.getAttribute('data-rg-inc');
-      const path_act_cssSel = attrValue.replace(/\s+/g, '').split(this.separator);
-      const path = !!path_act_cssSel && !!path_act_cssSel.length ? path_act_cssSel[0] : '';
+      const path_act_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator);
+      const path = !!path_act_cssSel && !!path_act_cssSel.length ? '/views/inc/' + path_act_cssSel[0] : '';
       const act = !!path_act_cssSel && path_act_cssSel.length >= 2 ? path_act_cssSel[1] : 'inner';
       const cssSel = !!path_act_cssSel && path_act_cssSel.length === 3 ? path_act_cssSel[2] : '';
       this.debugger('path_act_cssSel:: ', path, act, cssSel);
