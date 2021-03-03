@@ -13,7 +13,7 @@ const httpOpts = {
     'Access-Control-Allow-Methods': 'GET', // 'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, HEAD',
     'Access-Control-Max-Age': '3600'
   },
-  debug: true
+  debug: false
 };
 
 const httpServer = new HTTPServer(httpOpts);

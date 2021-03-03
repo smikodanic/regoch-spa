@@ -1,20 +1,9 @@
 {
 	"globals": {
-    "window": true,
-    "document": true,
-    "Document": true,
-    "$": true,
-		"WebSocket": true,
-		"Blob": true,
-    "XMLHttpRequest": true,
-    "Event": true,
-    "CustomEvent": true,
-    "EventTarget": true,
-    "DOMParser": true,
-    "alert": true
+    "$": true
 	},
 	"env": {
-		"browser": false,
+		"browser": true,
 		"node": true,
     "es6": true
 	},

@@ -218,7 +218,7 @@ class HTTPServer {
       const addr = this.httpServer.address();
       const ip = addr.address === '::' ? '127.0.0.1' : addr.address;
       const port = addr.port;
-      console.log(`👌  HTTP Server is started on ${ip}:${port}`);
+      console.log(`👌  HTTP Server is started on http://${ip}:${port}`);
     });
   }
 
