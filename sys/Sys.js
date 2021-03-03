@@ -37,6 +37,10 @@ class Sys {
     this.rgClick();
     this.rgHref();
     this.rgHrefListener();
+
+    // test URI against routes when browser's Reload button is clicked
+    const uri = window.location.pathname + window.location.search; // /page1.html?q=12
+    this.testRoutes(uri);
   }
 
 
@@ -193,12 +197,21 @@ class Sys {
 
   rgHrefListener() {
     this.eventEmitter.on('pushstate', event => {
-      const uri = event.detail.href;
-      this.regochRouter.trx = { uri };
-      this.regochRouter.exe()
-        .then(trx => console.log('then(trx):: ', trx))
-        .catch(err => console.log('ERRrouter:: ', err));
+      const uri = event.detail.href; // browser address bar URL
+      this.testRoutes(uri);
     });
+  }
+
+
+  /**
+   * Match routes against current browser URI.
+   * @param {string} uri - browser's address bar URI
+   */
+  testRoutes(uri) {
+    this.regochRouter.trx = { uri };
+    this.regochRouter.exe()
+      .then(trx => console.log('then(trx):: ', trx))
+      .catch(err => console.log('ERRrouter:: ', err));
   }
 
 
