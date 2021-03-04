@@ -46,9 +46,8 @@ class Router {
    */
   testRoutes(uri) {
     this.regochRouter.trx = { uri };
-    console.log(this.regochRouter.trx);
     this.regochRouter.exe()
-      .then(trx => console.log('Route executed trx:: ', trx))
+      // .then(trx => console.log('Route executed trx:: ', trx))
       .catch(err => console.log('ERRrouter:: ', err));
   }
 

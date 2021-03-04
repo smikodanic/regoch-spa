@@ -200,7 +200,8 @@ class System {
 
   rgHrefListener() {
     this.eventEmitter.on('pushstate', event => {
-      const uri = event.detail.href; // browser address bar URL
+      const uri = window.location.pathname + window.location.search; // browser address bar URL
+      // console.log(uri, event.detail.href);
       this.router.testRoutes(uri);
     });
   }
