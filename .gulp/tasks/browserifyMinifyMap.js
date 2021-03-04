@@ -12,9 +12,9 @@ const sourcemaps = require('gulp-sourcemaps');
 
 
 module.exports = async () => {
-  browserify('./sys/main.js')
+  browserify('./sys/regochSPA.js')
     .bundle()
-    .pipe(source('main.js'))
+    .pipe(source('regochSPA.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(minify())

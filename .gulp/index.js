@@ -24,6 +24,7 @@ task('scss', scss);
 task('watcher', async () => {
   await watch([
     'app/src/controllers/**/*.js',
+    'app/src/assets/js/**/*.js',
     'sys/**/*.js',
     '!sys/HTTPServer.js'
   ], series('browserifyMinifyMap'));

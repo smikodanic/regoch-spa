@@ -1,12 +1,11 @@
 const HTTPClient = require('./HTTPClient');
-const RegochRouter = require('regoch-router');
 const EventEmitter = require('./EventEmitter');
 
 
 
-class RegochSPA {
+class System {
 
-  constructor() {
+  constructor(router) {
     this.baseURL = 'http://localhost:4400';
     this.separator = '@@';
     this.debug = false;
@@ -25,7 +24,7 @@ class RegochSPA {
     };
     this.hc = new HTTPClient(opts); // hc means dex8 http client
 
-    this.regochRouter = new RegochRouter({debug: false});
+    this.router = router;
     this.eventEmitter = new EventEmitter();
   }
 
@@ -39,7 +38,7 @@ class RegochSPA {
 
     // test URI against routes when browser's Reload button is clicked
     const uri = window.location.pathname + window.location.search; // /page1.html?q=12
-    this.testRoutes(uri);
+    this.router.testRoutes(uri);
   }
 
 
@@ -60,16 +59,7 @@ class RegochSPA {
   }
 
 
-  /**
-   * Match routes against current browser URI.
-   * @param {string} uri - browser's address bar URI
-   */
-  testRoutes(uri) {
-    this.regochRouter.trx = { uri };
-    this.regochRouter.exe()
-      .then(trx => console.log('Route executed trx:: ', trx))
-      .catch(err => console.log('ERRrouter:: ', err));
-  }
+
 
 
 
@@ -211,7 +201,7 @@ class RegochSPA {
   rgHrefListener() {
     this.eventEmitter.on('pushstate', event => {
       const uri = event.detail.href; // browser address bar URL
-      this.testRoutes(uri);
+      this.router.testRoutes(uri);
     });
   }
 
@@ -241,4 +231,4 @@ class RegochSPA {
 
 
 
-module.exports = RegochSPA;
+module.exports = System;

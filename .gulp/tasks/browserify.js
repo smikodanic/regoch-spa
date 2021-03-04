@@ -10,9 +10,9 @@ const banner = require('./banner');
 module.exports = async () => {
 
 
-  return browserify('./app/src/main.js')
+  return browserify('./sys/regochSPA.js')
     .bundle()
-    .pipe(source('main.js'))
+    .pipe(source('regochSPA.js'))
     .pipe(header(banner, {pkg: pkg}))
     .pipe(gulp.dest('./app/dist/js/'))
     .on('error', (err) => {

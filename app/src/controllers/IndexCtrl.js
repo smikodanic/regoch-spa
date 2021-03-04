@@ -1,9 +1,9 @@
-const { RegochSPA, HTTPClient } = require('../../../sys');
+const { System, HTTPClient } = require('../../../sys');
 
 
-class Index {
+class Index extends System {
 
-  init() {
+  init(trx) {
     console.log('IndexCtrl initialised');
   }
 
