@@ -1,10 +1,11 @@
-const { Sys, HTTPClient } = require('../../sys');
-const Page1Ctrl = require('./controllers/Page1Ctrl');
-const Page2Ctrl = require('./controllers/Page2Ctrl');
+const { RegochSPA, HTTPClient } = require('../../../sys');
 
 
-class App {
+class Index {
 
+  init() {
+    console.log('IndexCtrl initialised');
+  }
 
   clickFja(n, str, ...rest) {
     console.log('This is a click. Params::', n, str, rest);
@@ -46,23 +47,7 @@ class App {
   historyData() {
     console.log('window.history::', window.history);
   }
-
-
-
-
 }
 
 
-
-
-window.app = new App();
-const system = new Sys(window.app);
-
-
-
-
-system.route('/page1', '/pages/page1/page1.html', Page1Ctrl);
-system.route('/page/:pageNum', '/pages/page2/page2.html', Page2Ctrl);
-
-system.run();
-
+module.exports = Index;

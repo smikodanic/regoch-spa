@@ -1,7 +1,7 @@
 class Page2Ctrl {
 
   init() {
-    console.log('page2 initialised.');
+    console.log('Page2Ctrl initialised');
     $('title').text('PAGE 2');
   }
 

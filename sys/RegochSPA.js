@@ -4,10 +4,9 @@ const EventEmitter = require('./EventEmitter');
 
 
 
-class Sys {
+class RegochSPA {
 
-  constructor(app) {
-    this.app = app;
+  constructor() {
     this.baseURL = 'http://localhost:4400';
     this.separator = '@@';
     this.debug = false;
@@ -48,15 +47,28 @@ class Sys {
   /**
    * Define route
    * @param {string} route - route, for example: '/page1.html'
-   * @param {string} view - view path, for example: '/pages/page1/page1.html'
    * @param {Class} Ctrl - route function
+   * @param {string} view - view path, for example: '/pages/page1/page1.html'
    * @returns{Promise<void>}
    */
-  async route(route, view, Ctrl) {
+  async route(route, Ctrl, view) {
     const controller = new Ctrl();
     if (!!route && !!controller.init) {
       this.regochRouter.def(route, controller.init.bind(controller));
+      this.regochRouter.notfound(trx => {console.log(`404 Route not found: ${trx.uri}`); });
     }
+  }
+
+
+  /**
+   * Match routes against current browser URI.
+   * @param {string} uri - browser's address bar URI
+   */
+  testRoutes(uri) {
+    this.regochRouter.trx = { uri };
+    this.regochRouter.exe()
+      .then(trx => console.log('Route executed trx:: ', trx))
+      .catch(err => console.log('ERRrouter:: ', err));
   }
 
 
@@ -156,9 +168,10 @@ class Sys {
 
   /**
    * Click listener
+   * @param {object} ctrl - controller instance
    * @returns {void}
    */
-  rgClick() {
+  rgClick(ctrl) {
     const elems = document.querySelectorAll('[data-rg-click]');
     for (const elem of elems) {
       const funcDef = elem.getAttribute('data-rg-click').trim(); // string 'fja(x, y, ...arr)'
@@ -167,7 +180,7 @@ class Sys {
       const funcParams = matched[2].split(',').map(p => p.trim());
       elem.addEventListener('click', event => {
         console.log('clicked ', event.target.localName);
-        this.app[funcName](...funcParams);
+        ctrl[funcName](...funcParams);
       });
     }
   }
@@ -203,18 +216,6 @@ class Sys {
   }
 
 
-  /**
-   * Match routes against current browser URI.
-   * @param {string} uri - browser's address bar URI
-   */
-  testRoutes(uri) {
-    this.regochRouter.trx = { uri };
-    this.regochRouter.exe()
-      .then(trx => console.log('then(trx):: ', trx))
-      .catch(err => console.log('ERRrouter:: ', err));
-  }
-
-
 
 
 
@@ -240,4 +241,4 @@ class Sys {
 
 
 
-module.exports = Sys;
+module.exports = RegochSPA;

@@ -1,8 +1,8 @@
-const Sys = require('./Sys');
+const RegochSPA = require('./RegochSPA');
 const HTTPClient = require('./HTTPClient');
 
 
 module.exports = {
-  Sys,
+  RegochSPA,
   HTTPClient
 };
