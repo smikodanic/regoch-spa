@@ -45,24 +45,71 @@ class Controller {
     window.dataRgs = [];
   }
 
+
+  /**
+   * Load router views.
+   */
+  async loadView(viewName, path, cssSel) {
+    this.debugger('\n--------- loadView ------');
+    const attrName = 'data-rg-view';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length || !path) { return; }
+
+    for (const elem of elems) {
+      // extract attribute data
+      const attrValue = elem.getAttribute(attrName).trim();
+      const path2 = '/views/' + path;
+      this.debugger('attrValue:: ', attrValue, viewName);
+
+      if (attrValue === viewName) {
+        // get html file
+        const url = new URL(path2, this.baseURL).toString(); // resolve the URL
+        const answer = await this.hc.askHTML(url, cssSel);
+        if (!answer.res.content | answer.status !== 200) { break; }
+
+        // convert answer's content from dom object to string
+        const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
+        console.log(contentDOM.constructor.name);
+        let contentStr = '';
+        if (contentDOM.constructor.name === 'DocumentFragment') {
+          contentDOM.childNodes.forEach(node => {
+            // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+            if (node.nodeType === 1) { contentStr += node.outerHTML; }
+            else if (node.nodeType === 3){ contentStr += node.data; }
+          });
+        } else { // HTMLElement|HTMLButtonElement...
+          contentStr = contentDOM.outerHTML;
+        }
+        this.debugger('contentStr::', contentStr, '\n\n');
+
+
+        // load contentStr into the document
+        const sel = `[${attrName}="${attrValue}"]`;
+        const el = document.querySelector(sel);
+        el.innerHTML = contentStr;
+
+        break;
+      }
+
+    }
+
+  }
+
+
   /**
    * Init the controller.
    * This is where initaial controller functions starting.
    */
   async init() {}
 
-  /**
-   * Load router views.
-   */
-  async load() {}
-
 
   /**
    * Parse elements with data-rg-... attribute.
+   * @param {Object} ctrl - current controller's instance
    */
-  async parse(Ctrl) {
+  async parse(ctrl) {
     await this.rgInc(document);
-    this.rgClick(Ctrl);
+    this.rgClick(ctrl);
     this.rgHref();
   }
 
@@ -94,15 +141,17 @@ class Controller {
       const act = !!path_act_cssSel && path_act_cssSel.length >= 2 ? path_act_cssSel[1] : 'inner';
       const cssSel = !!path_act_cssSel && path_act_cssSel.length === 3 ? path_act_cssSel[2] : '';
       this.debugger('path_act_cssSel:: ', path, act, cssSel);
-      if (!path) { return; }
+      if (!path) { break; }
 
       // get html file
       const url = new URL(path, this.baseURL).toString(); // resolve the URL
       const answer = await this.hc.askHTML(url, cssSel);
-      if (!answer.res.content | answer.status !== 200) { return; }
+      if (!answer.res.content | answer.status !== 200) { break; }
 
       // convert answer's content from dom object to string
       const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
+      this.debugger('contentDOM::', contentDOM.constructor.name, contentDOM);
+
       let contentStr = '';
       if (contentDOM.constructor.name === 'HTMLElement') {
         contentStr = contentDOM.outerHTML;
@@ -143,10 +192,10 @@ class Controller {
 
   /**
    * Click listener
-   * @param {Object} Ctrl - controller class
+   * @param {Object} ctrl - current controller's instance
    * @returns {void}
    */
-  rgClick(Ctrl) {
+  rgClick(ctrl) {
     this.debugger('\n--------- rgClick ------');
     const attrName = 'data-rg-click';
     const elems = document.querySelectorAll(`[${attrName}]`);
@@ -161,7 +210,6 @@ class Controller {
       const handler = event => {
         event.preventDefault();
         try {
-          const ctrl = new Ctrl();
           ctrl[funcName](...funcParams);
         } catch (err) {
           throw new Error(`Method ${funcName} doesn't exist in the controller. (${err.message})`);
@@ -210,55 +258,6 @@ class Controller {
     }
   }
 
-
-
-  async loadView(path, cssSel) {
-    this.debugger('\n--------- loadView ------');
-    const attrName = 'data-rg-view';
-    const elem = document.querySelector(`[${attrName}]`);
-    if (!elem) { return; }
-
-    // extract attribute data
-    const attrValue = elem.getAttribute(attrName);
-    const act = !!attrValue ? attrValue.trim() : 'inner';
-    path = '/views/' + path;
-    this.debugger('path_act_cssSel:: ', path, act);
-    if (!path) { return; }
-
-    // get html file
-    const url = new URL(path, this.baseURL).toString(); // resolve the URL
-    const answer = await this.hc.askHTML(url, cssSel);
-    if (!answer.res.content | answer.status !== 200) { return; }
-
-    // convert answer's content from dom object to string
-    const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
-    let contentStr = '';
-    if (contentDOM.constructor.name === 'HTMLElement') {
-      contentStr = contentDOM.outerHTML;
-    } else if (contentDOM.constructor.name === 'DocumentFragment') {
-      contentDOM.childNodes.forEach(node => {
-        // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-        if (node.nodeType === 1) { contentStr += node.outerHTML; }
-        else if (node.nodeType === 3){ contentStr += node.data; }
-      });
-    }
-    this.debugger('contentStr::', contentStr, '\n\n');
-
-
-    // load contentStr into the document
-    const sel = `[${attrName}="${attrValue}"]`;
-    const el = document.querySelector(sel);
-    if (act === 'inner') {
-      el.innerHTML = contentStr;
-    } else if (act === 'prepend') {
-      el.prepend(contentDOM);
-    } else if (act === 'append') {
-      el.append(contentDOM);
-    } else {
-      el.innerHTML = contentStr;
-    }
-
-  }
 
 
 

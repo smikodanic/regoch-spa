@@ -6,7 +6,12 @@ class IndexCtrl extends Controller {
 
   async init(trx) {
     console.log('\n+++ IndexCtrl initialised');
-    await this.loadView('home.html');
+    await this.loadView('home1', 'home1.html');
+    await this.loadView('home2', 'home2.html');
+  }
+
+  test() {
+    console.log('This is my test.');
   }
 
 
