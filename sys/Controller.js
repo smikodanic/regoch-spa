@@ -69,23 +69,12 @@ class Controller {
 
         // convert answer's content from dom object to string
         const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
-        console.log(contentDOM.constructor.name);
-        let contentStr = '';
-        if (contentDOM.constructor.name === 'DocumentFragment') {
-          contentDOM.childNodes.forEach(node => {
-            // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-            if (node.nodeType === 1) { contentStr += node.outerHTML; }
-            else if (node.nodeType === 3){ contentStr += node.data; }
-          });
-        } else { // HTMLElement|HTMLButtonElement...
-          contentStr = contentDOM.outerHTML;
-        }
+        const contentStr = this.dom2string(contentDOM);
+        this.debugger('contentDOM::', contentDOM.constructor.name, contentDOM);
         this.debugger('contentStr::', contentStr, '\n\n');
 
-
         // load contentStr into the document
-        const sel = `[${attrName}="${attrValue}"]`;
-        const el = document.querySelector(sel);
+        const el = document.querySelector(`[${attrName}="${attrValue}"]`);
         el.innerHTML = contentStr;
 
         break;
@@ -150,24 +139,12 @@ class Controller {
 
       // convert answer's content from dom object to string
       const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
+      const contentStr = this.dom2string(contentDOM);
       this.debugger('contentDOM::', contentDOM.constructor.name, contentDOM);
-
-      let contentStr = '';
-      if (contentDOM.constructor.name === 'HTMLElement') {
-        contentStr = contentDOM.outerHTML;
-      } else if (contentDOM.constructor.name === 'DocumentFragment') {
-        contentDOM.childNodes.forEach(node => {
-          // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-          if (node.nodeType === 1) { contentStr += node.outerHTML; }
-          else if (node.nodeType === 3){ contentStr += node.data; }
-        });
-      }
       this.debugger('contentStr::', contentStr, '\n\n');
 
-
       // load contentStr into the document
-      const sel = `[${attrName}="${attrValue}"]`;
-      const el = document.querySelector(sel);
+      const el = document.querySelector(`[${attrName}="${attrValue}"]`);
       if (act === 'inner') {
         el.innerHTML = contentStr;
       } else if (act === 'outer') {
@@ -179,7 +156,6 @@ class Controller {
       } else {
         el.innerHTML = contentStr;
       }
-
 
       // continue to parse
       if (/data-rg-inc/.test(contentStr)) {
@@ -271,8 +247,31 @@ class Controller {
     if (this.debug) { console.log(text); }
   }
 
+
+  /**
+   * Delay
+   * @param {number} ms - miliseconds
+   */
   sleep(ms) {
-    new Promise(resolve => setTimeout(resolve, 400));
+    new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   *
+   * @param {Convert DOM Object to String} dom - HTML dom object
+   */
+  dom2string(dom) {
+    let str = '';
+    if (dom.constructor.name === 'HTMLElement') {
+      str = dom.outerHTML;
+    } else if (dom.constructor.name === 'DocumentFragment') {
+      dom.childNodes.forEach(node => {
+        // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+        if (node.nodeType === 1) { str += node.outerHTML; }
+        else if (node.nodeType === 3){ str += node.data; }
+      });
+    }
+    return str;
   }
 
 
