@@ -8,35 +8,43 @@ class Router {
     this.regochRouter = new RegochRouter({debug: false});
   }
 
+
   /**
    * Define route
    * @param {string} route - route, for example: '/page1.html'
    * @param {Class} Ctrl - route function
-   * @param {string} view - view path, for example: '/pages/page1/page1.html'
    * @returns {void}
    */
-  when(route, Ctrl, view) {
+  when(route, Ctrl) {
     const controller = new Ctrl();
-    if (!!route && !!controller.init) {
-      this.regochRouter.def(route, controller.init.bind(controller));
-    }
+    if (!route) { throw new Error(`Route is not defined for ${Ctrl.name} controller.`); }
+
+    // controller methods
+    const reset = controller.reset.bind(controller);
+    const init = controller.init.bind(controller);
+    const parse = controller.parse.bind(controller, Ctrl);
+    const load = controller.load.bind(controller);
+
+    this.regochRouter.def(route, reset, init, parse, load);
   }
 
 
   /**
-   * Define route
-   * @param {string} route - route, for example: '/page1.html'
+   * Define 404 not found route
    * @param {Class} Ctrl - route function
-   * @param {string} view - view path, for example: '/pages/page1/page1.html'
    * @returns {void}
    */
   notFound (Ctrl) {
     const controller = new Ctrl();
-    if (!!controller.init) {
-      this.regochRouter.notfound(controller.init.bind(controller));
-    }
-  }
 
+    // controller methods
+    const reset = controller.reset.bind(controller);
+    const init = controller.init.bind(controller);
+    const parse = controller.parse.bind(controller);
+    const load = controller.load.bind(controller);
+
+    this.regochRouter.notfound(reset, init, parse, load);
+  }
 
 
   /**

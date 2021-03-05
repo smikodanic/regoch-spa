@@ -1,11 +1,15 @@
-const { System, HTTPClient } = require('../../../sys');
+const HTTPClient = require('../../../sys/HTTPClient');
+const Controller = require('../../../sys/Controller');
 
 
-class Index extends System {
+class IndexCtrl extends Controller {
 
-  init(trx) {
-    console.log('IndexCtrl initialised');
+  async init(trx) {
+    console.log('\n+++ IndexCtrl initialised');
+    await this.loadView('home.html');
   }
+
+
 
   clickFja(n, str, ...rest) {
     console.log('This is a click. Params::', n, str, rest);
@@ -50,4 +54,4 @@ class Index extends System {
 }
 
 
-module.exports = Index;
+module.exports = IndexCtrl;

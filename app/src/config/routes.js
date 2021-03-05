@@ -1,5 +1,6 @@
 const Router = require('../../../sys/Router');
-const router = new Router({debug: false});
+const router = new Router();
+
 
 // controllers
 const IndexCtrl = require('../controllers/IndexCtrl');
