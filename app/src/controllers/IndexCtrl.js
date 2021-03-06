@@ -28,6 +28,7 @@ class IndexCtrl extends Controller {
   clickFja(n, str, ...rest) {
     console.log('This is a click. Params::', n, str, rest);
     this.callAPI();
+    alert('OKK');
   }
 
   async callAPI() {

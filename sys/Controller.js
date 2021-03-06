@@ -7,7 +7,12 @@ class Controller {
   constructor() {
     this.baseURL = 'http://localhost:4400';
     this.separator = '@@';
-    this.debug = true;
+    this.debug = {
+      reset: true,
+      rgClick: false,
+      rgHref: true,
+      viewLoader: false
+    };
 
     const opts = {
       encodeURI: true,
@@ -28,24 +33,124 @@ class Controller {
   }
 
 
+  /************* CONTROLLER STAGES ***********/
+
   /**
    * Reset the controller:
    * - remove all data-rg-... element lsiteners
+   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
+   * @returns {Promise<void>}
    */
   async reset(trx) {
-    if (this.debug) {
-      console.log('%c ------- reset -------', 'color:Green');
-      console.log('window.dataRgs.length::', window.dataRgs.length);
-      window.dataRgs.forEach(dataRg => console.log('resetted::', dataRg.attrName, dataRg.elem.innerHTML));
-    }
+    this.debugger('reset', '------- reset -------', 'green', '#90E4EB');
+
+    const promises = [];
     for (const dataRg of window.dataRgs) {
-      await dataRg.elem.removeEventListener('click', dataRg.handler);
+      dataRg.elem.removeEventListener('click', dataRg.handler);
+      this.debugger('reset', `resetted:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'green');
+      promises.push(Promise.resolve(true));
     }
-    await this.sleep(400);
+
+    await Promise.all(promises);
     window.dataRgs = [];
+    return true;
   }
 
 
+  /**
+   * Init the controller. This is where initaial controller functions starting.
+   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
+   * @returns {Promise<void>}
+   */
+  async init(trx) {}
+
+
+  /**
+   * Parse elements with data-rg-... attribute.
+   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
+   * @returns {Promise<void>}
+   */
+  async parse(trx) {
+    this.rgClick();
+    this.rgHref();
+  }
+
+
+
+
+  /*********** LISTENERS for ELEMENTS with the data-rg-... ATTRIBUTES  ***********/
+  /**
+   * Click listener.
+   * @returns {void}
+   */
+  rgClick() {
+    this.debugger('rgClick', '--------- rgClick ------', '#D27523', '#FFD8B6');
+    const attrName = 'data-rg-click';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const funcDef = elem.getAttribute(attrName).trim(); // string 'fja(x, y, ...arr)'
+      const matched = funcDef.match(/^(.+)\((.*)\)$/);
+      const funcName = matched[1]; // a methoc defined in the current controller
+      const funcParams = matched[2].split(',').map(p => p.trim());
+
+      const handler = event => {
+        event.preventDefault();
+        try {
+          this[funcName](...funcParams);
+        } catch (err) {
+          throw new Error(`Method ${funcName} is not defined in the current controller. (ERR::${err.message})`);
+        }
+      };
+
+      elem.addEventListener('click', handler);
+      window.dataRgs.push({attrName, elem, handler});
+      this.debugger('rgClick', `pushed:: ${window.dataRgs.length} -- ${attrName} -- ${funcName}`, '#D27523');
+
+    }
+
+  }
+
+
+  /**
+   * Href listeners and changing URLs (browser history states).
+   * @returns {void}
+   */
+  rgHref() {
+    this.debugger('rgHref', '--------- rgHref ------', 'navy', '#B6ECFF');
+    const attrName = 'data-rg-href';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+
+      const handler = event => {
+        event.preventDefault();
+
+        // push state and change browser's address bar
+        const href = elem.getAttribute('href').trim();
+        const state = { href };
+        const title = elem.getAttribute(attrName).trim();
+        const url = href; // new URL in the browser's address bar
+        window.history.pushState(state, title, url);
+
+        // fire event
+        this.eventEmitter.emit('pushstate', state);
+      };
+
+      elem.addEventListener('click', handler);
+      window.dataRgs.push({attrName, elem, handler});
+      this.debugger('rgClick', `pushed:: ${window.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
+
+    }
+  }
+
+
+
+
+  /********** VIEW LOADS ***********/
+  /*********************************/
   loadIncView(attrValue, viewPath, cssSel, act) {
     return this.viewLoader('data-rg-incview', attrValue, viewPath, cssSel, act);
   }
@@ -97,165 +202,14 @@ class Controller {
 
 
 
-  /**
-   * Init the controller.
-   * This is where initaial controller functions starting.
-   */
-  async init() {}
-
-
-  /**
-   * Parse elements with data-rg-... attribute.
-   * @param {Object} ctrl - current controller's instance
-   */
-  async parse(ctrl) {
-    await this.sleep(1300);
-    this.rgClick(ctrl);
-    this.rgHref();
-  }
-
-
-
-
-  /**
-   * Include HTML components with the data-rg-inc attribute.
-   * examples:
-   * <header data-rg-inc="/html/header.html">---header---</header>
-   * <header data-rg-inc="/html/header.html @@  @@ h2 > small">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ inner">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ prepend">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ append">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
-   * @param {Document|DocumentFragment|HTMLElement} domObj - the whole document or html string
-   * @returns {void}
-   */
-  async rgInc(domObj) {
-    this.debugger('\n--------- rgInc ------\n', domObj);
-    const attrName = 'data-rg-inc';
-    const elems = domObj.querySelectorAll(`[${attrName}]`);
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-      // extract attribute data
-      const attrValue = elem.getAttribute(attrName);
-      const path_act_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator);
-      const path = !!path_act_cssSel && !!path_act_cssSel.length ? '/views/inc/' + path_act_cssSel[0] : '';
-      const act = !!path_act_cssSel && path_act_cssSel.length >= 2 ? path_act_cssSel[1] : 'inner';
-      const cssSel = !!path_act_cssSel && path_act_cssSel.length === 3 ? path_act_cssSel[2] : '';
-      this.debugger('path_act_cssSel:: ', path, act, cssSel);
-      if (!path) { break; }
-
-      // get html file
-      const url = new URL(path, this.baseURL).toString(); // resolve the URL
-      const answer = await this.hc.askHTML(url, cssSel);
-      if (!answer.res.content | answer.status !== 200) { break; }
-
-      // convert answer's content from dom object to string
-      const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
-      const contentStr = this.dom2string(contentDOM);
-
-      // load contentStr in the element
-      const el = document.querySelector(`[${attrName}="${attrValue}"]`);
-      this.debugger('contentStr-act-el::', contentStr, act, el, '\n\n');
-      if (act === 'inner') {
-        el.innerHTML = contentStr;
-      } else if (act === 'outer') {
-        el.outerHTML = contentStr;
-      } else if (act === 'prepend') {
-        el.prepend(contentDOM);
-      } else if (act === 'append') {
-        el.append(contentDOM);
-      } else {
-        el.innerHTML = contentStr;
-      }
-
-      // continue to parse
-      if (/data-rg-inc/.test(contentStr)) {
-        this.rgInc(contentDOM);
-      }
-
-    }
-  }
-
-
-  /**
-   * Click listener
-   * @param {Object} ctrl - current controller's instance
-   * @returns {void}
-   */
-  rgClick(ctrl) {
-    // this.debugger('\n--------- rgClick ------');
-    const attrName = 'data-rg-click';
-    const elems = document.querySelectorAll(`[${attrName}]`);
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-      const funcDef = elem.getAttribute(attrName).trim(); // string 'fja(x, y, ...arr)'
-      const matched = funcDef.match(/^(.+)\((.*)\)$/);
-      const funcName = matched[1];
-      const funcParams = matched[2].split(',').map(p => p.trim());
-
-      const handler = event => {
-        event.preventDefault();
-        try {
-          ctrl[funcName](...funcParams);
-        } catch (err) {
-          throw new Error(`Method ${funcName} doesn't exist in the controller. (${err.message})`);
-        }
-      };
-
-      elem.addEventListener('click', handler);
-      window.dataRgs.push({attrName, elem, handler});
-      // this.debugger('pushed::', window.dataRgs.length, attrName, funcName);
-
-    }
-
-  }
-
-
-  /**
-   * Parse data-rg-href
-   * @returns {void}
-   */
-  rgHref() {
-    // this.debugger('\n--------- rgHref ------');
-    const attrName = 'data-rg-href';
-    const elems = document.querySelectorAll(`[${attrName}]`);
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-
-      const handler = event => {
-        event.preventDefault();
-
-        // push state and change browser's address bar
-        const href = elem.getAttribute('href').trim();
-        const state = { href };
-        const title = elem.getAttribute(attrName).trim();
-        const url = href; // new URL in the browser's address bar
-        window.history.pushState(state, title, url);
-
-        // fire event
-        this.eventEmitter.emit('pushstate', state);
-      };
-
-      elem.addEventListener('click', handler);
-      window.dataRgs.push({attrName, elem, handler});
-      // this.debugger('pushed::', window.dataRgs.length, attrName, elem.localName);
-
-    }
-  }
-
-
-
 
   /*********** MISC ************/
   /**
    * Debugger. Use it as this.debugger(var1, var2, var3)
    * @returns {void}
    */
-  debugger(...textParts) {
-    if (this.debug) { console.log(...textParts); }
+  debugger(tip, text, color, background) {
+    if (this.debug[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
   }
 
 
@@ -265,24 +219,6 @@ class Controller {
    */
   sleep(ms) {
     new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  /**
-   *
-   * @param {Convert DOM Object to String} dom - HTML dom object
-   */
-  dom2string(dom) {
-    let str = '';
-    if (dom.constructor.name === 'HTMLElement') {
-      str = dom.outerHTML;
-    } else if (dom.constructor.name === 'DocumentFragment') {
-      dom.childNodes.forEach(node => {
-        // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-        if (node.nodeType === 1) { str += node.outerHTML; }
-        else if (node.nodeType === 3){ str += node.data; }
-      });
-    }
-    return str;
   }
 
 

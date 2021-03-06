@@ -22,7 +22,7 @@ class Router {
     // controller methods
     const reset = ctrl.reset.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
-    const parse = ctrl.parse.bind(ctrl, ctrl);
+    const parse = ctrl.parse.bind(ctrl);
 
     this.regochRouter.def(route, reset, init, parse);
   }
@@ -39,7 +39,7 @@ class Router {
     // controller methods
     const reset = ctrl.reset.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
-    const parse = ctrl.parse.bind(ctrl, ctrl);
+    const parse = ctrl.parse.bind(ctrl);
 
     this.regochRouter.notfound(reset, init, parse);
   }
