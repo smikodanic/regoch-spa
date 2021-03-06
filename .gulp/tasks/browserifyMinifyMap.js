@@ -14,13 +14,14 @@ const sourcemaps = require('gulp-sourcemaps');
 module.exports = async () => {
   browserify('./sys/regochSPA.js')
     .bundle()
+    .on('error', (err) => {
+      console.log('Browserify Error::', err.message);
+    })
     .pipe(source('regochSPA.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(minify())
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./app/dist/js'))
-    .on('error', (err) => {
-      console.log(err.message);
-    });
+    .pipe(gulp.dest('./app/dist/js'));
+
 };
