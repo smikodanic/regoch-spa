@@ -364,7 +364,7 @@ class HTTPClient {
    * Notice that returned value is HTML DOM object.
    * @param {string} url - http://example.com/page.html
    * @param {string} cssSel - css selector: div>p.alert
-   * @returns {Promise<HTMLElement|DocumentFragment>}
+   * @returns {Promise<{dom:DocumentFragment|HTMLElement, str:string}>}
    */
   async askHTML(url, cssSel) {
     const answer = await this.askOnce(url);
@@ -372,17 +372,21 @@ class HTTPClient {
     const frag = range.createContextualFragment(answer.res.content);
 
     // take part of the HTML
-    let content;
-    if (!!cssSel) {
-      content = frag.querySelector(cssSel); // HTMLElement
+    let dom;
+    let str = '';
+    if (!cssSel) {
+      dom = frag; // DocumentFragment
+      dom.childNodes.forEach(node => {
+        // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+        if (node.nodeType === 1) { str += node.outerHTML; }
+        else if (node.nodeType === 3){ str += node.data; }
+      });
     } else {
-      content = frag; // DocumentFragment
+      dom = frag.querySelector(cssSel); // HTMLElement
+      str = dom.outerHTML;
     }
 
-    // console.log('content::', content.constructor, content);
-    // console.log(content.childNodes);
-
-    answer.res.content = content;
+    answer.res.content = {dom, str};
     return answer;
   }
 

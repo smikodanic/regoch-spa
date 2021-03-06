@@ -6,9 +6,18 @@ class IndexCtrl extends Controller {
 
   async init(trx) {
     console.log('\n+++ IndexCtrl initialised');
-    await this.loadView('home1', 'home1.html');
-    await this.loadView('home2', 'home2.html');
+
+    // include views
+    await this.loadIncView('header', 'inc/header.html', 'h2 > small', 'append');
+    await this.loadIncView('footer', 'inc/footer.html');
+    await this.loadIncView('footer2', 'inc/footer2.html', '', 'outer');
+    await this.loadIncView('footer3', 'inc/footer3.html', '', 'outer');
+
+    // route views
+    await this.loadRouteView('home1', 'home1.html');
+    await this.loadRouteView('home2', 'home2.html');
   }
+
 
   test() {
     console.log('This is my test.');

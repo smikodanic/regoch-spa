@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/assets/css/main.css">
   </head>
   <body>
-    <header data-rg-inc="header.html @@ append @@ h2 > small "> ---header--- </header>
+    <header data-rg-incview="header"> ---header--- </header>
     <main>
       This is <mark>main</mark>.
       <br><br>
@@ -17,10 +17,10 @@
       <br><a href="/page/2?n=22">Page 2 - /page/2?n=22 (reload app)</a>
       <br><a href="/bad/uri" data-rg-href>Bad URI</a>
 
-      <div data-rg-view="home1">--router--</div>
-      <div data-rg-view="home2">--router--</div>
+      <div data-rg-routeview="home1">--router1--</div>
+      <div data-rg-routeview="home2">--router2--</div>
     </main>
-    <footer data-rg-inc="footer.html">---footer---</footer>
+    <footer data-rg-incview="footer">---footer---</footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js?v=1.4" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="/js/regochSPA.js"></script>

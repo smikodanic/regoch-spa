@@ -32,7 +32,7 @@ class Controller {
    * Reset the controller:
    * - remove all data-rg-... element lsiteners
    */
-  async reset() {
+  async reset(trx) {
     if (this.debug) {
       console.log('%c ------- reset -------', 'color:Green');
       console.log('window.dataRgs.length::', window.dataRgs.length);
@@ -46,43 +46,55 @@ class Controller {
   }
 
 
+  loadIncView(attrValue, viewPath, cssSel, act) {
+    return this.viewLoader('data-rg-incview', attrValue, viewPath, cssSel, act);
+  }
+
+  loadRouteView(attrValue, viewPath) {
+    return this.viewLoader('data-rg-routeview', attrValue, viewPath, '', 'inner');
+  }
+
+
   /**
-   * Load router views.
+   * Load router views. View depends on routes.
    */
-  async loadView(viewName, path, cssSel) {
-    this.debugger('\n--------- loadView ------');
-    const attrName = 'data-rg-view';
-    const elems = document.querySelectorAll(`[${attrName}]`);
-    if (!elems.length || !path) { return; }
+  async viewLoader(attrName, attrValue, viewPath, cssSel, act) {
+    const attrSel = `[${attrName}="${attrValue}"]`;
 
-    for (const elem of elems) {
-      // extract attribute data
-      const attrValue = elem.getAttribute(attrName).trim();
-      const path2 = '/views/' + path;
-      this.debugger('attrValue:: ', attrValue, viewName);
+    // get HTML element
+    const elem = document.querySelector(attrSel);
+    this.debugger(`\n--------- viewLoader ${attrSel} ---------\n`);
+    this.debugger('elem::', elem);
+    if (!elem) { return; }
 
-      if (attrValue === viewName) {
-        // get html file
-        const url = new URL(path2, this.baseURL).toString(); // resolve the URL
-        const answer = await this.hc.askHTML(url, cssSel);
-        if (!answer.res.content | answer.status !== 200) { break; }
+    // get html content from the file
+    const path = `/views/${viewPath}`;
+    const url = new URL(path, this.baseURL).toString(); // resolve the URL
+    const answer = await this.hc.askHTML(url, cssSel);
+    const content = answer.res.content;
+    this.debugger('content::', content, '\n\n');
+    if (answer.status !== 200 || !content) { return; }
 
-        // convert answer's content from dom object to string
-        const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
-        const contentStr = this.dom2string(contentDOM);
-        this.debugger('contentDOM::', contentDOM.constructor.name, contentDOM);
-        this.debugger('contentStr::', contentStr, '\n\n');
+    // convert answer's content from dom object to string
+    const contentDOM = answer.res.content.dom; // DocumentFragment | HTMLElement|HTMLButtonElement...
+    const contentStr = answer.res.content.str; // string
 
-        // load contentStr into the document
-        const el = document.querySelector(`[${attrName}="${attrValue}"]`);
-        el.innerHTML = contentStr;
-
-        break;
-      }
-
+    // load content in the element
+    if (act === 'inner') {
+      elem.innerHTML = contentStr;
+    } else if (act === 'outer') {
+      elem.outerHTML = contentStr;
+    } else if (act === 'prepend') {
+      elem.prepend(contentDOM);
+    } else if (act === 'append') {
+      elem.append(contentDOM);
+    } else {
+      elem.innerHTML = contentStr;
     }
 
+    return {elem, contentDOM, contentStr, document};
   }
+
 
 
   /**
@@ -97,10 +109,11 @@ class Controller {
    * @param {Object} ctrl - current controller's instance
    */
   async parse(ctrl) {
-    await this.rgInc(document);
+    await this.sleep(1300);
     this.rgClick(ctrl);
     this.rgHref();
   }
+
 
 
 
@@ -117,7 +130,7 @@ class Controller {
    * @returns {void}
    */
   async rgInc(domObj) {
-    this.debugger('\n--------- rgInc ------');
+    this.debugger('\n--------- rgInc ------\n', domObj);
     const attrName = 'data-rg-inc';
     const elems = domObj.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -140,11 +153,10 @@ class Controller {
       // convert answer's content from dom object to string
       const contentDOM = answer.res.content; // DocumentFragment|HTMLElement
       const contentStr = this.dom2string(contentDOM);
-      this.debugger('contentDOM::', contentDOM.constructor.name, contentDOM);
-      this.debugger('contentStr::', contentStr, '\n\n');
 
-      // load contentStr into the document
+      // load contentStr in the element
       const el = document.querySelector(`[${attrName}="${attrValue}"]`);
+      this.debugger('contentStr-act-el::', contentStr, act, el, '\n\n');
       if (act === 'inner') {
         el.innerHTML = contentStr;
       } else if (act === 'outer') {
@@ -172,7 +184,7 @@ class Controller {
    * @returns {void}
    */
   rgClick(ctrl) {
-    this.debugger('\n--------- rgClick ------');
+    // this.debugger('\n--------- rgClick ------');
     const attrName = 'data-rg-click';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -194,7 +206,7 @@ class Controller {
 
       elem.addEventListener('click', handler);
       window.dataRgs.push({attrName, elem, handler});
-      this.debugger('pushed::', window.dataRgs.length, attrName, funcName);
+      // this.debugger('pushed::', window.dataRgs.length, attrName, funcName);
 
     }
 
@@ -206,7 +218,7 @@ class Controller {
    * @returns {void}
    */
   rgHref() {
-    this.debugger('\n--------- rgHref ------');
+    // this.debugger('\n--------- rgHref ------');
     const attrName = 'data-rg-href';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -229,7 +241,7 @@ class Controller {
 
       elem.addEventListener('click', handler);
       window.dataRgs.push({attrName, elem, handler});
-      this.debugger('pushed::', window.dataRgs.length, attrName, elem.localName);
+      // this.debugger('pushed::', window.dataRgs.length, attrName, elem.localName);
 
     }
   }
@@ -243,8 +255,7 @@ class Controller {
    * @returns {void}
    */
   debugger(...textParts) {
-    const text = textParts.join(' ');
-    if (this.debug) { console.log(text); }
+    if (this.debug) { console.log(...textParts); }
   }
 
 
