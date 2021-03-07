@@ -8,10 +8,11 @@ class Controller {
     this.baseURL = 'http://localhost:4400';
     this.separator = '@@';
     this.debug = {
-      destroy: true,
+      loadView: false,
       rgClick: false,
       rgHref: false,
-      viewLoader: false,
+      rgBind: true,
+      destroy: false
     };
 
     const opts = {
@@ -53,7 +54,8 @@ class Controller {
    * @returns {Promise<void>}
    */
   async init(trx) {
-    if (!!this.onInit) { this.onInit(trx, this.dataRgs); }
+    if (!!this.onInit) { await this.onInit(trx, this.dataRgs); }
+    this.rgBind();
   }
 
 
@@ -69,10 +71,12 @@ class Controller {
     this.debugger('destroy', '------- destroy -------', 'green', '#90E4EB');
 
     const promises = [];
+    let i = 1;
     for (const dataRg of this.dataRgs) {
       dataRg.elem.removeEventListener('click', dataRg.handler);
-      this.debugger('destroy', `destroyed:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'green');
+      this.debugger('destroy', `${i}. destroyed:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'green');
       promises.push(Promise.resolve(true));
+      i++;
     }
 
     await Promise.all(promises);
@@ -156,6 +160,49 @@ class Controller {
   }
 
 
+  rgBind() {
+    this.debugger('rgBind', '--------- rgBind ------', 'navy', '#B6ECFF');
+    const attrName = 'data-rg-bind';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute('data-rg-bind').trim();
+      const attrValSplited = attrVal.split('@@');
+
+
+      const prop = attrValSplited[0].trim(); // controller property name
+      const propSplitted = prop.split('.');
+      const prop1 = propSplitted[0];
+      let val = this[prop1]; // controller property value
+      let i = 0;
+      for (const prop of propSplitted) {
+        if (i !== 0) { val = val[prop]; }
+        i++;
+      }
+
+      this.debugger('rgBind', `${prop}:: ${val} , propSplitted:: ${propSplitted}`);
+
+
+      // load content in the element
+      const act = attrValSplited[1].trim();
+      if (act === 'inner') {
+        elem.innerHTML = val;
+      } else if (act === 'outer') {
+        elem.outerHTML = val;
+      } else if (act === 'prepend') {
+        elem.prepend(val + ' ');
+      } else if (act === 'append') {
+        elem.append(' ' + val);
+      } else {
+        elem.innerHTML = val;
+      }
+
+
+    }
+  }
+
+
 
 
   /********** LOADERS ***********/
@@ -168,8 +215,8 @@ class Controller {
 
     // get HTML element
     const elem = document.querySelector(attrSel);
-    this.debugger('viewLoader', `--------- viewLoader ${attrSel} ---------`, '#8B0892', '#EDA1F1');
-    if(this.debug.viewLoader) { console.log('elem::', elem); }
+    this.debugger('loadView', `--------- loadView ${attrSel} ---------`, '#8B0892', '#EDA1F1');
+    if(this.debug.loadView) { console.log('elem::', elem); }
     if (!elem || !viewPath) { return; }
 
     // get html content from the file
@@ -177,7 +224,7 @@ class Controller {
     const url = new URL(path, this.baseURL).toString(); // resolve the URL
     const answer = await this.hc.askHTML(url, cssSel);
     const content = answer.res.content;
-    if(this.debug.viewLoader) { console.log('content::', content, '\n\n'); }
+    if(this.debug.loadView) { console.log('content::', content, '\n\n'); }
     if (answer.status !== 200 || !content) { return; }
 
     // convert answer's content from dom object to string
