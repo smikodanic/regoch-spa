@@ -41,7 +41,7 @@ class Controller {
    * @returns {Promise<void>}
    */
   async render(trx) {
-    if (!!this.onRender) { this.onRender(trx); }
+    if (!!this.onRender) { await this.onRender(trx); }
     this.rgClick();
     this.rgHref();
   }
