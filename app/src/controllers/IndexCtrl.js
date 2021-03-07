@@ -4,19 +4,24 @@ const Controller = require('../../../sys/Controller');
 
 class IndexCtrl extends Controller {
 
-  async init(trx) {
-    console.log('\n+++ IndexCtrl initialised');
-
-    // include views
-    await this.loadIncView('header', 'inc/header.html', 'h2 > small', 'append');
-    await this.loadIncView('footer', 'inc/footer.html');
-    await this.loadIncView('footer2', 'inc/footer2.html', '', 'outer');
-    await this.loadIncView('footer3', 'inc/footer3.html', '', 'outer');
-
-    // route views
-    await this.loadRouteView('home1', 'home1.html');
-    await this.loadRouteView('home2', 'home2.html');
+  async onRender(trx) {
+    console.log('HOME render', trx);
+    await this.loadView('header', 'inc/header.html', 'h2 > small', 'append');
+    await this.loadView('footer', 'inc/footer.html');
+    await this.loadView('footer2', 'inc/footer2.html', '', 'outer');
+    await this.loadView('footer3', 'inc/footer3.html', '', 'outer');
+    await this.loadView('home1', 'home1.html');
+    await this.loadView('home2', 'home2.html');
   }
+
+  onInit(trx, dataRgs) {
+    console.log('HOME init', trx, dataRgs);
+  }
+
+  onDestroy(elem, event, dataRgs) {
+    console.log('HOME destroy', elem, event, dataRgs);
+  }
+
 
 
   test() {

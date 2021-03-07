@@ -20,11 +20,10 @@ class Router {
     if (!route) { throw new Error(`Route is not defined for ${Ctrl.name} controller.`); }
 
     // controller methods
-    const reset = ctrl.reset.bind(ctrl);
+    const render = ctrl.render.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
-    const parse = ctrl.parse.bind(ctrl);
 
-    this.regochRouter.def(route, reset, init, parse);
+    this.regochRouter.def(route, render, init);
   }
 
 
@@ -37,11 +36,10 @@ class Router {
     const ctrl = new Ctrl();
 
     // controller methods
-    const reset = ctrl.reset.bind(ctrl);
+    const render = ctrl.render.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
-    const parse = ctrl.parse.bind(ctrl);
 
-    this.regochRouter.notfound(reset, init, parse);
+    this.regochRouter.notfound(render, init);
   }
 
 

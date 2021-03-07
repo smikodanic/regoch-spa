@@ -8,10 +8,10 @@ class Controller {
     this.baseURL = 'http://localhost:4400';
     this.separator = '@@';
     this.debug = {
-      reset: true,
+      destroy: true,
       rgClick: false,
-      rgHref: true,
-      viewLoader: false
+      rgHref: false,
+      viewLoader: false,
     };
 
     const opts = {
@@ -29,50 +29,55 @@ class Controller {
     this.hc = new HTTPClient(opts); // hc means http client
     this.eventEmitter = new EventEmitter();
 
-    window.dataRgs = []; // {elem, handler} elements with data-rg-... attribute and its corresponding handlers
+    this.dataRgs = []; // {elem, handler} elements with data-rg-... attribute and its corresponding handlers
   }
 
 
-  /************* CONTROLLER STAGES ***********/
+  /************* CONTROLLER LIFECYCLE HOOKS ***********/
 
   /**
-   * Reset the controller:
-   * - remove all data-rg-... element lsiteners
+   * Render the HTML elements with data-rg-... attribute.
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
    * @returns {Promise<void>}
    */
-  async reset(trx) {
-    this.debugger('reset', '------- reset -------', 'green', '#90E4EB');
+  async render(trx) {
+    if (!!this.onRender) { this.onRender(trx); }
+    this.rgClick();
+    this.rgHref();
+  }
+
+
+  /**
+   * Init the controller. This is where controller logic starts.
+   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
+   * @returns {Promise<void>}
+   */
+  async init(trx) {
+    if (!!this.onInit) { this.onInit(trx, this.dataRgs); }
+  }
+
+
+  /**
+   * Destroy the controller:
+   * - remove all data-rg-... element lsiteners
+   * * @param {HTMLElement} elem - element with data-rg-href which caused controller destruction
+   * * @param {Event} event - event (usually click) which was applied on the elem and cause controller destruction
+   * @returns {Promise<void>}
+   */
+  async destroy(elem, event) {
+    if (!!this.onDestroy) { this.onDestroy(elem, event, this.dataRgs); }
+    this.debugger('destroy', '------- destroy -------', 'green', '#90E4EB');
 
     const promises = [];
-    for (const dataRg of window.dataRgs) {
+    for (const dataRg of this.dataRgs) {
       dataRg.elem.removeEventListener('click', dataRg.handler);
-      this.debugger('reset', `resetted:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'green');
+      this.debugger('destroy', `destroyed:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'green');
       promises.push(Promise.resolve(true));
     }
 
     await Promise.all(promises);
-    window.dataRgs = [];
-    return true;
-  }
+    this.dataRgs = [];
 
-
-  /**
-   * Init the controller. This is where initaial controller functions starting.
-   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
-   * @returns {Promise<void>}
-   */
-  async init(trx) {}
-
-
-  /**
-   * Parse elements with data-rg-... attribute.
-   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
-   * @returns {Promise<void>}
-   */
-  async parse(trx) {
-    this.rgClick();
-    this.rgHref();
   }
 
 
@@ -105,8 +110,8 @@ class Controller {
       };
 
       elem.addEventListener('click', handler);
-      window.dataRgs.push({attrName, elem, handler});
-      this.debugger('rgClick', `pushed:: ${window.dataRgs.length} -- ${attrName} -- ${funcName}`, '#D27523');
+      this.dataRgs.push({attrName, elem, handler});
+      this.debugger('rgClick', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, '#D27523');
 
     }
 
@@ -115,6 +120,7 @@ class Controller {
 
   /**
    * Href listeners and changing URLs (browser history states).
+   * NOTICE: Click on data-rg-href element will destroy the controller.
    * @returns {void}
    */
   rgHref() {
@@ -128,6 +134,9 @@ class Controller {
       const handler = event => {
         event.preventDefault();
 
+        // destroy the current controller
+        this.destroy(elem, event);
+
         // push state and change browser's address bar
         const href = elem.getAttribute('href').trim();
         const state = { href };
@@ -140,8 +149,8 @@ class Controller {
       };
 
       elem.addEventListener('click', handler);
-      window.dataRgs.push({attrName, elem, handler});
-      this.debugger('rgClick', `pushed:: ${window.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
+      this.dataRgs.push({attrName, elem, handler});
+      this.debugger('rgClick', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
 
     }
   }
@@ -149,35 +158,26 @@ class Controller {
 
 
 
-  /********** VIEW LOADS ***********/
-  /*********************************/
-  loadIncView(attrValue, viewPath, cssSel, act) {
-    return this.viewLoader('data-rg-incview', attrValue, viewPath, cssSel, act);
-  }
-
-  loadRouteView(attrValue, viewPath) {
-    return this.viewLoader('data-rg-routeview', attrValue, viewPath, '', 'inner');
-  }
-
-
+  /********** LOADERS ***********/
+  /******************************/
   /**
    * Load router views. View depends on routes.
    */
-  async viewLoader(attrName, attrValue, viewPath, cssSel, act) {
-    const attrSel = `[${attrName}="${attrValue}"]`;
+  async loadView(viewName, viewPath, cssSel, act) {
+    const attrSel = `[data-rg-view="${viewName}"]`;
 
     // get HTML element
     const elem = document.querySelector(attrSel);
-    this.debugger(`\n--------- viewLoader ${attrSel} ---------\n`);
-    this.debugger('elem::', elem);
-    if (!elem) { return; }
+    this.debugger('viewLoader', `--------- viewLoader ${attrSel} ---------`, '#8B0892', '#EDA1F1');
+    if(this.debug.viewLoader) { console.log('elem::', elem); }
+    if (!elem || !viewPath) { return; }
 
     // get html content from the file
     const path = `/views/${viewPath}`;
     const url = new URL(path, this.baseURL).toString(); // resolve the URL
     const answer = await this.hc.askHTML(url, cssSel);
     const content = answer.res.content;
-    this.debugger('content::', content, '\n\n');
+    if(this.debug.viewLoader) { console.log('content::', content, '\n\n'); }
     if (answer.status !== 200 || !content) { return; }
 
     // convert answer's content from dom object to string

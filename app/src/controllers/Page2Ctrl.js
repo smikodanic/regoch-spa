@@ -2,8 +2,8 @@ const Controller = require('../../../sys/Controller');
 
 class Page2Ctrl extends Controller {
 
-  init(trx) {
-    console.log('\n+++ Page2Ctrl initialised');
+  onInit(trx, dataRgs) {
+    console.log('PAGE2 init', trx, dataRgs);
     $('title').text('PAGE 2');
   }
 
