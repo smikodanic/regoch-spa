@@ -15,16 +15,23 @@
       <br><a href="/page1?q=something" data-rg-href>Page 1 - page1?q=something</a>
       <br><a href="/page/2?n=22" data-rg-href>Page 2 - /page/2?n=22</a>
       <br><a href="/page/2?n=22">Page 2 - /page/2?n=22 (reload app)</a>
+      <br><a href="/form">Form</a>
       <br><a href="/bad/uri" data-rg-href>Bad URI</a>
 
       <div data-rg-view="home1">--router1--</div>
       <div data-rg-view="home2">--router2--</div>
 
-      <p data-rg-bind="company @@ inner"></p>
-      <p data-rg-bind="company @@ outer"></p>
-      <p data-rg-bind="employer.name @@ append"><b>name:</b></p>
-      <p data-rg-bind="employer.age @@ prepend"><i>years old</i></p>
-      <p data-rg-bind="employer.parent.name @@ append"><i>parent name:</i></p>
+
+      <h4>BIND</h4>
+      <p data-rg-bind="mdl.company @@ inner"></p>
+      <!-- <p data-rg-bind="company @@ outer"></p> -->
+      <!-- <p data-rg-bind="employer.name @@ append"><b>name:</b></p> -->
+      <!-- <p data-rg-bind="employer.age @@ prepend"><i>years old</i></p> -->
+      <!-- <p data-rg-bind="employer.parent.name @@ append"><i>parent name:</i></p> -->
+
+
+
+
     </main>
     <footer data-rg-view="footer">---footer---</footer>
 

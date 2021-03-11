@@ -11,7 +11,8 @@ class Controller {
       loadView: false,
       rgClick: false,
       rgHref: false,
-      rgBind: true,
+      rgBind: false,
+      rgModel: true,
       destroy: false
     };
 
@@ -37,7 +38,7 @@ class Controller {
   /************* CONTROLLER LIFECYCLE HOOKS ***********/
 
   /**
-   * Render the HTML elements with data-rg-... attribute.
+   * Render the HTML elements with data-rg-... attribute. (see Router.js)
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
    * @returns {Promise<void>}
    */
@@ -49,7 +50,7 @@ class Controller {
 
 
   /**
-   * Init the controller. This is where controller logic starts.
+   * Init the controller. This is where controller logic starts. (see Router.js)
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
    * @returns {Promise<void>}
    */
@@ -60,7 +61,7 @@ class Controller {
 
 
   /**
-   * Destroy the controller:
+   * Destroy the controller when the data-rg-href element is clicked (see rgHref()).
    * - remove all data-rg-... element lsiteners
    * * @param {HTMLElement} elem - element with data-rg-href which caused controller destruction
    * * @param {Event} event - event (usually click) which was applied on the elem and cause controller destruction
@@ -167,22 +168,20 @@ class Controller {
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const attrVal = elem.getAttribute('data-rg-bind').trim();
+      const attrVal = elem.getAttribute(attrName).trim();
       const attrValSplited = attrVal.split('@@');
 
-
       const prop = attrValSplited[0].trim(); // controller property name
-      const propSplitted = prop.split('.');
-      const prop1 = propSplitted[0];
+      const propSplitted = prop.split('.'); // company.name
+      const prop1 = propSplitted[0]; // company
       let val = this[prop1]; // controller property value
       let i = 0;
       for (const prop of propSplitted) {
-        if (i !== 0) { val = val[prop]; }
+        if (i !== 0 && !!val) { val = val[prop]; }
         i++;
       }
 
       this.debugger('rgBind', `${prop}:: ${val} , propSplitted:: ${propSplitted}`);
-
 
       // load content in the element
       const act = attrValSplited[1].trim();
@@ -198,8 +197,31 @@ class Controller {
         elem.innerHTML = val;
       }
 
-
     }
+  }
+
+
+
+  rgModel() {
+    this.debugger('rgModel', '--------- rgModel ------', 'navy', '#B6ECFF');
+    const attrName = 'data-rg-model';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName).trim();
+
+      const handler = event => {
+        console.log(event);
+        console.log(elem.value);
+        this.company = elem.value;
+      };
+
+      elem.addEventListener('keyup', handler);
+      this.dataRgs.push({attrName, elem, handler});
+      this.debugger('rgModel', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
+    }
+
   }
 
 
@@ -248,9 +270,7 @@ class Controller {
   }
 
 
-
-
-  /*********** MISC ************/
+  /********** MISC *********/
   /**
    * Debugger. Use it as this.debugger(var1, var2, var3)
    * @returns {void}
@@ -258,16 +278,6 @@ class Controller {
   debugger(tip, text, color, background) {
     if (this.debug[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
   }
-
-
-  /**
-   * Delay
-   * @param {number} ms - miliseconds
-   */
-  sleep(ms) {
-    new Promise(resolve => setTimeout(resolve, ms));
-  }
-
 
 
 }

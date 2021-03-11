@@ -9,6 +9,8 @@ class IndexCtrl extends Controller {
     console.log('CONSTRUCT');
   }
 
+
+
   async onRender(trx) {
     console.log('HOME render', trx);
     await this.loadView('header', 'inc/header.html', 'h2 > small', 'append');
@@ -19,23 +21,14 @@ class IndexCtrl extends Controller {
     await this.loadView('home2', 'home2.html');
   }
 
+
+
   async onInit(trx, dataRgs) {
     console.log('HOME init', trx, dataRgs);
-
-    this.company = 'Sale Ltd';
-    this.employer = {
-      name: 'John Doe',
-      age: 23,
-      parent: {
-        name: 'Linda Doe',
-        age: 88
-      }
-    };
-
-    setTimeout(() => {
-      this.company = 'Dogs Ltd';
-    });
   }
+
+
+
 
   onDestroy(elem, event, dataRgs) {
     console.log('HOME destroy', elem, event, dataRgs);
