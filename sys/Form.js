@@ -56,25 +56,21 @@ class Form {
 
     let val;
     const valArr = [];
+    let i = 1;
     for (const elem of elems) {
       if (elem.type === 'checkbox') {
-        if (elem.checked) { valArr.push(elem.value); }
+        if (elem.checked) { valArr.push(elem.value); val = valArr; }
+        if (i === elems.length && !val) { val = []; }
       } else if (elem.type === 'radio') {
         if (elem.checked) { val = elem.value; }
       } else {
-        val = elem.value;
+        val = elem.value || undefined;
       }
+      i++;
     }
 
-    let controlVal;
-    if (!!val || val === '') {
-      controlVal = val;
-    } else {
-      controlVal = valArr;
-    }
-    this.debugger('getControl', `${controlVal}`, 'navy');
-
-    return controlVal;
+    this.debugger('getControl', `${val}`, 'navy');
+    return val;
   }
 
 

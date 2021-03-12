@@ -36,6 +36,10 @@ class FormCtrl extends Controller {
     await this.util.sleep(800);
     this.userForm.delControl('fullName');
   }
+  async getFullName() {
+    const fullName = this.userForm.getControl('fullName');
+    console.log('fullName::', fullName);
+  }
 
 
   async setAge() {
