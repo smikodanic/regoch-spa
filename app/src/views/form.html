@@ -10,6 +10,7 @@ full name: <input type="text" name="fullName">
 
 <br><br>age: <input name="age" type="number">
 <button data-rg-click="setAge()">set age</button>
+<button data-rg-click="getAge()">get age</button>
 
 <br><br>country: <select name="country">
   <option value="UK">UK</option>
@@ -18,6 +19,17 @@ full name: <input type="text" name="fullName">
   <option value="Kenya">Kenya</option>
 </select>
 <button data-rg-click="setCountry()">set country</button>
+<button data-rg-click="getCountry()">get country</button>
+
+<br><br>family: <br><select name="family" size="4" multiple>
+  <option value="Mary">Mary</option>
+  <option value="Ann" selected>Ann</option>
+  <option value="Betty">Betty</option>
+  <option value="Lara">Lara</option>
+</select>
+<button data-rg-click="setFamily()">set family</button>
+<button data-rg-click="getFamily()">get family</button>
+<button data-rg-click="emptyFamily()">empty family</button>
 
 <br><br>jobs:
 <br><input type="checkbox" name="jobs" value="IT"> IT

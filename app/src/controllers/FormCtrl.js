@@ -45,7 +45,10 @@ class FormCtrl extends Controller {
   async setAge() {
     this.userForm.setControl('age', 23);
   }
-
+  async getAge() {
+    const age = this.userForm.getControl('age');
+    console.log('age::', typeof age, age);
+  }
 
   async setCountry() {
     this.userForm.setControl('country', 'Croatia');
@@ -53,6 +56,21 @@ class FormCtrl extends Controller {
     this.userForm.setControl('country', 'UK');
     await this.util.sleep(1300);
     this.userForm.delControl('country');
+  }
+  async getCountry() {
+    const country = this.userForm.getControl('country');
+    console.log('country::', country);
+  }
+
+  async setFamily() {
+    this.userForm.setControl('family', ['Betty', 'Lara']);
+  }
+  async getFamily() {
+    const family = this.userForm.getControl('family');
+    console.log('family::', family);
+  }
+  async emptyFamily() {
+    this.userForm.delControl('family');
   }
 
   async setJobs() {

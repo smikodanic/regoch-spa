@@ -25,8 +25,8 @@ class Form {
    * @param {any|string[]} val - the value
    */
   setControl(key, val) {
-    this.debugger('setControl', '--------- setControl ------', 'navy', '#B6ECFF');
-    this.debugger('setControl', `${key} = ${val}`, 'navy');
+    this.debugger('setControl', '--------- setControl ------', 'green', '#A1F8DC');
+    this.debugger('setControl', `${key} = ${val}`, 'green');
     const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
@@ -34,6 +34,14 @@ class Form {
       if (elem.type === 'checkbox') {
         elem.checked = false;
         if (val.indexOf(elem.value) !== -1) { elem.checked = true; } // val is array
+      } else if (elem.type === 'select-multiple') {
+        const options = elem; // all options
+        for (const option of options) {
+          option.selected = false;
+          if (val.indexOf(option.value) !== -1) { // val is array
+            option.selected = true;
+          }
+        }
       } else if (elem.type === 'radio') {
         elem.checked = false;
         if (val === elem.value) { elem.checked = true; }
@@ -50,7 +58,7 @@ class Form {
    * @param {string} key - the value of the "name" HTML attribute
    */
   getControl(key) {
-    this.debugger('getControl', '--------- getControl ------', 'navy', '#B6ECFF');
+    this.debugger('getControl', '--------- getControl ------', 'green', '#A1F8DC');
     const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
@@ -61,15 +69,24 @@ class Form {
       if (elem.type === 'checkbox') {
         if (elem.checked) { valArr.push(elem.value); val = valArr; }
         if (i === elems.length && !val) { val = []; }
+      } else if (elem.type === 'select-multiple') {
+        const opts = elem.selectedOptions; // selected options
+        for (const opt of opts) {
+          valArr.push(opt.value);
+          val = valArr;
+        }
+        if (i === elems.length && !val) { val = []; }
       } else if (elem.type === 'radio') {
         if (elem.checked) { val = elem.value; }
+      } else if (elem.type === 'number') {
+        val = elem.valueAsNumber;
       } else {
-        val = elem.value || undefined;
+        val = elem.value;
       }
       i++;
     }
 
-    this.debugger('getControl', `${val}`, 'navy');
+    this.debugger('getControl', `${val}`, 'green');
     return val;
   }
 
@@ -79,14 +96,19 @@ class Form {
    * @param {string} key - the value of the "name" HTML attribute
    */
   delControl(key) {
-    this.debugger('delControl', '--------- delControl ------', 'navy', '#B6ECFF');
-    this.debugger('delControl', key, 'navy');
+    this.debugger('delControl', '--------- delControl ------', 'green', '#A1F8DC');
+    this.debugger('delControl', key, 'green');
     const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
     for (const elem of elems) {
       if (elem.type === 'checkbox') {
         elem.checked = false;
+      } else if (elem.type === 'select-multiple') {
+        const options = elem; // all options
+        for (const option of options) {
+          option.selected = false;
+        }
       } else if (elem.type === 'radio') {
         elem.checked = false;
       } else {
