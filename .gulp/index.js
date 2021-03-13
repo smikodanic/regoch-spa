@@ -7,6 +7,7 @@ const htmlMinify = require('./tasks/htmlMinify.js');
 // const browserify = require('./tasks/browserify.js');
 const browserifyMinifyMap = require('./tasks/browserifyMinifyMap.js');
 const scss = require('./tasks/scss.js');
+const compileViews = require('./tasks/compileViews.js');
 
 
 
@@ -18,6 +19,7 @@ task('rimraf', rimraf);
 task('htmlMinify', htmlMinify);
 task('browserifyMinifyMap', browserifyMinifyMap);
 task('scss', scss);
+task('compileViews', compileViews);
 
 
 /***** WATCHERS *****/
@@ -31,7 +33,7 @@ task('watcher', async () => {
 
   await watch([
     'app/src/**/*.html'
-  ], series('htmlMinify'));
+  ], series('htmlMinify', 'compileViews'));
 
   await watch([
     'app/src/**/*.scss'
@@ -46,7 +48,7 @@ task('watcher', async () => {
 
 /***** GULP COMPOUND TASKS *****/
 // first delete then create JS, HTML and CSS files in /app/dist/ directory
-task('build', series('rimraf', parallel('browserifyMinifyMap', 'htmlMinify', 'scss')));
+task('build', series('rimraf', parallel('browserifyMinifyMap', 'htmlMinify', 'compileViews', 'scss')));
 
 // defult gulp task
 task('default', parallel('watcher', 'build', 'serverStart'));

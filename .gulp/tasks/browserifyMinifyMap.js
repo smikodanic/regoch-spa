@@ -23,5 +23,4 @@ module.exports = async () => {
     .pipe(minify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./app/dist/js'));
-
 };
