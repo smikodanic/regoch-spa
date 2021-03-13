@@ -1,6 +1,6 @@
 const Controller = require('../../../sys/Controller');
 const Form = require('../../../sys/Form');
-const Util = require('../../../sys/Util');
+const util = require('../../../sys/util');
 
 
 
@@ -9,7 +9,6 @@ class FormCtrl extends Controller {
   constructor() {
     super();
     this.userForm = new Form('userF');
-    this.util = new Util();
   }
 
   async onRender(trx) {
@@ -26,14 +25,14 @@ class FormCtrl extends Controller {
   async setFullName() {
     this.userForm.setControl('fullName', 'John');
 
-    await this.util.sleep(1300);
+    await util.sleep(1300);
     this.userForm.setControl('fullName', 'Johnny');
 
-    await this.util.sleep(800);
+    await util.sleep(800);
     const fullName = this.userForm.getControl('fullName');
     console.log('fullName::', fullName);
 
-    await this.util.sleep(800);
+    await util.sleep(800);
     this.userForm.delControl('fullName');
   }
   async getFullName() {
@@ -52,9 +51,9 @@ class FormCtrl extends Controller {
 
   async setCountry() {
     this.userForm.setControl('country', 'Croatia');
-    await this.util.sleep(1300);
+    await util.sleep(1300);
     this.userForm.setControl('country', 'UK');
-    await this.util.sleep(1300);
+    await util.sleep(1300);
     this.userForm.delControl('country');
   }
   async getCountry() {

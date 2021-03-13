@@ -1,5 +1,6 @@
 const HTTPClient = require('../../../sys/HTTPClient');
 const Controller = require('../../../sys/Controller');
+const util = require('../../../sys/util');
 
 
 class IndexCtrl extends Controller {
@@ -25,6 +26,17 @@ class IndexCtrl extends Controller {
 
   async onInit(trx, dataRgs) {
     console.log('HOME init', trx, dataRgs);
+    this.product = {
+      name: {
+        x: 'Initial val'
+      }
+    };
+    this.rgPrint('product.name');
+
+    await util.sleep(1300);
+    this.product.name.x = 'Modified val';
+
+
   }
 
 

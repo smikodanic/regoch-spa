@@ -11,8 +11,8 @@ class Controller {
       loadView: false,
       rgClick: false,
       rgHref: false,
-      rgBind: false,
-      rgModel: true,
+      rgPrint: true,
+      rgSet: true,
       destroy: false
     };
 
@@ -56,7 +56,8 @@ class Controller {
    */
   async init(trx) {
     if (!!this.onInit) { await this.onInit(trx, this.dataRgs); }
-    this.rgBind();
+    this.rgSet();
+    this.rgPrint();
   }
 
 
@@ -75,6 +76,7 @@ class Controller {
     let i = 1;
     for (const dataRg of this.dataRgs) {
       dataRg.elem.removeEventListener('click', dataRg.handler);
+      dataRg.elem.removeEventListener('input', dataRg.handler);
       this.debugger('destroy', `${i}. destroyed:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'green');
       promises.push(Promise.resolve(true));
       i++;
@@ -161,34 +163,60 @@ class Controller {
   }
 
 
-  rgBind() {
-    this.debugger('rgBind', '--------- rgBind ------', 'navy', '#B6ECFF');
-    const attrName = 'data-rg-bind';
-    const elems = document.querySelectorAll(`[${attrName}]`);
+  /**
+   * data-rg-print = "<controller_property> [@@ <act>] [@@ <watch>]"
+   * Render the "data-rg-print" attribute. Print the controller's property to view.
+   * Examples:
+   * data-rg-print="product" - product is the controller property
+   * data-rg-print="product.name @@ outer"
+   * data-rg-print="product.name @@ sibling"
+   * @param {attrValProp} - part of the attribute value which relates to the controller property,
+   * for example product.name in the data-rg-print="product.name @@ inner". This speed up rendering because it's limited only to one element.
+   * @returns {void}
+   */
+  rgPrint(attrValProp) {
+    this.debugger('rgPrint', '--------- rgPrint ------', 'navy', '#B6ECFF');
+
+    // define attribute
+    let attrDef;
+    const attrName = 'data-rg-print';
+    if (!attrValProp) {
+      attrDef = attrName;
+    } else {
+      attrDef = `${attrName}^="${attrValProp}"`;
+    }
+
+    const elems = document.querySelectorAll(`[${attrDef}]`);
+    this.debugger('rgPrint', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName).trim();
+      const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split('@@');
 
       const prop = attrValSplited[0].trim(); // controller property name
       const propSplitted = prop.split('.'); // company.name
       const prop1 = propSplitted[0]; // company
-      let val = this[prop1]; // controller property value
+      let val = this[prop1] || ''; // controller property value
       let i = 0;
       for (const prop of propSplitted) {
         if (i !== 0 && !!val) { val = val[prop]; }
         i++;
       }
 
-      this.debugger('rgBind', `${prop}:: ${val} , propSplitted:: ${propSplitted}`);
+      this.debugger('rgPrint', `${prop}:: ${val} , propSplitted:: ${propSplitted}`);
 
       // load content in the element
-      const act = attrValSplited[1].trim();
+      let act = attrValSplited[1] || 'inner';
+      act = act.trim();
       if (act === 'inner') {
         elem.innerHTML = val;
       } else if (act === 'outer') {
         elem.outerHTML = val;
+      } else if (act === 'sibling') {
+        const textNode = document.createTextNode(val);
+        elem.nextSibling.remove();
+        elem.parentNode.insertBefore(textNode, elem.nextSibling);
       } else if (act === 'prepend') {
         elem.prepend(val + ' ');
       } else if (act === 'append') {
@@ -202,24 +230,50 @@ class Controller {
 
 
 
-  rgModel() {
-    this.debugger('rgModel', '--------- rgModel ------', 'navy', '#B6ECFF');
-    const attrName = 'data-rg-model';
+  /**
+   * data-rg-set = "<controller_property> [@@ <act>]"
+   * Render the "data-rg-set" attribute.
+   * Examples:
+   * data-rg-set="product" - product is the controller property
+   * data-rg-set="product.name"
+   * data-rg-set="product.name @@ controller" -> bind to controller's property (this is default)
+   * data-rg-set="product.name @@ view" -> bind to view directly via rgPrint
+   * @returns {void}
+   */
+  rgSet() {
+    this.debugger('rgSet', '--------- rgSet ------', 'navy', '#B6ECFF');
+    const attrName = 'data-rg-set';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName).trim();
+      const attrVal = elem.getAttribute(attrName);
+      const attrValSplited = attrVal.split('@@');
+
+      const bindTo = attrValSplited[1].trim() || 'controller'; // 'controller'|'view'
+
+      const prop = attrValSplited[0].trim(); // controller property name
+      const propSplitted = prop.split('.'); // company.name
+
+      this.debugger('rgSet', `bindTo:${bindTo} -- propSplitted:${propSplitted}`, 'navy');
 
       const handler = event => {
-        console.log(event);
-        console.log(elem.value);
-        this.company = elem.value;
+        // console.log(event);
+
+        let i = 1;
+        let obj = this;
+        for (const prop of propSplitted) {
+          if (i !== propSplitted.length) { obj[prop] = {}; obj = obj[prop]; }
+          else { obj[prop] = elem.value; }
+          i++;
+        }
+
+        if (bindTo === 'view') { this.rgPrint(); }
       };
 
-      elem.addEventListener('keyup', handler);
+      elem.addEventListener('input', handler);
       this.dataRgs.push({attrName, elem, handler});
-      this.debugger('rgModel', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
+      this.debugger('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- dataRgs.length: ${this.dataRgs.length}`, 'navy');
     }
 
   }

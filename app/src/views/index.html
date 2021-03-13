@@ -7,6 +7,7 @@
   </head>
   <body>
     <header data-rg-view="header"> ---header--- </header>
+
     <main>
       This is <mark>main</mark>.
       <br><br>
@@ -22,17 +23,18 @@
       <div data-rg-view="home2">--router2--</div>
 
 
-      <h4>BIND</h4>
-      <p data-rg-bind="mdl.company @@ inner"></p>
-      <!-- <p data-rg-bind="company @@ outer"></p> -->
-      <!-- <p data-rg-bind="employer.name @@ append"><b>name:</b></p> -->
-      <!-- <p data-rg-bind="employer.age @@ prepend"><i>years old</i></p> -->
-      <!-- <p data-rg-bind="employer.parent.name @@ append"><i>parent name:</i></p> -->
-
-
-
+      <h4>SET & PRINT</h4>
+      <input type="text" name="x" data-rg-set="product.name.x @@ view">
+      <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
+      <p data-rg-print="product.name.x"></p>
+      <!-- <p data-rg-print="product @@ inner"></p> -->
+      <!-- <p data-rg-print="product @@ sibling"></p> -->
+      <!-- <p data-rg-print="product @@ append"><b>name:</b></p> -->
+      <!-- <p data-rg-print="product.name @@ prepend"><i>years old</i></p> -->
+      <!-- <p data-rg-print="product.name @@ append"><i>parent name:</i></p> -->
 
     </main>
+
     <footer data-rg-view="footer">---footer---</footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js?v=1.4" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>

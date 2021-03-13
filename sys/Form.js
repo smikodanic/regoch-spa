@@ -38,9 +38,7 @@ class Form {
         const options = elem; // all options
         for (const option of options) {
           option.selected = false;
-          if (val.indexOf(option.value) !== -1) { // val is array
-            option.selected = true;
-          }
+          if (val.indexOf(option.value) !== -1) { option.selected = true; }  // val is array
         }
       } else if (elem.type === 'radio') {
         elem.checked = false;
