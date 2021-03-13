@@ -1,7 +1,6 @@
 class Util {
 
-  constructor(debug) {
-    this.debug = debug;
+  constructor() {
   }
 
 
@@ -16,4 +15,4 @@ class Util {
 }
 
 
-module.exports = Util;
+module.exports = new Util();
