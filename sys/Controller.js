@@ -192,7 +192,7 @@ class Controller {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split('@@');
+      const attrValSplited = attrVal.split(this.separator);
 
       const prop = attrValSplited[0].trim(); // controller property name
       const propSplitted = prop.split('.'); // company.name
@@ -232,7 +232,7 @@ class Controller {
 
   /**
    * data-rg-set = "<controller_property> [@@ <view>]"
-   * Render the "data-rg-set" attribute.
+   * Render the "data-rg-set" attribute. Sets the controller property.
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"
@@ -248,7 +248,7 @@ class Controller {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split('@@');
+      const attrValSplited = attrVal.split(this.separator);
 
       const bindTo = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
 
@@ -264,7 +264,7 @@ class Controller {
           else { obj[prop] = elem.value; }
           i++;
         }
-        if (bindTo === 'print') { this.rgPrint(); }
+        if (bindTo === 'print') { this.rgPrint(prop); }
       };
 
       elem.addEventListener('input', handler);

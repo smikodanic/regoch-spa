@@ -24,7 +24,7 @@
 
 
       <h4>SET & PRINT</h4>
-      <input type="text" name="x" data-rg-set="product.name.x @@ print">
+      product name: <input type="text" name="x" data-rg-set="product.name.x @@ print">
       <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
       <p data-rg-print="product.name.x"></p>
       <!-- <p data-rg-print="product @@ inner"></p> -->
@@ -32,6 +32,13 @@
       <!-- <p data-rg-print="product @@ append"><b>name:</b></p> -->
       <!-- <p data-rg-print="product.name @@ prepend"><i>years old</i></p> -->
       <!-- <p data-rg-print="product.name @@ append"><i>parent name:</i></p> -->
+
+      <br><br>
+      product colors: <input type="text" name="x" data-rg-set="product.colors.0 @@ print">
+      <p data-rg-print="product.colors"></p>
+      <p data-rg-print="product.colors.0"></p>
+      <p data-rg-print="product.colors.1"></p>
+      <p data-rg-print="product.colors.2"></p>
 
     </main>
 

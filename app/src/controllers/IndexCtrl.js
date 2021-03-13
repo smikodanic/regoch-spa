@@ -29,9 +29,10 @@ class IndexCtrl extends Controller {
     this.product = {
       name: {
         x: 'Initial val'
-      }
+      },
+      colors: ['red', 'green']
     };
-    this.rgPrint('product.name');
+    this.rgPrint('product.name.x');
 
     await util.sleep(1300);
     this.product.name.x = 'Modified val';
