@@ -204,7 +204,7 @@ class Controller {
         i++;
       }
 
-      this.debugger('rgPrint', `${prop}:: ${val} , propSplitted:: ${propSplitted}`);
+      this.debugger('rgPrint', `${prop}:: ${val} , propSplitted:: ${propSplitted}`, 'navy');
 
       // load content in the element
       let act = attrValSplited[1] || 'inner';
@@ -231,13 +231,13 @@ class Controller {
 
 
   /**
-   * data-rg-set = "<controller_property> [@@ <act>]"
+   * data-rg-set = "<controller_property> [@@ <view>]"
    * Render the "data-rg-set" attribute.
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"
    * data-rg-set="product.name @@ controller" -> bind to controller's property (this is default)
-   * data-rg-set="product.name @@ view" -> bind to view directly via rgPrint
+   * data-rg-set="product.name @@ print" -> bind to view directly via rgPrint
    * @returns {void}
    */
   rgSet() {
@@ -250,16 +250,13 @@ class Controller {
       const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split('@@');
 
-      const bindTo = attrValSplited[1].trim() || 'controller'; // 'controller'|'view'
+      const bindTo = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
 
       const prop = attrValSplited[0].trim(); // controller property name
       const propSplitted = prop.split('.'); // company.name
 
-      this.debugger('rgSet', `bindTo:${bindTo} -- propSplitted:${propSplitted}`, 'navy');
-
       const handler = event => {
         // console.log(event);
-
         let i = 1;
         let obj = this;
         for (const prop of propSplitted) {
@@ -267,8 +264,7 @@ class Controller {
           else { obj[prop] = elem.value; }
           i++;
         }
-
-        if (bindTo === 'view') { this.rgPrint(); }
+        if (bindTo === 'print') { this.rgPrint(); }
       };
 
       elem.addEventListener('input', handler);
