@@ -26,7 +26,7 @@ banner.join();
 // compile scss to css files and
 // create .map files foer easier debugging of scss files
 const compile = async () => {
-  gulp.src('app/src/assets/scss/main.scss')
+  gulp.src('app/src/assets/scss/app.scss')
     .pipe(sourcemaps.init())
     // .pipe(sass({outputStyle: 'compressed'}))
     .pipe(sass())

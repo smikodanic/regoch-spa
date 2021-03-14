@@ -11,14 +11,26 @@ const minify = require('gulp-minify');
 const sourcemaps = require('gulp-sourcemaps');
 
 
+// header - banner
+const header = require('gulp-header');
+const pkg = require('../../package.json');
+const banner = ['/*!\n',
+  ' * <%= pkg.title %> v<%= pkg.version %> (<%= pkg.homepage %>)\n',
+  ' * Copyright 2014-' + (new Date()).getFullYear(), ' <%= pkg.author %>\n',
+  ' * Licensed under <%= pkg.license %> \n',
+  ' */\n\n'];
+banner.join();
+
+
 module.exports = async () => {
-  browserify('./sys/regochSPA.js')
+  browserify('./app/src/app.js')
     .bundle()
     .on('error', (err) => {
       console.log('Browserify Error::', err.message);
     })
-    .pipe(source('regochSPA.js'))
+    .pipe(source('app.js'))
     .pipe(buffer())
+    .pipe(header(banner, {pkg: pkg}))
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(minify())
     .pipe(sourcemaps.write('./'))
