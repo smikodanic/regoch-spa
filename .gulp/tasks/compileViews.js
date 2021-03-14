@@ -3,7 +3,7 @@
  */
 const fse = require('fs-extra');
 const path = require('path');
-const { minify } = require('html-minifier');
+const { minify } = require('html-minifier'); // https://github.com/kangax/html-minifier
 const regochJson = require('../../regoch.json');
 
 module.exports = async () => {
