@@ -14,12 +14,12 @@ class IndexCtrl extends Controller {
 
   async onRender(trx) {
     console.log('HOME render', trx);
-    await this.loadView('header', 'inc/header.html', 'h2 > small', 'append');
-    await this.loadView('footer', 'inc/footer.html');
-    await this.loadView('footer2', 'inc/footer2.html', '', 'outer');
-    await this.loadView('footer3', 'inc/footer3.html', '', 'outer');
-    await this.loadView('home1', 'home1.html');
-    await this.loadView('home2', 'home2.html');
+    await this.load.view('header', 'inc/header.html', 'h2 > small', 'sibling');
+    await this.load.view('footer', 'inc/footer.html');
+    await this.load.view('footer2', 'inc/footer2.html', '', 'outer');
+    await this.load.view('footer3', 'inc/footer3.html', '', 'outer');
+    await this.load.view('home1', 'home1.html');
+    await this.load.view('home2', 'home2.html');
   }
 
 

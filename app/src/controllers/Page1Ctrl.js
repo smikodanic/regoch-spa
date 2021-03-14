@@ -7,10 +7,10 @@ class Page1Ctrl extends Controller {
     $('title').text('PAGE 1');
 
     // views
-    await this.loadView('header', 'inc/header.html', 'h2 > small', 'append');
-    await this.loadView('footer', 'inc/footer3.html');
-    await this.loadView('home1', 'page1.html', 'h1');
-    await this.loadView('home2', '');
+    await this.load.view('header', 'inc/header.html', 'h2 > small', 'append');
+    await this.load.view('footer', 'inc/footer3.html');
+    await this.load.view('home1', 'page1.html', 'h1');
+    await this.load.view('home2', '');
   }
 
   onInit(trx, dataRgs) {

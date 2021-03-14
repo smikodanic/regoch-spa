@@ -12,7 +12,7 @@ class FormCtrl extends Controller {
   }
 
   async onRender(trx) {
-    await this.loadView('home1', 'form.html');
+    await this.load.view('home1', 'form.html');
   }
 
 
