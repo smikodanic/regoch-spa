@@ -1,5 +1,5 @@
-const Router = require('../../../sys/Router');
-const router = new Router();
+const router = require('../../../sys').router;
+
 
 
 // controllers

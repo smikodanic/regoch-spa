@@ -25,6 +25,7 @@ task('compileViews', compileViews);
 /***** WATCHERS *****/
 task('watcher', async () => {
   await watch([
+    'app/src/app.js',
     'app/src/controllers/**/*.js',
     'app/src/assets/js/**/*.js',
     'sys/**/*.js',

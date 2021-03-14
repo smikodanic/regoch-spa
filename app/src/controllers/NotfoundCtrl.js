@@ -1,4 +1,4 @@
-const Controller = require('../../../sys/Controller');
+const Controller = require('../../../sys').Controller;
 
 class NotfoundCtrl extends Controller {
 

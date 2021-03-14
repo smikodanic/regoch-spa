@@ -1,5 +1,4 @@
 const Parse = require('./Parse');
-const Load = require('./Load');
 
 
 
@@ -7,12 +6,10 @@ class Controller extends Parse {
 
   constructor() {
     super();
-    this.load = new Load();
   }
 
 
   /************* CONTROLLER LIFECYCLE HOOKS ***********/
-
   /**
    * Render the HTML elements with data-rg-... attribute. (see Router.js)
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
@@ -46,6 +43,22 @@ class Controller extends Parse {
    */
   async destroy(elem, event) {
     if (!!this.onDestroy) { this.onDestroy(elem, event, this.dataRgs); }
+  }
+
+
+  /********** MISC **********/
+  isHtmlLoaded() {
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('HTML document is loaded.');
+      console.log(document.readyState); // loading, interactive, complete
+    });
+  }
+
+  isLoaded() {
+    window.onload = () => {
+      console.log('HTML document and CSS, JS, images and other resources are loaded.');
+      console.log(document.readyState);
+    };
   }
 
 

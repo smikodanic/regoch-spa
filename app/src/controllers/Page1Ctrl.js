@@ -1,6 +1,13 @@
-const Controller = require('../../../sys/Controller');
+const sys = require('../../../sys');
+const Controller = sys.Controller;
+const Load = sys.Load;
+const appconf = require('../config/appconf');
 
 class Page1Ctrl extends Controller {
+  constructor() {
+    super();
+    this.load = new Load(appconf.baseURL, appconf.HTTPCLient);
+  }
 
   async onRender(trx) {
     console.log('PAGE1 render', trx);

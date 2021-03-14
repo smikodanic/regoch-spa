@@ -1,13 +1,18 @@
-const HTTPClient = require('../../../sys/HTTPClient');
-const Controller = require('../../../sys/Controller');
-const util = require('../../../sys/util');
+const sys = require('../../../sys');
+const HTTPClient = sys.HTTPCLient;
+const Controller = sys.Controller;
+const Load = sys.Load;
+const Util = sys.Util;
+const appconf = require('../config/appconf');
 
 
 class IndexCtrl extends Controller {
 
   constructor() {
     super();
-    console.log('CONSTRUCT');
+    console.log('HOME constructor');
+    this.load = new Load(appconf.baseURL, appconf.HTTPCLient);
+    this.util = new Util();
   }
 
 
@@ -34,7 +39,7 @@ class IndexCtrl extends Controller {
     };
     this.rgPrint('product.name.x');
 
-    await util.sleep(1300);
+    await this.util.sleep(1300);
     this.product.name.x = 'Modified val';
 
 

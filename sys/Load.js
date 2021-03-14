@@ -1,27 +1,18 @@
 const HTTPClient = require('./HTTPClient');
-const util = require('./util');
+const Util = require('./Util');
 const viewsCompiled = require('../app/dist/views/compiled.json');
 
 
 
 class Load {
 
-  constructor() {
-    this.baseURL = 'http://localhost:4400';
-
-    const opts = {
-      encodeURI: true,
-      timeout: 10000,
-      retry: 5,
-      retryDelay: 1300,
-      maxRedirects: 0,
-      headers: {
-        'authorization': '',
-        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-        'content-type': 'text/html; charset=UTF-8'
-      }
+  constructor(baseURL, HTTPClientOpts) {
+    this.baseURL = baseURL;
+    this.hc = new HTTPClient(HTTPClientOpts); // hc means http client
+    this.debug = {
+      loadView: true
     };
-    this.hc = new HTTPClient(opts); // hc means http client
+    this.util = new Util('@@', this.debug);
   }
 
 
@@ -38,8 +29,8 @@ class Load {
 
     // get HTML element
     const elem = document.querySelector(attrSel);
-    util.debugger('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
-    if(util.debug.loadView) { console.log('elem::', elem); }
+    this.util.debugger('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
+    if(this.util.loadView) { console.log('elem::', elem); }
     if (!elem || !viewPath) { return; }
 
 
@@ -58,7 +49,7 @@ class Load {
         contentDOM = doc.querySelector(cssSel); // HTMLElement
       }
 
-      util.debugger('loadView', '--from compiled JSON', '#8B0892');
+      this.util.debugger('loadView', '--from compiled JSON', '#8B0892');
 
     } else { // HTML content by requesting the server
       const path = `/views/${viewPath}`;
@@ -71,12 +62,12 @@ class Load {
       contentStr = answer.res.content.str; // string
       contentDOM = answer.res.content.dom; // DocumentFragment | HTMLElement|HTMLButtonElement...
 
-      util.debugger('loadView', '--from server', '#8B0892');
+      this.util.debugger('loadView', '--from server', '#8B0892');
     }
 
 
-    if(util.debug.loadView) { console.log('contentStr::', contentStr); }
-    if(util.debug.loadView) { console.log('contentDOM::', contentDOM); }
+    if(this.util.loadView) { console.log('contentStr::', contentStr); }
+    if(this.util.loadView) { console.log('contentDOM::', contentDOM); }
 
 
     // load content in the element
