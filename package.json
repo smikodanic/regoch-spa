@@ -13,7 +13,7 @@
     "javascript framework",
     "regoch"
   ],
-  "main": "",
+  "main": "./sys/index.js",
   "scripts": {
     "inst": "rm -rf node_modules && npm install",
     "dev": "gulp default"

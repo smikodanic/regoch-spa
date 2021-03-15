@@ -1,6 +1,5 @@
-const EventEmitter = require('./EventEmitter');
-const Util = require('./Util');
-
+const eventEmitter = require('./eventEmitter');
+const debug = require('./debug');
 
 
 
@@ -10,16 +9,8 @@ const Util = require('./Util');
 class Parse {
 
   constructor() {
-    this.eventEmitter = new EventEmitter();
     this.dataRgs = []; // [{attrName, elem, handler}] -- attribute name, element with the data-rg-... attribute and its corresponding handler
-    this.debug = {
-      rgKILL: false,
-      rgHref: false,
-      rgClick: false,
-      rgPrint: false,
-      rgSet: false
-    };
-    this.util = new Util('@@', this.debug);
+    this.separator = '@@';
   }
 
 
@@ -28,14 +19,14 @@ class Parse {
    * Remove all listeners (click, input, ...) from the elements with the "data-rg-..." attribute
    */
   async rgKILL() {
-    this.util.debugger('rgKILL', '------- rgKILL -------', 'navy', '#B6ECFF');
+    debug('rgKILL', '------- rgKILL -------', 'navy', '#B6ECFF');
 
     const promises = [];
     let i = 1;
     for (const dataRg of this.dataRgs) {
       dataRg.elem.removeEventListener('click', dataRg.handler);
       dataRg.elem.removeEventListener('input', dataRg.handler);
-      this.util.debugger('rgKILL', `${i}. killed:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'navy');
+      debug('rgKILL', `${i}. killed:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'navy');
       promises.push(Promise.resolve(true));
       i++;
     }
@@ -54,7 +45,7 @@ class Parse {
    * @returns {void}
    */
   rgHref() {
-    this.util.debugger('rgHref', '--------- rgHref ------', 'navy', '#B6ECFF');
+    debug('rgHref', '--------- rgHref ------', 'navy', '#B6ECFF');
     const attrName = 'data-rg-href';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -76,12 +67,12 @@ class Parse {
         window.history.pushState(state, title, url);
 
         // fire event and test routes
-        this.eventEmitter.emit('pushstate', state);
+        eventEmitter.emit('pushstate', state);
       };
 
       elem.addEventListener('click', handler);
       this.dataRgs.push({attrName, elem, handler});
-      this.util.debugger('rgHref', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
+      debug('rgHref', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
 
     }
   }
@@ -95,7 +86,7 @@ class Parse {
    * @returns {void}
    */
   rgClick() {
-    this.util.debugger('rgClick', '--------- rgClick ------', '#D27523', '#FFD8B6');
+    debug('rgClick', '--------- rgClick ------', '#D27523', '#FFD8B6');
     const attrName = 'data-rg-click';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -117,7 +108,7 @@ class Parse {
 
       elem.addEventListener('click', handler);
       this.dataRgs.push({attrName, elem, handler});
-      this.util.debugger('rgClick', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, '#D27523');
+      debug('rgClick', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, '#D27523');
     }
 
   }
@@ -137,7 +128,7 @@ class Parse {
    * @returns {void}
    */
   rgPrint(attrValProp) {
-    this.util.debugger('rgPrint', '--------- rgPrint ------', 'navy', '#B6ECFF');
+    debug('rgPrint', '--------- rgPrint ------', 'navy', '#B6ECFF');
 
     // define attribute
     let attrDef;
@@ -149,12 +140,12 @@ class Parse {
     }
 
     const elems = document.querySelectorAll(`[${attrDef}]`);
-    this.util.debugger('rgPrint', `found elements:: ${elems.length}`, 'navy');
+    debug('rgPrint', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.util.separator);
+      const attrValSplited = attrVal.split(this.separator);
 
       const prop = attrValSplited[0].trim(); // controller property name
       const propSplitted = prop.split('.'); // company.name
@@ -166,7 +157,7 @@ class Parse {
         i++;
       }
 
-      this.util.debugger('rgPrint', `${prop}:: ${val} , propSplitted:: ${propSplitted}`, 'navy');
+      debug('rgPrint', `${prop}:: ${val} , propSplitted:: ${propSplitted}`, 'navy');
 
       // load content in the element
       let act = attrValSplited[1] || 'inner';
@@ -203,14 +194,14 @@ class Parse {
    * @returns {void}
    */
   rgSet() {
-    this.util.debugger('rgSet', '--------- rgSet ------', 'navy', '#B6ECFF');
+    debug('rgSet', '--------- rgSet ------', 'navy', '#B6ECFF');
     const attrName = 'data-rg-set';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.util.separator);
+      const attrValSplited = attrVal.split(this.separator);
 
       const bindTo = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
 
@@ -231,7 +222,7 @@ class Parse {
 
       elem.addEventListener('input', handler);
       this.dataRgs.push({attrName, elem, handler});
-      this.util.debugger('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- dataRgs.length: ${this.dataRgs.length}`, 'navy');
+      debug('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- dataRgs.length: ${this.dataRgs.length}`, 'navy');
     }
 
   }

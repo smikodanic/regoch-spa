@@ -1,19 +1,14 @@
-const sys = require('../../../sys');
-const Controller = sys.Controller;
-const Form = sys.Form;
-const Load = sys.Load;
-const Util = sys.Util;
-const appconf = require('../config/appconf');
+const { Controller, Form, Load, Util } = require('../../../sys');
 
 
 
 class FormCtrl extends Controller {
 
-  constructor() {
+  constructor(app) {
     super();
-    this.load = new Load(appconf.baseURL, appconf.HTTPCLient);
-    this.userForm = new Form('userF');
-    this.util = new Util();
+    this.load = app.sys.load;
+    this.util = app.sys.util;
+    this.userForm = new app.sys.Form('userF');
   }
 
   async onRender(trx) {

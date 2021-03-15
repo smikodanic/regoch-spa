@@ -53,4 +53,4 @@ class EventEmitter {
 }
 
 
-module.exports = EventEmitter;
+module.exports = new EventEmitter();

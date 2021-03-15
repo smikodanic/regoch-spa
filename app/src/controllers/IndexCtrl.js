@@ -1,18 +1,14 @@
-const sys = require('../../../sys');
-const HTTPClient = sys.HTTPCLient;
-const Controller = sys.Controller;
-const Load = sys.Load;
-const Util = sys.Util;
-const appconf = require('../config/appconf');
+const { Controller } = require('../../../sys');
 
 
 class IndexCtrl extends Controller {
 
-  constructor() {
+  constructor(app) {
     super();
     console.log('HOME constructor');
-    this.load = new Load(appconf.baseURL, appconf.HTTPCLient);
-    this.util = new Util();
+    this.load = app.sys.load;
+    this.util = app.sys.util;
+    this.httpClient = app.sys.httpClient; // or new app.sys.HTTPClient()
   }
 
 
@@ -79,8 +75,7 @@ class IndexCtrl extends Controller {
         'content-type': 'text/html; charset=UTF-8'
       }
     };
-    const hc = new HTTPClient(opts); // hc means http client
-    const answer = await hc.askOnce('api.dex8.com');
+    const answer = await this.httpClient.askOnce('api.dex8.com');
 
     // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/todos/1', 'GET');
     // const answer = await hc.askJSON('https://jsonplaceholder.typicode.com/posts?userId=1', 'GET');

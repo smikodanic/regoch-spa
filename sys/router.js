@@ -1,4 +1,5 @@
 const RegochRouter = require('regoch-router');
+const eventEmitter = require('./eventEmitter');
 
 
 
@@ -12,12 +13,11 @@ class Router {
   /**
    * Define route
    * @param {string} route - route, for example: '/page1.html'
-   * @param {Class} Ctrl - route controller class
+   * @param {object} Ctrl - route controller instance
    * @returns {void}
    */
-  when(route, Ctrl) {
-    const ctrl = new Ctrl();
-    if (!route) { throw new Error(`Route is not defined for ${Ctrl.name} controller.`); }
+  when(route, ctrl) {
+    if (!route) { throw new Error(`Route is not defined for ${ctrl.constructor.name} controller.`); }
 
     // controller methods
     const render = ctrl.render.bind(ctrl);
@@ -29,12 +29,10 @@ class Router {
 
   /**
    * Define 404 not found route
-   * @param {Class} Ctrl - route controller class
+   * @param {object} ctrl - route controller instance
    * @returns {void}
    */
-  notFound (Ctrl) {
-    const ctrl = new Ctrl();
-
+  notFound(ctrl) {
     // controller methods
     const render = ctrl.render.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
@@ -52,7 +50,21 @@ class Router {
     this.regochRouter.trx = { uri };
     this.regochRouter.exe()
       // .then(trx => console.log('Route executed trx:: ', trx))
-      .catch(err => console.log('ERRrouter:: ', err));
+      .catch(err => console.error('ERRrouter:: ', err));
+  }
+
+
+  use() {
+    // test URI against routes when browser's Reload button is clicked
+    const uri = window.location.pathname + window.location.search; // /page1.html?q=12
+    this.testRoutes(uri);
+
+    // test URI against routes when element with data-rg-hrf attribute is clicked
+    eventEmitter.on('pushstate', event => {
+      const uri = window.location.pathname + window.location.search; // browser address bar URL
+      // console.log(uri, event.detail.href);
+      this.testRoutes(uri);
+    });
   }
 
 
@@ -63,4 +75,4 @@ class Router {
 
 
 
-module.exports = Router;
+module.exports = new Router();

@@ -1,18 +1,13 @@
-const HTTPClient = require('./HTTPClient');
-const Util = require('./Util');
 const viewsCompiled = require('../app/dist/views/compiled.json');
+const debug = require('./debug');
 
 
 
 class Load {
 
-  constructor(baseURL, HTTPClientOpts) {
+  constructor(baseURL, httpClient) {
     this.baseURL = baseURL;
-    this.hc = new HTTPClient(HTTPClientOpts); // hc means http client
-    this.debug = {
-      loadView: true
-    };
-    this.util = new Util('@@', this.debug);
+    this.hc = httpClient;
   }
 
 
@@ -29,8 +24,8 @@ class Load {
 
     // get HTML element
     const elem = document.querySelector(attrSel);
-    this.util.debugger('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
-    if(this.util.loadView) { console.log('elem::', elem); }
+    debug('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
+    if(debug().loadView) { console.log('elem::', elem); }
     if (!elem || !viewPath) { return; }
 
 
@@ -49,7 +44,7 @@ class Load {
         contentDOM = doc.querySelector(cssSel); // HTMLElement
       }
 
-      this.util.debugger('loadView', '--from compiled JSON', '#8B0892');
+      debug('loadView', '--from compiled JSON', '#8B0892');
 
     } else { // HTML content by requesting the server
       const path = `/views/${viewPath}`;
@@ -62,12 +57,12 @@ class Load {
       contentStr = answer.res.content.str; // string
       contentDOM = answer.res.content.dom; // DocumentFragment | HTMLElement|HTMLButtonElement...
 
-      this.util.debugger('loadView', '--from server', '#8B0892');
+      debug('loadView', '--from server', '#8B0892');
     }
 
 
-    if(this.util.loadView) { console.log('contentStr::', contentStr); }
-    if(this.util.loadView) { console.log('contentDOM::', contentDOM); }
+    if(debug().loadView) { console.log('contentStr::', contentStr); }
+    if(debug().loadView) { console.log('contentDOM::', contentDOM); }
 
 
     // load content in the element
@@ -96,9 +91,6 @@ class Load {
 
     return {elem, contentStr, contentDOM, document};
   }
-
-
-
 
 
 

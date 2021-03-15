@@ -1,7 +1,6 @@
 const Parse = require('./Parse');
 
 
-
 class Controller extends Parse {
 
   constructor() {

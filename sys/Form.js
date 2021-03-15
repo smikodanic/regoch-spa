@@ -2,20 +2,14 @@
  * HTML Form Library
  * According to W3C Standard https://html.spec.whatwg.org/multipage/forms.html
  */
+const debug = require('./debug');
+
 
 
 class Form {
 
-  /**
-   * @param {string} formName - name of the form (data-rg-form value)
-   */
   constructor(formName) {
     this.formName = formName;
-    this.debug = {
-      setControl: true,
-      getControl: true,
-      delControl: true
-    };
   }
 
 
@@ -25,8 +19,8 @@ class Form {
    * @param {any|string[]} val - the value
    */
   setControl(key, val) {
-    this.debugger('setControl', '--------- setControl ------', 'green', '#A1F8DC');
-    this.debugger('setControl', `${key} = ${val}`, 'green');
+    debug('setControl', '--------- setControl ------', 'green', '#A1F8DC');
+    debug('setControl', `${key} = ${val}`, 'green');
     const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
@@ -56,7 +50,7 @@ class Form {
    * @param {string} key - the value of the "name" HTML attribute
    */
   getControl(key) {
-    this.debugger('getControl', '--------- getControl ------', 'green', '#A1F8DC');
+    debug('getControl', '--------- getControl ------', 'green', '#A1F8DC');
     const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
@@ -84,7 +78,7 @@ class Form {
       i++;
     }
 
-    this.debugger('getControl', `${val}`, 'green');
+    debug('getControl', `${val}`, 'green');
     return val;
   }
 
@@ -94,8 +88,8 @@ class Form {
    * @param {string} key - the value of the "name" HTML attribute
    */
   delControl(key) {
-    this.debugger('delControl', '--------- delControl ------', 'green', '#A1F8DC');
-    this.debugger('delControl', key, 'green');
+    debug('delControl', '--------- delControl ------', 'green', '#A1F8DC');
+    debug('delControl', key, 'green');
     const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
@@ -120,7 +114,7 @@ class Form {
 
   /********** MISC *********/
   /**
-   * Debugger. Use it as this.debugger(var1, var2, var3)
+   * Debugger. Use it as debug(var1, var2, var3)
    * @returns {void}
    */
   debugger(tip, text, color, background) {

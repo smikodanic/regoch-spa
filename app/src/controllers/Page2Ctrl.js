@@ -1,12 +1,10 @@
-const sys = require('../../../sys');
-const Controller = sys.Controller;
-const Load = sys.Load;
-const appconf = require('../config/appconf');
+const { Controller, Load } = require('../../../sys');
+
 
 class Page2Ctrl extends Controller {
-  constructor() {
+  constructor(app) {
     super();
-    this.load = new Load(appconf.baseURL, appconf.HTTPCLient);
+    this.load = app.sys.load;
   }
 
   onInit(trx, dataRgs) {
