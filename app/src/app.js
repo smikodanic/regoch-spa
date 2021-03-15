@@ -6,11 +6,7 @@ const httpClientCnf = require('./conf/httpClientCnf');
 
 
 // controllers
-const IndexCtrl = require('./controllers/IndexCtrl');
-const Page1Ctrl = require('./controllers/Page1Ctrl');
-const Page2Ctrl = require('./controllers/Page2Ctrl');
-const FormCtrl = require('./controllers/FormCtrl');
-const NotfoundCtrl = require('./controllers/NotfoundCtrl');
+const Ctrls = require('./controllers');
 
 
 // init and set the app
@@ -25,15 +21,7 @@ app
   .freeze();
 
 app.system(httpClientCnf);
-
-
-app.controller(
-  IndexCtrl,
-  Page1Ctrl,
-  Page2Ctrl,
-  FormCtrl,
-  NotfoundCtrl
-);
+app.controller(Ctrls);
 
 app
   .routes(routesCnf)

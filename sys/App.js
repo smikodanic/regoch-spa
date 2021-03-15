@@ -69,9 +69,9 @@ class App {
 
   /**
    * Create controller instances.
-   * @param  {...any} Ctrls
+   * @param  {string[][]} Ctrls
    */
-  controller(...Ctrls) {
+  controller(Ctrls) {
     for(const Ctrl of Ctrls) {
       this.controllers[Ctrl.name] = new Ctrl(this);
     }
