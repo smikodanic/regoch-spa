@@ -18,7 +18,6 @@ class Controller extends Parse {
     if (!!this.onRender) { await this.onRender(trx); }
     this.rgClick();
     this.rgHref();
-    this.rgIf();
   }
 
 
@@ -29,7 +28,9 @@ class Controller extends Parse {
    */
   async init(trx) {
     if (!!this.onInit) { await this.onInit(trx, this.dataRgs); }
+    this.rgFor();
     this.rgSet();
+    this.rgIf();
     this.rgPrint();
   }
 

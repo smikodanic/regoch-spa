@@ -11,6 +11,7 @@ class Parse {
   constructor() {
     this.dataRgs = []; // [{attrName, elem, handler}] -- attribute name, element with the data-rg-... attribute and its corresponding handler
     this.separator = '@@';
+    this.temp = {}; // controller temporary variable (exists untill controller exists)
   }
 
 
@@ -100,9 +101,10 @@ class Parse {
       const handler = event => {
         event.preventDefault();
         try {
+          if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
           this[funcName](...funcArgs);
         } catch (err) {
-          throw new Error(`Method ${funcName} is not defined in the current controller. (ERR::${err.message})`);
+          throw new Error(err.message);
         }
       };
 
@@ -148,14 +150,15 @@ class Parse {
       const attrValSplited = attrVal.split(this.separator);
 
       const prop = attrValSplited[0].trim(); // controller property name company.name
-      const propSplitted = prop.split('.'); // ['company', 'name']
-      const prop1 = propSplitted[0]; // company
-      let val = this[prop1] || ''; // controller property value
-      let i = 0;
-      for (const prop of propSplitted) {
-        if (i !== 0 && !!val) { val = val[prop]; }
-        i++;
-      }
+      let val = this._getControllerValue(prop);
+
+      // correct val
+      val = !!val ? val : '';
+      if (typeof val === 'object') { val = JSON.stringify(val); }
+
+      // save temporary initial innerHTML
+      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
+      if (!this.temp[tempVarName]) { this.temp[tempVarName] = elem.innerHTML; }
 
 
       // load content in the element
@@ -170,14 +173,16 @@ class Parse {
         elem.nextSibling.remove();
         elem.parentNode.insertBefore(textNode, elem.nextSibling);
       } else if (act === 'prepend') {
-        elem.prepend(val + ' ');
+        elem.innerHTML = val + ' ' + this.temp[tempVarName];
       } else if (act === 'append') {
-        elem.append(' ' + val);
+        elem.innerHTML = this.temp[tempVarName] + ' ' + val;
+      } else if (act === 'inset') {
+        elem.innerHTML = this.temp[tempVarName].replace('${}', val);
       } else {
         elem.innerHTML = val;
       }
 
-      debug('rgPrint', `${prop}:: ${val} | propSplitted::"${propSplitted}" | act::"${act}"`, 'navy');
+      debug('rgPrint', `${prop}:: ${val} | act::"${act}"`, 'navy');
     }
   }
 
@@ -185,7 +190,7 @@ class Parse {
 
   /**
    * data-rg-set="<controller_property> [@@ print]"
-   * Parse the "data-rg-set" attribute. Sets the controller property.
+   * Parse the "data-rg-set" attribute. Sets the controller property in INPUT element.
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"
@@ -279,8 +284,109 @@ class Parse {
         else if (act === 'empty') { elem.innerHTML = '';  } // elem exists but content is emptied
       }
 
-      debug('rgIf', `${prop}:: ${val} | propSplitted::"${propSplitted}" | act::"${act}"`, 'navy');
+      debug('rgIf', `${prop}:: ${val} | act::"${act}"`, 'navy');
     }
+  }
+
+
+
+  /**
+   * data-rg-for="<propArr> [@@ outer|inner]"
+   * Parse the "data-rg-for" attribute. Multiply element.
+   * Examples:
+   * data-rg-for="companies"
+   * data-rg-for="company.employers"
+   * @param {string} attrvalue - attribute value (limit parsing to only one HTML element)
+   * @returns {void}
+   */
+  rgFor(attrvalue) {
+    debug('rgFor', '--------- rgFor ------', 'navy', '#B6ECFF');
+
+    // define attribute
+    let attrDef;
+    const attrName = 'data-rg-for';
+    if (!attrvalue) {
+      attrDef = attrName;
+    } else {
+      attrDef = `${attrName}^="${attrvalue}"`;
+    }
+
+    const elems = document.querySelectorAll(`[${attrDef}]`);
+    debug('rgFor', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName); // company.employers
+      const attrValSplited = attrVal.split(this.separator);
+
+      const prop = attrValSplited[0].trim(); // controller property name company.employers
+      const val = this._getControllerValue(prop);
+      if(debug().rgFor) { console.log('val::', val); }
+      if (!val) { return; }
+
+      // save temporary initial innerHTML and outerHTML
+      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
+      if (!this.temp[tempVarName]) { this.temp[tempVarName] = elem.innerHTML; }
+
+
+      let act = attrValSplited[1] || 'outer'; // outer|inner
+      act = act.trim();
+
+      if (act === 'outer') {
+        // hide the original (reference) element
+        elem.style.visibility = 'hidden';
+        elem.innerHTML = '';
+
+        // remove generated data-rg-for elements, i.e. elements with the data-rg-for-gen attribute
+        const genElems = document.querySelectorAll(`[data-rg-for-gen="${attrVal}"]`);
+        for (const genElem of genElems) { genElem.remove(); }
+
+        // multiply element by cloning and adding sibling elements
+        for (let i = 0; i < val.length; i++) {
+          const innerHTML = this.temp[tempVarName].replace('$i', i);
+          const newElem = elem.cloneNode();
+          newElem.innerHTML = innerHTML;
+          newElem.style.visibility = '';
+          newElem.removeAttribute('data-rg-for');
+          newElem.setAttribute('data-rg-for-gen', attrVal);
+          elem.parentNode.insertBefore(newElem, elem.nextSibling);
+        }
+
+      } else if (act === 'inner') {
+
+        // multiply the innerHTML in the data-rg-for-gen element
+        elem.innerHTML = '';
+        for (let i = 0; i < val.length; i++) {
+          elem.innerHTML += this.temp[tempVarName].replace('$i', i);
+        }
+
+      }
+
+      debug('rgFor', `act:: ${act}`, 'navy');
+
+
+    }
+  }
+
+
+
+  /************ PRIVATES **********/
+  /**
+   * Get the controller property's value.
+   * For example controller's property is this.company.name
+   * @param {string} prop - controller property name, for example: company.name
+   * @returns {any}
+   */
+  _getControllerValue(prop) {
+    const propSplitted = prop.split('.'); // ['company', 'name']
+    const prop1 = propSplitted[0]; // company
+    let val = this[prop1]; // controller property value
+    let i = 0;
+    for (const prop of propSplitted) {
+      if (i !== 0 && !!val) { val = val[prop]; }
+      i++;
+    }
+    return val;
   }
 
 

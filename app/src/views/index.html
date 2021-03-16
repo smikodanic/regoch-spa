@@ -27,12 +27,19 @@
       <button data-rg-click="toggleIF()">toggle IF</button>
       <p data-rg-if="ifX">company name</p>
 
+      <br><br>
+      <h4>FOR</h4>
+      <button data-rg-click="runFOR()">run FOR</button>
+      <p data-rg-for="companies" style="color:green"><span data-rg-print="companies.$i.name @@ append">name:</span></p>
+      <p data-rg-for="companies @@ inner" style="color:orangered"><span data-rg-print="companies.$i.name @@ append">name:</span><br></p>
+
 
       <br><br>
       <h4>SET & PRINT</h4>
       product name: <input type="text" name="x" data-rg-set="product.name.x @@ print">
       <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
-      <p data-rg-print="product.name.x"></p>
+      <p data-rg-print="product.name.x @@ append">name: </p>
+      <p data-rg-print="product.name.x @@ inset">The name is "${}" !</p>
       <!-- <p data-rg-print="product @@ inner"></p> -->
       <!-- <p data-rg-print="product @@ sibling"></p> -->
       <!-- <p data-rg-print="product @@ append"><b>name:</b></p> -->

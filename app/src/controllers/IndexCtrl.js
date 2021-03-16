@@ -42,9 +42,12 @@ class IndexCtrl extends Controller {
     await this.util.sleep(1300);
     this.product.name.x = 'Modified val';
 
+    this.companies = [
+      {name: 'Cloud Ltd', size: 3},
+      {name: 'Roto Ltd', size: 5},
+      {name: 'Zen Ltd', size: 8}
+    ];
   }
-
-
 
 
   onDestroy(elem, event, dataRgs) {
@@ -59,11 +62,22 @@ class IndexCtrl extends Controller {
   }
 
 
+  runFOR() {
+    this.companies = [
+      {name: 'Cloud2 Ltd', size: 3},
+      {name: 'Roto2 Ltd', size: 5},
+      {name: 'Zen2 Ltd', size: 8}
+    ];
+    this.rgFor('companies');
+    this.rgPrint('companies');
+  }
+
+
 
   clickFja(n, str, ...rest) {
     console.log('This is a click. Params::', n, str, rest);
     this.callAPI();
-    alert('OKK');
+    alert('OK clickFja');
   }
 
   async callAPI() {

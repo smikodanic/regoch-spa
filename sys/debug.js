@@ -4,10 +4,10 @@ module.exports = (tip, text, color, background) => {
     rgKILL: false,
     rgHref: false,
     rgClick: false,
-    rgPrint: true,
+    rgPrint: false,
     rgSet: false,
     rgIf: false,
-    rgFor: false,
+    rgFor: true,
 
     // Load.js
     loadView: false,
