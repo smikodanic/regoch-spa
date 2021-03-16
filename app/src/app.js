@@ -4,14 +4,11 @@ const routesCnf = require('./conf/routesCnf');
 const appCnf = require('./conf/appCnf');
 const httpClientCnf = require('./conf/httpClientCnf');
 
-
-// controllers
 const Ctrls = require('./controllers');
 
 
-// init and set the app
-const app = new App();
 
+const app = new App();
 app
   .conf('app', appCnf)
   .conf('httpClient', httpClientCnf)
@@ -19,11 +16,9 @@ app
   .const('myStr', 'some thing')
   .const('myObj', {a: 22})
   .freeze();
-
 app.system(httpClientCnf);
-app.controller(Ctrls);
-
 app
+  .controller(Ctrls)
   .routes(routesCnf)
   .run();
 

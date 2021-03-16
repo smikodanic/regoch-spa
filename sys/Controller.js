@@ -18,6 +18,7 @@ class Controller extends Parse {
     if (!!this.onRender) { await this.onRender(trx); }
     this.rgClick();
     this.rgHref();
+    this.rgIf();
   }
 
 

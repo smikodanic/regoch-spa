@@ -75,6 +75,7 @@ class App {
     for(const Ctrl of Ctrls) {
       this.controllers[Ctrl.name] = new Ctrl(this);
     }
+    return this;
   }
 
 

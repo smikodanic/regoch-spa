@@ -22,7 +22,13 @@
       <div data-rg-view="home1">--router1--</div>
       <div data-rg-view="home2">--router2--</div>
 
+      <br><br>
+      <h4>IF</h4>
+      <button data-rg-click="toggleIF()">toggle IF</button>
+      <p data-rg-if="ifX">company name</p>
 
+
+      <br><br>
       <h4>SET & PRINT</h4>
       product name: <input type="text" name="x" data-rg-set="product.name.x @@ print">
       <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
@@ -33,12 +39,15 @@
       <!-- <p data-rg-print="product.name @@ prepend"><i>years old</i></p> -->
       <!-- <p data-rg-print="product.name @@ append"><i>parent name:</i></p> -->
 
+
       <br><br>
       product colors: <input type="text" name="x" data-rg-set="product.colors.0 @@ print">
       <p data-rg-print="product.colors"></p>
       <p data-rg-print="product.colors.0"></p>
       <p data-rg-print="product.colors.1"></p>
       <p data-rg-print="product.colors.2"></p>
+
+
 
     </main>
 

@@ -9,12 +9,16 @@ class IndexCtrl extends Controller {
     this.load = app.sys.load;
     this.util = app.sys.util;
     this.httpClient = app.sys.httpClient; // or new app.sys.HTTPClient()
+    this.controllers = app.controllers;
+
+    this.ifX = false;
   }
 
 
 
   async onRender(trx) {
     console.log('HOME render', trx);
+    // console.log(this.controllers.FormCtrl); // access the specific controller in the controller
     await this.load.view('header', 'inc/header.html', 'h2 > small', 'sibling');
     await this.load.view('footer', 'inc/footer.html');
     await this.load.view('footer2', 'inc/footer2.html', '', 'outer');
@@ -38,7 +42,6 @@ class IndexCtrl extends Controller {
     await this.util.sleep(1300);
     this.product.name.x = 'Modified val';
 
-
   }
 
 
@@ -50,8 +53,9 @@ class IndexCtrl extends Controller {
 
 
 
-  test() {
-    console.log('This is my test.');
+  toggleIF() {
+    this.ifX = !this.ifX;
+    this.rgIf('ifX');
   }
 
 

@@ -116,27 +116,27 @@ class Parse {
 
 
   /**
-   * data-rg-print="<controller_property> [@@ <act>]"
+   * data-rg-print="<controller_property> [@@ inner|outer|sibling|prepend|append]"
    * data-rg-print="company.name @@ inner"
    * Parse the "data-rg-print" attribute. Print the controller's property to view.
    * Examples:
    * data-rg-print="product" - product is the controller property
    * data-rg-print="product.name @@ outer"
    * data-rg-print="product.name @@ sibling"
-   * @param {string} attrValProp - part of the attribute value which relates to the controller property,
+   * @param {string} attrvalueProp - part of the attribute value which relates to the controller property,
    * for example product.name in the data-rg-print="product.name @@ inner". This speed up parsing because it's limited only to one element.
    * @returns {void}
    */
-  rgPrint(attrValProp) {
+  rgPrint(attrvalueProp) {
     debug('rgPrint', '--------- rgPrint ------', 'navy', '#B6ECFF');
 
     // define attribute
     let attrDef;
     const attrName = 'data-rg-print';
-    if (!attrValProp) {
+    if (!attrvalueProp) {
       attrDef = attrName;
     } else {
-      attrDef = `${attrName}^="${attrValProp}"`;
+      attrDef = `${attrName}^="${attrvalueProp}"`;
     }
 
     const elems = document.querySelectorAll(`[${attrDef}]`);
@@ -147,8 +147,8 @@ class Parse {
       const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split(this.separator);
 
-      const prop = attrValSplited[0].trim(); // controller property name
-      const propSplitted = prop.split('.'); // company.name
+      const prop = attrValSplited[0].trim(); // controller property name company.name
+      const propSplitted = prop.split('.'); // ['company', 'name']
       const prop1 = propSplitted[0]; // company
       let val = this[prop1] || ''; // controller property value
       let i = 0;
@@ -157,7 +157,6 @@ class Parse {
         i++;
       }
 
-      debug('rgPrint', `${prop}:: ${val} , propSplitted:: ${propSplitted}`, 'navy');
 
       // load content in the element
       let act = attrValSplited[1] || 'inner';
@@ -178,14 +177,14 @@ class Parse {
         elem.innerHTML = val;
       }
 
+      debug('rgPrint', `${prop}:: ${val} | propSplitted::"${propSplitted}" | act::"${act}"`, 'navy');
     }
   }
 
 
 
   /**
-   * data-rg-set="<controller_property> [@@ <view>]"
-   * data-rg-set="company.name @@ print"
+   * data-rg-set="<controller_property> [@@ print]"
    * Parse the "data-rg-set" attribute. Sets the controller property.
    * Examples:
    * data-rg-set="product" - product is the controller property
@@ -225,6 +224,63 @@ class Parse {
       debug('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- dataRgs.length: ${this.dataRgs.length}`, 'navy');
     }
 
+  }
+
+
+
+  /**
+   * data-rg-if="<controller_property> [@@ hide|remove|empty]"
+   * Parse the "data-rg-if" attribute. Show or hide the HTML element.
+   * Examples:
+   * data-rg-if="ifAge" - hide the element
+   * data-rg-if="ifAge @@ hide" - hide the element
+   * data-rg-if="ifAge @@ remove" - remove the element
+   * data-rg-if="ifAge @@ empty" - empty the element content
+   * @param {string} attrvalue - attribute value (limit parsing to only one HTML element)
+   * @returns {void}
+   */
+  rgIf(attrvalue) {
+    debug('rgIf', '--------- rgIf ------', 'navy', '#B6ECFF');
+
+    // define attribute
+    let attrDef;
+    const attrName = 'data-rg-if';
+    if (!attrvalue) {
+      attrDef = attrName;
+    } else {
+      attrDef = `${attrName}^="${attrvalue}"`;
+    }
+
+    const elems = document.querySelectorAll(`[${attrDef}]`);
+    debug('rgIf', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName); // ifAge @@ remove
+      const attrValSplited = attrVal.split(this.separator);
+
+      const prop = attrValSplited[0].trim(); // controller property name company.name
+      const propSplitted = prop.split('.'); // ['company', 'name']
+      const prop1 = propSplitted[0]; // company
+      let val = this[prop1]; // controller property value
+      let i = 0;
+      for (const prop of propSplitted) {
+        if (i !== 0 && !!val) { val = val[prop]; }
+        i++;
+      }
+
+      // show or hide element
+      let act = attrValSplited[1] || 'hide'; // hide | remove | empty
+      act = act.trim();
+      if (!!val) { elem.style.visibility = 'visible'; }
+      else {
+        if (act === 'hide') { elem.style.visibility = 'hidden'; } // elem exists but not visible
+        else if (act === 'remove') { elem.remove();  } // elem removed from the DOM
+        else if (act === 'empty') { elem.innerHTML = '';  } // elem exists but content is emptied
+      }
+
+      debug('rgIf', `${prop}:: ${val} | propSplitted::"${propSplitted}" | act::"${act}"`, 'navy');
+    }
   }
 
 
