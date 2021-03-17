@@ -11,6 +11,7 @@ module.exports = (tip, text, color, background) => {
     rgRepeat: false,
     rgClass: false,
     rgStyle: false,
+    rgSwitch: false,
 
     // Load.js
     loadView: false,

@@ -51,6 +51,26 @@
       <p style="font-weight:bold" data-rg-style="myStajl @@ replace">"font-weight:bold" will be removed</p>
 
       <br><br>
+      <h4>SWITCH</h4>
+      <input type="text" data-rg-set="myColor @@ print">
+      <button data-rg-click="runSWITCH()" data-rg-print="myColor @@ inset">run SWITCH "${}"</button>
+      <ul data-rg-switch="myColor">
+        <li data-rg-switchcase="red">red</li>
+        <li data-rg-switchcase="green">green</li>
+        <li data-rg-switchcase="blue">blue</li>
+        <li data-rg-switchdefault>silver (default)</li>
+      </ul>
+
+      <br><br>
+      SWITCH2
+      <div data-rg-switch="myColorArr @@ multiple">
+        <p data-rg-switchcase="red2">red2</p>
+        <p data-rg-switchcase="green2">green2</p>
+        <p data-rg-switchcase="blue2">blue2</p>
+        <p data-rg-switchdefault>silver2 (default)</p>
+      </div>
+
+      <br><br>
       <h4>SET & PRINT</h4>
       product name: <input type="text" name="x" data-rg-set="product.name.x @@ print">
       <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->

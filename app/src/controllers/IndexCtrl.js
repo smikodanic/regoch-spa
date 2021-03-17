@@ -103,6 +103,13 @@ class IndexCtrl extends Controller {
   }
 
 
+  runSWITCH() {
+    this.myColorArr = ['green2', 'blue2'];
+    this.rgSwitch('myColor'); // this.myColor
+    this.rgSwitch('myColorArr @@ multiple'); // this.myColorArr
+  }
+
+
 
   clickFja(n, str, ...rest) {
     console.log('This is a click. Params::', n, str, rest);

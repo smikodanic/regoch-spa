@@ -524,6 +524,71 @@ class Parse {
 
 
 
+  /**
+   * data-rg-switch="<controller_property> [@@ multiple]"
+   * Parse the "data-rg-switch" attribute. Set element style attribute.
+   * Examples:
+   * data-rg-switch="ctrlprop" - ctrlprop is string, number or boolean
+   * data-rg-switch="ctrlprop @@ multiple" - ctrlprop is array of string, number or boolean
+   * Notice @@ multiple can select multiple switchcases.
+   * @param {string} controllerProp - controller property name
+   * @returns {void}
+   */
+  rgSwitch(controllerProp) {
+    debug('rgSwitch', '--------- rgSwitch ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-switch';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}="${controllerProp}"]`); }
+    debug('rgSwitch', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty @@ multiple'
+      const attrValSplited = attrVal.split(this.separator);
+
+      const isMultiple = !!attrValSplited[1] ? attrValSplited[1].trim() === 'multiple' : false;
+
+      const ctrlProp = attrValSplited[0].trim();
+      const val = this[ctrlProp] || ''; // string, number, boolean
+
+      // get data-rg-switchcase and data-rg-switchdefault attribute values
+      let switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');
+      let switchdefaultElem = elem.querySelector('[data-rg-switch] > [data-rg-switchdefault]');
+
+      // temporary save
+      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
+      if (!this.temp[tempVarName]) {
+        this.temp[tempVarName] = {switchcaseElems, switchdefaultElem};
+      } else {
+        switchcaseElems = this.temp[tempVarName].switchcaseElems;
+        switchdefaultElem = this.temp[tempVarName].switchdefaultElem;
+      }
+
+      // empty the element with data-rg-switch attribute
+      elem.innerHTML = '';
+
+      // set or delete data-rg-switchcase element
+      let isMatched = false; // is data-rg-switchcase value matched
+      for (const switchcaseElem of switchcaseElems) {
+        let switchcaseAttrVal = switchcaseElem.getAttribute('data-rg-switchcase');
+        switchcaseAttrVal = switchcaseAttrVal.trim();
+        if (!isMultiple && switchcaseAttrVal === val) { elem.innerHTML = switchcaseElem.outerHTML; isMatched = true; }
+        else if (isMultiple && val.indexOf(switchcaseAttrVal) !== -1) { elem.append(switchcaseElem); isMatched = true; }
+        else { switchcaseElem.remove(); }
+        debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --- val:: "${val}"`, 'navy');
+      }
+
+      if (!isMatched) { elem.innerHTML = switchdefaultElem.outerHTML; }
+
+
+
+    }
+
+  }
+
+
+
 
 
 

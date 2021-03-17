@@ -35,6 +35,7 @@ class Controller extends Parse {
     this.rgSet();
     this.rgIf();
     this.rgPrint();
+    this.rgSwitch();
   }
 
 
