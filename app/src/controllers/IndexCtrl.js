@@ -119,11 +119,22 @@ class IndexCtrl extends Controller {
   }
 
 
+  runEVT(elem, evt, boja) {
+    // console.log(elem);
+    // console.log(evt);
+    elem.style.color = boja;
+  }
+
+
 
   clickFja(n, str, ...rest) {
     console.log('This is a click. Params::', n, str, rest);
     this.callAPI();
-    alert('OK clickFja');
+    if(rest[2]) {
+      const elem = rest[2];
+      elem.style.color = 'red';
+      elem.style.backgroundColor = '#71F5D0';
+    }
   }
 
   async callAPI() {

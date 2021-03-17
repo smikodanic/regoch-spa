@@ -23,6 +23,11 @@
       <div data-rg-view="home2">--router2--</div>
 
       <br><br>
+      <h4>CLICK</h4>
+      <button data-rg-click="clickFja(5, 'str', 8, 9, $element)">Click -- rg-click</button>
+
+
+      <br><br>
       <h4>IF</h4>
       <button data-rg-click="toggleIF()">toggle IF</button>
       <p data-rg-if="ifX">company name</p>
@@ -74,6 +79,20 @@
       <button data-rg-click="runELEM()">run ELEM</button>
       Click button multiple times to toggle the text color.
       <p style="font-weight:bold" data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
+
+
+      <br><br>
+      <h4>EVT</h4>
+      <span style="font-weight:bold" data-rg-evt="
+        mouseenter @@ runEVT($element, $event, 'red') &&
+        mouseleave @@ runEVT($element, $event, 'green') &&
+        click @@ runEVT($element, $event, 'blue')
+      ">mouseenter and click this text</span>
+
+
+
+
+
 
       <br><br>
       <h4>SET & PRINT</h4>

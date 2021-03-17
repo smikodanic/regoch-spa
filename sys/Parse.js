@@ -25,9 +25,8 @@ class Parse {
     const promises = [];
     let i = 1;
     for (const dataRg of this.dataRgs) {
-      dataRg.elem.removeEventListener('click', dataRg.handler);
-      dataRg.elem.removeEventListener('input', dataRg.handler);
-      debug('rgKILL', `${i}. killed:: ${dataRg.attrName} --- ${dataRg.elem.innerHTML}`, 'navy');
+      dataRg.elem.removeEventListener(dataRg.eventName, dataRg.handler);
+      debug('rgKILL', `${i}. killed:: ${dataRg.attrName} --- ${dataRg.eventName} --- ${dataRg.elem.innerHTML}`, 'navy');
       promises.push(Promise.resolve(true));
       i++;
     }
@@ -72,7 +71,7 @@ class Parse {
       };
 
       elem.addEventListener('click', handler);
-      this.dataRgs.push({attrName, elem, handler});
+      this.dataRgs.push({attrName, elem, handler, eventName: 'click'});
       debug('rgHref', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
 
     }
@@ -96,11 +95,11 @@ class Parse {
       const funcDef = elem.getAttribute(attrName).trim(); // string 'myFunc(x, y, ...restArgs)'
       const matched = funcDef.match(/^(.+)\((.*)\)$/);
       const funcName = matched[1]; // function name: myFunc
-      const funcArgs = matched[2].split(',').map(p => p.trim()); // array of function arguments: [x,y,...restArgs]
 
       const handler = event => {
         event.preventDefault();
         try {
+          const funcArgs = this._getFuncArgs(matched[2], elem, event);
           if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
           this[funcName](...funcArgs);
         } catch (err) {
@@ -109,9 +108,59 @@ class Parse {
       };
 
       elem.addEventListener('click', handler);
-      this.dataRgs.push({attrName, elem, handler});
+      this.dataRgs.push({attrName, elem, handler, eventName: 'click'});
       debug('rgClick', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, '#D27523');
     }
+
+  }
+
+
+  /**
+   * data-rg-evt="<function>"
+   * Listen for event and execute the function i.e. controller method.
+   * https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseenter_event
+   * Examples:
+   * data-rg-evt="mouseenter @@ myFunc($element, $event, 25, 'some text')"  - $element and $event are the DOM objects related to the element
+   * @returns {void}
+   */
+  rgEvt() {
+    debug('rgEvt', '--------- rgEvt ------', '#D27523', '#FFD8B6');
+    const attrName = 'data-rg-evt';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName).trim(); // mouseenter @@ runEVT($element, $event, 'red') && mouseleave @@ runEVT($element, $event, 'green')
+      const directives = attrVal.split('&&');
+
+      for (const directive of directives) {
+        const attrValSplited = directive.split(this.separator);
+        if (!attrValSplited[0] || !attrValSplited[1]) { throw new Error(`Attribute "data-rg-evt" has bad definition (data-rg-evt="${attrVal}").`); }
+
+        const eventName = attrValSplited[0].trim();
+        const funcDef = attrValSplited[1].trim();
+
+        const matched = funcDef.match(/^(.+)\((.*)\)$/);
+        const funcName = matched[1]; // function name: myFunc
+
+        const handler = event => {
+          event.preventDefault();
+          try {
+            const funcArgs = this._getFuncArgs(matched[2], elem, event);
+            if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
+            this[funcName](...funcArgs);
+          } catch (err) {
+            throw new Error(err.message);
+          }
+        };
+
+        elem.addEventListener(eventName, handler);
+        this.dataRgs.push({eventName, attrName, elem, handler, eventName});
+        debug('rgEvt', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName} -- ${eventName}`, '#D27523');
+      }
+
+    }
+
 
   }
 
@@ -225,7 +274,7 @@ class Parse {
       };
 
       elem.addEventListener('input', handler);
-      this.dataRgs.push({attrName, elem, handler});
+      this.dataRgs.push({attrName, elem, handler, eventName: 'input'});
       debug('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- dataRgs.length: ${this.dataRgs.length}`, 'navy');
     }
 
@@ -661,6 +710,27 @@ class Parse {
         return result;
       });
     return txt2;
+  }
+
+
+
+  /**
+   * Create and clean function arguments
+   * @param {string[]} args - array of function arguments: [x,y,...restArgs]
+   * @param {HTMLElement} elem - HTML element on which is the event applied
+   * @param {Event} event - applied event
+   * @returns {string[]}
+   */
+  _getFuncArgs(args, elem, event) {
+    const funcArgs = args
+      .split(',')
+      .map(arg => {
+        arg = arg.trim().replace(/\'|\"/g, '');
+        if (arg === '$element') { arg = elem; }
+        if (arg === '$event') { arg = event; }
+        return arg;
+      });
+    return funcArgs;
   }
 
 

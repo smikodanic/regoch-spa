@@ -23,6 +23,7 @@ class Controller extends Parse {
    * @returns {Promise<void>}
    */
   async render(trx) {
+    this.rgEvt();
     this.rgClick();
     this.rgHref();
     this.rgClass();
