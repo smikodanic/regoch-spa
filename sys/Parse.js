@@ -388,6 +388,62 @@ class Parse {
   }
 
 
+  /**
+   * data-rg-repeat="<number>"
+   * Parse the "data-rg-repeat" attribute. Repeat the element n times.
+   * Examples:
+   * data-rg-repeat="10"
+   * @param {number} num - number of iterations
+   * @param {string} id - element's id, for example <p id="myID" data-rg-repeat="5">
+   * @returns {void}
+   */
+  rgRepeat(num, id) {
+    debug('rgRepeat', '--------- rgRepeat ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-repeat';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!id) { elems = document.querySelectorAll(`#${id}[${attrName}]`); }
+    debug('rgRepeat', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName); // '10 @@ #comp'
+      const max = +num || +attrVal.trim();
+
+      // save temporary initial innerHTML and outerHTML
+      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
+      if (!this.temp[tempVarName]) {
+        this.temp[tempVarName] = elem.innerHTML;
+      }
+
+      // hide the original (reference) element
+      elem.style.visibility = 'hidden';
+      elem.innerHTML = '';
+
+      // remove generated data-rg-for elements, i.e. elements with the data-rg-for-gen attribute
+      const genElems = document.querySelectorAll(`[data-rg-repeat-gen="${attrVal}"]`);
+      for (const genElem of genElems) { genElem.remove(); }
+
+      // multiply element by cloning and adding sibling elements
+      for (let i = 0; i < max; i++) {
+        const j = max - 1 - i;
+        const innerHTML = this._parse$i(j, this.temp[tempVarName]); // replace .$i or $i+1 , $i-1, $i^1, ...
+        const newElem = elem.cloneNode();
+        newElem.innerHTML = innerHTML;
+        newElem.style.visibility = '';
+        newElem.removeAttribute('id');
+        newElem.removeAttribute('data-rg-repeat');
+        newElem.setAttribute('data-rg-repeat-gen', attrVal);
+        elem.parentNode.insertBefore(newElem, elem.nextSibling);
+      }
+
+
+      debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
+
+    }
+  }
+
+
 
 
 

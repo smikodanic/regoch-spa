@@ -85,6 +85,13 @@ class IndexCtrl extends Controller {
     this.rgPrint('companies');
   }
 
+  runREPEAT(num) {
+    this.colors = ['red', 'green', 'blue', 'navy', 'cyan'];
+    this.rgRepeat(num, 'colorID');
+    this.rgSet('colors');
+    this.rgPrint('colors');
+  }
+
 
 
   clickFja(n, str, ...rest) {

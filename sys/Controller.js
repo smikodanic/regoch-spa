@@ -29,6 +29,7 @@ class Controller extends Parse {
   async init(trx) {
     if (!!this.onInit) { await this.onInit(trx, this.dataRgs); }
     this.rgFor();
+    this.rgRepeat();
     this.rgSet();
     this.rgIf();
     this.rgPrint();
