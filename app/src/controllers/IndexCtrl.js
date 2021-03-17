@@ -97,6 +97,11 @@ class IndexCtrl extends Controller {
     this.rgClass('myKlases');
   }
 
+  runSTYLE(fontSize, color) {
+    this.myStajl = {fontSize, color};
+    this.rgStyle('myStajl');
+  }
+
 
 
   clickFja(n, str, ...rest) {

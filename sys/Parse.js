@@ -468,7 +468,7 @@ class Parse {
       const attrValSplited = attrVal.split(this.separator);
 
       const ctrlProp = attrValSplited[0].trim();
-      const valArr = this[ctrlProp] || []; // controller property value - array
+      const valArr = this[ctrlProp] || []; // ['my-bold', 'my-italic']
 
       let act = attrValSplited[1] || '';
       act = act.trim() || 'add';
@@ -477,6 +477,47 @@ class Parse {
       for (const val of valArr) { elem.classList.add(val); }
 
       debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${ctrlProp} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
+    }
+
+  }
+
+
+
+  /**
+   * data-rg-style="<controller_property> [@@ add|replace]"
+   * Parse the "data-rg-style" attribute. Set element style attribute.
+   * Examples:
+   * data-rg-style="myStyl" - add new styles to existing sytles
+   * data-rg-style="myStyl @@ add" - add new styles to existing sytles
+   * data-rg-style="myStyl @@ replace" - replace existing styles with new styles
+   * @param {string} controllerProp - controller property which defines "style" attribute
+   * @returns {void}
+   */
+  rgStyle(controllerProp) {
+    debug('rgStyle', '--------- rgStyle ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-style';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgStyle', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
+      const attrValSplited = attrVal.split(this.separator);
+
+      const ctrlProp = attrValSplited[0].trim();
+      const valObj = this[ctrlProp] || {}; // {fontSize: '21px', color: 'red'}
+
+      let act = attrValSplited[1] || '';
+      act = act.trim() || 'add';
+
+      if (act == 'replace') { elem.removeAttribute('style'); }
+
+      const styleProps = Object.keys(valObj);
+      for (const styleProp of styleProps) { elem.style[styleProp] = valObj[styleProp]; }
+
+      debug('rgStyle', `data-rg-style="${attrVal}" --- ctrlProp:: "${ctrlProp}" | styleProps:: "${styleProps}" | act:: "${act}"`, 'navy');
     }
 
   }

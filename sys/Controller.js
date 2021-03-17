@@ -19,6 +19,7 @@ class Controller extends Parse {
     this.rgClick();
     this.rgHref();
     this.rgClass();
+    this.rgStyle();
   }
 
 
