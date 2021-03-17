@@ -12,6 +12,7 @@ class IndexCtrl extends Controller {
     this.controllers = app.controllers;
 
     this.ifX = false;
+
   }
 
 
@@ -42,10 +43,17 @@ class IndexCtrl extends Controller {
     await this.util.sleep(1300);
     this.product.name.x = 'Modified val';
 
+    this.limit = 3;
+    this.skip = 2;
     this.companies = [
       {name: 'Cloud Ltd', size: 3},
       {name: 'Roto Ltd', size: 5},
-      {name: 'Zen Ltd', size: 8}
+      {name: 'Zen Ltd', size: 8},
+      {name: 'Den Ltd', size: 8},
+      {name: 'Len Ltd', size: 8},
+      {name: 'Pen Ltd', size: 8},
+      {name: 'Gen Ltd', size: 8},
+      {name: 'Ren Ltd', size: 8}
     ];
   }
 
@@ -66,7 +74,12 @@ class IndexCtrl extends Controller {
     this.companies = [
       {name: 'Cloud2 Ltd', size: 3},
       {name: 'Roto2 Ltd', size: 5},
-      {name: 'Zen2 Ltd', size: 8}
+      {name: 'Zen2 Ltd', size: 8},
+      {name: 'Den2 Ltd', size: 8},
+      {name: 'Len2 Ltd', size: 8},
+      {name: 'Pen2 Ltd', size: 8},
+      {name: 'Gen2 Ltd', size: 8},
+      {name: 'Ren2 Ltd', size: 8}
     ];
     this.rgFor('companies');
     this.rgPrint('companies');

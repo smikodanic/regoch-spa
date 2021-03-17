@@ -291,7 +291,7 @@ class Parse {
 
 
   /**
-   * data-rg-for="<propArr> [@@ outer|inner]"
+   * data-rg-for="<propArr>[:limit:skip] [@@ outer|inner]"
    * Parse the "data-rg-for" attribute. Multiply element.
    * Examples:
    * data-rg-for="companies"
@@ -319,14 +319,32 @@ class Parse {
       const attrVal = elem.getAttribute(attrName); // company.employers
       const attrValSplited = attrVal.split(this.separator);
 
-      const prop = attrValSplited[0].trim(); // controller property name company.employers
+      const propLimSkp = attrValSplited[0].trim(); // company.employers:limit:skip
+      const propLimSkpSplited = propLimSkp.split(':');
+
+      let limitName = propLimSkpSplited[1]; // limit variable name
+      limitName = !!limitName ? limitName.trim() : '';
+      const limit = +this[limitName] || 1000;
+
+      let skipName = propLimSkpSplited[2]; // skip variable name
+      skipName = !!skipName ? skipName.trim() : '';
+      const skip = +this[skipName] || 0;
+
+
+      let prop = propLimSkpSplited[0];
+      prop = prop.trim();
       const val = this._getControllerValue(prop);
-      if(debug().rgFor) { console.log('val::', val); }
+      if(debug().rgFor) { console.log('val::', val, ' limit::', limit, ' skip::', skip); }
       if (!val) { return; }
+
+      const max = skip + limit < val.length ? skip + limit : val.length;
+
 
       // save temporary initial innerHTML and outerHTML
       const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-      if (!this.temp[tempVarName]) { this.temp[tempVarName] = elem.innerHTML; }
+      if (!this.temp[tempVarName]) {
+        this.temp[tempVarName] = elem.innerHTML;
+      }
 
 
       let act = attrValSplited[1] || 'outer'; // outer|inner
@@ -342,8 +360,9 @@ class Parse {
         for (const genElem of genElems) { genElem.remove(); }
 
         // multiply element by cloning and adding sibling elements
-        for (let i = 0; i < val.length; i++) {
-          const innerHTML = this.temp[tempVarName].replace('$i', i);
+        for (let i = skip; i < max; i++) {
+          const j = max - 1 - i + skip;
+          const innerHTML = this._parse$i(j, this.temp[tempVarName]); // replace .$i or $i+1 , $i-1, $i^1, ...
           const newElem = elem.cloneNode();
           newElem.innerHTML = innerHTML;
           newElem.style.visibility = '';
@@ -356,17 +375,21 @@ class Parse {
 
         // multiply the innerHTML in the data-rg-for-gen element
         elem.innerHTML = '';
-        for (let i = 0; i < val.length; i++) {
-          elem.innerHTML += this.temp[tempVarName].replace('$i', i);
+        for (let i = skip; i < max; i++) {
+          elem.innerHTML += this._parse$i(i, this.temp[tempVarName]); // replace .$i or $i+1 , $i-1, $i^1, ...;
         }
 
       }
 
       debug('rgFor', `act:: ${act}`, 'navy');
 
-
     }
+
   }
+
+
+
+
 
 
 
@@ -387,6 +410,31 @@ class Parse {
       i++;
     }
     return val;
+  }
+
+
+  /**
+   * Parse iteration variable $i in the text.
+   * - replace .$i with the number i
+   * - replace $i, $i+1 , $i-1, $i^1, ...
+   * @param {number} i - number to replace $i with
+   * @param {string} txt - text which needs to be replaced
+   * @returns {string}
+   */
+  _parse$i(i, txt) {
+    const txt2 = txt.replace(/\.\$i/g, `.${i}`)
+      .replace(/\$i\s*(\+|\-|\*|\/|\%|\^)?\s*(\d+)?/g, (match, $1, $2) => {
+        let result = i;
+        const n = parseInt($2, 10);
+        if ($1 === '+') { result = i + n; }
+        else if ($1 === '-') { result = i - n; }
+        else if ($1 === '*') { result = i * n; }
+        else if ($1 === '/') { result = i / n; }
+        else if ($1 === '%') { result = i % n; }
+        else if ($1 === '^') { result = Math.pow(i, n); }
+        return result;
+      });
+    return txt2;
   }
 
 
