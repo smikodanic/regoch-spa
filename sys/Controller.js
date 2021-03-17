@@ -20,6 +20,7 @@ class Controller extends Parse {
     this.rgHref();
     this.rgClass();
     this.rgStyle();
+    this.rgElem();
   }
 
 

@@ -118,7 +118,7 @@ class Parse {
 
 
   /**
-   * data-rg-print="<controller_property> [@@ inner|outer|sibling|prepend|append]"
+   * data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"
    * data-rg-print="company.name @@ inner"
    * Parse the "data-rg-print" attribute. Print the controller's property to view.
    * Examples:
@@ -189,7 +189,7 @@ class Parse {
 
 
   /**
-   * data-rg-set="<controller_property> [@@ print]"
+   * data-rg-set="<controllerProperty> [@@ print]"
    * Parse the "data-rg-set" attribute. Sets the controller property in INPUT element.
    * Examples:
    * data-rg-set="product" - product is the controller property
@@ -234,7 +234,7 @@ class Parse {
 
 
   /**
-   * data-rg-if="<controller_property> [@@ hide|remove|empty]"
+   * data-rg-if="<controllerProperty> [@@ hide|remove|empty]"
    * Parse the "data-rg-if" attribute. Show or hide the HTML element.
    * Examples:
    * data-rg-if="ifAge" - hide the element
@@ -445,7 +445,7 @@ class Parse {
 
 
   /**
-   * data-rg-class="<controller_property> [@@ add|replace]"
+   * data-rg-class="<controllerProperty> [@@ add|replace]"
    * Parse the "data-rg-class" attribute. Set element class attribute.
    * Examples:
    * data-rg-class="myKlass" - add new classes to existing classes
@@ -484,7 +484,7 @@ class Parse {
 
 
   /**
-   * data-rg-style="<controller_property> [@@ add|replace]"
+   * data-rg-style="<controllerProperty> [@@ add|replace]"
    * Parse the "data-rg-style" attribute. Set element style attribute.
    * Examples:
    * data-rg-style="myStyl" - add new styles to existing sytles
@@ -525,7 +525,7 @@ class Parse {
 
 
   /**
-   * data-rg-switch="<controller_property> [@@ multiple]"
+   * data-rg-switch="<controllerProperty> [@@ multiple]"
    * Parse the "data-rg-switch" attribute. Set element style attribute.
    * Examples:
    * data-rg-switch="ctrlprop" - ctrlprop is string, number or boolean
@@ -581,8 +581,34 @@ class Parse {
 
       if (!isMatched) { elem.innerHTML = switchdefaultElem.outerHTML; }
 
+    }
+
+  }
 
 
+
+  /**
+   * data-rg-elem="<rgelemsProp>"
+   * Parse the "data-rg-elem" attribute. Transfer the DOM element to the controller property "this.rgelems".
+   * Examples:
+   * data-rg-elem="paragraf" -> fetch it with this.rgelems['paragraf']
+   * @returns {void}
+   */
+  rgElem() {
+    debug('rgElem', '--------- rgElem ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-elem';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    debug('rgElem', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    // init the this.elems
+    if (!this.rgelems) { this.rgelems = {}; }
+
+    // associate values
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || ''; // 'paragraf'
+      this.rgelems[attrVal] = elem;
     }
 
   }

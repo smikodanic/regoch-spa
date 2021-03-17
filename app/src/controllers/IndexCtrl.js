@@ -102,11 +102,19 @@ class IndexCtrl extends Controller {
     this.rgStyle('myStajl');
   }
 
-
   runSWITCH() {
     this.myColorArr = ['green2', 'blue2'];
     this.rgSwitch('myColor'); // this.myColor
     this.rgSwitch('myColorArr @@ multiple'); // this.myColorArr
+  }
+
+  runELEM() {
+    this.toggle = !this.toggle;
+    if (this.toggle) {
+      this.rgelems.myElem.style.color = 'blue';
+    } else {
+      this.rgelems.myElem.style.color = 'silver';
+    }
   }
 
 
