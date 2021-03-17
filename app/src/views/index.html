@@ -30,7 +30,7 @@
       <br><br>
       <h4>FOR</h4>
       <button data-rg-click="runFOR()">run FOR</button>
-      <p data-rg-for="companies:limit:skip" style="color:green"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span></p>
+      <p data-rg-for="companies:limit:skip" style="color:green"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
       <p data-rg-for="companies:limit:skip @@ inner" style="color:orangered"><span data-rg-print="companies.$i.name @@ append">$i name:</span><br></p>
 
 

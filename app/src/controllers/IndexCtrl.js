@@ -49,11 +49,11 @@ class IndexCtrl extends Controller {
       {name: 'Cloud Ltd', size: 3},
       {name: 'Roto Ltd', size: 5},
       {name: 'Zen Ltd', size: 8},
-      {name: 'Den Ltd', size: 8},
-      {name: 'Len Ltd', size: 8},
-      {name: 'Pen Ltd', size: 8},
-      {name: 'Gen Ltd', size: 8},
-      {name: 'Ren Ltd', size: 8}
+      {name: 'Den Ltd', size: 9},
+      {name: 'Len Ltd', size: 10},
+      {name: 'Pen Ltd', size: 81},
+      {name: 'Gen Ltd', size: 82},
+      {name: 'Ren Ltd', size: 83}
     ];
   }
 
@@ -75,11 +75,11 @@ class IndexCtrl extends Controller {
       {name: 'Cloud2 Ltd', size: 3},
       {name: 'Roto2 Ltd', size: 5},
       {name: 'Zen2 Ltd', size: 8},
-      {name: 'Den2 Ltd', size: 8},
-      {name: 'Len2 Ltd', size: 8},
-      {name: 'Pen2 Ltd', size: 8},
-      {name: 'Gen2 Ltd', size: 8},
-      {name: 'Ren2 Ltd', size: 8}
+      {name: 'Den2 Ltd', size: 81},
+      {name: 'Len2 Ltd', size: 82},
+      {name: 'Pen2 Ltd', size: 83},
+      {name: 'Gen2 Ltd', size: 84},
+      {name: 'Ren2 Ltd', size: 855}
     ];
     this.rgFor('companies');
     this.rgPrint('companies');
