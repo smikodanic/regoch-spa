@@ -38,7 +38,11 @@
       <button data-rg-click="runREPEAT(4)">run REPEAT</button>
       <p id="colorID" data-rg-repeat="3">$i+1 <input data-rg-set="colors.$i @@ print"> <span data-rg-print="colors.$i"></span></p>
 
-
+      <br><br>
+      <h4>CLASS</h4>
+      <button data-rg-click="runCLASS()">run CLASS</button>
+      <p class="initial-klass" data-rg-class="myKlases">Class initial-klass will remain</p>
+      <p class="initial-klass" data-rg-class="myKlases @@ replace">Class initial-klass will be removed</p>
 
       <br><br>
       <h4>SET & PRINT</h4>

@@ -92,6 +92,11 @@ class IndexCtrl extends Controller {
     this.rgPrint('colors');
   }
 
+  runCLASS() {
+    this.myKlases = ['my-bold', 'my-italic'];
+    this.rgClass('myKlases');
+  }
+
 
 
   clickFja(n, str, ...rest) {

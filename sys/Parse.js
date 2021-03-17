@@ -437,10 +437,48 @@ class Parse {
         elem.parentNode.insertBefore(newElem, elem.nextSibling);
       }
 
-
       debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
 
     }
+  }
+
+
+
+  /**
+   * data-rg-class="<controller_property> [@@ add|replace]"
+   * Parse the "data-rg-class" attribute. Set element class attribute.
+   * Examples:
+   * data-rg-class="myKlass" - add new classes to existing classes
+   * data-rg-class="myKlass @@ add" - add new classes to existing classes
+   * data-rg-class="myKlass @@ replace" - replace existing classes with new classes
+   * @param {string} controllerProp - controller property which defines "class" attribute
+   * @returns {void}
+   */
+  rgClass(controllerProp) {
+    debug('rgClass', '--------- rgClass ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-class';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgClass', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
+      const attrValSplited = attrVal.split(this.separator);
+
+      const ctrlProp = attrValSplited[0].trim();
+      const valArr = this[ctrlProp] || []; // controller property value - array
+
+      let act = attrValSplited[1] || '';
+      act = act.trim() || 'add';
+
+      if (act == 'replace') { elem.removeAttribute('class'); }
+      for (const val of valArr) { elem.classList.add(val); }
+
+      debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${ctrlProp} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
+    }
+
   }
 
 
