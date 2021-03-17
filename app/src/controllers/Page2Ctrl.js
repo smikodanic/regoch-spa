@@ -7,7 +7,7 @@ class Page2Ctrl extends Controller {
     this.load = app.sys.load;
   }
 
-  onInit(trx, dataRgs) {
+  init(trx, dataRgs) {
     console.log('PAGE2 init', trx, dataRgs);
     $('title').text('PAGE 2');
   }

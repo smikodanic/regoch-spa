@@ -11,12 +11,12 @@ class FormCtrl extends Controller {
     this.userForm = new app.sys.Form('userF');
   }
 
-  async onRender(trx) {
+  async prerender(trx) {
     await this.load.view('home1', 'form.html');
   }
 
 
-  async onInit(trx, dataRgs) {
+  async init(trx, dataRgs) {
     console.log('FORM init', trx, dataRgs);
   }
 

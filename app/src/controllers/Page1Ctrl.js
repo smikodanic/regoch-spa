@@ -7,8 +7,8 @@ class Page1Ctrl extends Controller {
     this.load = app.sys.load;
   }
 
-  async onRender(trx) {
-    console.log('PAGE1 render', trx);
+  async prerender(trx) {
+    console.log('PAGE1 prerender', trx);
     $('title').text('PAGE 1');
 
     // views
@@ -18,11 +18,11 @@ class Page1Ctrl extends Controller {
     await this.load.view('home2', '');
   }
 
-  onInit(trx, dataRgs) {
+  init(trx, dataRgs) {
     console.log('PAGE1 init', trx, dataRgs);
   }
 
-  onDestroy(elem, event, dataRgs) {
+  destroy(elem, event, dataRgs) {
     console.log('PAGE1 destroy', elem, event, dataRgs);
   }
 

@@ -10,27 +10,24 @@ class Controller extends Parse {
 
   /************* CONTROLLER LIFECYCLE HOOKS ***********/
   /**
+   * Run before render of the HTML elements with data-rg-... attribute. (see Router.js)
+   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
+   * @returns {Promise<void>}
+   */
+  async prerender(trx) {}
+
+
+  /**
    * Render the HTML elements with data-rg-... attribute. (see Router.js)
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
    * @returns {Promise<void>}
    */
   async render(trx) {
-    if (!!this.onRender) { await this.onRender(trx); }
     this.rgClick();
     this.rgHref();
     this.rgClass();
     this.rgStyle();
     this.rgElem();
-  }
-
-
-  /**
-   * Init the controller. This is where controller logic starts. (see Router.js)
-   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
-   * @returns {Promise<void>}
-   */
-  async init(trx) {
-    if (!!this.onInit) { await this.onInit(trx, this.dataRgs); }
     this.rgFor();
     this.rgRepeat();
     this.rgSet();
@@ -41,15 +38,32 @@ class Controller extends Parse {
 
 
   /**
+   * Run after render of the HTML elements with data-rg-... attribute. (see Router.js)
+   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
+   * @returns {Promise<void>}
+   */
+  async postrender(trx) {}
+
+
+  /**
+   * Init the controller. This is where controller logic starts. (see Router.js)
+   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
+   * @returns {Promise<void>}
+   */
+  async init(trx) {}
+
+
+  /**
    * Destroy the controller when the data-rg-href element is clicked (see parse.href()).
    * - remove all data-rg-... element lsiteners
    * * @param {HTMLElement} elem - element with data-rg-href which caused controller destruction
    * * @param {Event} event - event (usually click) which was applied on the elem and cause controller destruction
    * @returns {Promise<void>}
    */
-  async destroy(elem, event) {
-    if (!!this.onDestroy) { this.onDestroy(elem, event, this.dataRgs); }
-  }
+  async destroy(elem, event) {}
+
+
+
 
 
   /********** MISC **********/

@@ -20,10 +20,12 @@ class Router {
     if (!route) { throw new Error(`Route is not defined for ${ctrl.constructor.name} controller.`); }
 
     // controller methods
+    const prerender = ctrl.prerender.bind(ctrl);
     const render = ctrl.render.bind(ctrl);
+    const postrender = ctrl.postrender.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
 
-    this.regochRouter.def(route, render, init);
+    this.regochRouter.def(route, prerender, render, postrender, init);
   }
 
 
@@ -34,10 +36,12 @@ class Router {
    */
   notFound(ctrl) {
     // controller methods
+    const prerender = ctrl.prerender.bind(ctrl);
     const render = ctrl.render.bind(ctrl);
+    const postrender = ctrl.postrender.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
 
-    this.regochRouter.notfound(render, init);
+    this.regochRouter.notfound(prerender, render, postrender, init);
   }
 
 

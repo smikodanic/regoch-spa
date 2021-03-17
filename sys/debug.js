@@ -12,7 +12,7 @@ module.exports = (tip, text, color, background) => {
     rgClass: false,
     rgStyle: false,
     rgSwitch: false,
-    rgElem: true,
+    rgElem: false,
 
     // Load.js
     loadView: false,

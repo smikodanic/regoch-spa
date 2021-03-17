@@ -12,13 +12,11 @@ class IndexCtrl extends Controller {
     this.controllers = app.controllers;
 
     this.ifX = false;
-
   }
 
 
-
-  async onRender(trx) {
-    console.log('HOME render', trx);
+  async prerender(trx) {
+    console.log('HOME prerender', trx);
     // console.log(this.controllers.FormCtrl); // access the specific controller in the controller
     await this.load.view('header', 'inc/header.html', 'h2 > small', 'sibling');
     await this.load.view('footer', 'inc/footer.html');
@@ -29,9 +27,13 @@ class IndexCtrl extends Controller {
   }
 
 
+  async postrender(trx) {
+    console.log('HOME postrender', trx, this.dataRgs);
+  }
 
-  async onInit(trx, dataRgs) {
-    console.log('HOME init', trx, dataRgs);
+
+  async init(trx) {
+    console.log('HOME init', trx, this.dataRgs);
     this.product = {
       name: {
         x: 'Initial val'
@@ -57,8 +59,7 @@ class IndexCtrl extends Controller {
     ];
   }
 
-
-  onDestroy(elem, event, dataRgs) {
+  destroy(elem, event, dataRgs) {
     console.log('HOME destroy', elem, event, dataRgs);
   }
 
