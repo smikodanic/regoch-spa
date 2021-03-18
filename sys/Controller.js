@@ -23,18 +23,27 @@ class Controller extends Parse {
    * @returns {Promise<void>}
    */
   async render(trx) {
-    this.rgEvt();
-    this.rgClick();
+    this.parseListeners();
+    this.parseNonListeners();
+  }
+
+  async parseListeners() {
     this.rgHref();
+    this.rgClick();
+    this.rgChange();
+    this.rgEvt();
+    this.rgSet();
+  }
+
+  async parseNonListeners() {
+    this.rgPrint();
     this.rgClass();
     this.rgStyle();
-    this.rgElem();
+    this.rgIf();
+    this.rgSwitch();
     this.rgFor();
     this.rgRepeat();
-    this.rgSet();
-    this.rgIf();
-    this.rgPrint();
-    this.rgSwitch();
+    this.rgElem();
   }
 
 

@@ -89,6 +89,19 @@
         click @@ runEVT($element, $event, 'blue')
       ">mouseenter and click this text</span>
 
+      <br><br>
+      <h4>CHANGE</h4>
+      <select name="chg" data-rg-change="runCHANGE()" data-rg-set="mySelect">
+        <option value="one">one</option>
+        <option value="two">two</option>
+        <option value="three">three</option>
+      </select>
+      <ol>
+        <li data-rg-if="ifOne">ONE</li>
+        <li data-rg-if="ifTwo">TWO</li>
+        <li data-rg-if="ifThree">THREE</li>
+      </ol>
+
 
       <br><br>
       <h4>COOKIE</h4>

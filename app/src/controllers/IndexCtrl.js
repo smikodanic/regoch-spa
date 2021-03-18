@@ -137,6 +137,24 @@ class IndexCtrl extends Controller {
     elem.style.color = boja;
   }
 
+  runCHANGE() {
+    console.log(this.mySelect);
+    // reset all
+    this.ifOne = false;
+    this.ifTwo = false;
+    this.ifThree = false;
+
+    // set one
+    switch(this.mySelect) {
+    case 'one': { this.ifOne = true; break; }
+    case 'two': { this.ifTwo = true; break; }
+    case 'three': { this.ifThree = true; break; }
+    }
+
+    // render
+    this.rgIf();
+  }
+
 
   runCOOKIE() {
     const cookieVal1 = this.cookieForm.getControl('cookieVal1');

@@ -1,19 +1,21 @@
 module.exports = (tip, text, color, background) => {
   const debugOpts = {
     // Parse.js
-    rgKILL: true,
+    rgKILL: false,
     rgHref: false,
     rgClick: false,
-    rgPrint: false,
+    rgChange: false,
+    rgEvt: false,
     rgSet: false,
-    rgIf: false,
-    rgFor: false,
-    rgRepeat: false,
+
+    rgPrint: false,
     rgClass: false,
     rgStyle: false,
+    rgIf: false,
     rgSwitch: false,
+    rgFor: false,
+    rgRepeat: false,
     rgElem: false,
-    rgEvt: false,
 
     // Load.js
     loadView: false,

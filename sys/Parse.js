@@ -14,19 +14,19 @@ class Parse {
     this.temp = {}; // controller temporary variable (exists untill controller exists)
   }
 
-
+  /************************ LISTENERS  ************************/
 
   /**
    * Remove all listeners (click, input, ...) from the elements with the "data-rg-..." attribute
    */
   async rgKILL() {
-    debug('rgKILL', '------- rgKILL -------', 'navy', '#B6ECFF');
+    debug('rgKILL', '------- rgKILL -------', 'orange', '#FFD8B6');
 
     const promises = [];
     let i = 1;
     for (const dataRg of this.dataRgs) {
       dataRg.elem.removeEventListener(dataRg.eventName, dataRg.handler);
-      debug('rgKILL', `${i}. killed:: ${dataRg.attrName} --- ${dataRg.eventName} --- ${dataRg.elem.innerHTML}`, 'navy');
+      debug('rgKILL', `${i}. killed:: ${dataRg.attrName} --- ${dataRg.eventName} --- ${dataRg.elem.innerHTML}`, 'orange');
       promises.push(Promise.resolve(true));
       i++;
     }
@@ -45,7 +45,7 @@ class Parse {
    * @returns {void}
    */
   rgHref() {
-    debug('rgHref', '--------- rgHref ------', 'navy', '#B6ECFF');
+    debug('rgHref', '--------- rgHref ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-href';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -72,7 +72,7 @@ class Parse {
 
       elem.addEventListener('click', handler);
       this.dataRgs.push({attrName, elem, handler, eventName: 'click'});
-      debug('rgHref', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'navy');
+      debug('rgHref', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'orange');
 
     }
   }
@@ -86,7 +86,7 @@ class Parse {
    * @returns {void}
    */
   rgClick() {
-    debug('rgClick', '--------- rgClick ------', '#D27523', '#FFD8B6');
+    debug('rgClick', '--------- rgClick ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-click';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -109,7 +109,43 @@ class Parse {
 
       elem.addEventListener('click', handler);
       this.dataRgs.push({attrName, elem, handler, eventName: 'click'});
-      debug('rgClick', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, '#D27523');
+      debug('rgClick', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, 'orange');
+    }
+
+  }
+
+
+  /**
+   * data-rg-change="<function>"
+   * data-rg-change="myFunc()"
+   * Listen for change and execute the function i.e. controller method.
+   * @returns {void}
+   */
+  rgChange() {
+    debug('rgChange', '--------- rgChange ------', 'orange', '#FFD8B6');
+    const attrName = 'data-rg-change';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const funcDef = elem.getAttribute(attrName).trim(); // string 'myFunc(x, y, ...restArgs)'
+      const matched = funcDef.match(/^(.+)\((.*)\)$/);
+      const funcName = matched[1]; // function name: myFunc
+
+      const handler = event => {
+        event.preventDefault();
+        try {
+          const funcArgs = this._getFuncArgs(matched[2], elem, event);
+          if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
+          this[funcName](...funcArgs);
+        } catch (err) {
+          throw new Error(err.message);
+        }
+      };
+
+      elem.addEventListener('change', handler);
+      this.dataRgs.push({attrName, elem, handler, eventName: 'change'});
+      debug('rgChange', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, 'orange');
     }
 
   }
@@ -124,7 +160,7 @@ class Parse {
    * @returns {void}
    */
   rgEvt() {
-    debug('rgEvt', '--------- rgEvt ------', '#D27523', '#FFD8B6');
+    debug('rgEvt', '--------- rgEvt ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-evt';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -156,16 +192,61 @@ class Parse {
 
         elem.addEventListener(eventName, handler);
         this.dataRgs.push({eventName, attrName, elem, handler, eventName});
-        debug('rgEvt', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName} -- ${eventName}`, '#D27523');
+        debug('rgEvt', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName} -- ${eventName}`, 'orange');
       }
 
     }
-
 
   }
 
 
 
+  /**
+   * data-rg-set="<controllerProperty> [@@ print]"
+   * Parse the "data-rg-set" attribute. Sets the controller property in INPUT element.
+   * Examples:
+   * data-rg-set="product" - product is the controller property
+   * data-rg-set="product.name"
+   * data-rg-set="product.name @@ print" -> bind to view directly by calling print() method directly
+   * @returns {void}
+   */
+  rgSet() {
+    debug('rgSet', '--------- rgSet ------', 'navy', '#B6ECFF');
+    const attrName = 'data-rg-set';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      const attrValSplited = attrVal.split(this.separator);
+
+      const bindTo = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
+
+      const prop = attrValSplited[0].trim(); // controller property name
+      const propSplitted = prop.split('.'); // company.name
+
+      const handler = event => {
+        // console.log(event);
+        let i = 1;
+        let obj = this;
+        for (const prop of propSplitted) {
+          if (i !== propSplitted.length) { obj[prop] = {}; obj = obj[prop]; }
+          else { obj[prop] = elem.value; }
+          i++;
+        }
+        if (bindTo === 'print') { this.rgPrint(prop); }
+      };
+
+      elem.addEventListener('input', handler);
+      this.dataRgs.push({attrName, elem, handler, eventName: 'input'});
+      debug('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- dataRgs.length: ${this.dataRgs.length}`, 'navy');
+    }
+
+  }
+
+
+
+  /*************** NON LISTENERS *************/
   /**
    * data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"
    * data-rg-print="company.name @@ inner"
@@ -236,46 +317,80 @@ class Parse {
   }
 
 
-
   /**
-   * data-rg-set="<controllerProperty> [@@ print]"
-   * Parse the "data-rg-set" attribute. Sets the controller property in INPUT element.
+   * data-rg-class="<controllerProperty> [@@ add|replace]"
+   * Parse the "data-rg-class" attribute. Set element class attribute.
    * Examples:
-   * data-rg-set="product" - product is the controller property
-   * data-rg-set="product.name"
-   * data-rg-set="product.name @@ print" -> bind to view directly by calling print() method directly
+   * data-rg-class="myKlass" - add new classes to existing classes
+   * data-rg-class="myKlass @@ add" - add new classes to existing classes
+   * data-rg-class="myKlass @@ replace" - replace existing classes with new classes
+   * @param {string} controllerProp - controller property which defines "class" attribute
    * @returns {void}
    */
-  rgSet() {
-    debug('rgSet', '--------- rgSet ------', 'navy', '#B6ECFF');
-    const attrName = 'data-rg-set';
-    const elems = document.querySelectorAll(`[${attrName}]`);
+  rgClass(controllerProp) {
+    debug('rgClass', '--------- rgClass ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-class';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgClass', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName);
+      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
       const attrValSplited = attrVal.split(this.separator);
 
-      const bindTo = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
+      const ctrlProp = attrValSplited[0].trim();
+      const valArr = this[ctrlProp] || []; // ['my-bold', 'my-italic']
 
-      const prop = attrValSplited[0].trim(); // controller property name
-      const propSplitted = prop.split('.'); // company.name
+      let act = attrValSplited[1] || '';
+      act = act.trim() || 'add';
 
-      const handler = event => {
-        // console.log(event);
-        let i = 1;
-        let obj = this;
-        for (const prop of propSplitted) {
-          if (i !== propSplitted.length) { obj[prop] = {}; obj = obj[prop]; }
-          else { obj[prop] = elem.value; }
-          i++;
-        }
-        if (bindTo === 'print') { this.rgPrint(prop); }
-      };
+      if (act == 'replace') { elem.removeAttribute('class'); }
+      for (const val of valArr) { elem.classList.add(val); }
 
-      elem.addEventListener('input', handler);
-      this.dataRgs.push({attrName, elem, handler, eventName: 'input'});
-      debug('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- dataRgs.length: ${this.dataRgs.length}`, 'navy');
+      debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${ctrlProp} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
+    }
+
+  }
+
+
+
+  /**
+   * data-rg-style="<controllerProperty> [@@ add|replace]"
+   * Parse the "data-rg-style" attribute. Set element style attribute.
+   * Examples:
+   * data-rg-style="myStyl" - add new styles to existing sytles
+   * data-rg-style="myStyl @@ add" - add new styles to existing sytles
+   * data-rg-style="myStyl @@ replace" - replace existing styles with new styles
+   * @param {string} controllerProp - controller property which defines "style" attribute
+   * @returns {void}
+   */
+  rgStyle(controllerProp) {
+    debug('rgStyle', '--------- rgStyle ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-style';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgStyle', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
+      const attrValSplited = attrVal.split(this.separator);
+
+      const ctrlProp = attrValSplited[0].trim();
+      const valObj = this[ctrlProp] || {}; // {fontSize: '21px', color: 'red'}
+
+      let act = attrValSplited[1] || '';
+      act = act.trim() || 'add';
+
+      if (act == 'replace') { elem.removeAttribute('style'); }
+
+      const styleProps = Object.keys(valObj);
+      for (const styleProp of styleProps) { elem.style[styleProp] = valObj[styleProp]; }
+
+      debug('rgStyle', `data-rg-style="${attrVal}" --- ctrlProp:: "${ctrlProp}" | styleProps:: "${styleProps}" | act:: "${act}"`, 'navy');
     }
 
   }
@@ -335,6 +450,69 @@ class Parse {
 
       debug('rgIf', `${prop}:: ${val} | act::"${act}"`, 'navy');
     }
+  }
+
+
+
+  /**
+   * data-rg-switch="<controllerProperty> [@@ multiple]"
+   * Parse the "data-rg-switch" attribute. Set element style attribute.
+   * Examples:
+   * data-rg-switch="ctrlprop" - ctrlprop is string, number or boolean
+   * data-rg-switch="ctrlprop @@ multiple" - ctrlprop is array of string, number or boolean
+   * Notice @@ multiple can select multiple switchcases.
+   * @param {string} controllerProp - controller property name
+   * @returns {void}
+   */
+  rgSwitch(controllerProp) {
+    debug('rgSwitch', '--------- rgSwitch ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-switch';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}="${controllerProp}"]`); }
+    debug('rgSwitch', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty @@ multiple'
+      const attrValSplited = attrVal.split(this.separator);
+
+      const isMultiple = !!attrValSplited[1] ? attrValSplited[1].trim() === 'multiple' : false;
+
+      const ctrlProp = attrValSplited[0].trim();
+      const val = this[ctrlProp] || ''; // string, number, boolean
+
+      // get data-rg-switchcase and data-rg-switchdefault attribute values
+      let switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');
+      let switchdefaultElem = elem.querySelector('[data-rg-switch] > [data-rg-switchdefault]');
+
+      // temporary save
+      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
+      if (!this.temp[tempVarName]) {
+        this.temp[tempVarName] = {switchcaseElems, switchdefaultElem};
+      } else {
+        switchcaseElems = this.temp[tempVarName].switchcaseElems;
+        switchdefaultElem = this.temp[tempVarName].switchdefaultElem;
+      }
+
+      // empty the element with data-rg-switch attribute
+      elem.innerHTML = '';
+
+      // set or delete data-rg-switchcase element
+      let isMatched = false; // is data-rg-switchcase value matched
+      for (const switchcaseElem of switchcaseElems) {
+        let switchcaseAttrVal = switchcaseElem.getAttribute('data-rg-switchcase');
+        switchcaseAttrVal = switchcaseAttrVal.trim();
+        if (!isMultiple && switchcaseAttrVal === val) { elem.innerHTML = switchcaseElem.outerHTML; isMatched = true; }
+        else if (isMultiple && val.indexOf(switchcaseAttrVal) !== -1) { elem.append(switchcaseElem); isMatched = true; }
+        else { switchcaseElem.remove(); }
+        debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --- val:: "${val}"`, 'navy');
+      }
+
+      if (!isMatched) { elem.innerHTML = switchdefaultElem.outerHTML; }
+
+    }
+
   }
 
 
@@ -437,6 +615,7 @@ class Parse {
   }
 
 
+
   /**
    * data-rg-repeat="<number>"
    * Parse the "data-rg-repeat" attribute. Repeat the element n times.
@@ -489,149 +668,6 @@ class Parse {
       debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
 
     }
-  }
-
-
-
-  /**
-   * data-rg-class="<controllerProperty> [@@ add|replace]"
-   * Parse the "data-rg-class" attribute. Set element class attribute.
-   * Examples:
-   * data-rg-class="myKlass" - add new classes to existing classes
-   * data-rg-class="myKlass @@ add" - add new classes to existing classes
-   * data-rg-class="myKlass @@ replace" - replace existing classes with new classes
-   * @param {string} controllerProp - controller property which defines "class" attribute
-   * @returns {void}
-   */
-  rgClass(controllerProp) {
-    debug('rgClass', '--------- rgClass ------', 'navy', '#B6ECFF');
-
-    const attrName = 'data-rg-class';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgClass', `found elements:: ${elems.length}`, 'navy');
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
-      const attrValSplited = attrVal.split(this.separator);
-
-      const ctrlProp = attrValSplited[0].trim();
-      const valArr = this[ctrlProp] || []; // ['my-bold', 'my-italic']
-
-      let act = attrValSplited[1] || '';
-      act = act.trim() || 'add';
-
-      if (act == 'replace') { elem.removeAttribute('class'); }
-      for (const val of valArr) { elem.classList.add(val); }
-
-      debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${ctrlProp} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
-    }
-
-  }
-
-
-
-  /**
-   * data-rg-style="<controllerProperty> [@@ add|replace]"
-   * Parse the "data-rg-style" attribute. Set element style attribute.
-   * Examples:
-   * data-rg-style="myStyl" - add new styles to existing sytles
-   * data-rg-style="myStyl @@ add" - add new styles to existing sytles
-   * data-rg-style="myStyl @@ replace" - replace existing styles with new styles
-   * @param {string} controllerProp - controller property which defines "style" attribute
-   * @returns {void}
-   */
-  rgStyle(controllerProp) {
-    debug('rgStyle', '--------- rgStyle ------', 'navy', '#B6ECFF');
-
-    const attrName = 'data-rg-style';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgStyle', `found elements:: ${elems.length}`, 'navy');
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
-      const attrValSplited = attrVal.split(this.separator);
-
-      const ctrlProp = attrValSplited[0].trim();
-      const valObj = this[ctrlProp] || {}; // {fontSize: '21px', color: 'red'}
-
-      let act = attrValSplited[1] || '';
-      act = act.trim() || 'add';
-
-      if (act == 'replace') { elem.removeAttribute('style'); }
-
-      const styleProps = Object.keys(valObj);
-      for (const styleProp of styleProps) { elem.style[styleProp] = valObj[styleProp]; }
-
-      debug('rgStyle', `data-rg-style="${attrVal}" --- ctrlProp:: "${ctrlProp}" | styleProps:: "${styleProps}" | act:: "${act}"`, 'navy');
-    }
-
-  }
-
-
-
-  /**
-   * data-rg-switch="<controllerProperty> [@@ multiple]"
-   * Parse the "data-rg-switch" attribute. Set element style attribute.
-   * Examples:
-   * data-rg-switch="ctrlprop" - ctrlprop is string, number or boolean
-   * data-rg-switch="ctrlprop @@ multiple" - ctrlprop is array of string, number or boolean
-   * Notice @@ multiple can select multiple switchcases.
-   * @param {string} controllerProp - controller property name
-   * @returns {void}
-   */
-  rgSwitch(controllerProp) {
-    debug('rgSwitch', '--------- rgSwitch ------', 'navy', '#B6ECFF');
-
-    const attrName = 'data-rg-switch';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}="${controllerProp}"]`); }
-    debug('rgSwitch', `found elements:: ${elems.length}`, 'navy');
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty @@ multiple'
-      const attrValSplited = attrVal.split(this.separator);
-
-      const isMultiple = !!attrValSplited[1] ? attrValSplited[1].trim() === 'multiple' : false;
-
-      const ctrlProp = attrValSplited[0].trim();
-      const val = this[ctrlProp] || ''; // string, number, boolean
-
-      // get data-rg-switchcase and data-rg-switchdefault attribute values
-      let switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');
-      let switchdefaultElem = elem.querySelector('[data-rg-switch] > [data-rg-switchdefault]');
-
-      // temporary save
-      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-      if (!this.temp[tempVarName]) {
-        this.temp[tempVarName] = {switchcaseElems, switchdefaultElem};
-      } else {
-        switchcaseElems = this.temp[tempVarName].switchcaseElems;
-        switchdefaultElem = this.temp[tempVarName].switchdefaultElem;
-      }
-
-      // empty the element with data-rg-switch attribute
-      elem.innerHTML = '';
-
-      // set or delete data-rg-switchcase element
-      let isMatched = false; // is data-rg-switchcase value matched
-      for (const switchcaseElem of switchcaseElems) {
-        let switchcaseAttrVal = switchcaseElem.getAttribute('data-rg-switchcase');
-        switchcaseAttrVal = switchcaseAttrVal.trim();
-        if (!isMultiple && switchcaseAttrVal === val) { elem.innerHTML = switchcaseElem.outerHTML; isMatched = true; }
-        else if (isMultiple && val.indexOf(switchcaseAttrVal) !== -1) { elem.append(switchcaseElem); isMatched = true; }
-        else { switchcaseElem.remove(); }
-        debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --- val:: "${val}"`, 'navy');
-      }
-
-      if (!isMatched) { elem.innerHTML = switchdefaultElem.outerHTML; }
-
-    }
-
   }
 
 
