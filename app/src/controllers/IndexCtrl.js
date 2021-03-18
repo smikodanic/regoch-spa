@@ -11,7 +11,19 @@ class IndexCtrl extends Controller {
     this.httpClient = app.sys.httpClient; // or new app.sys.HTTPClient()
     this.controllers = app.controllers;
 
+    const cookieOpts = {
+      domain: 'localhost',
+      path: '/',
+      expires: 5, // number of days or exact date
+      secure: false,
+      httpOnly: false,
+      sameSite: 'strict' // 'strict' for GET and POST, 'lax' only for POST
+    };
+    this.cookie = new app.sys.Cookie(cookieOpts, true);
+
     this.ifX = false;
+
+    this.cookieForm = new app.sys.Form('cookieF');
   }
 
 
@@ -123,6 +135,27 @@ class IndexCtrl extends Controller {
     // console.log(elem);
     // console.log(evt);
     elem.style.color = boja;
+  }
+
+
+  runCOOKIE() {
+    const cookieVal1 = this.cookieForm.getControl('cookieVal1');
+    const cookieVal2 = this.cookieForm.getControl('cookieVal2');
+    const cookieMethod = this.cookieForm.getControl('cookieMethod');
+    console.log(cookieMethod, ':', cookieVal1, cookieVal2);
+
+    switch(cookieMethod) {
+    case 'put': { this.cookie.put(cookieVal1, cookieVal2); break; }
+    case 'putObject': { this.cookie.putObject('someObj', {x:22,y:'str'}); break; }
+    case 'getAll': { console.log(this.cookie.getAll()); break; }
+    case 'get': { console.log(this.cookie.get(cookieVal1)); break; }
+    case 'getObject': { console.log(this.cookie.getObject('someObj')); break; }
+    case 'remove': { this.cookie.remove(cookieVal1); break; }
+    case 'removeAll': { this.cookie.removeAll(); break; }
+    case 'empty': { this.cookie.empty(cookieVal1); break; }
+    case 'exists': { console.log(this.cookie.exists(cookieVal1)); break; }
+    }
+
   }
 
 

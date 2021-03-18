@@ -5,6 +5,7 @@ const Load = require('./Load');
 const Parse = require('./Parse');
 const router = require('./router');
 const util = require('./util');
+const Cookie = require('./Cookie');
 
 
 class App {
@@ -64,6 +65,7 @@ class App {
     this.sys.httpClient = new HTTPClient(httpClientCnf);
     this.sys.load = new Load(this.CONF.app.baseURL, this.sys.httpClient);
     this.sys.parse = new Parse();
+    this.sys.Cookie = Cookie;
   }
 
 

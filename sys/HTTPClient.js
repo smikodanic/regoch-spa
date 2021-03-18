@@ -137,12 +137,6 @@ class HTTPClient {
   }
 
 
-  /********* DEFINE INTERCEPTOR ************/
-  defineInterceptor(intercept) {
-    this.intercept = intercept;
-  }
-
-
 
   /********** REQUESTS *********/
 
@@ -156,7 +150,6 @@ class HTTPClient {
    * @returns {Promise<any>}
    */
   askOnce(url, method = 'GET', body_obj) {
-    if (!!this.intercept) { this.intercept(url, method, body_obj); }
 
     // answer (response object)
     const answer = {
