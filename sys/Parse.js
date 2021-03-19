@@ -402,13 +402,12 @@ class Parse {
 
 
   /**
-   * data-rg-if="<controllerProperty> [@@ hide|remove|empty]"
+   * data-rg-if="<controllerProperty> [@@ hide|remove]"
    * Parse the "data-rg-if" attribute. Show or hide the HTML element.
    * Examples:
    * data-rg-if="ifAge" - hide the element
    * data-rg-if="ifAge @@ hide" - hide the element
    * data-rg-if="ifAge @@ remove" - remove the element
-   * data-rg-if="ifAge @@ empty" - empty the element content
    * @param {string} attrvalue - attribute value (limit parsing to only one HTML element)
    * @returns {void}
    */
@@ -446,12 +445,12 @@ class Parse {
       }
 
       // show or hide element
-      let act = attrValSplited[1] || 'hide'; // hide | remove | empty
+      let act = attrValSplited[1] || 'hide'; // hide | remove
       act = act.trim();
 
       // set data-rg-ifparent
       const parent = elem.parentNode;
-      if (act !== 'hide') {
+      if (act == 'remove') {
         parent.setAttribute('data-rg-ifparent', '');
       }
 
@@ -460,12 +459,9 @@ class Parse {
         !!val ? elem.style.visibility = 'visible' : elem.style.visibility = 'hidden'; // elem exists but not visible
       } else if (act === 'remove') {
         !!val ? '' : this._commentElement(elem);
-      } else if (act === 'empty') {
-        !!val ? '' : elem.innerHTML = '';
       }
 
-
-      debug('rgIf', `${prop}:: ${val} | act::"${act}"`, 'navy');
+      debug('rgIf', `${prop} = ${val} | act::"${act}"`, 'navy');
     }
   }
 
@@ -806,16 +802,16 @@ class Parse {
     const ifParentElems = document.querySelectorAll(`[data-rg-ifparent]`);
     const parser = new DOMParser();
     for (const ifParentElem of ifParentElems) {
+      console.log('ifParentElem.childNodes::', ifParentElem.childNodes);
       for (const child of ifParentElem.childNodes) {
-        if (child.nodeType === 8) { // 8 is comment https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-          const elemStr = child.nodeValue; // <p data-rg-if="ifX @@ remove">company name</p>
+        const elemStr = child.nodeValue; // <p data-rg-if="ifX @@ remove">company name</p>
+        if (child.nodeType === 8 && /data-rg-if/.test(elemStr)) { // 8 is comment https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
           const doc = parser.parseFromString(elemStr, 'text/html');
           const elem = doc.querySelector('[data-rg-if');
-          console.log(elemStr, ifParentElem, elem, child);
+          console.log(ifParentElem, child, elem);
           if (!!elem) {
             ifParentElem.insertBefore(elem, child);
             child.remove();
-            // break;
           }
         }
       }

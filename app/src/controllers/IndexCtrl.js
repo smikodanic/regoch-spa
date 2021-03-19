@@ -81,9 +81,6 @@ class IndexCtrl extends Controller {
     this.ifX = !this.ifX;
     console.log('toggleIF::', this.ifX);
     this.rgIf('ifX');
-
-    await this.util.sleep(2100);
-    this.toggleIF();
   }
 
 
