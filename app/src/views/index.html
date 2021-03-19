@@ -29,8 +29,16 @@
 
       <br><br>
       <h4>IF</h4>
-      <button data-rg-click="toggleIF()">toggle IF</button>
-      <p data-rg-if="ifX">company name</p>
+      <div>
+       <button data-rg-click="toggleIF()">toggle IF</button>
+        <br>- start
+        <p data-rg-if="ifX @@ remove">company name 1</p>
+        <b>- middle</b>
+        <p data-rg-if="ifX @@ remove">company name 2</p>
+        -- end
+      </div>
+        <p data-rg-if="ifX @@ remove">company name 3</p>
+
 
       <br><br>
       <h4>FOR</h4>
@@ -96,10 +104,10 @@
         <option value="two">two</option>
         <option value="three">three</option>
       </select>
-      <ol>
-        <li data-rg-if="ifOne">ONE</li>
-        <li data-rg-if="ifTwo">TWO</li>
-        <li data-rg-if="ifThree">THREE</li>
+      <ol data-rg-switch="mySelect">
+        <li data-rg-switchcase="one">ONE</li>
+        <li data-rg-switchcase="two">TWO</li>
+        <li data-rg-switchcase="three">THREE</li>
       </ol>
 
 

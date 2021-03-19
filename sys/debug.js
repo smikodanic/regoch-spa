@@ -11,7 +11,7 @@ module.exports = (tip, text, color, background) => {
     rgPrint: false,
     rgClass: false,
     rgStyle: false,
-    rgIf: false,
+    rgIf: true,
     rgSwitch: false,
     rgFor: false,
     rgRepeat: false,

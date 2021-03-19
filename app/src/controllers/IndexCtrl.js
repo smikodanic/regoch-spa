@@ -77,9 +77,13 @@ class IndexCtrl extends Controller {
 
 
 
-  toggleIF() {
+  async toggleIF() {
     this.ifX = !this.ifX;
+    console.log('toggleIF::', this.ifX);
     this.rgIf('ifX');
+
+    await this.util.sleep(2100);
+    this.toggleIF();
   }
 
 
@@ -140,19 +144,24 @@ class IndexCtrl extends Controller {
   runCHANGE() {
     console.log(this.mySelect);
     // reset all
+    this.ifs = {
+      one: false,
+      two: false,
+      three:false
+    };
     this.ifOne = false;
     this.ifTwo = false;
     this.ifThree = false;
 
     // set one
     switch(this.mySelect) {
-    case 'one': { this.ifOne = true; break; }
-    case 'two': { this.ifTwo = true; break; }
-    case 'three': { this.ifThree = true; break; }
+    case 'one': { this.ifs.one = true; break; }
+    case 'two': { this.ifs.two = true; break; }
+    case 'three': { this.ifs.three = true; break; }
     }
 
     // render
-    this.rgIf();
+    this.rgSwitch('mySelect');
   }
 
 

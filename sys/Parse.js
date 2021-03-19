@@ -102,6 +102,7 @@ class Parse {
           const funcArgs = this._getFuncArgs(matched[2], elem, event);
           if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
           this[funcName](...funcArgs);
+          debug('rgClick', `${funcName} | ${funcArgs}`, 'orange');
         } catch (err) {
           throw new Error(err.message);
         }
@@ -138,6 +139,7 @@ class Parse {
           const funcArgs = this._getFuncArgs(matched[2], elem, event);
           if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
           this[funcName](...funcArgs);
+          debug('rgChange', `${funcName} | ${funcArgs}`, 'orange');
         } catch (err) {
           throw new Error(err.message);
         }
@@ -185,6 +187,7 @@ class Parse {
             const funcArgs = this._getFuncArgs(matched[2], elem, event);
             if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
             this[funcName](...funcArgs);
+            debug('rgEvt', `${funcName} | ${funcArgs}`, 'orange');
           } catch (err) {
             throw new Error(err.message);
           }
@@ -235,6 +238,7 @@ class Parse {
           i++;
         }
         if (bindTo === 'print') { this.rgPrint(prop); }
+        debug('rgSet', `controller property:: ${prop} = ${obj[prop]}`, 'orange');
       };
 
       elem.addEventListener('input', handler);
@@ -420,6 +424,9 @@ class Parse {
       attrDef = `${attrName}^="${attrvalue}"`;
     }
 
+    this._uncommentAll();
+
+
     const elems = document.querySelectorAll(`[${attrDef}]`);
     debug('rgIf', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
@@ -441,12 +448,22 @@ class Parse {
       // show or hide element
       let act = attrValSplited[1] || 'hide'; // hide | remove | empty
       act = act.trim();
-      if (!!val) { elem.style.visibility = 'visible'; }
-      else {
-        if (act === 'hide') { elem.style.visibility = 'hidden'; } // elem exists but not visible
-        else if (act === 'remove') { elem.remove();  } // elem removed from the DOM
-        else if (act === 'empty') { elem.innerHTML = '';  } // elem exists but content is emptied
+
+      // set data-rg-ifparent
+      const parent = elem.parentNode;
+      if (act !== 'hide') {
+        parent.setAttribute('data-rg-ifparent', '');
       }
+
+
+      if (act === 'hide') {
+        !!val ? elem.style.visibility = 'visible' : elem.style.visibility = 'hidden'; // elem exists but not visible
+      } else if (act === 'remove') {
+        !!val ? '' : this._commentElement(elem);
+      } else if (act === 'empty') {
+        !!val ? '' : elem.innerHTML = '';
+      }
+
 
       debug('rgIf', `${prop}:: ${val} | act::"${act}"`, 'navy');
     }
@@ -509,7 +526,7 @@ class Parse {
         debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --- val:: "${val}"`, 'navy');
       }
 
-      if (!isMatched) { elem.innerHTML = switchdefaultElem.outerHTML; }
+      if (!isMatched && !!switchdefaultElem) { elem.innerHTML = switchdefaultElem.outerHTML; }
 
     }
 
@@ -749,7 +766,6 @@ class Parse {
   }
 
 
-
   /**
    * Create and clean function arguments
    * @param {string[]} args - array of function arguments: [x,y,...restArgs]
@@ -767,6 +783,43 @@ class Parse {
         return arg;
       });
     return funcArgs;
+  }
+
+
+  /**
+   * Wrap element in the comment.
+   * @param {Element} elem - HTML element DOM object
+   * @returns {void}
+   */
+  _commentElement(elem) {
+    const comment = document.createComment(elem.outerHTML); // define comment
+    elem.parentNode.insertBefore(comment, elem); // insert comment above elem
+    elem.remove();
+  }
+
+
+  /**
+   * Remove the comment from the element.
+   * @returns {void}
+   */
+  _uncommentAll() {
+    const ifParentElems = document.querySelectorAll(`[data-rg-ifparent]`);
+    const parser = new DOMParser();
+    for (const ifParentElem of ifParentElems) {
+      for (const child of ifParentElem.childNodes) {
+        if (child.nodeType === 8) { // 8 is comment https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+          const elemStr = child.nodeValue; // <p data-rg-if="ifX @@ remove">company name</p>
+          const doc = parser.parseFromString(elemStr, 'text/html');
+          const elem = doc.querySelector('[data-rg-if');
+          console.log(elemStr, ifParentElem, elem, child);
+          if (!!elem) {
+            ifParentElem.insertBefore(elem, child);
+            child.remove();
+            // break;
+          }
+        }
+      }
+    }
   }
 
 
