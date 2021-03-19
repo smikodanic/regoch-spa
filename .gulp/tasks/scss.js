@@ -11,6 +11,8 @@ const sourcemaps = require('gulp-sourcemaps'); //create .map files for scss debu
 const cssmin = require('gulp-cssmin'); //create .min files
 const rename = require('gulp-rename');
 
+
+
 // header - banner
 const header = require('gulp-header');
 const pkg = require('../../package.json');
@@ -22,26 +24,24 @@ const banner = ['/*!\n',
 banner.join();
 
 
-
-// compile scss to css files and
-// create .map files foer easier debugging of scss files
+// compile scss to css files and create .map files for easier debugging of scss files
 const compile = async () => {
   gulp.src('app/src/assets/scss/app.scss')
-    .pipe(sourcemaps.init())
-    // .pipe(sass({outputStyle: 'compressed'}))
+    .on('error', err => { console.log('SCSS Error::', err.message); })
+    .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sass())
+    // .pipe(sass({outputStyle: 'compressed'}))
     .pipe(header(banner, {pkg: pkg}))
     .pipe(sourcemaps.write({includeContent: false}))
-    .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(autoprefixer())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('app/dist/assets/css'));
 };
 
 
-// create .min files
+// create app.min.css file
 const minify = async () => {
-  gulp.src('app/dist/assets/css/*.css')
+  await gulp.src('app/dist/assets/css/app.css')
     .pipe(cssmin())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest('app/dist/assets/css'));
@@ -50,5 +50,6 @@ const minify = async () => {
 
 module.exports = async () => {
   await compile();
+  await new Promise(resolve => setTimeout(resolve, 700));
   await minify();
 };

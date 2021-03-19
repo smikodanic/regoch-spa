@@ -10,7 +10,7 @@ module.exports.start = async () => {
   global.nodeProc.stdout.on('data', async dataBuff => {
     const dataStr = dataBuff.toString();
     if (!!dataStr) {
-      await new Promise(resolve => setTimeout(resolve, 2100));
+      await new Promise(resolve => setTimeout(resolve, 3400));
       console.log(dataStr);
     }
 
