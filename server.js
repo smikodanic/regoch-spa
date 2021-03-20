@@ -3,8 +3,8 @@ const HTTPServer = require('./sys/HTTPServer.js');
 const httpOpts = {
   port: 4400,
   timeout: 5*60*1000, // if 0 never timeout
-  staticDir: '/app/dist',
-  indexFile: 'views/index.html',
+  indexFile: '/app/dist/views/index.html',
+  distDir: '/app/dist',
   assetsDir: '/app/assets',
   acceptEncoding: 'gzip', // gzip, deflate or ''
   headers: {

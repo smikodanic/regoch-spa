@@ -13,12 +13,13 @@ class HTTPServer {
    ** opts:
    * - port:number - HTTP Server port number
    * - timeout:number - ms of inactivity after ws will be closed. If 0 then the ws will never close. Default is 5 minutes.
-   * - staticDir:string - directory with the static files: html, css, js, images, ...
    * - indexFile:string - index html file, default "index.html"
+   * - distDir:string - directory with the dist static files: html, css, js
+   * - assetsDir:string - directory with the assets static files: img, font, ...
    * - acceptEncoding:string - gzip or deflate
    * - headers:object - custom headers
    * - debug:boolean - print debug messages
-   * @param  {object} opts - options {port, timeout, staticDir, indexFile, acceptEncoding, headers, debug}
+   * @param  {object} opts - options {port, timeout, distDir, indexFile, assetsDir, acceptEncoding, headers, debug}
    * @returns {void}
    */
   constructor(opts) {
@@ -27,7 +28,8 @@ class HTTPServer {
       this.opts = opts;
       if (!this.opts.port) { throw new Error('The server port is not defined.'); }
       else if (this.opts.timeout === undefined) { this.opts.timeout = 5*60*1000; }
-      else if (!this.opts.staticDir) { throw new Error('Parameter "staticDir" is not defined.'); }
+      else if (!this.opts.indexFile) { throw new Error('Parameter "indexFile" is not defined.'); }
+      else if (!this.opts.distDir) { throw new Error('Parameter "distDir" is not defined.'); }
       else if (!this.opts.assetsDir) { throw new Error('Parameter "assetsDir" is not defined.'); }
       else if (!this.opts.headers) { this.opts.headers = []; }
     } else {
@@ -98,13 +100,13 @@ class HTTPServer {
       let filePath;
       if (!fileExt) { // if request doesn't contain file extension, for example / or /some/thing/ request index.html
         const reqFile = this.opts.indexFile || 'index.html';
-        filePath = path.join(process.cwd(), this.opts.staticDir, reqFile);
+        filePath = path.join(process.cwd(), reqFile);
       } else if (/^\/assets\//.test(urlNoQuery)) { // if request contains /assets/
         const reqFile = urlNoQuery;
         filePath = path.join(process.cwd(), this.opts.assetsDir, '../', reqFile);
       } else { // if there's file extension for example /script.js or /some/style.css
         const reqFile = urlNoQuery;
-        filePath = path.join(process.cwd(), this.opts.staticDir, reqFile);
+        filePath = path.join(process.cwd(), this.opts.distDir, reqFile);
       }
 
 
