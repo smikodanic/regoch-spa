@@ -34,7 +34,7 @@ task('watcher', async () => {
 
   await watch([
     'app/src/**/*.html'
-  ], series('htmlMinify', 'compileViews'));
+  ], series('htmlMinify', 'compileViews', 'browserifyMinifyMap'));
 
   await watch([
     'app/src/**/*.scss'
