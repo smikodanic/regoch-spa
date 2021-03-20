@@ -95,55 +95,6 @@ class View {
 
 
   /**
-   * Load includes i.e. from /views/inc/ directory
-   */
-  async loadViewinc(doc) {
-    const attrName = 'data-rg-viewinc';
-
-    // get HTML elements
-    const elems = !!doc ? doc.querySelectorAll(`[${attrName}]`) : document.querySelectorAll(`[${attrName}]`);
-    debug('loadViewinc', `--------- loadViewinc ---------`, '#8B0892', '#EDA1F1');
-    if(debug().loadViewinc) { console.log('elems::', elems); }
-    if (!!elems && !elems.length) { return; }
-
-    /////// 1.st level
-    for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName);
-      const viewPath = `inc/${attrVal}`;
-
-      const cnt = this.fetchCompiledView(viewPath);
-      const contentStr = cnt.contentStr; // String
-      const contentDOM = cnt.contentDOM; // Document
-
-      /////// 2.nd level
-      /*
-      if (/data-rg-viewinc/.test(contentStr)) {
-        const elems2 = contentDOM.querySelectorAll(`[${attrName}]`);
-        if(debug().loadViewinc) { console.log('elems2::', elems2); }
-        for (const elem2 of elems2) {
-          const attrVal2 = elem2.getAttribute(attrName);
-          const viewPath2 = `inc/${attrVal2}`;
-          const cnt2 = this.fetchCompiledView(viewPath2);
-          elem2.innerHTML = cnt2.contentStr;
-        }
-        contentStr = contentDOM.querySelector('body').innerHTML;
-      }
-      */
-      console.log(/data-rg-viewinc/.test(contentStr), viewPath, contentStr);
-      if (/data-rg-viewinc/.test(contentStr)) {
-        this.loadViewinc(contentDOM);
-        elem.innerHTML = cnt.contentStr;
-      }
-
-
-      elem.innerHTML = contentStr;
-    }
-
-  }
-
-
-
-  /**
    * Include HTML components with the data-rg-inc attribute.
    * examples:
    * <header data-rg-inc="/html/header.html">---header---</header>
@@ -152,78 +103,7 @@ class View {
    * <header data-rg-inc="/html/header.html @@ prepend">---header---</header>
    * <header data-rg-inc="/html/header.html @@ append">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
-   * @param {Document|DocumentFragment|HTMLElement} domObj - the whole document or html string
-   * @returns {void}
-   */
-  async rgInc2(domObj) {
-    debug('rgInc', '\n--------- rgInc ------');
-    const elems = domObj.querySelectorAll('[data-rg-inc]');
-
-    for (const elem of elems) {
-      // extract attribute data
-      const attrValue = elem.getAttribute('data-rg-inc');
-      const path_act_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator);
-      const path = !!path_act_cssSel && !!path_act_cssSel.length ? '/views/inc/' + path_act_cssSel[0] : '';
-      const act = !!path_act_cssSel && path_act_cssSel.length >= 2 ? path_act_cssSel[1] : 'inner';
-      const cssSel = !!path_act_cssSel && path_act_cssSel.length === 3 ? path_act_cssSel[2] : '';
-      if(debug().rgInc) { console.log('path_act_cssSel:: ', path, act, cssSel); }
-      if (!path) { return; }
-
-      // get html file
-      const url = new URL(path, this.baseURIhost).toString(); // resolve the URL
-      const answer = await this.hc.askHTML(url, cssSel);
-      if (!answer.res.content | answer.status !== 200) { return; }
-
-      // convert answer's content from dom object to string
-      const contentDOM = answer.res.content.dom; // DocumentFragment|HTMLElement
-      let contentStr = '';
-      if (contentDOM.constructor.name === 'HTMLElement') {
-        contentStr = contentDOM.outerHTML;
-      } else if (contentDOM.constructor.name === 'DocumentFragment') {
-        contentDOM.childNodes.forEach(node => {
-          // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-          if (node.nodeType === 1) { contentStr += node.outerHTML; }
-          else if (node.nodeType === 3){ contentStr += node.data; }
-        });
-      }
-      if(debug().rgInc) { console.log('contentStr::', contentStr, '\n\n'); }
-
-
-      // load contentStr into the document
-      const sel = `[data-rg-inc="${attrValue}"]`;
-      const el = document.querySelector(sel);
-      if (act === 'inner') {
-        el.innerHTML = contentStr;
-      } else if (act === 'outer') {
-        el.outerHTML = contentStr;
-      } else if (act === 'prepend') {
-        el.prepend(contentDOM);
-      } else if (act === 'append') {
-        el.append(contentDOM);
-      } else {
-        el.innerHTML = contentStr;
-      }
-
-
-      // continue to parse
-      if (/data-rg-inc/.test(contentStr)) {
-        this.rgInc(contentDOM);
-      }
-
-    }
-
-  }
-
-
-  /**
-   * Include HTML components with the data-rg-inc attribute.
-   * examples:
-   * <header data-rg-inc="/html/header.html">---header---</header>
-   * <header data-rg-inc="/html/header.html @@  @@ h2 > small">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ inner">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ prepend">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ append">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ outer @@ b:nth-child(2)"></header>
    * @param {Document|DocumentFragment|HTMLElement} domObj - the whole document or html string
    * @returns {void}
    */
@@ -258,16 +138,21 @@ class View {
 
       console.log('NAME', contentDOM.constructor.name);
       // convert answer's content from dom object to string
-      if (/HTMLElement/.test(contentDOM.constructor.name)) {
-        contentStr = contentDOM.outerHTML;
-      } else if (/HTMLDocument|DocumentFragment/.test(contentDOM.constructor.name)) {
+      if (/HTMLDocument|DocumentFragment/.test(contentDOM.constructor.name)) {
         contentDOM.childNodes.forEach(node => {
           // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
           if (node.nodeType === 1) { contentStr += node.outerHTML; }
           else if (node.nodeType === 3){ contentStr += node.data; }
         });
+      } else {
+        contentStr = contentDOM.outerHTML;
       }
-      if(debug().rgInc) { console.log('contentStr::', contentStr, '\n\n'); }
+
+
+      if(debug().rgInc) {
+        console.log('constructor.name', contentDOM.constructor.name);
+        console.log('contentStr::', contentStr, '\n');
+      }
 
 
       // load contentStr into the document

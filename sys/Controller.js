@@ -1,3 +1,4 @@
+const { promises } = require('node:fs');
 const Parse = require('./Parse');
 
 
@@ -25,8 +26,6 @@ class Controller extends Parse {
   async render(trx) {
     this.parseListeners();
     this.parseNonListeners();
-    this.loadViewinc(); // defined in View.js
-    this.rgInc(document); // defined in View.js
   }
 
   async parseListeners() {
@@ -38,6 +37,8 @@ class Controller extends Parse {
   }
 
   async parseNonListeners() {
+    this.rgInc(document); // defined in View.js
+    await new Promise(resolve => setTimeout(resolve, 100));
     this.rgPrint();
     this.rgClass();
     this.rgStyle();
