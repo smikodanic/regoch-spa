@@ -1,4 +1,4 @@
-const { Controller } = require('../../../sys');
+const { Controller } = require('../../../.sys');
 
 
 class NotfoundCtrl extends Controller {

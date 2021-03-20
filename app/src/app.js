@@ -1,4 +1,4 @@
-const App = require('../../sys/App');
+const App = require('../../.sys/App');
 
 const routesCnf = require('./conf/routesCnf');
 const appCnf = require('./conf/appCnf');
