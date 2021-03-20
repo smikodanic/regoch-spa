@@ -2,7 +2,9 @@
   "compile": {
     "views": [
       "inc/footer.html",
-      "inc/header.html"
+      "inc/header.html",
+      "inc/testInc1.html",
+      "inc/testInc2.html"
     ]
   }
 }

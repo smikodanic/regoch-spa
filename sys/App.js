@@ -1,8 +1,6 @@
 const eventEmitter = require('./eventEmitter');
 const Form = require('./Form');
 const HTTPClient = require('./HTTPClient');
-const Load = require('./Load');
-const Parse = require('./Parse');
 const router = require('./router');
 const util = require('./util');
 const Cookie = require('./Cookie');
@@ -24,13 +22,6 @@ class App {
    * @param {any} value
    */
   conf(name, value) {
-    if (name === 'app') {
-      const requiredFields = ['baseURL'];
-      const fields = Object.keys(value) || [];
-      for (const requiredField of requiredFields) {
-        if (fields.indexOf(requiredField) === -1) { throw new Error(`The property "${requiredField}" is required in the app configuration.`); }
-      }
-    }
     this.CONF[name] = value;
     return this;
   }
@@ -57,15 +48,8 @@ class App {
   }
 
 
-  system(httpClientCnf) {
-    this.sys.eventEmitter = eventEmitter;
-    this.sys.util = util;
-    this.sys.Form = Form;
-    this.sys.HTTPClient = HTTPClient;
-    this.sys.httpClient = new HTTPClient(httpClientCnf);
-    this.sys.load = new Load(this.CONF.app.baseURL, this.sys.httpClient);
-    this.sys.parse = new Parse();
-    this.sys.Cookie = Cookie;
+  system() {
+    this.sys = { eventEmitter, util, Form, HTTPClient, Cookie};
   }
 
 
@@ -74,9 +58,7 @@ class App {
    * @param  {string[][]} Ctrls
    */
   controller(Ctrls) {
-    for(const Ctrl of Ctrls) {
-      this.controllers[Ctrl.name] = new Ctrl(this);
-    }
+    for(const Ctrl of Ctrls) { this.controllers[Ctrl.name] = new Ctrl(this); }
     return this;
   }
 

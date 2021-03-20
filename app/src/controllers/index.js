@@ -1,7 +1,7 @@
-const IndexCtrl = require('./IndexCtrl');
+const HomeCtrl = require('./HomeCtrl');
 const NotfoundCtrl = require('./NotfoundCtrl');
 
 module.exports = [
-  IndexCtrl,
+  HomeCtrl,
   NotfoundCtrl
 ];

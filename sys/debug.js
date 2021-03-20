@@ -11,14 +11,15 @@ module.exports = (tip, text, color, background) => {
     rgPrint: false,
     rgClass: false,
     rgStyle: false,
-    rgIf: true,
+    rgIf: false,
     rgSwitch: false,
     rgFor: false,
     rgRepeat: false,
     rgElem: false,
 
-    // Load.js
+    // View.js
     loadView: false,
+    loadViewinc: true,
 
     // Form.js
     setControl: false,

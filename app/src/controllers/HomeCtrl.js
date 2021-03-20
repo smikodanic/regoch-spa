@@ -1,12 +1,12 @@
-const { Controller } = require('../../../.sys');
+const { Controller } = require('../../../sys');
 
 
-class IndexCtrl extends Controller {
+module.exports = class HomeCtrl extends Controller {
 
   constructor(app) {
     super();
     console.log('HOME constructor');
-    this.load = app.sys.load;
+    this.view = app.sys.view;
     this.util = app.sys.util;
     this.httpClient = app.sys.httpClient; // or new app.sys.HTTPClient()
     this.controllers = app.controllers;
@@ -30,7 +30,8 @@ class IndexCtrl extends Controller {
   async prerender(trx) {
     console.log('HOME prerender', trx);
     // console.log(this.controllers.FormCtrl); // access the specific controller in the controller
-    // await this.load.view('header', 'inc/header.html', 'h2 > small', 'sibling');
+    await this.loadView('#home', 'pages/home/home.html');
+    // await this.view.load('#home', 'home.html', 'img', 'sibling');
   }
 
 
@@ -39,7 +40,4 @@ class IndexCtrl extends Controller {
   }
 
 
-}
-
-
-module.exports = IndexCtrl;
+};

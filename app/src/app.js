@@ -1,4 +1,4 @@
-const App = require('../../.sys/App');
+const App = require('../../sys/App');
 
 const routesCnf = require('./conf/routesCnf');
 const appCnf = require('./conf/appCnf');
@@ -16,7 +16,7 @@ app
   .const('myStr', 'some thing')
   .const('myObj', {a: 22})
   .freeze();
-app.system(httpClientCnf);
+app.system();
 app
   .controller(Ctrls)
   .routes(routesCnf)

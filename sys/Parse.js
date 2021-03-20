@@ -1,4 +1,5 @@
 const eventEmitter = require('./eventEmitter');
+const View = require('./View');
 const debug = require('./debug');
 
 
@@ -6,9 +7,10 @@ const debug = require('./debug');
 /**
  * Parse HTML elements with the "data-rg-" attribute
  */
-class Parse {
+class Parse extends View {
 
   constructor() {
+    super();
     this.dataRgs = []; // [{attrName, elem, handler}] -- attribute name, element with the data-rg-... attribute and its corresponding handler
     this.separator = '@@';
     this.temp = {}; // controller temporary variable (exists untill controller exists)

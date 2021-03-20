@@ -1,4 +1,4 @@
 // route definitions
 module.exports = [
-  ['when', '/', 'IndexCtrl']
+  ['when', '/', 'HomeCtrl']
 ];
