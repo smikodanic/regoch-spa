@@ -26,6 +26,7 @@ class Controller extends Parse {
     this.parseListeners();
     this.parseNonListeners();
     this.loadViewinc(); // defined in View.js
+    this.rgInc(document); // defined in View.js
   }
 
   async parseListeners() {
