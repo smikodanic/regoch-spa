@@ -103,24 +103,33 @@ class View {
     // get HTML elements
     const elems = document.querySelectorAll(`[${attrName}]`);
     debug('loadViewinc', `--------- loadViewinc ---------`, '#8B0892', '#EDA1F1');
-    if(debug().loadViewinc) { console.log('elem::', elems); }
+    if(debug().loadViewinc) { console.log('elems::', elems); }
     if (!!elems && !elems.length) { return; }
 
+    /////// 1.st level
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
       const viewPath = `inc/${attrVal}`;
 
       const cnt = this.fetchCompiledView(viewPath);
-      const contentStr = cnt.contentStr; // String
+      let contentStr = cnt.contentStr; // String
       const contentDOM = cnt.contentDOM; // Document
-      console.log(viewPath, contentDOM, /data-rg-viewinc/.test(contentStr), elem);
+
+      /////// 2.nd level
+      if (/data-rg-viewinc/.test(contentStr)) {
+        const elems2 = contentDOM.querySelectorAll(`[${attrName}]`);
+        if(debug().loadViewinc) { console.log('elems2::', elems2); }
+        for (const elem2 of elems2) {
+          const attrVal2 = elem2.getAttribute(attrName);
+          const viewPath2 = `inc/${attrVal2}`;
+          const cnt2 = this.fetchCompiledView(viewPath2);
+          const contentStr2 = cnt2.contentStr;
+          elem2.innerHTML = contentStr2;
+        }
+        contentStr = contentDOM.querySelector('body').innerHTML;
+      }
 
       elem.innerHTML = contentStr;
-
-      if (/data-rg-viewinc/.test(contentStr)) {
-        // this.loadViewinc(contentDOM);
-      }
-      // debug('loadViewinc', `--------- ${viewPath} | ${contentStr} ---------`, '#8B0892');
     }
 
   }
