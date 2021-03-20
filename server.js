@@ -5,6 +5,7 @@ const httpOpts = {
   timeout: 5*60*1000, // if 0 never timeout
   staticDir: '/app/dist',
   indexFile: 'views/index.html',
+  assetsDir: '/app/assets',
   acceptEncoding: 'gzip', // gzip, deflate or ''
   headers: {
     // CORS Headers

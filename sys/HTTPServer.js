@@ -28,6 +28,7 @@ class HTTPServer {
       if (!this.opts.port) { throw new Error('The server port is not defined.'); }
       else if (this.opts.timeout === undefined) { this.opts.timeout = 5*60*1000; }
       else if (!this.opts.staticDir) { throw new Error('Parameter "staticDir" is not defined.'); }
+      else if (!this.opts.assetsDir) { throw new Error('Parameter "assetsDir" is not defined.'); }
       else if (!this.opts.headers) { this.opts.headers = []; }
     } else {
       throw new Error('HTTP options are not defined.');
@@ -46,7 +47,8 @@ class HTTPServer {
     // start HTTP Server
     this.httpServer = http.createServer((req, res) => {
 
-      const urlNoQuery = req.url.replace(/\?.+/, ''); // URL where query is removed, for example for example ?v=4.7.0
+      const reqURL = req.url;
+      const urlNoQuery = reqURL.trim().replace(/\?.+/, ''); // URL where query is removed, for example for example ?v=4.7.0
 
       // define Content-Type header and encoding according to file extension
       const mime = {
@@ -92,29 +94,23 @@ class HTTPServer {
       else if (/^map$/.test(fileExt) && /^js$/.test(fileExt2)) { contentType = mime.css_map; encoding = 'utf8';  }
 
 
-      // define requested file
-      let reqFile;
-      if (!fileExt) { // if request doesn't contain file extension, for example / or /some/thing/
-        reqFile = this.opts.indexFile || 'index.html';
-      } else { // if there's file extension for example /some.js or /some/thing.css
-        reqFile = urlNoQuery;
-      }
-
-
       // define file path
-      let filePath = path.join(process.cwd(), this.opts.staticDir, reqFile);
-
-      // prevent Single Page App to show Error 404 when URL is reloaded (click on browser's reload button)
-      if (!fs.existsSync(filePath) && !fileExt) {
-        const reqFileIndex = this.opts.indexFile || 'index.html';
-        filePath = path.join(process.cwd(), this.opts.staticDir, reqFileIndex);
+      let filePath;
+      if (!fileExt) { // if request doesn't contain file extension, for example / or /some/thing/ request index.html
+        const reqFile = this.opts.indexFile || 'index.html';
+        filePath = path.join(process.cwd(), this.opts.staticDir, reqFile);
+      } else if (/^\/assets\//.test(urlNoQuery)) { // if request contains /assets/
+        const reqFile = urlNoQuery;
+        filePath = path.join(process.cwd(), this.opts.assetsDir, '../', reqFile);
+      } else { // if there's file extension for example /script.js or /some/style.css
+        const reqFile = urlNoQuery;
+        filePath = path.join(process.cwd(), this.opts.staticDir, reqFile);
       }
 
 
       if (this.opts.debug) {
-        console.log('\n\nreq.url:: ', req.url);
+        console.log('\n\nrequested URL:: ', reqURL);
         console.log('urlNoQuery:: ', urlNoQuery);
-        console.log('reqFile:: ', reqFile);
         console.log('fileExt::', fileExt, 'fileExt2::', fileExt2, ' contentType::', contentType, ' encoding::', encoding);
         console.log('filePath:: ', filePath);
         console.log('acceptEncoding:: ', this.opts.acceptEncoding);
@@ -158,7 +154,7 @@ class HTTPServer {
 
       } else { // file doesn't exist
         const errMsg = `NOT FOUND: "${filePath}"`;
-        console.log(errMsg);
+        console.log('\x1b[31m' + errMsg + '\x1b[0m');
         res.writeHead(404, {'X-Error': errMsg});
         res.end();
       }

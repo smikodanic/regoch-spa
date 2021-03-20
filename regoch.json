@@ -2,8 +2,6 @@
   "compile": {
     "views": [
       "inc/footer.html",
-      "inc/footer2.html",
-      "inc/footer3.html",
       "inc/header.html"
     ]
   }

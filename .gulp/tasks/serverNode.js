@@ -9,11 +9,7 @@ module.exports.start = async () => {
   /*** EVENTS ***/
   global.nodeProc.stdout.on('data', async dataBuff => {
     const dataStr = dataBuff.toString();
-    if (!!dataStr) {
-      await new Promise(resolve => setTimeout(resolve, 3400));
-      console.log(dataStr);
-    }
-
+    console.log(dataStr);
   });
 
   global.nodeProc.stderr.on('data', dataBuff => {

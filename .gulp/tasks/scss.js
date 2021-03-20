@@ -26,7 +26,7 @@ banner.join();
 
 // compile scss to css files and create .map files for easier debugging of scss files
 const compile = async () => {
-  gulp.src('app/src/assets/scss/app.scss')
+  gulp.src('app/src/styles/app.scss')
     .on('error', err => { console.log('SCSS Error::', err.message); })
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sass())
@@ -35,16 +35,17 @@ const compile = async () => {
     .pipe(sourcemaps.write({includeContent: false}))
     .pipe(autoprefixer())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('app/dist/assets/css'));
+    .pipe(gulp.dest('app/dist/styles'));
 };
 
 
 // create app.min.css file
 const minify = async () => {
-  await gulp.src('app/dist/assets/css/app.css')
+  await gulp.src('app/dist/styles/app.css')
+    .on('error', err => { console.log('SCSS Error::', err.message); })
     .pipe(cssmin())
     .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest('app/dist/assets/css'));
+    .pipe(gulp.dest('app/dist/styles'));
 };
 
 
