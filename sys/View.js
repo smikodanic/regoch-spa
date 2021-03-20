@@ -114,7 +114,7 @@ class View {
     for (const elem of elems) {
       // extract attribute data
       const attrValue = elem.getAttribute('data-rg-inc');
-      const path_act_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator);
+      const path_act_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator); // remove empty spaces and leading /
       const viewPath = !!path_act_cssSel && !!path_act_cssSel.length ? 'inc/' + path_act_cssSel[0] : '';
       const act = !!path_act_cssSel && path_act_cssSel.length >= 2 ? path_act_cssSel[1] : 'inner';
       const cssSel = !!path_act_cssSel && path_act_cssSel.length === 3 ? path_act_cssSel[2] : '';
@@ -136,7 +136,6 @@ class View {
       }
 
 
-      console.log('NAME', contentDOM.constructor.name);
       // convert answer's content from dom object to string
       if (/HTMLDocument|DocumentFragment/.test(contentDOM.constructor.name)) {
         contentDOM.childNodes.forEach(node => {
@@ -156,12 +155,17 @@ class View {
 
 
       // load contentStr into the document
-      const sel = `[data-rg-inc="${attrValue}"]`;
-      const el = document.querySelector(sel);
+      const el = document.querySelector(`[data-rg-inc="${attrValue}"]`);
       if (act === 'inner') {
         el.innerHTML = contentStr;
       } else if (act === 'outer') {
         el.outerHTML = contentStr;
+      } else if (act === 'sibling') {
+        const div = document.createElement('div');
+        div.innerHTML = contentStr;
+        div.setAttribute('data-rg-incsibling', '');
+        if (!!elem.nextSibling) { elem.nextSibling.remove(); }
+        elem.parentNode.insertBefore(div, elem.nextSibling);
       } else if (act === 'prepend') {
         el.prepend(contentDOM);
       } else if (act === 'append') {
