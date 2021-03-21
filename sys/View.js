@@ -149,7 +149,7 @@ class View {
 
 
       if(debug().rgInc) {
-        console.log('constructor.name', contentDOM.constructor.name);
+        console.log('contentDOM.constructor.name', contentDOM.constructor.name);
         console.log('contentStr::', contentStr, '\n');
       }
 

@@ -7,7 +7,7 @@ const debug = require('./debug');
 /**
  * Parse HTML elements with the "data-rg-" attribute
  */
-class Parse extends View {
+class RGparser extends View {
 
   constructor() {
     super();
@@ -824,4 +824,4 @@ class Parse extends View {
 }
 
 
-module.exports = Parse;
+module.exports = RGparser;

@@ -1,6 +1,6 @@
 module.exports = (tip, text, color, background) => {
   const debugOpts = {
-    // Parse.js
+    // RGparser.js
     rgKILL: false,
     rgHref: false,
     rgClick: false,
