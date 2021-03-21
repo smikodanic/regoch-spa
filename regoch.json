@@ -3,8 +3,8 @@
     "views": [
       "inc/footer.html",
       "inc/header.html",
-      "inc/testInc1.html",
-      "inc/testInc2.html"
+      "pages/shared/top.html",
+      "pages/home/bottom.html"
     ]
   }
 }

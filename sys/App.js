@@ -77,9 +77,8 @@ class App {
         const ctrlName = routeCnf[2]; // 'Page1Ctrl'
         const ctrl = this.controllers[ctrlName];
         router.when(route, ctrl);
-      }
-      else if (cmd === 'notFound') {
-        const ctrlName = routeCnf[1]; // 'Page1Ctrl'
+      } else if (cmd === 'notFound') {
+        const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
         const ctrl = this.controllers[ctrlName];
         router.notFound(ctrl);
       }

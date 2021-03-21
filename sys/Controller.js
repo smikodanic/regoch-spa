@@ -23,6 +23,9 @@ class Controller extends RGparse {
    * @returns {Promise<void>}
    */
   async render(trx) {
+    this.rgInc(document); // defined in View.js
+    await new Promise(resolve => setTimeout(resolve, 400));
+
     this.parseListeners();
     this.parseNonListeners();
   }
@@ -36,8 +39,6 @@ class Controller extends RGparse {
   }
 
   async parseNonListeners() {
-    this.rgInc(document); // defined in View.js
-    await new Promise(resolve => setTimeout(resolve, 100));
     this.rgPrint();
     this.rgClass();
     this.rgStyle();

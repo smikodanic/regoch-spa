@@ -41,7 +41,8 @@ class View {
     const elem = document.querySelector(attrSel);
     debug('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
     if(debug().loadView) { console.log('elem::', elem); }
-    if (!elem || !viewPath) { return; }
+    if (!elem) { throw new Error(`Element ${attrSel} not found`); }
+    if (!viewPath){ throw new Error(`View path is not defined.`); }
 
 
 
@@ -104,7 +105,7 @@ class View {
     const elem = document.querySelector(attrSel);
     debug('loadView', `--------- emptyView ${attrSel} | ${dest} ---------`, '#8B0892', '#EDA1F1');
     if(debug().loadView) { console.log('elem::', elem); }
-    if (!elem) { return; }
+    if (!elem) { throw new Error(`Element ${attrSel} not found`); }
 
     // empty the content
     if (dest === 'inner') {
@@ -142,8 +143,9 @@ class View {
    * @returns {void}
    */
   async rgInc(domObj) {
-    debug('rgInc', '--------- rgInc ------', '#8B0892', '#EDA1F1');
     const elems = domObj.querySelectorAll('[data-rg-inc]');
+    if (!elems.length) { return; }
+    debug('rgInc', '--------- rgInc ------', '#8B0892', '#EDA1F1');
 
     for (const elem of elems) {
       // extract attribute data
@@ -254,7 +256,7 @@ class View {
     const url = new URL(path, this.baseURIhost).toString(); // resolve the URL
     const answer = await this.httpClient.askHTML(url, cssSel);
     const content = answer.res.content;
-    if (answer.status !== 200 || !content) { return; }
+    if (answer.status !== 200 || !content) { throw new Error(`Status isn't 200 or content is empty for ${viewPath}`); }
 
     // convert answer's content from dom object to string
     const contentStr = answer.res.content.str; // string

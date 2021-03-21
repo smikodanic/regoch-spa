@@ -74,7 +74,7 @@ class RGparser extends View {
 
       elem.addEventListener('click', handler);
       this.dataRgs.push({attrName, elem, handler, eventName: 'click'});
-      debug('rgHref', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${elem.localName}`, 'orange');
+      debug('rgHref', `pushed::  tag: ${elem.localName} | href="${elem.pathname}" | total: ${this.dataRgs.length}`, 'orange');
 
     }
   }
@@ -112,7 +112,7 @@ class RGparser extends View {
 
       elem.addEventListener('click', handler);
       this.dataRgs.push({attrName, elem, handler, eventName: 'click'});
-      debug('rgClick', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, 'orange');
+      debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${funcName}" | total: ${this.dataRgs.length}`, 'orange');
     }
 
   }
@@ -149,7 +149,7 @@ class RGparser extends View {
 
       elem.addEventListener('change', handler);
       this.dataRgs.push({attrName, elem, handler, eventName: 'change'});
-      debug('rgChange', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName}`, 'orange');
+      debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${funcName}" | total: ${this.dataRgs.length}`, 'orange');
     }
 
   }
@@ -197,7 +197,7 @@ class RGparser extends View {
 
         elem.addEventListener(eventName, handler);
         this.dataRgs.push({eventName, attrName, elem, handler, eventName});
-        debug('rgEvt', `pushed:: ${this.dataRgs.length} -- ${attrName} -- ${funcName} -- ${eventName}`, 'orange');
+        debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-change="${funcName}" | event: ${eventName} | total: ${this.dataRgs.length}`, 'orange');
       }
 
     }

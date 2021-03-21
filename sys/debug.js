@@ -2,7 +2,7 @@ module.exports = (tip, text, color, background) => {
   const debugOpts = {
     // RGparser.js
     rgKILL: false,
-    rgHref: false,
+    rgHref: true,
     rgClick: false,
     rgChange: false,
     rgEvt: false,
@@ -19,7 +19,7 @@ module.exports = (tip, text, color, background) => {
 
     // View.js
     loadView: false,
-    emptyView: true,
+    emptyView: false,
     rgInc: true,
 
     // Form.js
