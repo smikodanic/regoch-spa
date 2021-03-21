@@ -36,7 +36,6 @@ class Controller extends RGparse {
   }
 
   async parseNonListeners() {
-    console.log('this::', this);
     this.rgInc(document); // defined in View.js
     await new Promise(resolve => setTimeout(resolve, 100));
     this.rgPrint();

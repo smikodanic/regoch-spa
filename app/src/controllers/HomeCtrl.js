@@ -12,7 +12,8 @@ module.exports = class HomeCtrl extends Controller {
 
   async prerender(trx) {
     console.log('HOME prerender', trx);
-    await this.loadView('#home', 'pages/home/home.html');
+    await this.loadView('#home', 'pages/home/home.html', 'inner', 'span');
+    // await this.emptyView('#home', 'inner');
   }
 
 

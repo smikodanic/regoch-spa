@@ -384,7 +384,7 @@ class HTTPClient {
       });
     } else {
       dom = frag.querySelector(cssSel); // HTMLElement
-      str = dom.outerHTML;
+      str = !!dom ? dom.outerHTML : '';
     }
 
     answer.res.content = {dom, str};

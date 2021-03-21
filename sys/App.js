@@ -4,7 +4,6 @@ const HTTPClient = require('./HTTPClient');
 const router = require('./router');
 const util = require('./util');
 const Cookie = require('./Cookie');
-const View = require('./View');
 
 
 class App {
@@ -51,7 +50,7 @@ class App {
 
   system() {
     if (!!this.controllers && !!this.controllers.length) { throw new Error('System should be defined before controllers.'); }
-    this.sys = { eventEmitter, util, Form, HTTPClient, Cookie, view: new View()};
+    this.sys = { eventEmitter, util, Form, HTTPClient, Cookie };
   }
 
 

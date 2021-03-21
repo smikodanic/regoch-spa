@@ -22,7 +22,7 @@ class View {
         'content-type': 'text/html; charset=UTF-8'
       }
     };
-    this.hc = new HTTPClient(opts);
+    this.httpClient = new HTTPClient(opts);
   }
 
 
@@ -30,11 +30,11 @@ class View {
    * Load router views. View depends on routes.
    * @param {string} viewName - view name
    * @param {string} viewPath - view file path (relative to /view directory): '/some/file.html'
-   * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded'
    * @param {string} dest - destination where to place the view: inner, outer, sibling, prepend, append
+   * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded'
    * @returns {object}
    */
-  async loadView(viewName, viewPath, cssSel, dest) {
+  async loadView(viewName, viewPath, dest, cssSel) {
     const attrSel = `[data-rg-view="${viewName}"]`;
 
     // get HTML element
@@ -89,6 +89,40 @@ class View {
     }
 
     return {elem, contentStr, contentDOM, document};
+  }
+
+
+
+  /**
+   * Empty view.
+   * @param {string} viewName - view name
+   * @param {string} dest - destination where is the view placed: inner, outer, sibling, prepend, append
+   * @returns {void}
+   */
+  emptyView(viewName, dest) {
+    const attrSel = `[data-rg-view="${viewName}"]`;
+    const elem = document.querySelector(attrSel);
+    debug('loadView', `--------- emptyView ${attrSel} | ${dest} ---------`, '#8B0892', '#EDA1F1');
+    if(debug().loadView) { console.log('elem::', elem); }
+    if (!elem) { return; }
+
+    // empty the content
+    if (dest === 'inner') {
+      elem.innerHTML = '';
+    } else if (dest === 'outer') {
+      elem.outerHTML = '';
+    } else if (dest === 'sibling') {
+      const sibling = elem.nextSibling;
+      sibling.remove();
+    } else if (dest === 'prepend') {
+      const firstChild = elem.firstChild;
+      firstChild.remove();
+    } else if (dest === 'append') {
+      const lastChild = elem.lastChild;
+      lastChild.remove();
+    } else {
+      elem.innerHTML = '';
+    }
   }
 
 
@@ -218,7 +252,7 @@ class View {
   async fetchRemoteView(viewPath, cssSel) {
     const path = `/views/${viewPath}`;
     const url = new URL(path, this.baseURIhost).toString(); // resolve the URL
-    const answer = await this.hc.askHTML(url, cssSel);
+    const answer = await this.httpClient.askHTML(url, cssSel);
     const content = answer.res.content;
     if (answer.status !== 200 || !content) { return; }
 
