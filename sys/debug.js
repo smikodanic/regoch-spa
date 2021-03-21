@@ -2,7 +2,7 @@ module.exports = (tip, text, color, background) => {
   const debugOpts = {
     // RGparser.js
     rgKILL: false,
-    rgHref: true,
+    rgHref: false,
     rgClick: false,
     rgChange: false,
     rgEvt: false,
