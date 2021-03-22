@@ -1,10 +1,14 @@
 const App = require('../../sys/App');
 
+// conf
 const routesCnf = require('./conf/routesCnf');
 const appCnf = require('./conf/appCnf');
 const httpClientCnf = require('./conf/httpClientCnf');
 
-const Ctrls = require('./controllers');
+// controller
+const HomeCtrl = require('./controllers/HomeCtrl');
+const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
+const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 
 
 
@@ -18,7 +22,7 @@ app
   .freeze();
 app.system();
 app
-  .controller(Ctrls)
+  .controller([HomeCtrl, SinglePageAppCtrl, NotfoundCtrl])
   .routes(routesCnf)
   .run();
 

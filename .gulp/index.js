@@ -37,6 +37,10 @@ task('watcher', async () => {
   ], series('htmlMinify', 'compileViews', 'browserifyMinifyMap'));
 
   await watch([
+    'regoch.json'
+  ], series('compileViews'));
+
+  await watch([
     'app/src/**/*.scss'
   ], series('scss'));
 

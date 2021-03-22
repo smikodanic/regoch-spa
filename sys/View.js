@@ -29,7 +29,7 @@ class View {
   /**
    * Load router views. View depends on routes.
    * @param {string} viewName - view name
-   * @param {string} viewPath - view file path (relative to /view directory): '/some/file.html'
+   * @param {string} viewPath - view file path (relative to /view/ directory): '/some/file.html' is '/view/some/file.html'
    * @param {string} dest - destination where to place the view: inner, outer, sibling, prepend, append
    * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded'
    * @returns {object}
@@ -90,6 +90,25 @@ class View {
     }
 
     return {elem, contentStr, contentDOM, document};
+  }
+
+
+
+  /**
+   * Define multiple views.
+   * TIP: When using isAsync=false compile views in the regoch.json.
+   * @param {any[][]} viewDefs - array of arrays: [[viewName, viewPath, dest, cssSel]]
+   * @param {boolean} isAsync - to load asynchronously one by one
+   * @returns {void}
+   */
+  async loadViews(viewDefs, isAsync) {
+    for(const viewDef of viewDefs) {
+      const viewName = viewDef[0];
+      const viewPath = viewDef[1];
+      const dest = viewDef[2];
+      const cssSel = viewDef[3];
+      !!isAsync ? await this.loadView(viewName, viewPath, dest, cssSel) : this.loadView(viewName, viewPath, dest, cssSel);
+    }
   }
 
 

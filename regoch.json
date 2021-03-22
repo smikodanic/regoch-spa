@@ -4,7 +4,8 @@
       "inc/footer.html",
       "inc/header.html",
       "pages/shared/top.html",
-      "pages/home/bottom.html"
+      "pages/home/bottom.html",
+      "pages/home/main.html"
     ]
   }
 }

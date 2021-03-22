@@ -394,6 +394,23 @@ class HTTPClient {
 
 
   /**
+   *
+   * @param {string} url - https://api.example.com/someurl
+   * @returns {Promise<string>}
+   */
+  async askJS(url) {
+    this.setHeaders({
+      'content-type': 'application/javascript; charset=utf-8',
+      'accept': 'application/javascript'
+    });
+    const answer = await this.askOnce(url, 'GET');
+    answer.res.content = answer.res.content;
+    return answer;
+  }
+
+
+
+  /**
    * Stop the sent request.
    */
   kill() {

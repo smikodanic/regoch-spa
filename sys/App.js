@@ -75,10 +75,12 @@ class App {
       if (cmd === 'when') {
         const route = routeCnf[1]; // '/page1'
         const ctrlName = routeCnf[2]; // 'Page1Ctrl'
+        if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
         router.when(route, ctrl);
       } else if (cmd === 'notFound') {
         const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
+        if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
         router.notFound(ctrl);
       }
