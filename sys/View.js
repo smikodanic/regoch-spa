@@ -191,9 +191,10 @@ class View {
    * @returns {void}
    */
   async rgInc() {
-    const elems = document.querySelectorAll('[data-rg-inc]');
-    if (!elems.length) { return; }
+    const elems = document.querySelectorAll('[data-rg-inc]:not([data-rg-cin])');
     debug('rgInc', '--------- rgInc ------', '#8B0892', '#EDA1F1');
+    if(debug().rgInc) { console.log('elems.length::', elems.length); }
+    if (!elems.length) { return; }
 
     for (const elem of elems) {
       // extract attribute data
@@ -221,6 +222,10 @@ class View {
 
 
       if(debug().rgInc) { console.log('str::', str, '\n'); }
+
+
+      // set "data-rg-cin" attribute which marks already loaded HTML content
+      elem.setAttribute('data-rg-cin', '');
 
 
       // load content in the element
@@ -275,9 +280,9 @@ class View {
 
 
       // continue to parse
-      // if (/data-rg-inc/.test(contentStr)) {
-      //   this.rgInc(contentDOM);
-      // }
+      if (/data-rg-inc/.test(str)) {
+        this.rgInc();
+      }
 
     }
 
