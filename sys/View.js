@@ -28,6 +28,7 @@ class View {
 
   /**
    * Load router views. View depends on routes.
+   * Notice: When 'sibling', 'prepend' and 'append' is used comment and text nodes will not be injected (only HTML elements).
    * @param {string} viewName - view name
    * @param {string} viewPath - view file path (relative to /view/ directory): '/some/file.html' is '/view/some/file.html'
    * @param {string} dest - destination where to place the view: inner, outer, sibling, prepend, append
@@ -47,49 +48,75 @@ class View {
 
 
     // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
-    let contentStr, contentDOM;
-    if (!!viewsCompiled[viewPath]) { // HTML content from the variable
+    let nodes, str;
+    if (!!viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
       const cnt = this.fetchCompiledView(viewPath, cssSel);
-      contentStr = cnt.contentStr;
-      contentDOM = cnt.contentDOM;
+      nodes = cnt.nodes;
+      str = cnt.str;
       debug('loadView', '--from compiled JSON', '#8B0892');
     } else { // HTML content by requesting the server
       const cnt = await this.fetchRemoteView(viewPath, cssSel);
-      contentStr = cnt.contentStr;
-      contentDOM = cnt.contentDOM;
+      nodes = cnt.nodes;
+      str = cnt.str;
       debug('loadView', '--from server', '#8B0892');
     }
 
 
-    if(debug().loadView) { console.log('contentStr::', contentStr); }
-    if(debug().loadView) { console.log('contentDOM::', contentDOM); }
+    if(debug().loadView) { console.log('nodes::', nodes); }
+    if(debug().loadView) { console.log('str::', str); }
 
 
     // load content in the element
     if (dest === 'inner') {
-      elem.innerHTML = contentStr;
+      elem.innerHTML = str;
     } else if (dest === 'outer') {
-      elem.outerHTML = contentStr;
+      elem.outerHTML = str;
     } else if (dest === 'sibling') {
+      // remove all previous data-rg-viewgen elements
+      this.emptyView(viewName, dest);
+
+      // add new elements as siblings to the data-rg-view elem
       const parent = elem.parentNode;
       const sibling = elem.nextSibling;
-      if (sibling.isEqualNode(contentDOM)) { sibling.replaceWith(contentDOM); }
-      else { parent.insertBefore(contentDOM, sibling); }
+      for (const node of nodes) {
+        const nodeCloned = node.cloneNode(true); // clone the node because inserBefore will delete it
+        if (nodeCloned.nodeType === 1) {
+          nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+          parent.insertBefore(nodeCloned, sibling);
+        }
+      }
+
     } else if (dest === 'prepend') {
-      const firstChild = elem.firstChild;
-      const emptyNode = document.createTextNode('');
-      if (firstChild.isEqualNode(contentDOM)) { firstChild.replaceWith(emptyNode); }
-      elem.prepend(contentDOM);
+      // remove all previous data-rg-viewgen elements
+      this.emptyView(viewName, dest);
+
+      // prepend new elements to the data-rg-view elem
+      const i = nodes.length;
+      for (let i = nodes.length - 1; i >= 0; i--) {
+        const nodeCloned = nodes[i].cloneNode(true);
+        if (nodeCloned.nodeType === 1) {
+          nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+          elem.prepend(nodeCloned);
+        }
+      }
+
     } else if (dest === 'append') {
-      const lastChild = elem.lastChild;
-      const emptyNode = document.createTextNode('');
-      if (lastChild.isEqualNode(contentDOM)) { lastChild.replaceWith(emptyNode); }
-      elem.append(contentDOM);
+      // remove all previous data-rg-viewgen elements
+      this.emptyView(viewName, dest);
+
+      // append new elements to the data-rg-view elem
+      for (const node of nodes) {
+        const nodeCloned = node.cloneNode(true);
+        if (nodeCloned.nodeType === 1) {
+          nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+          elem.append(nodeCloned);
+        }
+      }
     } else {
-      elem.innerHTML = contentStr;
+      elem.innerHTML = str;
     }
 
-    return {elem, contentStr, contentDOM, document};
+    return {elem, str, nodes, document};
   }
 
 
@@ -132,14 +159,17 @@ class View {
     } else if (dest === 'outer') {
       elem.outerHTML = '';
     } else if (dest === 'sibling') {
-      const sibling = elem.nextSibling;
-      sibling.remove();
+      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) {
+        genElem.remove();
+      }
     } else if (dest === 'prepend') {
-      const firstChild = elem.firstChild;
-      firstChild.remove();
+      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) {
+        genElem.remove();
+      }
     } else if (dest === 'append') {
-      const lastChild = elem.lastChild;
-      lastChild.remove();
+      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) {
+        genElem.remove();
+      }
     } else {
       elem.innerHTML = '';
     }
@@ -158,82 +188,96 @@ class View {
    * <header data-rg-inc="/html/header.html @@ append">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ b:nth-child(2)"></header>
-   * @param {Document|DocumentFragment|HTMLElement} domObj - the whole document or html string
    * @returns {void}
    */
-  async rgInc(domObj) {
-    const elems = domObj.querySelectorAll('[data-rg-inc]');
+  async rgInc() {
+    const elems = document.querySelectorAll('[data-rg-inc]');
     if (!elems.length) { return; }
     debug('rgInc', '--------- rgInc ------', '#8B0892', '#EDA1F1');
 
     for (const elem of elems) {
       // extract attribute data
       const attrValue = elem.getAttribute('data-rg-inc');
-      const path_act_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator); // remove empty spaces and leading /
-      const viewPath = !!path_act_cssSel && !!path_act_cssSel.length ? 'inc/' + path_act_cssSel[0] : '';
-      const act = !!path_act_cssSel && path_act_cssSel.length >= 2 ? path_act_cssSel[1] : 'inner';
-      const cssSel = !!path_act_cssSel && path_act_cssSel.length === 3 ? path_act_cssSel[2] : '';
-      if(debug().rgInc) { console.log('path_act_cssSel:: ', viewPath, act, cssSel); }
+      const path_dest_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator); // remove empty spaces and leading /
+      const viewPath = !!path_dest_cssSel && !!path_dest_cssSel.length ? 'inc/' + path_dest_cssSel[0] : '';
+      const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
+      const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
+      if(debug().rgInc) { console.log('path_dest_cssSel:: ', viewPath, dest, cssSel); }
       if (!viewPath) { return; }
 
       // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
-      let contentStr = '', contentDOM;
-      if (!!viewsCompiled[viewPath]) { // HTML content from the variable
+      let nodes, str;
+      if (!!viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
         const cnt = this.fetchCompiledView(viewPath, cssSel);
-        // contentStr = cnt.contentStr;
-        contentDOM = cnt.contentDOM;
+        nodes = cnt.nodes;
+        str = cnt.str;
         debug('rgInc', '--from compiled JSON', '#8B0892');
       } else { // HTML content by requesting the server
         const cnt = await this.fetchRemoteView(viewPath, cssSel);
-        // contentStr = cnt.contentStr;
-        contentDOM = cnt.contentDOM;
+        nodes = cnt.nodes;
+        str = cnt.str;
         debug('rgInc', '--from server', '#8B0892');
       }
 
 
-      // convert answer's content from dom object to string
-      if (/HTMLDocument|DocumentFragment/.test(contentDOM.constructor.name)) {
-        contentDOM.childNodes.forEach(node => {
-          // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-          if (node.nodeType === 1) { contentStr += node.outerHTML; }
-          else if (node.nodeType === 3){ contentStr += node.data; }
-        });
+      if(debug().rgInc) { console.log('str::', str, '\n'); }
+
+
+      // load content in the element
+      if (dest === 'inner') {
+        elem.innerHTML = str;
+      } else if (dest === 'outer') {
+        elem.outerHTML = str;
+      } else if (dest === 'sibling') {
+      // remove all previous data-rg-viewgen elements
+        // this.emptyView(viewName, dest);
+
+        // add new elements as siblings to the data-rg-view elem
+        const parent = elem.parentNode;
+        const sibling = elem.nextSibling;
+        for (const node of nodes) {
+          const nodeCloned = node.cloneNode(true); // clone the node because inserBefore will delete it
+          if (nodeCloned.nodeType === 1) {
+            // nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+            parent.insertBefore(nodeCloned, sibling);
+          }
+        }
+
+      } else if (dest === 'prepend') {
+      // remove all previous data-rg-viewgen elements
+        // this.emptyView(viewName, dest);
+
+        // prepend new elements to the data-rg-view elem
+        const i = nodes.length;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+          const nodeCloned = nodes[i].cloneNode(true);
+          if (nodeCloned.nodeType === 1) {
+            // nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+            elem.prepend(nodeCloned);
+          }
+        }
+
+      } else if (dest === 'append') {
+      // remove all previous data-rg-viewgen elements
+        // this.emptyView(viewName, dest);
+
+        // append new elements to the data-rg-view elem
+        for (const node of nodes) {
+          const nodeCloned = node.cloneNode(true);
+          if (nodeCloned.nodeType === 1) {
+            // nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+            elem.append(nodeCloned);
+          }
+        }
       } else {
-        contentStr = contentDOM.outerHTML;
-      }
-
-
-      if(debug().rgInc) {
-        console.log('contentDOM.constructor.name', contentDOM.constructor.name);
-        console.log('contentStr::', contentStr, '\n');
-      }
-
-
-      // load contentStr into the document
-      const el = document.querySelector(`[data-rg-inc="${attrValue}"]`);
-      if (act === 'inner') {
-        el.innerHTML = contentStr;
-      } else if (act === 'outer') {
-        el.outerHTML = contentStr;
-      } else if (act === 'sibling') {
-        const div = document.createElement('div');
-        div.innerHTML = contentStr;
-        div.setAttribute('data-rg-incsibling', '');
-        if (!!elem.nextSibling) { elem.nextSibling.remove(); }
-        elem.parentNode.insertBefore(div, elem.nextSibling);
-      } else if (act === 'prepend') {
-        el.prepend(contentDOM);
-      } else if (act === 'append') {
-        el.append(contentDOM);
-      } else {
-        el.innerHTML = contentStr;
+        elem.innerHTML = str;
       }
 
 
       // continue to parse
-      if (/data-rg-inc/.test(contentStr)) {
-        this.rgInc(contentDOM);
-      }
+      // if (/data-rg-inc/.test(contentStr)) {
+      //   this.rgInc(contentDOM);
+      // }
 
     }
 
@@ -248,19 +292,23 @@ class View {
    * @returns {object}
    */
   fetchCompiledView(viewPath, cssSel) {
-    const contentStr = viewsCompiled[viewPath];
-
-    // convert HTML string to document-fragment object
+    // convert HTML string to Document
     const parser = new DOMParser();
-    const doc = parser.parseFromString(contentStr, 'text/html');
-    let contentDOM;
+    const doc = parser.parseFromString(viewsCompiled[viewPath], 'text/html');
+
+    // define nodes and string
+    let nodes; // array of DOM nodes (Node[])
+    let str; // HTML content as string (string)
     if (!cssSel) {
-      contentDOM = doc; // Document
+      nodes = doc.body.childNodes;
+      str = viewsCompiled[viewPath];
     } else {
-      contentDOM = doc.querySelector(cssSel); // HTMLElement
+      const elem = doc.querySelector(cssSel);
+      nodes = [elem];
+      str = !!elem ? elem.outerHTML : '';
     }
 
-    return {contentStr, contentDOM};
+    return {nodes, str};
   }
 
 
@@ -277,11 +325,10 @@ class View {
     const content = answer.res.content;
     if (answer.status !== 200 || !content) { throw new Error(`Status isn't 200 or content is empty for ${viewPath}`); }
 
-    // convert answer's content from dom object to string
-    const contentStr = answer.res.content.str; // string
-    const contentDOM = answer.res.content.dom; // DocumentFragment | HTMLElement|HTMLButtonElement...
+    const nodes = answer.res.content.nodes; // Node[]
+    const str = answer.res.content.str; // string
 
-    return {contentStr, contentDOM};
+    return {nodes, str};
   }
 
 

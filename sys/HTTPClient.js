@@ -361,33 +361,31 @@ class HTTPClient {
 
 
   /**
-   * Get whole HTML file or part marked with css selector.
-   * Notice that returned value is HTML DOM object.
+   * Get the HTML file content or part of it filtered by the css selector.
    * @param {string} url - http://example.com/page.html
    * @param {string} cssSel - css selector: div>p.alert
-   * @returns {Promise<{dom:DocumentFragment|HTMLElement, str:string}>}
+   * @returns {Promise<{Node[], string}>}
    */
   async askHTML(url, cssSel) {
     const answer = await this.askOnce(url);
-    const range = document.createRange();
-    const frag = range.createContextualFragment(answer.res.content);
 
-    // take part of the HTML
-    let dom;
-    let str = '';
+    // convert HTML string to Document
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(answer.res.content, 'text/html');
+
+    // define nodes and string
+    let nodes; // array of DOM nodes https://developer.mozilla.org/en-US/docs/Web/API/Node (Node[])
+    let str; // HTML content as string (string)
     if (!cssSel) {
-      dom = frag; // DocumentFragment
-      dom.childNodes.forEach(node => {
-        // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-        if (node.nodeType === 1) { str += node.outerHTML; }
-        else if (node.nodeType === 3){ str += node.data; }
-      });
+      nodes = doc.body.childNodes;
+      str = answer.res.content;
     } else {
-      dom = frag.querySelector(cssSel); // HTMLElement
-      str = !!dom ? dom.outerHTML : '';
+      const elem = doc.querySelector(cssSel);
+      nodes = [elem];
+      str = !!elem ? elem.outerHTML : '';
     }
 
-    answer.res.content = {dom, str};
+    answer.res.content = {nodes, str};
     return answer;
   }
 

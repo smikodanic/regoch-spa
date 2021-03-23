@@ -14,6 +14,7 @@ class SinglePageAppCtrl extends Controller {
 
 
   async prerender(trx) {
+    // await this.emptyView('#sibling', 'sibling');
     await this.loadView('#sibling', 'pages/single-page-app/sibling.html', 'sibling');
     // await this.loadViews([
     //   ['#top', 'pages/shared/top.html'],
