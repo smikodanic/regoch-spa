@@ -6,6 +6,24 @@ const debug = require('./debug');
 
 class View {
 
+  constructor() {
+    this.baseURIhost = `${window.location.protocol}//${window.location.host}`; // http://localhost:4400
+
+    const opts = {
+      encodeURI: true,
+      timeout: 21000,
+      retry: 0,
+      retryDelay: 1300,
+      maxRedirects: 0,
+      headers: {
+        'authorization': '',
+        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+        'content-type': 'text/html; charset=UTF-8'
+      }
+    };
+    this.httpClient = new HTTPClient(opts);
+  }
+
   /**
    * Parse elements with the data-rg-view attribute and load router views.
    * This method should be used in the controller.
@@ -295,24 +313,9 @@ class View {
    * @returns {object}
    */
   async fetchRemoteView(viewPath, cssSel) {
-    const opts = {
-      encodeURI: true,
-      timeout: 21000,
-      retry: 0,
-      retryDelay: 1300,
-      maxRedirects: 0,
-      headers: {
-        'authorization': '',
-        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-        'content-type': 'text/html; charset=UTF-8'
-      }
-    };
-    const httpClient = new HTTPClient(opts);
-
     const path = `/views/${viewPath}`; // /views/pages/home/main.html
-    const baseURIhost = `${window.location.protocol}//${window.location.host}`; // http://localhost:4400
-    const url = new URL(path, baseURIhost).toString(); // resolve the URL
-    const answer = await httpClient.askHTML(url, cssSel);
+    const url = new URL(path, this.baseURIhost).toString(); // resolve the URL
+    const answer = await this.httpClient.askHTML(url, cssSel);
     const content = answer.res.content;
     if (answer.status !== 200 || !content) { throw new Error(`Status isn't 200 or content is empty for ${viewPath}`); }
 
@@ -320,6 +323,54 @@ class View {
     const str = answer.res.content.str; // string
 
     return {nodes, str};
+  }
+
+
+
+  /************ LAZY LOADERS *********/
+  /**
+   * Create SCRIPT tags and execute js scripts.
+   * @param {string[]} urls - array of JS script URLs
+   */
+  lazyJS(urls) {
+    for (const url of urls) {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = url;
+      script.defer = true;
+      script.setAttribute('data-rg-lazy', '');
+      document.body.appendChild(script);
+    }
+  }
+
+
+  /**
+   * Remove SCRIPT tags with the data-rg-lazy attribute.
+   */
+  unlazyJS() {
+    const elems = document.querySelectorAll(`script[data-rg-lazy]`) || [];
+    for (const elem of elems) { elem.remove(); }
+  }
+
+
+  /**
+   * Do not create SCRIPT tags, just load js scripts.
+   * This can work only for local files due to CORS.
+   * @param {string[]} urls - array of JS script URLs
+   */
+  async loadJS(urls) {
+    for (let url of urls) {
+      // correct URL
+      url = url.trim();
+      if (!/^http/.test(url)) {
+        url = new URL(url, this.baseURIhost).toString(); // resolve the URL
+      }
+
+      const jsContents = [];
+      const answer = await this.hc.askJS(url);
+      jsContents.push(answer.res.content);
+      for (const jsContent of jsContents) { eval(jsContent); }
+    }
   }
 
 
