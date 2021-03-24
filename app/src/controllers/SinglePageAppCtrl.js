@@ -7,21 +7,19 @@ class SinglePageAppCtrl extends Controller {
   constructor(app) {
     super();
     console.log('SinglePageApp constructor');
-    console.log('app:', app);
     this.sys = app.sys;
     this.hc = new HTTPclient();
   }
 
 
   async prerender(trx) {
-    // await this.emptyView('#sibling', 'sibling');
-    await this.loadView('#sibling', 'pages/single-page-app/sibling.html', 'sibling');
-    // await this.loadViews([
-    //   ['#top', 'pages/shared/top.html'],
-    //   ['#bottom', 'pages/home/bottom.html'],
-    //   ['#main', 'pages/home/main.html'],
-    //   ['#footer', 'pages/home/footer.html']
-    // ]);
+    // document.querySelector('body').setAttribute('class', 'docs-page');
+    await this.loadView('#primary', 'pages/single-page-app/primary.html', 'sibling');
+    this.loadViews([
+      ['#sidebar', 'pages/single-page-app/sidebar.html'],
+      ['#article-introduction', 'pages/single-page-app/article-introduction.html'],
+      ['#footer', 'pages/single-page-app/footer.html']
+    ]);
 
   }
 

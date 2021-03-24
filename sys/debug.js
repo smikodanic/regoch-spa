@@ -20,7 +20,7 @@ module.exports = (tip, text, color, background) => {
     // View.js
     loadView: false,
     emptyView: false,
-    rgInc: true,
+    rgInc: false,
 
     // Form.js
     setControl: false,
