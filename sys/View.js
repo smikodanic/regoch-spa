@@ -6,46 +6,26 @@ const debug = require('./debug');
 
 class View {
 
-  constructor() {
-    const loc = window.location;
-    this.baseURIhost = `${loc.protocol}//${loc.host}`;
-
-    const opts = {
-      encodeURI: true,
-      timeout: 21000,
-      retry: 0,
-      retryDelay: 1300,
-      maxRedirects: 0,
-      headers: {
-        'authorization': '',
-        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-        'content-type': 'text/html; charset=UTF-8'
-      }
-    };
-    this.httpClient = new HTTPClient(opts);
-  }
-
-
   /**
-   * Load router views. View depends on routes.
-   * Notice: When 'sibling', 'prepend' and 'append' is used comment and text nodes will not be injected (only HTML elements).
-   * @param {string} viewName - view name
-   * @param {string} viewPath - view file path (relative to /view/ directory): '/some/file.html' is '/view/some/file.html'
+   * Parse elements with the data-rg-view attribute and load router views.
+   * This method should be used in the controller.
+   * When 'sibling', 'prepend' and 'append' is used comment and text nodes will not be injected (only HTML elements (nodeType === 1)).
+   * Example: <main data-rg-view="#main"></main> and in the controller await this.loadView('#sibling', 'pages/home/sibling.html', 'sibling');
+   * @param {string} viewName - view name, for eample: '#home'
+   * @param {string} viewPath - view file path (relative to /view/ directory): 'pages/home/main.html'
    * @param {string} dest - destination where to place the view: inner, outer, sibling, prepend, append
-   * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded'
-   * @returns {object}
+   * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
+   * @returns {elem:Element, str:string, nodes:Node[]}
    */
-  async loadView(viewName, viewPath, dest, cssSel) {
+  async loadView(viewName, viewPath, dest = 'inner', cssSel) {
     const attrSel = `[data-rg-view="${viewName}"]`;
 
-    // get HTML element
+    // get a HTML element with data-rg-view attribute
     const elem = document.querySelector(attrSel);
     debug('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
     if(debug().loadView) { console.log('elem::', elem); }
-    if (!elem) { throw new Error(`Element ${attrSel} not found`); }
+    if (!elem) { throw new Error(`Element ${attrSel} not found.`); }
     if (!viewPath){ throw new Error(`View path is not defined.`); }
-
-
 
     // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
     let nodes, str;
@@ -61,68 +41,60 @@ class View {
       debug('loadView', '--from server', '#8B0892');
     }
 
-
     if(debug().loadView) { console.log('nodes::', nodes); }
     if(debug().loadView) { console.log('str::', str); }
+
+
+    // empty content from the element by removing the data-rg-viewgen elements
+    this.emptyView(viewName, dest);
 
 
     // load content in the element
     if (dest === 'inner') {
       elem.innerHTML = str;
+
     } else if (dest === 'outer') {
       elem.outerHTML = str;
-    } else if (dest === 'sibling') {
-      // remove all previous data-rg-viewgen elements
-      this.emptyView(viewName, dest);
 
-      // add new elements as siblings to the data-rg-view elem
+    } else if (dest === 'sibling') {
       const parent = elem.parentNode;
       const sibling = elem.nextSibling;
       for (const node of nodes) {
-        const nodeCloned = node.cloneNode(true); // clone the node because inserBefore will delete it
+        const nodeCloned = node.cloneNode(true); // clone the node because insertBefore will delete it
         if (nodeCloned.nodeType === 1) {
-          nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+          nodeCloned.setAttribute('data-rg-viewgen', viewName); // mark generated nodes
           parent.insertBefore(nodeCloned, sibling);
         }
       }
 
     } else if (dest === 'prepend') {
-      // remove all previous data-rg-viewgen elements
-      this.emptyView(viewName, dest);
-
-      // prepend new elements to the data-rg-view elem
       const i = nodes.length;
       for (let i = nodes.length - 1; i >= 0; i--) {
         const nodeCloned = nodes[i].cloneNode(true);
         if (nodeCloned.nodeType === 1) {
-          nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+          nodeCloned.setAttribute('data-rg-viewgen', viewName);
           elem.prepend(nodeCloned);
         }
       }
 
     } else if (dest === 'append') {
-      // remove all previous data-rg-viewgen elements
-      this.emptyView(viewName, dest);
-
-      // append new elements to the data-rg-view elem
       for (const node of nodes) {
         const nodeCloned = node.cloneNode(true);
         if (nodeCloned.nodeType === 1) {
-          nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+          nodeCloned.setAttribute('data-rg-viewgen', viewName);
           elem.append(nodeCloned);
         }
       }
-    } else {
-      elem.innerHTML = str;
+
     }
 
-    return {elem, str, nodes, document};
+    return {elem, str, nodes};
   }
 
 
 
   /**
-   * Define multiple views.
+   * Load multiple views.
    * TIP: When using isAsync=false compile views in the regoch.json.
    * @param {any[][]} viewDefs - array of arrays: [[viewName, viewPath, dest, cssSel]]
    * @param {boolean} isAsync - to load asynchronously one by one
@@ -141,38 +113,31 @@ class View {
 
 
   /**
-   * Empty view.
+   * Empty a view.
    * @param {string} viewName - view name
-   * @param {string} dest - destination where is the view placed: inner, outer, sibling, prepend, append
+   * @param {string} dest - destination where the view was placed: inner, outer, sibling, prepend, append
    * @returns {void}
    */
-  emptyView(viewName, dest) {
+  emptyView(viewName, dest = 'inner') {
     const attrSel = `[data-rg-view="${viewName}"]`;
     const elem = document.querySelector(attrSel);
-    debug('loadView', `--------- emptyView ${attrSel} | ${dest} ---------`, '#8B0892', '#EDA1F1');
-    if(debug().loadView) { console.log('elem::', elem); }
-    if (!elem) { throw new Error(`Element ${attrSel} not found`); }
+    debug('emptyView', `--------- emptyView ${attrSel} | ${dest} ---------`, '#8B0892', '#EDA1F1');
+    if(debug().emptyView) { console.log('elem::', elem); }
+    if (!elem) { return; }
 
-    // empty the content
+    // empty the interpolated content
     if (dest === 'inner') {
       elem.innerHTML = '';
     } else if (dest === 'outer') {
       elem.outerHTML = '';
     } else if (dest === 'sibling') {
-      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) {
-        genElem.remove();
-      }
+      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) { genElem.remove(); }
     } else if (dest === 'prepend') {
-      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) {
-        genElem.remove();
-      }
+      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) { genElem.remove(); }
     } else if (dest === 'append') {
-      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) {
-        genElem.remove();
-      }
-    } else {
-      elem.innerHTML = '';
+      for (const genElem of document.querySelectorAll(`[data-rg-viewgen="${viewName}"`)) { genElem.remove(); }
     }
+
   }
 
 
@@ -180,7 +145,13 @@ class View {
 
   /**
    * Include HTML components with the data-rg-inc attribute.
-   * examples:
+   * Process:
+   * 1) Select all elements which has data-rg-inc but not data-rg-cin.
+   * 2) Put data-rg-cin which marks that the data-rg-inc element has beed parsed.
+   * 3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Every loaded element will have data-rg-incgen attribute to mark elements generated with data-rg.inc.
+   * 4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
+   * ) Multiple iterations will haeppen when data-rg-inc elements are nested. In case of multiple iterations only in the first iteration will be deleted all data-rg-incgen elements to make reset.
+   * Examples:
    * <header data-rg-inc="/html/header.html">---header---</header>
    * <header data-rg-inc="/html/header.html @@  @@ h2 > small">---header---</header>
    * <header data-rg-inc="/html/header.html @@ inner">---header---</header>
@@ -188,13 +159,21 @@ class View {
    * <header data-rg-inc="/html/header.html @@ append">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ b:nth-child(2)"></header>
+   * @param {boolean} delIncgens - delete data-rg-incgen elements (only in the first iteration)
    * @returns {void}
    */
-  async rgInc() {
+  async rgInc(delIncgens = true) {
     const elems = document.querySelectorAll('[data-rg-inc]:not([data-rg-cin])');
     debug('rgInc', '--------- rgInc ------', '#8B0892', '#EDA1F1');
-    if(debug().rgInc) { console.log('elems.length::', elems.length); }
+    debug('rgInc', `elems found: ${elems.length}`, '#8B0892');
     if (!elems.length) { return; }
+
+    // remove all data-rg-incgen elements
+    if (delIncgens) {
+      const elems2 = document.querySelectorAll('[data-rg-incgen]');
+      debug('rgInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
+      for (const elem2 of elems2) { elem2.remove(); }
+    }
 
     for (const elem of elems) {
       // extract attribute data
@@ -220,69 +199,58 @@ class View {
         debug('rgInc', '--from server', '#8B0892');
       }
 
-
-      if(debug().rgInc) { console.log('str::', str, '\n'); }
-
-
-      // set "data-rg-cin" attribute which marks already loaded HTML content
-      elem.setAttribute('data-rg-cin', '');
+      if(debug().rgInc) {
+        console.log('elem::', elem);
+        console.log('str::', str, '\n\n');
+      }
 
 
       // load content in the element
       if (dest === 'inner') {
         elem.innerHTML = str;
+
       } else if (dest === 'outer') {
         elem.outerHTML = str;
-      } else if (dest === 'sibling') {
-      // remove all previous data-rg-viewgen elements
-        // this.emptyView(viewName, dest);
 
-        // add new elements as siblings to the data-rg-view elem
+      } else if (dest === 'sibling') {
         const parent = elem.parentNode;
         const sibling = elem.nextSibling;
         for (const node of nodes) {
           const nodeCloned = node.cloneNode(true); // clone the node because inserBefore will delete it
           if (nodeCloned.nodeType === 1) {
-            // nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+            nodeCloned.setAttribute('data-rg-incgen', ''); // add attribute data-rg-incgen to mark generated nodes
             parent.insertBefore(nodeCloned, sibling);
           }
         }
 
       } else if (dest === 'prepend') {
-      // remove all previous data-rg-viewgen elements
-        // this.emptyView(viewName, dest);
-
-        // prepend new elements to the data-rg-view elem
         const i = nodes.length;
         for (let i = nodes.length - 1; i >= 0; i--) {
           const nodeCloned = nodes[i].cloneNode(true);
           if (nodeCloned.nodeType === 1) {
-            // nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+            nodeCloned.setAttribute('data-rg-incgen', '');
             elem.prepend(nodeCloned);
           }
         }
 
       } else if (dest === 'append') {
-      // remove all previous data-rg-viewgen elements
-        // this.emptyView(viewName, dest);
-
-        // append new elements to the data-rg-view elem
         for (const node of nodes) {
           const nodeCloned = node.cloneNode(true);
           if (nodeCloned.nodeType === 1) {
-            // nodeCloned.setAttribute('data-rg-viewgen', viewName); // add attribute data-rg-viewgen to mark generated nodes
+            nodeCloned.setAttribute('data-rg-incgen', '');
             elem.append(nodeCloned);
           }
         }
-      } else {
-        elem.innerHTML = str;
+
       }
 
 
-      // continue to parse
-      if (/data-rg-inc/.test(str)) {
-        this.rgInc();
-      }
+      // set "data-rg-cin" attribute which marks that the content is included in the data-rg-inc element and parse process is finished
+      elem.setAttribute('data-rg-cin', '');
+
+
+      // continue with the next parse iteration (when data-rg-inc elements are nested)
+      if (/data-rg-inc/.test(str)) { this.rgInc(false); }
 
     }
 
@@ -290,10 +258,13 @@ class View {
 
 
 
+
+
+  /*************** HTML CONTENT FETCHERS *****************/
   /**
    * Fetch view from a compiled file (../app/dist/views/compiled.json).
-   * @param {string} viewPath - view file path (relative to /view directory): '/some/file.html'
-   * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded'
+   * @param {string} viewPath - view file path (relative to /view/ directory): 'pages/home/main.html'
+   * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
    * @returns {object}
    */
   fetchCompiledView(viewPath, cssSel) {
@@ -319,14 +290,29 @@ class View {
 
   /**
    * Fetch view by sending a HTTP request to the server.
-   * @param {string} viewPath - view file path (relative to /view directory): '/some/file.html'
-   * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded'
+   * @param {string} viewPath - view file path (relative to /view/ directory): 'pages/home/main.html'
+   * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
    * @returns {object}
    */
   async fetchRemoteView(viewPath, cssSel) {
-    const path = `/views/${viewPath}`;
-    const url = new URL(path, this.baseURIhost).toString(); // resolve the URL
-    const answer = await this.httpClient.askHTML(url, cssSel);
+    const opts = {
+      encodeURI: true,
+      timeout: 21000,
+      retry: 0,
+      retryDelay: 1300,
+      maxRedirects: 0,
+      headers: {
+        'authorization': '',
+        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+        'content-type': 'text/html; charset=UTF-8'
+      }
+    };
+    const httpClient = new HTTPClient(opts);
+
+    const path = `/views/${viewPath}`; // /views/pages/home/main.html
+    const baseURIhost = `${window.location.protocol}//${window.location.host}`; // http://localhost:4400
+    const url = new URL(path, baseURIhost).toString(); // resolve the URL
+    const answer = await httpClient.askHTML(url, cssSel);
     const content = answer.res.content;
     if (answer.status !== 200 || !content) { throw new Error(`Status isn't 200 or content is empty for ${viewPath}`); }
 
