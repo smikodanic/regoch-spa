@@ -13,7 +13,13 @@ class SinglePageAppCtrl extends Controller {
 
 
   async prerender(trx) {
-    // document.querySelector('body').setAttribute('class', 'docs-page');
+    // await this.loadHead('pages/single-page-app/head.html', 'inner'); // will cause flicker
+
+    this.setTitle('Regoch Single Page Application Framework');
+    this.setDescription('The Regoch SPA is framework for developing single page, web applications. Very simple for use and extremly fast.');
+    this.setKeywords('regoch, spa, single page app, web applications');
+    this.setLang('en');
+
     await this.loadView('#primary', 'pages/single-page-app/primary.html', 'sibling');
     this.loadViews([
       ['#sidebar', 'pages/single-page-app/sidebar.html'],

@@ -331,7 +331,7 @@ class Page extends DataRg {
 
   /************ JS LOADERS *********/
   /**
-   * Create SCRIPT tags and execute js scripts.
+   * Create <script> tags and execute js scripts.
    * @param {string[]} urls - array of JS script URLs
    */
   lazyJS(urls) {
@@ -356,7 +356,7 @@ class Page extends DataRg {
 
 
   /**
-   * Do not create SCRIPT tags, just load js scripts.
+   * Do not create <script> tags, just load js scripts.
    * This can work only for local files due to CORS.
    * @param {string[]} urls - array of JS script URLs
    */
@@ -373,6 +373,144 @@ class Page extends DataRg {
       jsContents.push(answer.res.content);
       for (const jsContent of jsContents) { eval(jsContent); }
     }
+  }
+
+
+
+
+  /************ CSS LOADERS *********/
+  /**
+   * Create <link rel="stylesheet"> tags and load CSS.
+   * Usually use it in the prerender() controller method.
+   * @param {string[]} urls - array of CSS file URLs
+   */
+  loadCSS(urls) {
+    for (const url of urls) {
+      const linkCSS = document.createElement('link');
+      linkCSS.setAttribute('rel', 'stylesheet');
+      linkCSS.setAttribute('href', url);
+      linkCSS.defer = true;
+      document.head.appendChild(linkCSS);
+    }
+  }
+
+  /**
+   * Remove <link rel="stylesheet"> tags and unload CSS.
+   * Usually use it in the prerender() controller method.
+   * @param {string[]} urls - array of CSS file URLs
+   */
+  unloadCSS(urls) {
+    for (const url of urls) {
+      const linkCSS = document.head.querySelector(`link[rel="stylesheet"][href="${url}"]`);
+      linkCSS.remove();
+    }
+  }
+
+
+
+
+  /*************** PAGE HEAD *************/
+  /**
+   * Set the text in the <title> tag.
+   * @param {string} title
+   */
+  setTitle(title) {
+    document.title = title;
+  }
+
+  /**
+   * Set the page description.
+   * @param {string} desc
+   */
+  setDescription(desc) {
+    const elem = document.head.querySelector('meta[name="description"]');
+    if (!elem) { throw new Error('The meta[name="description"] tag is not placed in the HTML file.'); }
+    elem.setAttribute('content', desc);
+  }
+
+  /**
+   * Set the page keywords.
+   * @param {string} kys - for example: 'regoch, app, database'
+   */
+  setKeywords(kys) {
+    const elem = document.head.querySelector('meta[name="keywords"]');
+    if (!elem) { throw new Error('The meta[name="keywords"] tag is not placed in the HTML file.'); }
+    elem.setAttribute('content', kys);
+  }
+
+
+  /**
+   * Set the document language.
+   * @param {string} langCode - 'en' | 'hr' | 'de' | ...
+   */
+  setLang(langCode) {
+    const elem = document.querySelector('html');
+    elem.setAttribute('lang', langCode);
+  }
+
+
+  /**
+   * Load HTML and replace current content in the <head> tag.
+   * @param {string} viewPath - view file path (relative to /view/ directory): 'pages/home/main.html'
+   * @param {string} dest - destination where to place the view: inner, prepend, append
+   */
+  async loadHead(viewPath, dest = 'inner') {
+    // get the <head> HTML element
+    const elem = document.querySelector('head');
+    debug('loadHead', `--------- loadHead -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
+    if(debug().loadView) { console.log('elem::', elem); }
+    if (!elem) { throw new Error(`Element HEAD not found.`); }
+    if (!viewPath){ throw new Error(`View path is not defined.`); }
+
+    // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
+    let nodes, str;
+    console.log(viewsCompiled);
+    if (!!viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
+      const cnt = this.fetchCompiledView(viewPath);
+      nodes = cnt.nodes;
+      str = cnt.str;
+      debug('loadHead', '--from compiled JSON', '#8B0892');
+    } else { // HTML content by requesting the server
+      const cnt = await this.fetchRemoteView(viewPath);
+      nodes = cnt.nodes;
+      str = cnt.str;
+      debug('loadHead', '--from server', '#8B0892');
+    }
+
+    if(debug().loadHead) { console.log('nodes::', nodes); }
+    if(debug().loadHead) { console.log('str::', str); }
+
+
+    // remove previously generated elements, i.e. elements with the data-rg-headgen attribute
+    for (const genElem of document.querySelectorAll(`[data-rg-headgen`)) { genElem.remove(); }
+
+
+    // load content in the head
+    if (dest === 'inner') {
+      elem.innerHTML = str;
+
+    } else if (dest === 'prepend') {
+      const i = nodes.length;
+      for (let i = nodes.length - 1; i >= 0; i--) {
+        const nodeCloned = nodes[i].cloneNode(true);
+        if (nodeCloned.nodeType === 1) {
+          nodeCloned.setAttribute('data-rg-headgen', '');
+          elem.prepend(nodeCloned);
+        }
+      }
+
+    } else if (dest === 'append') {
+      for (const node of nodes) {
+        const nodeCloned = node.cloneNode(true);
+        if (nodeCloned.nodeType === 1) {
+          nodeCloned.setAttribute('data-rg-headgen', '');
+          elem.append(nodeCloned);
+        }
+      }
+
+    }
+
+    return {elem, str, nodes};
   }
 
 
