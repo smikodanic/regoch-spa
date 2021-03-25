@@ -8,6 +8,5 @@ module.exports = [
   ['when', '/', 'HomeCtrl'],
   ['when', '/single-page-app', 'SinglePageAppCtrl'],
   ['notfound', 'NotfoundCtrl'],
-  ['do', log1, log2],
-  ['redirect', '/websocket-server', '/']
+  ['do', log1, log2]
 ];
