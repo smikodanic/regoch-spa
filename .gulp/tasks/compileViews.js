@@ -4,11 +4,14 @@
 const fse = require('fs-extra');
 const path = require('path');
 const { minify } = require('html-minifier'); // https://github.com/kangax/html-minifier
-const regochJson = require('../../regoch.json');
+
 
 module.exports = async () => {
-  const files = regochJson.compile.views;
   const cwd = process.cwd();
+  const regochJsonPath = path.join(cwd, 'regoch.json');
+  const regochJson = require(regochJsonPath);
+  const files = regochJson.compile.views;
+  console.log(files);
 
   let views = {};
   for (const file of files) {
@@ -19,12 +22,10 @@ module.exports = async () => {
     views[file] = content;
   }
 
-  // console.log(views);
-
   const fileDest = path.join(cwd, 'app/dist/views/compiled.json');
   await fse.ensureFile(fileDest);
   await fse.writeFile(fileDest, JSON.stringify(views, null, 2), {encoding: 'utf8'});
 
-
+  delete require.cache[regochJsonPath];
 }
 

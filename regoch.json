@@ -5,7 +5,10 @@
       "inc/footer.html",
       "pages/shared/top.html",
       "pages/home/bottom.html",
-      "pages/home/main.html"
+      "pages/home/main.html",
+      "pages/single-page-app/head.html"
     ]
   }
 }
+
+
