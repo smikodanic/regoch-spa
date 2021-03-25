@@ -1,7 +1,7 @@
-const RGparse = require('./RGparse');
+const Page = require('./Page');
 
 
-class Controller extends RGparse {
+class Controller extends Page {
 
   constructor() {
     super();
@@ -23,7 +23,7 @@ class Controller extends RGparse {
    * @returns {Promise<void>}
    */
   async render(trx) {
-    this.rgInc(true); // defined in View.js
+    this.loadInc(true); // defined in Page.js
     await new Promise(resolve => setTimeout(resolve, 400));
 
     this.parseListeners();

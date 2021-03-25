@@ -25,7 +25,7 @@ class SinglePageAppCtrl extends Controller {
 
 
   async postrender(trx) {
-    console.log('SinglePageApp postrender', trx, this.dataRgs);
+    console.log('SinglePageApp postrender', trx, this.rgListeners);
 
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',

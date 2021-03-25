@@ -1,12 +1,14 @@
+const DataRg = require('./DataRg');
 const viewsCompiled = require('../app/dist/views/compiled.json');
 const HTTPClient = require('./HTTPClient');
 const debug = require('./debug');
 
 
 
-class View {
+class Page extends DataRg {
 
   constructor() {
+    super();
     this.baseURIhost = `${window.location.protocol}//${window.location.host}`; // http://localhost:4400
 
     const opts = {
@@ -24,6 +26,123 @@ class View {
     this.httpClient = new HTTPClient(opts);
   }
 
+
+  /************** INCLUDES ****************/
+  /**
+   * Include HTML components with the data-rg-inc attribute.
+   * Process:
+   * 1) Select all elements which has data-rg-inc but not data-rg-cin.
+   * 2) Put data-rg-cin which marks that the data-rg-inc element has beed parsed.
+   * 3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Every loaded element will have data-rg-incgen attribute to mark elements generated with data-rg.inc.
+   * 4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
+   * ) Multiple iterations will haeppen when data-rg-inc elements are nested. In case of multiple iterations only in the first iteration will be deleted all data-rg-incgen elements to make reset.
+   * Examples:
+   * <header data-rg-inc="/html/header.html">---header---</header>
+   * <header data-rg-inc="/html/header.html @@  @@ h2 > small">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ inner">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ prepend">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ append">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
+   * <header data-rg-inc="/html/header.html @@ outer @@ b:nth-child(2)"></header>
+   * @param {boolean} delIncgens - delete data-rg-incgen elements (only in the first iteration)
+   * @returns {void}
+   */
+  async loadInc(delIncgens = true) {
+    const elems = document.querySelectorAll('[data-rg-inc]:not([data-rg-cin])');
+    debug('loadInc', '--------- loadInc ------', '#8B0892', '#EDA1F1');
+    debug('loadInc', `elems found: ${elems.length}`, '#8B0892');
+    if (!elems.length) { return; }
+
+    // remove all data-rg-incgen elements
+    if (delIncgens) {
+      const elems2 = document.querySelectorAll('[data-rg-incgen]');
+      debug('loadInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
+      for (const elem2 of elems2) { elem2.remove(); }
+    }
+
+    for (const elem of elems) {
+      // extract attribute data
+      const attrValue = elem.getAttribute('data-rg-inc');
+      const path_dest_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator); // remove empty spaces and leading /
+      const viewPath = !!path_dest_cssSel && !!path_dest_cssSel.length ? 'inc/' + path_dest_cssSel[0] : '';
+      const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
+      const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
+      if(debug().loadInc) { console.log('path_dest_cssSel:: ', viewPath, dest, cssSel); }
+      if (!viewPath) { return; }
+
+      // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
+      let nodes, str;
+      if (!!viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
+        const cnt = this.fetchCompiledView(viewPath, cssSel);
+        nodes = cnt.nodes;
+        str = cnt.str;
+        debug('loadInc', '--from compiled JSON', '#8B0892');
+      } else { // HTML content by requesting the server
+        const cnt = await this.fetchRemoteView(viewPath, cssSel);
+        nodes = cnt.nodes;
+        str = cnt.str;
+        debug('loadInc', '--from server', '#8B0892');
+      }
+
+      if(debug().loadInc) {
+        console.log('elem::', elem);
+        console.log('str::', str, '\n\n');
+      }
+
+
+      // load content in the element
+      if (dest === 'inner') {
+        elem.innerHTML = str;
+
+      } else if (dest === 'outer') {
+        elem.outerHTML = str;
+
+      } else if (dest === 'sibling') {
+        const parent = elem.parentNode;
+        const sibling = elem.nextSibling;
+        for (const node of nodes) {
+          const nodeCloned = node.cloneNode(true); // clone the node because inserBefore will delete it
+          if (nodeCloned.nodeType === 1) {
+            nodeCloned.setAttribute('data-rg-incgen', ''); // add attribute data-rg-incgen to mark generated nodes
+            parent.insertBefore(nodeCloned, sibling);
+          }
+        }
+
+      } else if (dest === 'prepend') {
+        const i = nodes.length;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+          const nodeCloned = nodes[i].cloneNode(true);
+          if (nodeCloned.nodeType === 1) {
+            nodeCloned.setAttribute('data-rg-incgen', '');
+            elem.prepend(nodeCloned);
+          }
+        }
+
+      } else if (dest === 'append') {
+        for (const node of nodes) {
+          const nodeCloned = node.cloneNode(true);
+          if (nodeCloned.nodeType === 1) {
+            nodeCloned.setAttribute('data-rg-incgen', '');
+            elem.append(nodeCloned);
+          }
+        }
+
+      }
+
+
+      // set "data-rg-cin" attribute which marks that the content is included in the data-rg-inc element and parse process is finished
+      elem.setAttribute('data-rg-cin', '');
+
+
+      // continue with the next parse iteration (when data-rg-inc elements are nested)
+      if (/data-rg-inc/.test(str)) { this.loadInc(false); }
+
+    }
+
+  }
+
+
+  /************** VIEWS ****************/
   /**
    * Parse elements with the data-rg-view attribute and load router views.
    * This method should be used in the controller.
@@ -161,123 +280,6 @@ class View {
 
 
 
-  /**
-   * Include HTML components with the data-rg-inc attribute.
-   * Process:
-   * 1) Select all elements which has data-rg-inc but not data-rg-cin.
-   * 2) Put data-rg-cin which marks that the data-rg-inc element has beed parsed.
-   * 3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Every loaded element will have data-rg-incgen attribute to mark elements generated with data-rg.inc.
-   * 4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
-   * ) Multiple iterations will haeppen when data-rg-inc elements are nested. In case of multiple iterations only in the first iteration will be deleted all data-rg-incgen elements to make reset.
-   * Examples:
-   * <header data-rg-inc="/html/header.html">---header---</header>
-   * <header data-rg-inc="/html/header.html @@  @@ h2 > small">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ inner">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ prepend">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ append">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
-   * <header data-rg-inc="/html/header.html @@ outer @@ b:nth-child(2)"></header>
-   * @param {boolean} delIncgens - delete data-rg-incgen elements (only in the first iteration)
-   * @returns {void}
-   */
-  async rgInc(delIncgens = true) {
-    const elems = document.querySelectorAll('[data-rg-inc]:not([data-rg-cin])');
-    debug('rgInc', '--------- rgInc ------', '#8B0892', '#EDA1F1');
-    debug('rgInc', `elems found: ${elems.length}`, '#8B0892');
-    if (!elems.length) { return; }
-
-    // remove all data-rg-incgen elements
-    if (delIncgens) {
-      const elems2 = document.querySelectorAll('[data-rg-incgen]');
-      debug('rgInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
-      for (const elem2 of elems2) { elem2.remove(); }
-    }
-
-    for (const elem of elems) {
-      // extract attribute data
-      const attrValue = elem.getAttribute('data-rg-inc');
-      const path_dest_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator); // remove empty spaces and leading /
-      const viewPath = !!path_dest_cssSel && !!path_dest_cssSel.length ? 'inc/' + path_dest_cssSel[0] : '';
-      const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
-      const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
-      if(debug().rgInc) { console.log('path_dest_cssSel:: ', viewPath, dest, cssSel); }
-      if (!viewPath) { return; }
-
-      // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
-      let nodes, str;
-      if (!!viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
-        const cnt = this.fetchCompiledView(viewPath, cssSel);
-        nodes = cnt.nodes;
-        str = cnt.str;
-        debug('rgInc', '--from compiled JSON', '#8B0892');
-      } else { // HTML content by requesting the server
-        const cnt = await this.fetchRemoteView(viewPath, cssSel);
-        nodes = cnt.nodes;
-        str = cnt.str;
-        debug('rgInc', '--from server', '#8B0892');
-      }
-
-      if(debug().rgInc) {
-        console.log('elem::', elem);
-        console.log('str::', str, '\n\n');
-      }
-
-
-      // load content in the element
-      if (dest === 'inner') {
-        elem.innerHTML = str;
-
-      } else if (dest === 'outer') {
-        elem.outerHTML = str;
-
-      } else if (dest === 'sibling') {
-        const parent = elem.parentNode;
-        const sibling = elem.nextSibling;
-        for (const node of nodes) {
-          const nodeCloned = node.cloneNode(true); // clone the node because inserBefore will delete it
-          if (nodeCloned.nodeType === 1) {
-            nodeCloned.setAttribute('data-rg-incgen', ''); // add attribute data-rg-incgen to mark generated nodes
-            parent.insertBefore(nodeCloned, sibling);
-          }
-        }
-
-      } else if (dest === 'prepend') {
-        const i = nodes.length;
-        for (let i = nodes.length - 1; i >= 0; i--) {
-          const nodeCloned = nodes[i].cloneNode(true);
-          if (nodeCloned.nodeType === 1) {
-            nodeCloned.setAttribute('data-rg-incgen', '');
-            elem.prepend(nodeCloned);
-          }
-        }
-
-      } else if (dest === 'append') {
-        for (const node of nodes) {
-          const nodeCloned = node.cloneNode(true);
-          if (nodeCloned.nodeType === 1) {
-            nodeCloned.setAttribute('data-rg-incgen', '');
-            elem.append(nodeCloned);
-          }
-        }
-
-      }
-
-
-      // set "data-rg-cin" attribute which marks that the content is included in the data-rg-inc element and parse process is finished
-      elem.setAttribute('data-rg-cin', '');
-
-
-      // continue with the next parse iteration (when data-rg-inc elements are nested)
-      if (/data-rg-inc/.test(str)) { this.rgInc(false); }
-
-    }
-
-  }
-
-
-
-
-
   /*************** HTML CONTENT FETCHERS *****************/
   /**
    * Fetch view from a compiled file (../app/dist/views/compiled.json).
@@ -327,7 +329,7 @@ class View {
 
 
 
-  /************ LAZY LOADERS *********/
+  /************ JS LOADERS *********/
   /**
    * Create SCRIPT tags and execute js scripts.
    * @param {string[]} urls - array of JS script URLs
@@ -360,7 +362,7 @@ class View {
    */
   async loadJS(urls) {
     for (let url of urls) {
-      // correct URL
+      // correct the URL
       url = url.trim();
       if (!/^http/.test(url)) {
         url = new URL(url, this.baseURIhost).toString(); // resolve the URL
@@ -381,4 +383,4 @@ class View {
 
 
 
-module.exports = View;
+module.exports = Page;

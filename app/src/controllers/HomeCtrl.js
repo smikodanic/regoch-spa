@@ -21,7 +21,7 @@ module.exports = class HomeCtrl extends Controller {
 
 
   async postrender(trx) {
-    console.log('HOME postrender', trx, this.dataRgs);
+    console.log('HOME postrender', trx, this.rgListeners);
   }
 
 

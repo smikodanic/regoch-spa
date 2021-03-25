@@ -1,13 +1,11 @@
 module.exports = (tip, text, color, background) => {
   const debugOpts = {
-    // RGparser.js
-    rgKILL: false,
-    rgHref: false,
-    rgClick: false,
-    rgChange: false,
-    rgEvt: false,
-    rgSet: false,
+    // Page.js
+    loadInc: false,
+    loadView: false,
+    emptyView: false,
 
+    // DataRg.js
     rgPrint: false,
     rgClass: false,
     rgStyle: false,
@@ -17,10 +15,13 @@ module.exports = (tip, text, color, background) => {
     rgRepeat: false,
     rgElem: false,
 
-    // View.js
-    loadView: false,
-    emptyView: false,
-    rgInc: false,
+    // DataRgListeners.js
+    rgKILL: false,
+    rgHref: false,
+    rgClick: false,
+    rgChange: false,
+    rgEvt: false,
+    rgSet: false,
 
     // Form.js
     setControl: false,
