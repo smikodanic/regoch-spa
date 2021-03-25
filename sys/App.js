@@ -78,11 +78,18 @@ class App {
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
         router.when(route, ctrl);
-      } else if (cmd === 'notFound') {
+      } else if (cmd === 'notfound') {
         const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
-        router.notFound(ctrl);
+        router.notfound(ctrl);
+      } else if (cmd === 'do') {
+        const funcs = routeCnf.filter((routeCnfElem, key) => { if (key !== 0) {return routeCnfElem;} });
+        router.do(...funcs);
+      } else if (cmd === 'redirect') {
+        const fromRoute = routeCnf[1];
+        const toRoute = routeCnf[1];
+        router.redirect(fromRoute, toRoute);
       }
     }
     return this;

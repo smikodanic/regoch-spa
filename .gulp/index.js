@@ -27,7 +27,7 @@ task('watcher', async () => {
   await watch([
     'app/src/app.js',
     'app/src/controllers/**/*.js',
-    'app/src/assets/js/**/*.js',
+    'app/src/conf/*.js',
     'sys/**/*.js',
     '!sys/HTTPServer.js'
   ], series('browserifyMinifyMap'));

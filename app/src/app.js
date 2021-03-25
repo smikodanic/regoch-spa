@@ -5,7 +5,7 @@ const routesCnf = require('./conf/routesCnf');
 const appCnf = require('./conf/appCnf');
 const httpClientCnf = require('./conf/httpClientCnf');
 
-// controller
+// controllers
 const HomeCtrl = require('./controllers/HomeCtrl');
 const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
 const NotfoundCtrl = require('./controllers/NotfoundCtrl');
