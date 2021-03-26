@@ -28,6 +28,7 @@ task('watcher', async () => {
     'app/src/app.js',
     'app/src/controllers/**/*.js',
     'app/src/conf/*.js',
+    'app/src/lib/*.js',
     'sys/**/*.js',
     '!sys/HTTPServer.js'
   ], series('browserifyMinifyMap'));

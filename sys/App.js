@@ -13,34 +13,38 @@ class App {
     this.CONST = {};
     this.sys = {};
     this.controllers = {};
+    this.lib;
+    this._system();
   }
 
 
+  /*============================== CONFIGURATIONS & CONSTANTS - this.CONF & this.CONST ==============================*/
   /**
    * Set configuration.
    * @param {string} name
    * @param {any} value
+   * @returns {App}
    */
   conf(name, value) {
     this.CONF[name] = value;
     return this;
   }
 
-
   /**
    * Set constants.
    * @param {string} name
    * @param {any} value
+   * @returns {App}
    */
   const(name, value) {
     this.CONST[name] = value;
     return this;
   }
 
-
   /**
    * Freeze constant and configuration objects what prevents modifications in the controllers.
    * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
+   * @returns {void}
    */
   freeze() {
     Object.freeze(this.CONF);
@@ -48,15 +52,53 @@ class App {
   }
 
 
-  system() {
+
+  /*============================== SYSTEM - this.sys ==============================*/
+  /**
+   * Inject system libraries.
+   * @returns {void}
+   */
+  _system() {
     if (!!this.controllers && !!this.controllers.length) { throw new Error('System should be defined before controllers.'); }
     this.sys = { eventEmitter, util, Form, HTTPClient, Cookie };
   }
 
 
+
+  /*============================== LIBRARY - this.lib ==============================*/
+  /**
+   * Inject libraries like Bluebird promises, Cheerio, Puppeteer, ...etc. into function second parameter - func(x, lib)
+   * @param {object} lib - injected library - {BPromis, puppeteer, cheerio}
+   * @returns {void}
+   */
+  libInject(lib) {
+    this.lib = lib;
+  }
+
+  /**
+   * Add libraries to libraries already injected by libInject()
+   * @param {object} libPlus - libraries which will be added to existing this.lib -  {Lib1, lib2}
+   * @returns {void}
+   */
+  libAppend(libPlus) {
+    this.lib = Object.assign(this.lib, libPlus);
+  }
+
+  /**
+   * Remove all libraries.
+   * @returns {void}
+   */
+  libEmpty() {
+    this.lib = {};
+  }
+
+
+
+  /*============================== CONTROLLERS & ROUTES - this.controllers ==============================*/
   /**
    * Create controller instances.
    * @param  {string[][]} Ctrls
+   * @returns {App}
    */
   controller(Ctrls) {
     for(const Ctrl of Ctrls) { this.controllers[Ctrl.name] = new Ctrl(this); }
@@ -67,6 +109,7 @@ class App {
   /**
    * Define routes
    * @param {string[][]} routesCnf
+   * @returns {App}
    */
   routes(routesCnf) {
     for (const routeCnf of routesCnf) {
@@ -97,7 +140,8 @@ class App {
 
 
   /**
-   * Run the app
+   * Run the app by executing the router.
+   * @returns {void}
    */
   run() {
     router.use();

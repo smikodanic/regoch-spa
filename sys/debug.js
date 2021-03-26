@@ -4,7 +4,7 @@ module.exports = (tip, text, color, background) => {
     loadInc: false,
     loadView: false,
     emptyView: false,
-    loadHead: true,
+    loadHead: false,
 
     // DataRg.js
     rgPrint: false,

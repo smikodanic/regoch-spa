@@ -6,6 +6,7 @@ module.exports = class HomeCtrl extends Controller {
   constructor(app) {
     super();
     console.log('HOME constructor');
+    console.log(app.lib);
   }
 
 
@@ -18,9 +19,9 @@ module.exports = class HomeCtrl extends Controller {
     this.setLang('en');
 
 
-    this.loadCSS([
-      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
-    ]);
+    // this.loadCSS([
+    //   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
+    // ]);
 
     await this.loadView('#primary', 'pages/home/primary.html', 'sibling');
     this.loadViews([
