@@ -11,7 +11,7 @@ module.exports = async () => {
   const regochJsonPath = path.join(cwd, 'regoch.json');
   const regochJson = require(regochJsonPath);
   const files = regochJson.compile.views;
-  console.log(files);
+  console.log('compiled views (/dist/views/compiled.json):\n', files);
 
   let views = {};
   for (const file of files) {

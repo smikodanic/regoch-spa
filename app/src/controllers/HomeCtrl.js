@@ -6,7 +6,7 @@ module.exports = class HomeCtrl extends Controller {
   constructor(app) {
     super();
     console.log('HOME constructor');
-    console.log(app.lib);
+    // console.log(app.lib);
   }
 
 

@@ -1,0 +1,104 @@
+<header class="docs-header">
+  <h1 class="docs-heading">App</h1>
+  <section class="docs-intro">
+    <i>class App</i>
+  </section>
+</header>
+
+<section class="docs-section" id="item-2-1">
+  <h2 class="section-heading">Properties</h2>
+  <table style="width:100%">
+  <tr>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td>CONF</td>
+    <td>Configuration injected from the /conf/ files. Use it in the controller.</td>
+    <td>any</td>
+    <td>{}</td>
+  </tr>
+  <tr>
+    <td>CONST</td>
+    <td>Constants. Use it in the controller.</td>
+    <td>any</td>
+    <td>{}</td>
+  </tr>
+  <tr>
+    <td>sys</td>
+    <td>Injected system libraries which can be used in the controller: <b>eventEmitter, util, Form, HTTPClient, Cookie</b></td>
+    <td>object</td>
+    <td>{}</td>
+  </tr>
+  <tr>
+    <td>lib</td>
+    <td>Injected custom made libraries.</td>
+    <td>object</td>
+    <td>{}</td>
+  </tr>
+  <tr>
+    <td>controllers</td>
+    <td>A collection of all controllers. Make it possible to use a controller's methods inside another controller.</td>
+    <td>object</td>
+    <td>{}</td>
+  </tr>
+</table>
+
+</section>
+
+<section class="docs-section" id="item-2-2">
+  <h2 class="section-heading">Methods</h2>
+	<ul class="methods">
+    <li><b>conf <i>(name:string, value:any): App</i></b> - inject configuration which can be used in the controller</li>
+    <li><b>const <i>(name:string, value:any): App</i></b> - inject constant which can be used in the controller</li>
+    <li><b>freeze <i>(): void</i></b> - freeze the CONF and CONST to prevent unwanted modifications in the controller</li>
+    <li><b>libInject <i>(libs:object): void</i></b> - inject lib which can be used in the controller</li>
+    <li><b>libEmpty <i>(): void</i></b> - empty the lib property</li>
+    <li><b>controller <i>(Ctrls:class): void</i></b> - create controller instances and inject into the this.controllers</li>
+    <li><b>routes <i>(routesCnf:string[][]): App</i></b> - define the app routes</li>
+    <li><b>run <i>(): void</i></b> - run the app, i.e. execute the router </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-2-3">
+  <h2 class="section-heading">Example</h2>
+  <pre><code class="json hljs">
+const { App } = require('regoch-spa');
+
+// conf
+const apiCnf = {baseURL: 'https://jsonplaceholder.typicode.com'};
+
+// lib
+const StringExt = require('./lib/StringExt');
+const Rand = require('./lib/Rand');
+
+// controllers
+const HomeCtrl = require('./controllers/HomeCtrl');
+const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
+const NotfoundCtrl = require('./controllers/NotfoundCtrl');
+
+
+
+const app = new App();
+
+app
+  .conf('API', apiCnf)
+  .const('myNum', 10)
+  .const('myStr', 'some thing')
+  .const('myObj', {a: 22})
+  .freeze();
+
+app.libInject({ StringExt, Rand });
+
+app
+  .controller([HomeCtrl, SinglePageAppCtrl, NotfoundCtrl])
+  .routes(routesCnf)
+  .run();
+    </code></pre>
+</section>
+
+
+

@@ -1,8 +1,8 @@
-const App = require('../../sys/App');
+const { App } = require('../../sys');
 
 // conf
 const routesCnf = require('./conf/routesCnf');
-const appCnf = require('./conf/appCnf');
+const apiCnf = require('./conf/apiCnf');
 const httpClientCnf = require('./conf/httpClientCnf');
 
 // lib
@@ -19,15 +19,14 @@ const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 const app = new App();
 
 app
-  .conf('app', appCnf)
+  .conf('API', apiCnf)
   .conf('httpClient', httpClientCnf)
   .const('myNum', 10)
   .const('myStr', 'some thing')
   .const('myObj', {a: 22})
   .freeze();
 
-app.libInject({ StringExt });
-app.libAppend({ Rand });
+app.libInject({StringExt, Rand});
 
 app
   .controller([HomeCtrl, SinglePageAppCtrl, NotfoundCtrl])

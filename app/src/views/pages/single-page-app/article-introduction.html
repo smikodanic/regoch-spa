@@ -1,36 +1,64 @@
 <header class="docs-header">
   <h1 class="docs-heading">Introduction</h1>
   <section class="docs-intro">
-    <p>Section intro goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque finibus
-      condimentum nisl id vulputate. Praesent aliquet varius eros interdum suscipit. Donec eu purus sed nibh
-      convallis bibendum quis vitae turpis. Duis vestibulum diam lorem, vitae dapibus nibh facilisis a. Fusce in
-      malesuada odio.</p>
+    <p>
+      The Regoch SPA is framework for developing single page, web applications. Very simple for use and extremly fast.
+      <br>
+      <br>&nbsp;<i>The website regoch.org is completely made in the Regoch SPA framework.</i>
+    </p>
   </section>
 </header>
 
 <section class="docs-section" id="item-1-1">
-  <h2 class="section-heading">Section Item 1.1</h2>
-  <p>Vivamus efficitur fringilla ullamcorper. Cras condimentum condimentum mauris, vitae facilisis leo. Aliquam
-    sagittis purus nisi, at commodo augue convallis id. Sed interdum turpis quis felis bibendum imperdiet.
-    Mauris pellentesque urna eu leo gravida iaculis. In fringilla odio in felis ultricies porttitor. Donec at
-    purus libero. Vestibulum libero orci, commodo nec arcu sit amet, commodo sollicitudin est. Vestibulum
-    ultricies malesuada tempor.</p>
+  <h2 class="section-heading">Features</h2>
+  <ul>
+    <li>lightweight application - very small size of the compiled file (~50kB only)</li>
+    <li>JS files compiled with the gulp and browserify (very fast)</li>
+    <li>use CommonJS and write the code just like you are doing that in NodeJS <b>by using require()</b></li>
+    <li>no typescript, no bullshit</li>
+    <li>Model-View-Controller (MVC), intuitive app structure</li>
+    <li>easy to learn and to use</li>
+    <li>due to its small size you can build very fast mobile apps</li>
+  </ul>
 </section>
 
 <section class="docs-section" id="item-1-2">
-  <h2 class="section-heading">Section Item 1.2</h2>
-  <p>Vivamus efficitur fringilla ullamcorper. Cras condimentum condimentum mauris, vitae facilisis leo. Aliquam
-    sagittis purus nisi, at commodo augue convallis id. Sed interdum turpis quis felis bibendum imperdiet.
-    Mauris pellentesque urna eu leo gravida iaculis. In fringilla odio in felis ultricies porttitor. Donec at
-    purus libero. Vestibulum libero orci, commodo nec arcu sit amet, commodo sollicitudin est. Vestibulum
-    ultricies malesuada tempor.</p>
+  <h2 class="section-heading">Installation</h2>
+	<pre><code class="json hljs">npm install -g regoch-spa</code></pre>
 </section>
 
 <section class="docs-section" id="item-1-3">
-  <h2 class="section-heading">Section Item 1.3</h2>
-  <p>Vivamus efficitur fringilla ullamcorper. Cras condimentum condimentum mauris, vitae facilisis leo. Aliquam
-    sagittis purus nisi, at commodo augue convallis id. Sed interdum turpis quis felis bibendum imperdiet.
-    Mauris pellentesque urna eu leo gravida iaculis. In fringilla odio in felis ultricies porttitor. Donec at
-    purus libero. Vestibulum libero orci, commodo nec arcu sit amet, commodo sollicitudin est. Vestibulum
-    ultricies malesuada tempor.</p>
+  <h2 class="section-heading">Quick Start</h2>
+  <p>
+    Use Regoch-SPA CLI (Command Line Interface) to init the new app.
+    This command will create the files and directory structure with the basic example app.
+    <pre><code class="json hljs">rg new appName</code></pre>
+
+<br><br>After that open /src/app.js and edit it.
+<pre><code class="json hljs">
+const { App } = require('regoch-spa');
+
+// route definitions
+const routesCnf = [
+  ['when', '/', 'HomeCtrl'],
+  ['when', '/contact', 'ContactCtrl'],
+  ['when', '/products/:id', 'ProductCtrl'],
+  ['notfound', 'NotfoundCtrl'],
+];
+
+// define configuration and constants
+app
+  .conf('API', apiCnf)
+  .const('PI', 3.14)
+  .freeze();
+
+app.libInject({ Lib1, lib2 }); // inject helper libraries
+
+app
+  .controller([HomeCtrl, ContactCtrl, ProductCtrl, NotfoundCtrl]) // inject controller in the app
+  .routes(routesCnf).run(); // inject and run the app routes
+    </code></pre>
+    <br><br>
+
+  </p>
 </section>

@@ -12,8 +12,8 @@ class App {
     this.CONF = {};
     this.CONST = {};
     this.sys = {};
+    this.lib = {};
     this.controllers = {};
-    this.lib;
     this._system();
   }
 
@@ -67,21 +67,12 @@ class App {
 
   /*============================== LIBRARY - this.lib ==============================*/
   /**
-   * Inject libraries like Bluebird promises, Cheerio, Puppeteer, ...etc. into function second parameter - func(x, lib)
-   * @param {object} lib - injected library - {BPromis, puppeteer, cheerio}
-   * @returns {void}
-   */
-  libInject(lib) {
-    this.lib = lib;
-  }
-
-  /**
    * Add libraries to libraries already injected by libInject()
-   * @param {object} libPlus - libraries which will be added to existing this.lib -  {Lib1, lib2}
+   * @param {object} libs - libraries which will be added to existing this.lib -  {Lib1, lib2}
    * @returns {void}
    */
-  libAppend(libPlus) {
-    this.lib = Object.assign(this.lib, libPlus);
+  libInject(libs) {
+    this.lib = Object.assign(this.lib, libs);
   }
 
   /**
@@ -96,7 +87,7 @@ class App {
 
   /*============================== CONTROLLERS & ROUTES - this.controllers ==============================*/
   /**
-   * Create controller instances.
+   * Create controller instances and inject into the this.controllers.
    * @param  {string[][]} Ctrls
    * @returns {App}
    */

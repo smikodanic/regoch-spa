@@ -39,7 +39,7 @@ task('watcher', async () => {
 
   await watch([
     'regoch.json'
-  ], series('compileViews', 'browserifyMinifyMap'));
+  ], series('compileViews', async () => { console.log('RESTART the GULP !!!'); }));
 
   await watch([
     'app/src/**/*.scss'

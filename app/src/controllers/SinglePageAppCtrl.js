@@ -24,7 +24,8 @@ class SinglePageAppCtrl extends Controller {
     this.loadViews([
       ['#sidebar', 'pages/single-page-app/sidebar.html'],
       ['#article-introduction', 'pages/single-page-app/article-introduction.html'],
-      ['#footer', 'pages/single-page-app/footer.html']
+      ['#article-app', 'pages/single-page-app/article-app.html'],
+      // ['#footer', 'pages/single-page-app/footer.html']
     ], true);
 
   }
