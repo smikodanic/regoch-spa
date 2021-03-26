@@ -1,0 +1,100 @@
+<header class="docs-header">
+  <h1 class="docs-heading">Controller</h1>
+  <section class="docs-intro">
+    <i>class Controller extends Page</i>
+  </section>
+</header>
+
+<section class="docs-section" id="item-3-1">
+  <h2 class="section-heading">Properties</h2>
+  Inherits from the Page class.
+</section>
+
+<section class="docs-section" id="item-3-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods in the controller.</p>
+	<ul class="methods">
+    <li>
+      <i>async</i> <b>prerender <i>(trx:object): Promise[void]</i></b>
+      <p class="desc">Executes the controller code before the page render.
+      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
+    </li>
+    <li>
+      <i>async</i> <b>postrender <i>(trx:object): Promise[void]</i></b>
+      <p class="desc">Executes the controller code after the page render.
+      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
+    </li>
+    <li><i>async</i> <b>init <i>(trx:object): Promise[void]</i></b>
+      <p class="desc">Executes the controller code after the postrender.
+      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
+
+    </li>
+    <li><i>async</i> <b>destroy <i>(elem:Element, event:Event): Promise[void]</i></b>
+     <p class="desc">Executes the controller code on destroying the controller, i.e. when element with the "data-rg-href" attribute is clicked.
+      <br><b>elem</b> - element with data-rg-href which caused controller destruction (usually Element which is clicked)
+      <br><b>event</b> - event (usually click) which was applied on the elem and cause controller destruction</p>
+    </li>
+
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-3-3">
+  <h2 class="section-heading">Example</h2>
+  <pre><code class="json hljs">
+const { Controller } = require('regoch-spa');
+
+
+module.exports = class HomeCtrl extends Controller {
+
+  constructor(app) {
+    super();
+  }
+
+
+  async prerender(trx) {
+    console.log('HOME prerender', trx);
+
+    this.setTitle('The Regoch Project');
+    this.setDescription('The Regoch Project is bundle of developer tools and frameworks for realtime, web and mobile applications: regoch websocket server and client, single page app, database.');
+    this.setKeywords('regoch, websocket, realtime, mobile applications, single page app, database');
+    this.setLang('en');
+
+    this.loadCSS([
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
+    ]);
+
+    await this.loadView('#primary', 'pages/home/primary.html', 'sibling');
+    this.loadViews([
+      ['#top', 'pages/shared/top.html'],
+      ['#main', 'pages/home/main.html'],
+      ['#bottom', 'pages/home/bottom.html']
+    ]);
+  }
+
+
+  async postrender(trx) {
+    console.log('HOME postrender', trx, this.rgListeners);
+
+    // this.unloadCSS([
+    //   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
+    // ]);
+  }
+
+
+  async init(trx) {
+    // MAIN CONTROLLER LOGIC GOES HERE
+  }
+
+
+  async destroy(elem, event) {
+    // CODE TO EXECUTE WHEN URL IS CHANGED
+  }
+
+
+};
+  </code></pre>
+</section>
+
+
+

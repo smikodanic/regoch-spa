@@ -6,10 +6,15 @@ table {
   font: 15px Verdana;
 }
 
-ul.methods b {
-  color: #A4C4F2;
-  font-size: larger;
-  & > i {
-    font-size:smaller;
+ul.methods > li {
+  & > b {
+    color: #A4C4F2;
+    font-size: larger;
+    & > i {
+      font-size:smaller;
+    }
   }
+
+  & p {
+  font: 14px Verdana;}
 }
