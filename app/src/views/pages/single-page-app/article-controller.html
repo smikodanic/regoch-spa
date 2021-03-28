@@ -12,27 +12,34 @@
 
 <section class="docs-section" id="item-3-2">
   <h2 class="section-heading">Methods</h2>
-  <p>Use this methods in the controller.</p>
+  <p>
+    Use this methods in the controller as lifecycle hooks.
+    <br><b style="color:orange">PRERENDER &rarr; RENDER &rarr; POSTRENDER &rarr; INIT &rarr; DESTROY</b>
+  </p>
 	<ul class="methods">
     <li>
-      <i>async</i> <b>prerender <i>(trx:object): Promise[void]</i></b>
-      <p class="desc">Executes the controller code before the page render.
+      <i>async</i> <b>prerender <i>(trx:object): Promise&lt;void&gt;</i></b>
+      <p class="desc">It's a controller lifecycle hook which executes the controller code before the "data-rg-..." elements are rendered.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
-      <i>async</i> <b>postrender <i>(trx:object): Promise[void]</i></b>
-      <p class="desc">Executes the controller code after the page render.
+      <i>async</i> <strong>render <i>(trx:object): Promise&lt;void&gt;</i></strong>
+      <p class="desc">Render all elemets with the "data-rg-..." attribute. Don't use it in the controller.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
-    <li><i>async</i> <b>init <i>(trx:object): Promise[void]</i></b>
+    <li>
+      <i>async</i> <b>postrender <i>(trx:object): Promise&lt;void&gt;</i></b>
+      <p class="desc">It's a controller lifecycle hook which executes the controller code after the "data-rg-..." elements are rendered.
+      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
+    </li>
+    <li><i>async</i> <b>init <i>(trx:object): Promise&lt;void&gt;</i></b>
       <p class="desc">Executes the controller code after the postrender.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
-
     </li>
-    <li><i>async</i> <b>destroy <i>(elem:Element, event:Event): Promise[void]</i></b>
+    <li><i>async</i> <b>destroy <i>(elem:Element, event:Event): Promise&lt;void&gt;</i></b>
      <p class="desc">Executes the controller code on destroying the controller, i.e. when element with the "data-rg-href" attribute is clicked.
-      <br><b>elem</b> - element with data-rg-href which caused controller destruction (usually Element which is clicked)
-      <br><b>event</b> - event (usually click) which was applied on the elem and cause controller destruction</p>
+      <br><b>elem</b> - data-rg-href element which caused controller destruction (the Element which is clicked)
+      <br><b>event</b> - event (the 'click' event) which was applied on the "elem" and caused the controller destruction and URL change</p>
     </li>
 
   </ul>
@@ -41,16 +48,14 @@
 
 <section class="docs-section" id="item-3-3">
   <h2 class="section-heading">Example</h2>
-  <pre><code class="json hljs">
+  <pre><code class="language-javascript">
 const { Controller } = require('regoch-spa');
-
 
 module.exports = class HomeCtrl extends Controller {
 
   constructor(app) {
     super();
   }
-
 
   async prerender(trx) {
     console.log('HOME prerender', trx);
@@ -61,7 +66,7 @@ module.exports = class HomeCtrl extends Controller {
     this.setLang('en');
 
     this.loadCSS([
-      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
+      'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css'
     ]);
 
     await this.loadView('#primary', 'pages/home/primary.html', 'sibling');
@@ -69,16 +74,16 @@ module.exports = class HomeCtrl extends Controller {
       ['#top', 'pages/shared/top.html'],
       ['#main', 'pages/home/main.html'],
       ['#bottom', 'pages/home/bottom.html']
-    ]);
+    ], true);
   }
 
 
   async postrender(trx) {
     console.log('HOME postrender', trx, this.rgListeners);
 
-    // this.unloadCSS([
-    //   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
-    // ]);
+    this.lazyJS([
+      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js'
+    ]);
   }
 
 

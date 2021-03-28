@@ -8,13 +8,15 @@ table {
 
 ul.methods > li {
   & > b {
-    color: #A4C4F2;
+    color: #6da6f5;
     font-size: larger;
     & > i {
       font-size:smaller;
+      color: #A4C4F2;
     }
   }
 
   & p {
-  font: 14px Verdana;}
+  font: 14px Verdana;
+  }
 }

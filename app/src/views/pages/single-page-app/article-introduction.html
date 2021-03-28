@@ -24,7 +24,7 @@
 
 <section class="docs-section" id="item-1-2">
   <h2 class="section-heading">Installation</h2>
-	<pre><code class="json hljs">npm install -g regoch-spa</code></pre>
+	<pre><code class="language-bash">npm install -g regoch-spa</code></pre>
 </section>
 
 <section class="docs-section" id="item-1-3">
@@ -32,17 +32,17 @@
   <p>
     Use Regoch-SPA CLI (Command Line Interface) to init the new app.
     This command will create the files and directory structure with the basic example app.
-    <pre><code class="json hljs">rg new appName</code></pre>
+    <pre><code class="language-bash">rg new appName</code></pre>
 
 <br><br>After that open /src/app.js and edit it.
-<pre><code class="json hljs">
+<pre><code class="language-javascript">
 const { App } = require('regoch-spa');
 
 // route definitions
 const routesCnf = [
   ['when', '/', 'HomeCtrl'],
   ['when', '/contact', 'ContactCtrl'],
-  ['when', '/products/:id', 'ProductCtrl'],
+  ['when', '/product/:id', 'ProductCtrl'],
   ['notfound', 'NotfoundCtrl'],
 ];
 
@@ -50,13 +50,14 @@ const routesCnf = [
 app
   .conf('API', apiCnf)
   .const('PI', 3.14)
-  .freeze();
+  .freeze(); // prevent CONST and CONF accidental modification
 
-app.libInject({ Lib1, lib2 }); // inject helper libraries
+// inject helper libraries which you want to use in the controller
+app.libInject({ Lib1, lib2 });
 
 app
-  .controller([HomeCtrl, ContactCtrl, ProductCtrl, NotfoundCtrl]) // inject controller in the app
-  .routes(routesCnf).run(); // inject and run the app routes
+  .controller([HomeCtrl, ContactCtrl, ProductCtrl, NotfoundCtrl]) // inject controllers in the app
+  .routes(routesCnf).run(); // add and run the app routes
     </code></pre>
     <br><br>
 

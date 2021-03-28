@@ -20,12 +20,15 @@ class SinglePageAppCtrl extends Controller {
     this.setKeywords('regoch, spa, single page app, web applications');
     this.setLang('en');
 
+    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
+
     await this.loadView('#primary', 'pages/single-page-app/primary.html', 'sibling');
     this.loadViews([
       ['#sidebar', 'pages/single-page-app/sidebar.html'],
       ['#article-introduction', 'pages/single-page-app/article-introduction.html'],
       ['#article-app', 'pages/single-page-app/article-app.html'],
       ['#article-controller', 'pages/single-page-app/article-controller.html'],
+      ['#article-page', 'pages/single-page-app/article-page.html'],
       // ['#footer', 'pages/single-page-app/footer.html']
     ], true);
 
@@ -40,7 +43,8 @@ class SinglePageAppCtrl extends Controller {
       '/assets/js/highlight-custom.js',
       '/assets/plugins/jquery.scrollTo.min.js',
       '/assets/plugins/lightbox/dist/ekko-lightbox.min.js',
-      '/assets/js/docs.js'
+      '/assets/js/docs.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
 
     // this.loadJS([
