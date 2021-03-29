@@ -12,6 +12,7 @@ class DataRg extends DataRgListeners {
     super();
     this.separator = '@@';
     this.temp = {}; // controller temporary variable (exists untill controller exists)
+    this.rgelems = {};
   }
 
 
@@ -233,7 +234,7 @@ class DataRg extends DataRgListeners {
 
   /**
    * data-rg-switch="<controllerProperty> [@@ multiple]"
-   * Parse the "data-rg-switch" attribute. Set element style attribute.
+   * Parse the "data-rg-switch" attribute. Show or hide elements depending if "data-rg-switchcase" value matches controller property.
    * Examples:
    * data-rg-switch="ctrlprop" - ctrlprop is string, number or boolean
    * data-rg-switch="ctrlprop @@ multiple" - ctrlprop is array of string, number or boolean
@@ -394,11 +395,11 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * data-rg-repeat="<number>"
+   * data-rg-repeat="<num>"
    * Parse the "data-rg-repeat" attribute. Repeat the element n times.
    * Examples:
    * data-rg-repeat="10"
-   * @param {number} num - number of iterations
+   * @param {number} num - number of the repeats
    * @param {string} id - element's id, for example <p id="myID" data-rg-repeat="5">
    * @returns {void}
    */
@@ -463,9 +464,6 @@ class DataRg extends DataRgListeners {
     const elems = document.querySelectorAll(`[${attrName}]`);
     debug('rgElem', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
-
-    // init the this.elems
-    if (!this.rgelems) { this.rgelems = {}; }
 
     // associate values
     for (const elem of elems) {

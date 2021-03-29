@@ -1,0 +1,171 @@
+<header class="docs-header">
+  <h1 class="docs-heading">DataRg</h1>
+  <section class="docs-intro">
+    <i>class DataRg extends DataRgListeners</i>
+    <br><br>
+    <p>Parse HTML elements with the "data-rg-" attribute (non-listeners)</p>
+  </section>
+</header>
+
+<section class="docs-section" id="item-5-1">
+  <h2 class="section-heading">Properties</h2>
+  <table style="width:100%">
+  <tr>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td>separator</td>
+    <td>The separator character in the data-rg-... attributes</td>
+    <td>string</td>
+    <td>@@</td>
+  </tr>
+  <tr>
+    <td>temp</td>
+    <td>controller temporary variable (exists untill controller exists)</td>
+    <td>any</td>
+    <td>{}</td>
+  </tr>
+  <tr>
+    <td>rgelems</td>
+    <td>Collected elems with data-rg-elem attribute</td>
+    <td>{HTMLElement}</td>
+    <td>{}</td>
+  </tr>
+  </table>
+</section>
+
+<section class="docs-section" id="item-5-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods in the controller when needed.</p>
+	<ul class="methods">
+    <li>
+      <b>rgPrint <i>(attrvalueProp:string): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [@@ inner|outer|sibling|prepend|append]"</b> elements. Print the controller's property in the view.
+      <br><b>attrvalueProp</b> - part of the attribute value which relates to the controller property, for example
+      product.name in the data-rg-print="product.name @@ inner". This speed up parsing because it's limited only to one element.</p>
+    </li>
+    <li>
+      <b>rgClass <i>(controllerProp:string): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-class="&lt;controllerProperty&gt; [@@ add|replace]"</b> elements. Set the element class attribute.
+      <br><b>controllerProp</b> - controller property which defines "class" attribute</p>
+    </li>
+    <li>
+      <b>rgStyle <i>(controllerProp:string): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-style="&lt;controllerProperty&gt; [@@ add|replace]"</b> elements. Set the element style attribute.
+      <br><b>controllerProp</b> - controller property which defines "style" attribute</p>
+    </li>
+    <li>
+      <b>rgIf <i>(attrvalue:string): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-if="&lt;controllerProperty&gt; [@@ hide|remove]"</b> elements. Show, hide or remove the HTML element.
+      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
+      <br>Examples:
+      <br>* data-rg-if="ifAge" - hide the element
+      <br>* data-rg-if="ifAge @@ hide" - hide the element
+      <br>* data-rg-if="ifAge @@ remove" - remove the element</p>
+    </li>
+    <li>
+      <b>rgSwitch <i>(controllerProp:string): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-switch="&lt;controllerProperty&gt; [@@ multiple]"</b> elements. Show or remove elements depending if "data-rg-switchcase" value matches controller property.
+      <br>Notice1: The data-rg-if can hide elements while data-rg-switch will completely remove them.
+      <br>Notice2: With @@ multiple many switchcases can be shown.
+      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
+      <br>Example:
+      <br>data-rg-switch="age"
+      <br>data-rg-switchcase="18"
+      <br>data-rg-switchcase="21"
+    </li>
+    <li>
+      <b>rgFor <i>(attrvalue:string): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-for="&lt;propArr&gt;[:limit:skip] [@@ outer|inner]"</b> elements. Multiply the element. Use limit and skip for the pagination.
+      <br>If the iteration parameter <b style="color:brown">$i</b> is used then expressions like .$i or $i+1, $i-1, $i^2, ... will be parsed in the HTML file.
+      <br>For example: <small>&lt;p data-rg-for="companies"&gt;&lt;span data-rg-print="companies.$i.name @@ append"&gt;$i+1 name:&lt;/span&gt;&lt;/p&gt;</small>
+      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
+      <br>Examples:
+      <br>data-rg-for="companies @@ outer"
+      <br>data-rg-for="company.employees" - hide the element</p>
+    </li>
+    <li>
+      <b>rgRepeat <i>(num:number, id:string): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-repeat="&lt;num&gt;"</b> elements. Repeat the element <i>num</i> times.
+      <br>If the iteration parameter <b style="color:brown">$i</b> is used then expressions like .$i or $i+1, $i-1, $i^2, ... will be parsed in the HTML file.
+      <br><b>num</b> - number of the repeats
+      <br><b>id</b> - element's id, for example &lt;p id="myID" data-rg-repeat="5"&gt;</p>
+    </li>
+    <li>
+      <b>rgElem <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-elem="&lt;rgelemsProp&gt;"</b> elements. Transfer the DOM element to the controller property "this.rgelems".
+      <br><b>num</b> - number of the repeats
+      <br><b>id</b> - element's id, for example &lt;p id="myID" data-rg-repeat="5"&gt;</p>
+    </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-5-3">
+  <h2 class="section-heading">Examples</h2>
+  <h4>1. data-rg-switch</h4>
+  The example shows how to use "data-rg-switch", "data-rg-switchcase" and "data-rg-switchdefault" to show one switchcase.
+  For example if <small>myColor='green'</small> then green will be shown and others will be removed.
+  <pre><code class="language-markup"><xmp>
+<ul data-rg-switch="myColor">
+  <li data-rg-switchcase="red">red</li>
+  <li data-rg-switchcase="green">green</li>
+  <li data-rg-switchcase="blue">blue</li>
+  <li data-rg-switchdefault>silver (default)</li>
+</ul>
+  </xmp></code></pre>
+
+  <h4>2. data-rg-switch with multiple</h4>
+  The example shows how to use "data-rg-switch", "data-rg-switchcase" and "data-rg-switchdefault".
+  @@ multiple will show multiple items, for example if <small>myColorArr=['red', green]</small> then red and green will be shown.
+  <pre><code class="language-markup"><xmp>
+<div data-rg-switch="myColorArr @@ multiple">
+  <p data-rg-switchcase="red">red</p>
+  <p data-rg-switchcase="green">green</p>
+  <p data-rg-switchcase="blue">blue</p>
+  <p data-rg-switchdefault>silver (default)</p>
+</div>
+  </xmp></code></pre>
+
+  <br>
+  <h4>3. data-rg-for</h4>
+  The example shows how to use "data-rg-for" and iteration parameter $i.
+  <pre><code class="language-markup"><xmp>
+<p data-rg-for="companies:limit:skip" style="color:green"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
+<p data-rg-for="companies:limit:skip @@ inner" style="color:orangered"><span data-rg-print="companies.$i.name @@ append">$i name:</span><br></p>
+  </xmp></code></pre>
+
+  <br>
+  <h4>4. data-rg-repeat</h4>
+  The example shows how to use "data-rg-repeat" and iteration parameter $i.
+  <pre><code class="language-markup"><xmp>
+<p id="colorID" data-rg-repeat="3">$i+1 <input data-rg-set="colors.$i @@ print"> <span data-rg-print="colors.$i"></span></p>
+  </xmp></code></pre>
+
+  <br>
+  <h4>5. data-rg-elem</h4>
+  The example shows how to use "data-rg-elem" to toggle the lement's color.
+  <pre><code class="language-markup"><xmp>
+<button data-rg-click="runELEM()">run ELEM</button>
+Click button multiple times to toggle the text color. Very simple.
+<p data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
+  </xmp></code></pre>
+
+  <pre><code class="language-js">
+runEVT(elem, evt, boja) {
+  // console.log(elem);
+  // console.log(evt);
+  elem.style.color = boja;
+}
+  </code></pre>
+
+
+
+
+</section>
+
+
+

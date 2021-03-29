@@ -1,0 +1,88 @@
+<header class="docs-header">
+  <h1 class="docs-heading">DataRgListeners</h1>
+  <section class="docs-intro">
+    <p>Parse HTML elements with the "data-rg-" attribute and attach event listeners to them. Events like click, change, etc.</p>
+  </section>
+</header>
+
+<section class="docs-section" id="item-6-1">
+  <h2 class="section-heading">Properties</h2>
+  <table style="width:100%">
+  <tr>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td>rgListeners</td>
+    <td>A collection of the elements with the listeners.
+    The purpose of this property is to collect and kill all event listeners when controller is destroyed
+    i.e. every time when the URL is changed.</td>
+    <td>{attrName:string, elem:Element, handler:Function, eventName:string}[]</td>
+    <td>[]</td>
+  </tr>
+  </table>
+</section>
+
+<section class="docs-section" id="item-6-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods in the controller when needed.</p>
+	<ul class="methods">
+    <li>
+      <b>rgHref <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Href click listener for changing URLs (browser history states).
+      <br>Just add <b>data-rg-href</b> attribute to the existing A tag and the href value will work as single page app.
+      <br>Example: &lt;a href="/product/12" data-rg-href&gt;Product 12&lt;/a&gt;</p>
+    </li>
+    <li>
+      <b>rgClick <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Parser for the <b>data-rg-click="&lt;controllerMethod&gt;"</b>. Event "click".
+      <br>Example: &lt;button data-rg-click="showData()"&gt;</p>
+    </li>
+    <li>
+      <b>rgChange <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Parser for the <b>data-rg-change="&lt;controllerMethod&gt;"</b>. Event "change".
+      Listen for change and execute the function i.e. controller method. Usually used in the HTML form fields like INPUT or SELECT tag.
+      <br>Example: &lt;input data-rg-change="showData()"&gt;</p>
+    </li>
+    <li>
+      <b>rgEvt <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Parser for the <b>data-rg-evt="&lt;controllerMethod&gt;"</b>.
+      Listen for any attached event and execute the function i.e. controller method.
+      <br>Example: &lt;input data-rg-change="showData()"&gt;</p>
+    </li>
+    <li>
+      <b>rgEvt <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Parser for the <b>data-rg-evt="&lt;controllerMethod&gt;"</b>.
+      Listen for any attached event and execute the function i.e. controller method.
+      <br>Example: data-rg-evt="mouseenter @@ myFunc($element, $event, 25, 'some text')"
+      <br>NOTICE: $element and $event are injected args. $element is the element on which the event is applied and the $event is the applied event.</p>
+    </li>
+    <li>
+      <b>rgSet <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Parser for the <b>data-rg-set="&lt;controllerProperty&gt; [@@ print]"</b>.
+      Sets the controller property in HTML form field like INPUT, SELECT, TEXTAREA, .... Event "input".
+      With the option @@print the rgPrint() will be called on every "input" event.
+      <br>Example: &lt;input data-rg-set="product.name @@ print"&gt;</p>
+    </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-6-3">
+  <h2 class="section-heading">Examples</h2>
+  <h4>1. data-rg-href</h4>
+  <pre><code class="language-markup"><xmp>
+<a href="/product/12" data-rg-href>Product 12</a> - this will start the regoch-router and SPA
+<a href="/product/12">Product 12</a> - this will send a request to the server
+  </xmp></code></pre>
+
+  <h4>1. data-rg-set</h4>
+  <pre><code class="language-markup"><xmp>
+<p id="colorID" data-rg-repeat="3">$i+1 <input data-rg-set="colors.$i @@ print"> <span data-rg-print="colors.$i"></span></p>
+  </xmp></code></pre>
+</section>
+
+
+

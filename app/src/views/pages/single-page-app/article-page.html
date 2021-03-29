@@ -153,19 +153,19 @@
 <header data-rg-inc="header.html @@ outer @@ b:nth-child(2)">---outer load (part of the HTML file)---</header>
 <header data-rg-inc="header.html @@ sibling">---add HTML file content as sibling elements---</header>
 <header data-rg-inc="header.html @@ prepend">---prepend before the existing inner elements---</header>
-<header data-rg-inc="header.html @@ append">---append after the existing inner elements---</header></p>
+<header data-rg-inc="header.html @@ append">---append after the existing inner elements---</header>
   </xmp></code></pre>
-</section>
 
+  <br>
   <h4>2. Nested data-rg-inc elements</h4>
   The example shows nested "data-rg-inc" elements. This will cause two iterative calls of loadInc() method.
   In the first iteration it will load article.html in the main.html. As the article.html has also data-rg-inc element in the second iteration the content.html will be loaded.
   <pre><code class="language-markup"><xmp>
 <!-- main.html -->
-<section data-rg-inc="article.html">---will load article.html which has another data-tg-inc---</section>
+<article data-rg-inc="article.html">---will load article.html which has another data-tg-inc---</article>
 
 <!-- article.html -->
-<div data-rg-inc="content.html"></div>
+<div data-rg-inc="content.html">--will load content.html---</div>
 
 <!-- content.html -->
 <p>Lorem ipsum ...</p>

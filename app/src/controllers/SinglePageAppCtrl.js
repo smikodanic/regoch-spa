@@ -29,6 +29,8 @@ class SinglePageAppCtrl extends Controller {
       ['#article-app', 'pages/single-page-app/article-app.html'],
       ['#article-controller', 'pages/single-page-app/article-controller.html'],
       ['#article-page', 'pages/single-page-app/article-page.html'],
+      ['#article-datarg', 'pages/single-page-app/article-datarg.html'],
+      ['#article-datarglisteners', 'pages/single-page-app/article-datarglisteners.html'],
       // ['#footer', 'pages/single-page-app/footer.html']
     ], true);
 

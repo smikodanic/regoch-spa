@@ -151,7 +151,7 @@ class DataRgListeners {
 
 
   /**
-   * data-rg-evt="<function>"
+   * data-rg-evt="eventName @@ <function>"
    * Listen for event and execute the function i.e. controller method.
    * https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseenter_event
    * Examples:
@@ -203,7 +203,7 @@ class DataRgListeners {
 
   /**
    * data-rg-set="<controllerProperty> [@@ print]"
-   * Parse the "data-rg-set" attribute. Sets the controller property in INPUT element.
+   * Parse the "data-rg-set" attribute. Sets the controller property in HTML form field like INPUT, SELECT, TEXTAREA, ....
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"
