@@ -1,0 +1,244 @@
+<header class="docs-header">
+  <h1 class="docs-heading">HTTPClient</h1>
+  <section class="docs-intro">
+    <i>class HTTPClient</i>
+    <br><br>
+    <p>HTTPClient can be used in the controller to send HTTP request to the HTTP servers. In most cases it will be used to fetch the JSON data.</p>
+  </section>
+</header>
+
+<section class="docs-section" id="item-10-1">
+  <h2 class="section-heading">Properties</h2>
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>url</td>
+      <td>requested URL, for example: https://jsonplaceholder.typicode.com/todos?page=22</td>
+      <td>string</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>protocol</td>
+      <td>HTTP protocol</td>
+      <td>string</td>
+      <td>http:</td>
+    </tr>
+    <tr>
+      <td>host</td>
+      <td>server, host name</td>
+      <td>string</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>port</td>
+      <td>HTTP port number</td>
+      <td>number</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <td>pathname</td>
+      <td>path name</td>
+      <td>string</td>
+      <td>/</td>
+    </tr>
+    <tr>
+      <td>querystring</td>
+      <td>query string, for example ?page=22</td>
+      <td>string</td>
+      <td>'</td>
+    </tr>
+    <tr>
+      <td>headers</td>
+      <td>default request headers</td>
+      <td>object</td>
+      <td>{'authorization': '', 'accept': '*/*', 'content-type': 'text/html; charset=UTF-8'}</td>
+    </tr>
+    <tr>
+      <td>xhr</td>
+      <td>instance of the XMLHttpRequest</td>
+      <td>XMLHttpRequest</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>opts</td>
+      <td>options (see the table below)</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+  </table>
+
+  <br><br>The <b>opts</b> properties:
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>encodeURI</td>
+      <td>to encode URI, for example ?x=jen dva &rarr; ?x=jen%20dva</td>
+      <td>boolean</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>timeout</td>
+      <td>the request timeout, if 0 never timeout</td>
+      <td>number</td>
+      <td>8000</td>
+    </tr>
+    <tr>
+      <td>retry</td>
+      <td>the number of retries</td>
+      <td>number</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>retryDelay</td>
+      <td>the delay between retries in ms</td>
+      <td>number</td>
+      <td>5500</td>
+    </tr>
+    <tr>
+      <td>maxRedirects</td>
+      <td>the may number of 310 redirects to follow</td>
+      <td>number</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>headers</td>
+      <td>request headers</td>
+      <td>object</td>
+      <td>{'authorization': '', 'accept': '*/*', 'content-type': 'text/html; charset=UTF-8'}</td>
+    </tr>
+  </table>
+</section>
+
+<section class="docs-section" id="item-10-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods in the controller after "Cookie" class is instantiated.</p>
+	<ul class="methods">
+    <li>
+      <i>async</i> <b>askOnce <i>(url:string, method:string = 'GET', body_obj: any): Promise&lt;answer&gt;</i></b>
+      <p class="desc">Sending one HTTP request to HTTP server.
+      <br>- 301 redirections are not handled.
+      <br>- retries are not handled
+      <br><b>url</b> - requested URL
+      <br><b>method</b> - GET, POST, PUT, DELETE, ...
+      <br><b>body_obj</b> - body object for POST, PUT, ...
+      </p>
+    </li>
+    <li>
+      <i>async</i> <b>ask <i>(url:string, method:string = 'GET', body_obj: any): Promise&lt;answer&gt;</i></b>
+      <p class="desc">Sending one HTTP request to HTTP server.
+      <br>- 301 redirections are handled.
+      <br>- retries are handled
+      <br><b>url</b> - requested URL
+      <br><b>method</b> - GET, POST, PUT, DELETE, ...
+      <br><b>body_obj</b> - body object for POST, PUT, ...
+      </p>
+    </li>
+    <li>
+      <i>async</i> <b>askJSON <i>(url:string, method:string = 'GET', body: any): Promise&lt;answer&gt;</i></b>
+      <p class="desc">Fetch the JSON. Redirections and retries are not handled.
+      <br><b>url</b> - requested URL
+      <br><b>method</b> - GET, POST, PUT, DELETE, ...
+      <br><b>body</b> - body object for POST, PUT, ... as string or object
+      </p>
+    </li>
+    <li>
+      <i>async</i> <b>askHTML <i>(url:string, cssSel:string): Promise&lt;answer&gt;</i></b>
+      <p class="desc">Get the HTML file content or part of it filtered by the css selector. Redirections and retries are not handled.
+      <br><b>url</b> - requested URL
+      <br><b>cssSel</b> - CSS selector to fetch a part of the HTML file
+      <br>NOTE: The answer.res.content contains a list of nodes and the HTML string <b>{Node[], string}</b>.
+      </p>
+    </li>
+    <li>
+      <i>async</i> <b>askJS <i>(url:string): Promise&lt;answer&gt;</i></b>
+      <p class="desc">Fetch the content of the JS file. Redirections and retries are not handled.
+      <br><b>url</b> - requested URL
+      </p>
+    </li>
+    <li>
+      <b>kill <i>(): void</i></b>
+      <p class="desc">Stop the sent request.</p>
+    </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-10-2">
+  <h2 class="section-heading">Answer</h2>
+  <p>On every request the answer is received which has standardised format:
+
+  <pre><code class="language-javascript">
+{
+  requestURL: string;
+  requestMethod: string;
+  status: number;
+  statusMessage: string;
+  https: boolean;
+
+  // request
+  req: {
+    headers: object;
+    payload: any;
+  },
+
+  // response
+  res: {
+    headers: object;
+    content: undefined
+  },
+
+  // request and response time & duration
+  time: {
+    req: string; // ISO string
+    res: string; // ISO string
+    duration: number; // duration when response came back in seconds
+  }
+}
+  </code></pre>
+
+  </p>
+</section>
+
+
+
+
+
+<section class="docs-section" id="item-10-3">
+  <h2 class="section-heading">Example</h2>
+  <pre><code class="language-js">
+class MyCtrl extends Controller {
+  constructor(app) {
+    const opts = {
+        encodeURI: false,
+        timeout: 8000,
+        retry: 3,
+        retryDelay: 5500,
+        maxRedirects: 3,
+        headers: {
+          'authorization': '',
+          'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+          'content-type': 'text/html; charset=UTF-8'
+        }
+      };
+    this.hc = new app.sys.HTTPClient(opts);
+  }
+
+  test() {
+    this.hc.askJSON('https://jsonplaceholder.typicode.com/todos/1');
+  }
+}
+  </code></pre>
+</section>
+
+
+

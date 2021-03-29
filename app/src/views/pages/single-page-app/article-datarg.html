@@ -109,50 +109,50 @@
   <h4>1. data-rg-switch</h4>
   The example shows how to use "data-rg-switch", "data-rg-switchcase" and "data-rg-switchdefault" to show one switchcase.
   For example if <small>myColor='green'</small> then green will be shown and others will be removed.
-  <pre><code class="language-markup"><xmp>
-<ul data-rg-switch="myColor">
-  <li data-rg-switchcase="red">red</li>
-  <li data-rg-switchcase="green">green</li>
-  <li data-rg-switchcase="blue">blue</li>
-  <li data-rg-switchdefault>silver (default)</li>
-</ul>
-  </xmp></code></pre>
+  <pre><code class="language-markup">
+&lt;ul data-rg-switch="myColor"&gt;
+  &lt;li data-rg-switchcase="red"&gt;red&lt;/li&gt;
+  &lt;li data-rg-switchcase="green"&gt;green&lt;/li&gt;
+  &lt;li data-rg-switchcase="blue"&gt;blue&lt;/li&gt;
+  &lt;li data-rg-switchdefault&gt;silver (default)&lt;/li&gt;
+&lt;/ul&gt;
+  </code></pre>
 
   <h4>2. data-rg-switch with multiple</h4>
   The example shows how to use "data-rg-switch", "data-rg-switchcase" and "data-rg-switchdefault".
   @@ multiple will show multiple items, for example if <small>myColorArr=['red', green]</small> then red and green will be shown.
-  <pre><code class="language-markup"><xmp>
-<div data-rg-switch="myColorArr @@ multiple">
-  <p data-rg-switchcase="red">red</p>
-  <p data-rg-switchcase="green">green</p>
-  <p data-rg-switchcase="blue">blue</p>
-  <p data-rg-switchdefault>silver (default)</p>
-</div>
-  </xmp></code></pre>
+  <pre><code class="language-markup">
+&lt;div data-rg-switch="myColorArr @@ multiple"&gt;
+  &lt;p data-rg-switchcase="red"&gt;red&lt;/p&gt;
+  &lt;p data-rg-switchcase="green"&gt;green&lt;/p&gt;
+  &lt;p data-rg-switchcase="blue"&gt;blue&lt;/p&gt;
+  &lt;p data-rg-switchdefault&gt;silver (default)&lt;/p&gt;
+&lt;/div&gt;
+  </code></pre>
 
   <br>
   <h4>3. data-rg-for</h4>
   The example shows how to use "data-rg-for" and iteration parameter $i.
-  <pre><code class="language-markup"><xmp>
-<p data-rg-for="companies:limit:skip" style="color:green"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
-<p data-rg-for="companies:limit:skip @@ inner" style="color:orangered"><span data-rg-print="companies.$i.name @@ append">$i name:</span><br></p>
-  </xmp></code></pre>
+  <pre><code class="language-markup">
+&lt;p data-rg-for="companies:limit:skip" style="color:green"&gt;&lt;span data-rg-print="companies.$i.name @@ append"&gt;$i+1 name:&lt;/span&gt; -- &lt;b data-rg-print="companies.$i.size"&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;p data-rg-for="companies:limit:skip @@ inner" style="color:orangered"&gt;&lt;span data-rg-print="companies.$i.name @@ append"&gt;$i name:&lt;/span&gt;&lt;br&gt;&lt;/p&gt;
+  </code></pre>
 
   <br>
   <h4>4. data-rg-repeat</h4>
   The example shows how to use "data-rg-repeat" and iteration parameter $i.
-  <pre><code class="language-markup"><xmp>
-<p id="colorID" data-rg-repeat="3">$i+1 <input data-rg-set="colors.$i @@ print"> <span data-rg-print="colors.$i"></span></p>
-  </xmp></code></pre>
+  <pre><code class="language-markup">
+&lt;p id="colorID" data-rg-repeat="3"&gt;$i+1 &lt;input data-rg-set="colors.$i @@ print"&gt; &lt;span data-rg-print="colors.$i"&gt;&lt;/span&gt;&lt;/p&gt;
+  </code></pre>
 
   <br>
   <h4>5. data-rg-elem</h4>
   The example shows how to use "data-rg-elem" to toggle the lement's color.
-  <pre><code class="language-markup"><xmp>
-<button data-rg-click="runELEM()">run ELEM</button>
+  <pre><code class="language-markup">
+&lt;button data-rg-click="runELEM()"&gt;run ELEM&lt;/button&gt;
 Click button multiple times to toggle the text color. Very simple.
-<p data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
-  </xmp></code></pre>
+&lt;p data-rg-elem="myElem"&gt;catch this element and store in the controller object (this.rgelems)&lt;/p&gt;
+  </code></pre>
 
   <pre><code class="language-js">
 runEVT(elem, evt, boja) {

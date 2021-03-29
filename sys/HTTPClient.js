@@ -147,7 +147,7 @@ class HTTPClient {
    * @param {string} url - https://www.example.com/something?q=15
    * @param {string} method - GET, POST, PUT, DELETE, PATCH
    * @param {any} body_obj - http body payload
-   * @returns {Promise<any>}
+   * @returns {Promise<answer>}
    */
   askOnce(url, method = 'GET', body_obj) {
 
@@ -274,6 +274,7 @@ class HTTPClient {
    * @param {String} url - https://www.example.com/contact
    * @param {String} method - GET, POST, PUT, DELETE, PATCH
    * @param {Object} body_obj - http body
+   * @returns {Promise<answer>}
    */
   async ask(url, method = 'GET', body_obj) {
 
@@ -320,11 +321,11 @@ class HTTPClient {
 
 
   /**
-   *
+   * Fetch the JSON. Redirections and retries are not handled.
    * @param {string} url - https://api.example.com/someurl
    * @param {string} method - GET, POST, PUT, DELETE, PATCH
    * @param {object|string} body - http body as Object or String type
-   * @returns {Promise<string>}
+   * @returns {Promise<answer>}
    */
   async askJSON(url, method = 'GET', body) {
 
@@ -362,9 +363,10 @@ class HTTPClient {
 
   /**
    * Get the HTML file content or part of it filtered by the css selector.
+   * NOTE: The answer.res.content contains a list of nodes and the HTML string  {Node[], string}.
    * @param {string} url - http://example.com/page.html
    * @param {string} cssSel - css selector: div>p.alert
-   * @returns {Promise<{Node[], string}>}
+   * @returns {Promise<answer>}
    */
   async askHTML(url, cssSel) {
     const answer = await this.askOnce(url);
@@ -392,9 +394,9 @@ class HTTPClient {
 
 
   /**
-   *
+   * Get the content of the Javascript file.
    * @param {string} url - https://api.example.com/someurl
-   * @returns {Promise<string>}
+   * @returns {Promise<answer>}
    */
   async askJS(url) {
     this.setHeaders({

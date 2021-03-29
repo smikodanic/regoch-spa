@@ -35,6 +35,7 @@ class SinglePageAppCtrl extends Controller {
       ['#article-cookie', 'pages/single-page-app/article-cookie.html'],
       ['#article-eventemitter', 'pages/single-page-app/article-eventemitter.html'],
       ['#article-form', 'pages/single-page-app/article-form.html'],
+      ['#article-httpclient', 'pages/single-page-app/article-httpclient.html'],
       // ['#footer', 'pages/single-page-app/footer.html']
     ], true);
 
@@ -44,8 +45,7 @@ class SinglePageAppCtrl extends Controller {
   async postrender(trx) {
     console.log('SinglePageApp postrender', trx, this.rgListeners);
 
-    // await this.utilsleep(1300);
-
+    await this.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',
       '/assets/js/highlight-custom.js',
