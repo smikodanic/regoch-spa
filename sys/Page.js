@@ -150,7 +150,7 @@ class Page extends DataRg {
    * This method should be used in the controller.
    * When 'sibling', 'prepend' and 'append' is used comment and text nodes will not be injected (only HTML elements (nodeType === 1)).
    * Example: <main data-rg-view="#main"></main> and in the controller await this.loadView('#sibling', 'pages/home/sibling.html', 'sibling');
-   * @param {string} viewName - view name, for eample: '#home'
+   * @param {string} viewName - view name, for example: '#home'
    * @param {string} viewPath - view file path (relative to /view/ directory): 'pages/home/main.html'
    * @param {string} dest - destination where to place the view: inner, outer, sibling, prepend, append
    * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
@@ -452,8 +452,8 @@ class Page extends DataRg {
 
 
   /**
-   * Load HTML and replace current content in the <head> tag.
-   * @param {string} viewPath - view file path (relative to /view/ directory): 'pages/home/main.html'
+   * Load the <head> tag content from the view file.
+   * @param {string} viewPath - view file path (relative to /view/ directory): 'pages/home/head.html'
    * @param {string} dest - destination where to place the view: inner, prepend, append
    */
   async loadHead(viewPath, dest = 'inner') {

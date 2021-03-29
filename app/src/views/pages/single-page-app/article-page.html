@@ -36,15 +36,14 @@
     <td></td>
   </tr>
   </table>
-
 </section>
 
 <section class="docs-section" id="item-4-2">
   <h2 class="section-heading">Methods</h2>
 	<ul class="methods">
     <li>
-      <i>async</i> <b>loadInc <i>(delIncgens:boolean): Promise[void]</i></b>
-      <p class="desc">Load inc HTML file into the element with the <b>data-rg-inc="file.html [@@ inner|outer|sibling] [@@ cssSelector]"</b> attribute.
+      <i>async</i> <b>loadInc <i>(): Promise&lt;void&gt;</i></b>
+      <p class="desc">Load inc HTML file in the element with the <b>data-rg-inc="file.html [@@ inner|outer|sibling] [@@ cssSelector]"</b> attribute.
       This method is called recursively if the "data-rg-inc" elements are nested.
       <br>The render process:
       <br>1) Select all elements which has data-rg-inc but not data-rg-cin.
@@ -52,7 +51,91 @@
       <br>3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Every loaded element will have data-rg-incgen attribute to mark elements generated with data-rg.inc.
       <br>4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
       <br>note) Multiple iterations will haeppen when data-rg-inc elements are nested. To make reset all data-rg-incgen elements will be deleted but only in the first iteration.
-      <br><b>delIncgens</b> - to delete the elements with "data-rg-incgen" atribute (only in the first iteration  and has effect only when sibling, append and prepend are used)</p>
+    </li>
+    <li>
+      <i>async</i> <b>loadView <i>(viewName:string, viewPath:string, dest:string = 'inner', cssSel:string): Promise&lt;{elem, str, nodes}&gt;</i></b>
+      <p class="desc">Load view file from /views/ directory in the element with the <b>data-rg-view="#viewName"</b> attribute.
+      This method should be used in the controller. When 'sibling', 'prepend' and 'append' is used comment and text nodes will not be injected (only HTML elements i.e. nodeType === 1)).
+      <br><b>viewName</b> - view name, for example: '#home'
+      <br><b>viewPath</b> - view file path (relative to /view/ directory): 'pages/home/main.html'
+      <br><b>dest</b> - destination where to place the view: inner, outer, sibling, prepend, append
+      <br><b>cssSel</b> - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
+      </p>
+    </li>
+    <li>
+      <i>async</i> <b>loadViews <i>(viewDefs:any[][], isAsync:boolean): Promise&lt;void&gt;</i></b>
+      <p class="desc">Load multiple views.
+        <br>TIP1: Use this method in the postrender() method.
+        <br>TIP2: When isAsync=false is used the views should be compiled by the regoch.json.
+      <br><b>viewDefs</b> - array of arrays: [[viewName, viewPath, dest, cssSel]]
+      <br><b>isAsync</b> - when true views are loaded asynchronously one by one
+      </p>
+    </li>
+    <li>
+      <b>emptyView <i>(viewName:string, dest:string = 'inner'): &lt;void&gt;</i></b>
+      <p class="desc">Empty the view content.
+      <br><b>viewName</b> - - view name, for example: '#home'
+      <br><b>dest</b> - destination where the view was placed and should be deleted: inner, outer, sibling, prepend, append
+      </p>
+    </li>
+    <li>
+      <b>lazyJS <i>(urls:string[]): &lt;void&gt;</i></b>
+      <p class="desc">Create &lt;script&gt; tags and execute js scripts.
+        <br><b>urls</b> - array of JS script URLs
+      </p>
+    </li>
+    <li>
+      <b>unlazyJS <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Remove SCRIPT tags with the data-rg-lazy attribute.</p>
+    </li>
+    <li>
+      <i>async</i>  <b>loadJS <i>(urls:string[]): &lt;void&gt;</i></b>
+      <p class="desc">Do not create &lt;script&gt; tags, just load js scripts. This can work only for local files due to CORS.
+        <br><b>urls</b> - array of JS script URLs
+      </p>
+    </li>
+    <li>
+      <b>loadCSS <i>(urls:string[]): &lt;void&gt;</i></b>
+      <p class="desc">Create &lt;link rel="stylesheet"&gt; tags and load CSS.Usually use it in the prerender() controller method.
+        <br><b>urls</b> - array of CSS file URLs
+      </p>
+    </li>
+    <li>
+      <b>unloadCSS <i>(urls:string[]): &lt;void&gt;</i></b>
+      <p class="desc">Remove &lt;link rel="stylesheet"&gt; tags and unload CSS. Usually use it in the prerender() controller method.
+        <br><b>urls</b> - array of CSS file URLs
+      </p>
+    </li>
+    <li>
+      <b>setTile <i>(title:string): &lt;void&gt;</i></b>
+      <p class="desc">Set the text in the &lt;title&gt; tag.
+        <br><b>title</b> - the title text string
+      </p>
+    </li>
+    <li>
+      <b>setDescription <i>(desc:string): &lt;void&gt;</i></b>
+      <p class="desc">Set the page description.
+        <br><b>desc</b> - description
+      </p>
+    </li>
+    <li>
+      <b>setKeywords <i>(keys:string): &lt;void&gt;</i></b>
+      <p class="desc">Set the page keywords.
+        <br><b>keys</b> - comma separated keywords, for example: 'regoch, app, database'
+      </p>
+    </li>
+    <li>
+      <b>setLang <i>(langCode:string): &lt;void&gt;</i></b>
+      <p class="desc">Set the page language.
+        <br><b>langCode</b> - 'en' | 'hr' | 'de' | ...
+      </p>
+    </li>
+    <li>
+      <b>loadHead <i>(viewPath:string, dest:string = 'inner'): &lt;void&gt;</i></b>
+      <p class="desc">Load the &lt;head&gt; tag content from the view file.
+        <br><b>viewPath</b> - view file path (relative to /view/ directory): 'pages/home/head.html'
+        <br><b>dest</b> - destination where to place the view: inner, prepend, append
+      </p>
     </li>
   </ul>
 </section>
@@ -60,7 +143,7 @@
 
 <section class="docs-section" id="item-4-3">
   <h2 class="section-heading">Examples</h2>
-  <h4>data-rg-inc</h4>
+  <h4>1. data-rg-inc</h4>
   The example shows how to use "data-rg-inc" attribute. In the most cases the method loadInc() shouldn't be used in the controller's code because data-rg-inc elements are rendered automatically.
   <pre><code class="language-markup"><xmp>
 <header data-rg-inc="header.html">---load header.html in the innerHTML---</header>
@@ -74,7 +157,7 @@
   </xmp></code></pre>
 </section>
 
-  <h4>Nested data-rg-inc elements</h4>
+  <h4>2. Nested data-rg-inc elements</h4>
   The example shows nested "data-rg-inc" elements. This will cause two iterative calls of loadInc() method.
   In the first iteration it will load article.html in the main.html. As the article.html has also data-rg-inc element in the second iteration the content.html will be loaded.
   <pre><code class="language-markup"><xmp>
