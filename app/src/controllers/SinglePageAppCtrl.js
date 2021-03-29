@@ -9,6 +9,7 @@ class SinglePageAppCtrl extends Controller {
     console.log('SinglePageApp constructor');
     this.sys = app.sys;
     this.hc = new HTTPclient();
+    this.util = app.sys.util;
   }
 
 
@@ -32,6 +33,8 @@ class SinglePageAppCtrl extends Controller {
       ['#article-datarg', 'pages/single-page-app/article-datarg.html'],
       ['#article-datarglisteners', 'pages/single-page-app/article-datarglisteners.html'],
       ['#article-cookie', 'pages/single-page-app/article-cookie.html'],
+      ['#article-eventemitter', 'pages/single-page-app/article-eventemitter.html'],
+      ['#article-form', 'pages/single-page-app/article-form.html'],
       // ['#footer', 'pages/single-page-app/footer.html']
     ], true);
 
@@ -40,6 +43,8 @@ class SinglePageAppCtrl extends Controller {
 
   async postrender(trx) {
     console.log('SinglePageApp postrender', trx, this.rgListeners);
+
+    // await this.utilsleep(1300);
 
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',

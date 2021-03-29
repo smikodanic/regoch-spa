@@ -17,6 +17,7 @@ class Form {
    * Set the form control value.
    * @param {string} key - the value of the "name" HTML attribute
    * @param {any|string[]} val - the value
+   * @returns {void}
    */
   setControl(key, val) {
     debug('setControl', '--------- setControl ------', 'green', '#A1F8DC');
@@ -48,6 +49,7 @@ class Form {
   /**
    * Get the form control value.
    * @param {string} key - the value of the "name" HTML attribute
+   * @returns {string|number}
    */
   getControl(key) {
     debug('getControl', '--------- getControl ------', 'green', '#A1F8DC');
@@ -84,8 +86,9 @@ class Form {
 
 
   /**
-   * Get the form control value.
+   * Empty the form control value.
    * @param {string} key - the value of the "name" HTML attribute
+   * @returns {void}
    */
   delControl(key) {
     debug('delControl', '--------- delControl ------', 'green', '#A1F8DC');

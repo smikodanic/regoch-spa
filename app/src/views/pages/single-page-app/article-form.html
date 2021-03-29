@@ -1,0 +1,79 @@
+<header class="docs-header">
+  <h1 class="docs-heading">Form</h1>
+  <section class="docs-intro">
+    <i>class Form</i>
+    <br><br>
+    <p>Get and set the HTML form field values.</p>
+  </section>
+</header>
+
+<section class="docs-section" id="item-9-1">
+  <h2 class="section-heading">Properties</h2>
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>formName</td>
+      <td>the form name used in <b>data-rg-form</b></td>
+      <td>string</td>
+      <td></td>
+    </tr>
+  </table>
+</section>
+
+<section class="docs-section" id="item-9-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods in the controller after "Cookie" class is instantiated.</p>
+	<ul class="methods">
+    <li>
+      <b>setControl <i>(key:string, val:string): &lt;void&gt;</i></b>
+      <p class="desc">Set the form control value.
+      <br><b>key</b> - the value of the "name" HTML attribute
+      <br><b>val</b> - the value
+      </p>
+    </li>
+    <li>
+      <b>getControl <i>(key:string): &lt;string|number&gt;</i></b>
+      <p class="desc">Get the form control value. Returned value is string.
+      <br><b>key</b> - the value of the "name" HTML attribute
+      </p>
+    </li>
+    <li>
+      <b>delControl <i>(key:string): &lt;void&gt;</i></b>
+      <p class="desc">Empty the form control value.
+      <br><b>key</b> - the value of the "name" HTML attribute
+      </p>
+    </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-9-3">
+  <h2 class="section-heading">Example</h2>
+  <pre><code class="language-javascript">
+class MyCtrl extends Controller {
+  constructor(app) {
+    this.myF = new app.sys.Form('myForm');
+  }
+
+  test() {
+    const firstName = this.myF.getControl('first_name');
+    console.log(firstName)
+  }
+
+}
+  </code></pre>
+
+  <pre><code class="language-markup"><xmp>
+<form data-rg-form="myForm">
+  <input type="text" name="first_name">
+</form>
+  </xmp></code></pre>
+</section>
+
+
+
