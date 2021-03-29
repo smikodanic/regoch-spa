@@ -6,7 +6,6 @@ class SinglePageAppCtrl extends Controller {
 
   constructor(app) {
     super();
-    console.log('SinglePageApp constructor');
     this.sys = app.sys;
     this.hc = new HTTPclient();
     this.util = app.sys.util;
@@ -45,7 +44,6 @@ class SinglePageAppCtrl extends Controller {
 
 
   async postrender(trx) {
-    console.log('SinglePageApp postrender', trx, this.rgListeners);
 
     await this.util.sleep(1300);
     this.lazyJS([
@@ -57,22 +55,10 @@ class SinglePageAppCtrl extends Controller {
       'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
 
-    // this.loadJS([
-    //   '/assets/plugins/jquery-3.4.1.min.js',
-    //   '/assets/plugins/popper.min.js',
-    //   '/assets/plugins/bootstrap/js/bootstrap.min.js',
-
-    //   '/assets/js/highlight-custom.js',
-    //   '/assets/plugins/jquery.scrollTo.min.js',
-    //   '/assets/plugins/lightbox/dist/ekko-lightbox.min.js',
-    //   '/assets/js/docs.js'
-    // ]);
-
   }
 
 
   destroy(elem, event) {
-    console.log('SinglePageApp destroy', elem, event);
     this.unlazyJS();
   }
 
