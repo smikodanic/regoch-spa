@@ -1,0 +1,41 @@
+<header class="docs-header">
+  <h1 class="docs-heading">util</h1>
+  <section class="docs-intro">
+    <i>instance of the class Util</i>
+    <br><br>
+    <p>A library of utilities and helpers.</p>
+  </section>
+</header>
+
+
+<section class="docs-section" id="item-10-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods in the controller.</p>
+	<ul class="methods">
+    <li>
+      <i>async</i> <b>sleep <i>(ms:number): Promise&lt;void&gt;</i></b>
+      <p class="desc">make some time delay in miliseconds</p>
+    </li>
+
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-10-3">
+  <h2 class="section-heading">Example</h2>
+  <pre><code class="language-js">
+class MyCtrl extends Controller {
+  constructor(app) {
+    this.util = app.sys.util;
+  }
+
+  async test() {
+    await this.util.sleep(1300); // wait for 1.3 seconds before sending HTTP request
+    const answer = await this.hc.askJSON('https://jsonplaceholder.typicode.com/todos/1');
+  }
+}
+  </code></pre>
+</section>
+
+
+

@@ -13,7 +13,7 @@ class Router {
   /**
    * Define route
    * @param {string} route - route, for example: '/page1.html'
-   * @param {object} Ctrl - route controller instance
+   * @param {object} ctrl - route controller instance
    * @returns {void}
    */
   when(route, ctrl) {

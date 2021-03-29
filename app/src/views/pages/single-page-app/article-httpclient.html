@@ -233,8 +233,8 @@ class MyCtrl extends Controller {
     this.hc = new app.sys.HTTPClient(opts);
   }
 
-  test() {
-    this.hc.askJSON('https://jsonplaceholder.typicode.com/todos/1');
+  async test() {
+    const answer = await this.hc.askJSON('https://jsonplaceholder.typicode.com/todos/1');
   }
 }
   </code></pre>

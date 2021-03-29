@@ -1,0 +1,88 @@
+<header class="docs-header">
+  <h1 class="docs-heading">Router</h1>
+  <section class="docs-intro">
+    <i>class Router</i>
+    <br><br>
+    <p>The Regoch SPA internal router which is using "regoch-router" npm library.
+    <br><br>
+    <i>There's no need to use this class inside the Controller.</i></p>
+  </section>
+</header>
+
+
+<section class="docs-section" id="item-21-1">
+  <h2 class="section-heading">Properties</h2>
+  <table style="width:100%">
+  <tr>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td>regochRouter</td>
+    <td>instance of the regoch-router class</td>
+    <td>object</td>
+    <td></td>
+  </tr>
+  </table>
+</section>
+
+
+<section class="docs-section" id="item-21-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Do NOT use this methods in the controller unless you know what you'r doing.</p>
+	<ul class="methods">
+    <li>
+      <b>when <i>(route:string, ctrl:object): void</i></b>
+      <p class="desc">Define the route.</p>
+    </li>
+    <li>
+      <b>notfound <i>(route:string, ctrl:object): void</i></b>
+      <p class="desc">Define the not found route.</p>
+    </li>
+    <li>
+      <b>do <i>(..funcs): void</i></b>
+      <p class="desc">Execute functions on every route.</p>
+    </li>
+    <li>
+      <b>redirect <i>(fromRoute:string, toRoute:string): void</i></b>
+      <p class="desc">redirect from one route to another.</p>
+    </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-21-3">
+  <h2 class="section-heading">Example</h2>
+  <p>The example shows how to define routes i.e. how to asscoiate the controller to specific route.
+  There's no need to use the Router methods directly. Instead of that use APP method <b>routes()</b></p>
+  <pre><code class="language-js">
+/******* src/conf/routesCnf.js ***********/
+const log1 = () => { console.log(`1 Host is ${window.location.host}.`); };
+const log2 = () => { console.log(`2 Current URI is ${window.location.pathname}${window.location.search}.`); };
+
+// route definitions
+module.exports = [
+  ['when', '/', 'HomeCtrl'],
+  ['when', '/products', 'ProductListCtrl'],
+  ['when', '/product/:id', 'ProductCtrl'],
+  ['notfound', 'NotfoundCtrl'],
+  ['do', log1, log2]
+];
+
+
+/******* src/app.js ***********/
+const { App } = require('regoch-spa');
+const routesCnf = require('./conf/routesCnf.js');
+
+const app = new App();
+app
+  .controller([HomeCtrl, ProductListCtrl, ProductCtrl, NotfoundCtrl]) // inject controllers in the app
+  .routes(routesCnf).run(); // add and run the app routes
+
+  </code></pre>
+</section>
+
+
+
