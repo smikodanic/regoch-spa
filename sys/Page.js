@@ -2,6 +2,7 @@ const DataRg = require('./DataRg');
 const viewsCompiled = require('../app/dist/views/compiled.json');
 const HTTPClient = require('./HTTPClient');
 const debug = require('./debug');
+const { opendirSync } = require('node:fs');
 
 
 
@@ -24,8 +25,6 @@ class Page extends DataRg {
       }
     };
     this.httpClient = new HTTPClient(opts);
-
-    this.incIteration = 0;
   }
 
 
@@ -46,21 +45,21 @@ class Page extends DataRg {
    * <header data-rg-inc="/html/header.html @@ append">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ b:nth-child(2)"></header>
+   * @param {boolean} delIncgens - delete data-rg-incgen elements (only in the first iteration)
    * @returns {void}
    */
-  async loadInc() {
+  async loadInc(delIncgens = true) {
     const elems = document.querySelectorAll('[data-rg-inc]:not([data-rg-cin])');
     debug('loadInc', '--------- loadInc ------', '#8B0892', '#EDA1F1');
     debug('loadInc', `elems found: ${elems.length}`, '#8B0892');
     if (!elems.length) { return; }
 
     // remove all data-rg-incgen elements (just first iteration)
-    if (this.incIteration === 0) {
+    if (delIncgens) {
       const elems2 = document.querySelectorAll('[data-rg-incgen]');
       debug('loadInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
       for (const elem2 of elems2) { elem2.remove(); }
     }
-    this.incIteration++;
 
     for (const elem of elems) {
       // extract attribute data
@@ -70,7 +69,7 @@ class Page extends DataRg {
       const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
       const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
       if(debug().loadInc) { console.log('path_dest_cssSel:: ', viewPath, dest, cssSel); }
-      if (!viewPath) { return; }
+      if (!viewPath) { console.error('viewPath is not defined'); return; }
 
       // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
       let nodes, str;
@@ -103,29 +102,32 @@ class Page extends DataRg {
         const parent = elem.parentNode;
         const sibling = elem.nextSibling;
         for (const node of nodes) {
+          if (!node) { return; }
           const nodeCloned = node.cloneNode(true); // clone the node because inserBefore will delete it
           if (nodeCloned.nodeType === 1) {
             nodeCloned.setAttribute('data-rg-incgen', ''); // add attribute data-rg-incgen to mark generated nodes
-            parent.insertBefore(nodeCloned, sibling);
+            if (!elem.hasAttribute('data-rg-cin')) { parent.insertBefore(nodeCloned, sibling); }
           }
         }
 
       } else if (dest === 'prepend') {
         const i = nodes.length;
         for (let i = nodes.length - 1; i >= 0; i--) {
+          if (!!opendirSync.length && !nodes[i]) { return; }
           const nodeCloned = nodes[i].cloneNode(true);
           if (nodeCloned.nodeType === 1) {
             nodeCloned.setAttribute('data-rg-incgen', '');
-            elem.prepend(nodeCloned);
+            if (!elem.hasAttribute('data-rg-cin')) { elem.prepend(nodeCloned); }
           }
         }
 
       } else if (dest === 'append') {
         for (const node of nodes) {
+          if (!node) { return; }
           const nodeCloned = node.cloneNode(true);
           if (nodeCloned.nodeType === 1) {
             nodeCloned.setAttribute('data-rg-incgen', '');
-            elem.append(nodeCloned);
+            if (!elem.hasAttribute('data-rg-cin')) { elem.append(nodeCloned); }
           }
         }
 
@@ -137,7 +139,7 @@ class Page extends DataRg {
 
 
       // continue with the next parse iteration (when data-rg-inc elements are nested)
-      if (/data-rg-inc/.test(str)) { this.loadInc(false); }
+      if (/data-rg-inc/.test(str)) { await this.loadInc(false); }
 
     }
 
