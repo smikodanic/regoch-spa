@@ -24,6 +24,8 @@ class Page extends DataRg {
       }
     };
     this.httpClient = new HTTPClient(opts);
+
+    this.incIteration = 0;
   }
 
 
@@ -44,21 +46,21 @@ class Page extends DataRg {
    * <header data-rg-inc="/html/header.html @@ append">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ h2 > small">---header---</header>
    * <header data-rg-inc="/html/header.html @@ outer @@ b:nth-child(2)"></header>
-   * @param {boolean} delIncgens - delete data-rg-incgen elements (only in the first iteration)
    * @returns {void}
    */
-  async loadInc(delIncgens = true) {
+  async loadInc() {
     const elems = document.querySelectorAll('[data-rg-inc]:not([data-rg-cin])');
     debug('loadInc', '--------- loadInc ------', '#8B0892', '#EDA1F1');
     debug('loadInc', `elems found: ${elems.length}`, '#8B0892');
     if (!elems.length) { return; }
 
-    // remove all data-rg-incgen elements
-    if (delIncgens) {
+    // remove all data-rg-incgen elements (just first iteration)
+    if (this.incIteration === 0) {
       const elems2 = document.querySelectorAll('[data-rg-incgen]');
       debug('loadInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
       for (const elem2 of elems2) { elem2.remove(); }
     }
+    this.incIteration++;
 
     for (const elem of elems) {
       // extract attribute data

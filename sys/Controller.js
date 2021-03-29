@@ -23,7 +23,7 @@ class Controller extends Page {
    * @returns {Promise<void>}
    */
   async render(trx) {
-    this.loadInc(true); // defined in Page.js
+    this.loadInc(); // defined in Page.js
     await new Promise(resolve => setTimeout(resolve, 400));
 
     this.parseListeners();
