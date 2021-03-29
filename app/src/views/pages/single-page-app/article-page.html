@@ -42,7 +42,7 @@
   <h2 class="section-heading">Methods</h2>
 	<ul class="methods">
     <li>
-      <i>async</i> <b>loadInc <i>(): Promise&lt;void&gt;</i></b>
+      <i>async</i> <b>loadInc <i>(delIncgens:boolean = true): Promise&lt;void&gt;</i></b>
       <p class="desc">Load inc HTML file in the element with the <b>data-rg-inc="file.html [@@ inner|outer|sibling] [@@ cssSelector]"</b> attribute.
       This method is called recursively if the "data-rg-inc" elements are nested.
       <br>The render process:
@@ -51,11 +51,14 @@
       <br>3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Every loaded element will have data-rg-incgen attribute to mark elements generated with data-rg.inc.
       <br>4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
       <br>note) Multiple iterations will haeppen when data-rg-inc elements are nested. To make reset all data-rg-incgen elements will be deleted but only in the first iteration.
+      <br><b>delIncgens</b> - delete data-rg-incgen elements (only in the first iteration)
     </li>
     <li>
       <i>async</i> <b>loadView <i>(viewName:string, viewPath:string, dest:string = 'inner', cssSel:string): Promise&lt;{elem, str, nodes}&gt;</i></b>
-      <p class="desc">Load view file from /views/ directory in the element with the <b>data-rg-view="#viewName"</b> attribute.
-      This method should be used in the controller. When 'sibling', 'prepend' and 'append' is used comment and text nodes will not be injected (only HTML elements i.e. nodeType === 1)).
+      <p class="desc">Load view file from /views/ directory in the element with the <b>data-rg-view="#viewName"</b> attribute. This method should be used in the controller.
+      <br>IMPORTANT:
+      <br>A) When 'sibling', 'prepend' and 'append' is used comment and text nodes will not be injected (only HTML elements i.e. nodeType === 1)).
+      <br>B) Never put data-rg-view inside data-rg-inc !
       <br><b>viewName</b> - view name, for example: '#home'
       <br><b>viewPath</b> - view file path (relative to /view/ directory): 'pages/home/main.html'
       <br><b>dest</b> - destination where to place the view: inner, outer, sibling, prepend, append

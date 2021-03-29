@@ -12,6 +12,9 @@ const Rand = require('./lib/Rand');
 // controllers
 const HomeCtrl = require('./controllers/HomeCtrl');
 const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
+
+const LoadIncTestCtrl = require('./controllers/playground/LoadIncTestCtrl');
+
 const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 
 
@@ -29,9 +32,18 @@ app
 app.libInject({StringExt, Rand});
 
 app
-  .controller([HomeCtrl, SinglePageAppCtrl, NotfoundCtrl])
-  .routes(routesCnf)
-  .run();
+  .controller([
+    // docs
+    HomeCtrl,
+    SinglePageAppCtrl,
+
+    // playground
+    LoadIncTestCtrl,
+
+    // not found page
+    NotfoundCtrl
+  ])
+  .routes(routesCnf).run();
 
 
 

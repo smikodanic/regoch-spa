@@ -5,8 +5,14 @@ const log2 = () => { console.log(`2 Current URI is ${window.location.pathname}${
 
 // route definitions
 module.exports = [
+  // docs
   ['when', '/', 'HomeCtrl'],
   ['when', '/single-page-app', 'SinglePageAppCtrl'],
+
+  // playground
+  ['when', '/playground/loadinc-test', 'LoadIncTestCtrl'],
+
+
   ['notfound', 'NotfoundCtrl'],
-  ['do', log1, log2]
+  // ['do', log1, log2]
 ];

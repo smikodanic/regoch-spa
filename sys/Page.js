@@ -2,7 +2,6 @@ const DataRg = require('./DataRg');
 const viewsCompiled = require('../app/dist/views/compiled.json');
 const HTTPClient = require('./HTTPClient');
 const debug = require('./debug');
-const { opendirSync } = require('node:fs');
 
 
 
@@ -113,7 +112,7 @@ class Page extends DataRg {
       } else if (dest === 'prepend') {
         const i = nodes.length;
         for (let i = nodes.length - 1; i >= 0; i--) {
-          if (!!opendirSync.length && !nodes[i]) { return; }
+          if (!!nodes.length && !nodes[i]) { return; }
           const nodeCloned = nodes[i].cloneNode(true);
           if (nodeCloned.nodeType === 1) {
             nodeCloned.setAttribute('data-rg-incgen', '');

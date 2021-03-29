@@ -4,7 +4,7 @@
   "title": "Regoch SPA",
   "description": "Regoch SPA is the framework for single page applications.",
   "author": "Sasa Mikodanic <smikodanic@gmail.com>",
-  "homepage": "http://www.regoch.org/spa",
+  "homepage": "http://www.regoch.org/single-page-app",
   "license": "AGPL-3.0",
   "keywords": [
     "spa",
