@@ -17,6 +17,8 @@ const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 // controllers - playground
 const Page_LoadIncCtrl = require('./controllers/playground/Page_LoadIncCtrl');
 const Page_LoadViewsCtrl = require('./controllers/playground/Page_LoadViewsCtrl');
+const Controller_hooksCtrl = require('./controllers/playground/Controller_hooksCtrl');
+const DataRgCtrl = require('./controllers/playground/DataRgCtrl');
 
 
 
@@ -41,6 +43,8 @@ app
     // playground
     Page_LoadIncCtrl,
     Page_LoadViewsCtrl,
+    Controller_hooksCtrl,
+    DataRgCtrl,
 
     // not found page
     NotfoundCtrl

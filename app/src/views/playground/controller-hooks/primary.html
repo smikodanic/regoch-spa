@@ -1,0 +1,57 @@
+<h1>Controller Hooks Test</h1>
+<p>Click <a href="/playground/controller-hooks" data-rg-href>here</a> to destroy the controller.</p>
+
+
+
+<br><br><br><br><br>
+<div class="play-desc">
+  The example shows in which order will be executed controller constructor and the lifecycle hooks.
+  Open the browser console to see the constructor and hook arguments.
+  <ol>
+    <li>constructor(app) - <i>app</i> is the app instance</li>
+    <li>prerender(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data.</li>
+    <li>postrender(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data.</li>
+    <li>init(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data.</li>
+    <li>destroy(elem, event) - elem is the HTMLElement on which event is applied what caused URL change and controller destruction</li>
+  </ol>
+
+  <pre><code class="language-javascript">
+class Controller_hooksCtrl extends Controller {
+
+  constructor(app) {
+    console.log('Controller_hooks constructor::', app);
+    super();
+  }
+
+
+  async prerender(trx) {
+    console.log('Controller_hooks prerender::', trx);
+    this.setTitle('Controller hooks Test');
+    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
+    this.unloadCSS(['/assets/css/theme.css']);
+
+    await this.loadViews('#primary', 'playground/page-loadviews/primary.html', 'sibling');
+  }
+
+
+  async postrender(trx) {
+    console.log('Controller_hooks postrender::', trx);
+    this.lazyJS([
+      'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
+    ]);
+  }
+
+
+  destroy(elem, event) {
+    console.log('Controller_hooks destroy::', elem, event);
+    this.unloadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
+    this.unlazyJS();
+  }
+
+}
+  </code></pre>
+
+
+</div>
+
+

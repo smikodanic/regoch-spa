@@ -354,7 +354,9 @@ class Page extends DataRg {
    */
   unlazyJS() {
     const elems = document.querySelectorAll(`script[data-rg-lazy]`) || [];
-    for (const elem of elems) { elem.remove(); }
+    for (const elem of elems) {
+      if (!!elem) { elem.remove(); }
+    }
   }
 
 
@@ -405,7 +407,7 @@ class Page extends DataRg {
   unloadCSS(urls) {
     for (const url of urls) {
       const linkCSS = document.head.querySelector(`link[rel="stylesheet"][href="${url}"]`);
-      linkCSS.remove();
+      if (!!linkCSS) { linkCSS.remove(); }
     }
   }
 

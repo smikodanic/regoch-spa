@@ -1,0 +1,43 @@
+<h1>DataRg Test</h1>
+
+
+<!-- examples -->
+<h4>SET & PRINT</h4>
+product name: <input type="text" name="x" data-rg-set="product.name @@ print">
+<!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
+<p data-rg-print="product.name @@ append">name: </p>
+<p data-rg-print="product.address.city @@ inset">The address.city is "${}" !</p>
+<p data-rg-print="product @@ append" style="color:Gray">JSON: </p>
+<br>
+<br>product.colors: <span data-rg-print="product.colors"></span>
+<br>product.colors.0: <span data-rg-print="product.colors.0"></span> <input type="text" name="xyz" data-rg-set="product.colors.0 @@ print" placeholder="change product.colors.0">
+<br>product.colors.1: <span data-rg-print="product.colors.1"></span>
+<br>product.colors.2: <span data-rg-print="product.colors.2"></span>
+
+
+
+
+
+<!-- code -->
+<br><br><br><br><br>
+<div class="play-desc">
+  This example tests:
+  <ol>
+    <li>print(attrvalueProp) &rarr; data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"</li>
+
+  </ol>
+
+  <pre><code class="language-javascript">
+/*** CONTROLLER ***/
+
+  </code></pre>
+
+
+  <pre><code class="language-markup"><xmp>
+/*** VIEW ***/
+
+  </xmp></code></pre>
+
+</div>
+
+
