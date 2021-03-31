@@ -43,7 +43,7 @@
 	<ul class="methods">
     <li>
       <i>async</i> <b>loadInc <i>(delIncgens:boolean = true): Promise&lt;void&gt;</i></b>
-      <p class="desc">Load inc HTML file in the element with the <b>data-rg-inc="file.html [@@ inner|outer|sibling] [@@ cssSelector]"</b> attribute.
+      <p class="desc">Load inc HTML file in the element with the <b>data-rg-inc="file.html [@@ inner|outer|sibling|prepend|append] [@@ cssSelector]"</b> attribute.
       This method is called recursively if the "data-rg-inc" elements are nested.
       <br>The render process:
       <br>1) Select all elements which has data-rg-inc but not data-rg-cin.
@@ -61,17 +61,18 @@
       <br>B) Never put data-rg-view inside data-rg-inc !
       <br><b>viewName</b> - view name, for example: '#home'
       <br><b>viewPath</b> - view file path (relative to /view/ directory): 'pages/home/main.html'
-      <br><b>dest</b> - destination where to place the view: inner, outer, sibling, prepend, append
+      <br><b>dest</b> - destination where to place the view: <i>inner, outer, sibling, prepend, append</i>
       <br><b>cssSel</b> - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
       </p>
     </li>
     <li>
       <i>async</i> <b>loadViews <i>(viewDefs:any[][], isAsync:boolean): Promise&lt;void&gt;</i></b>
       <p class="desc">Load multiple views.
-        <br>TIP1: Use this method in the postrender() method.
+        <br>TIP1: Use this method in the prerender() method if the views contain data-rg- elements. This is because render() will render those elements.
         <br>TIP2: When isAsync=false is used the views should be compiled by the regoch.json.
       <br><b>viewDefs</b> - array of arrays: [[viewName, viewPath, dest, cssSel]]
-      <br><b>isAsync</b> - when true views are loaded asynchronously one by one
+      <br><b>isAsync</b> - When <i>true</i> the views are loaded synchronously, one by one (serially).
+      The <i>false</i> is used to load multiple views in parallel. This speeds up the load time but the views must be compiled by regoch.json.
       </p>
     </li>
     <li>
@@ -83,13 +84,13 @@
     </li>
     <li>
       <b>lazyJS <i>(urls:string[]): &lt;void&gt;</i></b>
-      <p class="desc">Create &lt;script&gt; tags and execute js scripts.
+      <p class="desc">Create &lt;script&gt; tags and execute js scripts. All script tags will get <i>data-rg-lazy</i> attribute to mark lazy loaded JS files.
         <br><b>urls</b> - array of JS script URLs
       </p>
     </li>
     <li>
       <b>unlazyJS <i>(): &lt;void&gt;</i></b>
-      <p class="desc">Remove SCRIPT tags with the data-rg-lazy attribute.</p>
+      <p class="desc">Remove SCRIPT tags with the <i>data-rg-lazy</i> attribute.</p>
     </li>
     <li>
       <i>async</i>  <b>loadJS <i>(urls:string[]): &lt;void&gt;</i></b>

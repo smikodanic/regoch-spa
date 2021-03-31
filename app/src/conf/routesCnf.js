@@ -10,7 +10,8 @@ module.exports = [
   ['when', '/single-page-app', 'SinglePageAppCtrl'],
 
   // playground
-  ['when', '/playground/loadinc-test', 'LoadIncTestCtrl'],
+  ['when', '/playground/page-loadinc', 'Page_LoadIncCtrl'],
+  ['when', '/playground/page-loadviews', 'Page_LoadViewsCtrl'],
 
 
   ['notfound', 'NotfoundCtrl'],

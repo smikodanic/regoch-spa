@@ -11,16 +11,16 @@
 <div class="play-desc">
   This example tests:
   <ol>
-    <li>loadInc() i.e. nested data-rg-inc elements</li>
+    <li>loadInc() - nested data-rg-inc elements</li>
     <li>setTitle</li>
     <li>setDescription</li>
     <li>setKeywords</li>
     <li>setLang</li>
     <li>loadView</li>
-    <li>loadCSS</li>
-    <li>unloadCSS</li>
-    <li>lazyJS</li>
-    <li>unlazyJS</li>
+    <li>loadCSS - load CSS file on prerender</li>
+    <li>unloadCSS - unload CSS file on destroy</li>
+    <li>lazyJS - load JS file on postrender</li>
+    <li>unlazyJS - remove the lazy loaded JS on destroy</li>
     <li>controller lifecycle hooks: prerender, postrender, destroy</li>
   </ol>
 
@@ -63,12 +63,18 @@ module.exports =  LoadIncTestCtrl;
 
 
   <pre><code class="language-markup"><xmp>
-/*** VIEW ***/
+/*** view/playground/loadIncTest/primary.html ***/
 <article data-rg-inc="playground/inc1.html">--inc1.html--</article>
 <br><br><span>--------------</span>
 <section data-rg-inc="playground/inc10.html @@ sibling @@ b">--inc10.html@@sibling@@b--</section>
 <br><br><span>--------------</span>
 <section data-rg-inc="playground/inc3.html @@ prepend">--load inc3.html@@prepend--</section>
+  </xmp></code></pre>
+
+  <pre><code class="language-markup"><xmp>
+/*** view/inc/playground/inc1.html ***/
+<p>INC 1</p>
+<p data-rg-inc="playground/inc2.html">--inc2.html@@inner--</p>
   </xmp></code></pre>
 
 </div>

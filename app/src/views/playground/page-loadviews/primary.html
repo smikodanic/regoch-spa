@@ -1,0 +1,37 @@
+<h1>Page::loadViews() Test</h1>
+
+<div data-rg-view="#primary.html#part1"></div>
+<div data-rg-view="#primary.html#part2">This is&nbsp;</div>
+<div data-rg-view="#primary.html#part3">&nbsp;prepended.</div>
+
+
+
+<br><br><br><br><br>
+<div class="play-desc">
+  This example tests <b>Page::loadViews(viewDefs, isAsync)</b>.
+  <br>Notice that if isAsync=false it return the error
+  <i style="color:red">Element [data-rg-view="#part1"] not found.</i>.
+  To fix the error all views must be compiled in the regoch.json.
+
+  <pre><code class="language-javascript">
+/*** CONTROLLER Page_LoadViewsCtrl.js ***/
+await this.loadViews([
+  ['#primary', 'playground/page-loadviews/primary.html', 'sibling'], // loaded in the index.html
+  ['#primary.html#part1', 'playground/page-loadviews/part1.html'], // loaded in the primary.html
+  ['#primary.html#part2', 'playground/page-loadviews/part2.html', 'append'], // loaded in the primary.html
+  ['#primary.html#part3', 'playground/page-loadviews/part3.html', 'prepend'] // loaded in the primary.html
+], true);
+  </code></pre>
+
+  <pre><code class="language-markup"><xmp>
+/*** VIEW primary.html ***/
+<h1>Page::loadViews() Test</h1>
+
+<div data-rg-view="#part1"></div>
+<div data-rg-view="#part2">This is&nbsp;</div>
+<div data-rg-view="#part3">&nbsp;prepended.</div>
+  </xmp></code></pre>
+
+</div>
+
+

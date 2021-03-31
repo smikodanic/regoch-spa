@@ -12,10 +12,11 @@ const Rand = require('./lib/Rand');
 // controllers
 const HomeCtrl = require('./controllers/HomeCtrl');
 const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
-
-const LoadIncTestCtrl = require('./controllers/playground/LoadIncTestCtrl');
-
 const NotfoundCtrl = require('./controllers/NotfoundCtrl');
+
+// controllers - playground
+const Page_LoadIncCtrl = require('./controllers/playground/Page_LoadIncCtrl');
+const Page_LoadViewsCtrl = require('./controllers/playground/Page_LoadViewsCtrl');
 
 
 
@@ -38,7 +39,8 @@ app
     SinglePageAppCtrl,
 
     // playground
-    LoadIncTestCtrl,
+    Page_LoadIncCtrl,
+    Page_LoadViewsCtrl,
 
     // not found page
     NotfoundCtrl
