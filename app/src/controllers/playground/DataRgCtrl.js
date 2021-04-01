@@ -86,9 +86,9 @@ class DataRgCtrl extends Controller {
 
   // Here are two tests. First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.
   runSWITCH() {
-    this.myColorsArr = ['green2', 'blue2'];
+    this.obj = {myColors: ['green2', 'blue2']};
     this.rgSwitch('myColor'); // this.myColor
-    this.rgSwitch('myColorsArr @@ multiple'); // this.myColorsArr
+    this.rgSwitch('obj.myColors @@ multiple'); // this.obj.myColors
   }
 
 

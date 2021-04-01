@@ -261,8 +261,9 @@ class DataRg extends DataRgListeners {
 
       const isMultiple = !!attrValSplited[1] ? attrValSplited[1].trim() === 'multiple' : false;
 
-      const ctrlProp = attrValSplited[0].trim();
-      const val = this[ctrlProp] || ''; // string, number, boolean
+      const prop = attrValSplited[0].trim();
+      const val = this._getControllerValue(prop);
+      console.log(prop, val);
 
       // get data-rg-switchcase and data-rg-switchdefault attribute values
       let switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');
@@ -286,7 +287,7 @@ class DataRg extends DataRgListeners {
         let switchcaseAttrVal = switchcaseElem.getAttribute('data-rg-switchcase');
         switchcaseAttrVal = switchcaseAttrVal.trim();
         if (!isMultiple && switchcaseAttrVal === val) { elem.innerHTML = switchcaseElem.outerHTML; isMatched = true; }
-        else if (isMultiple && val.indexOf(switchcaseAttrVal) !== -1) { elem.append(switchcaseElem); isMatched = true; }
+        else if (isMultiple && val && val.indexOf(switchcaseAttrVal) !== -1) { elem.append(switchcaseElem); isMatched = true; }
         else { switchcaseElem.remove(); }
         debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --- val:: "${val}"`, 'navy');
       }

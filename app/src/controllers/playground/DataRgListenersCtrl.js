@@ -72,8 +72,9 @@ class DataRgListenersCtrl extends Controller {
     console.log('mySelect::', this.mySelect);
     await this.rgSwitch('mySelect');
 
-    if (this.mySelect === 'three') { this.ifThree = true; }
+    this.ifThree = this.mySelect === 'three';
     await this.rgIf('ifThree');
+
     this.rgPrint('mySelect');
   }
 
