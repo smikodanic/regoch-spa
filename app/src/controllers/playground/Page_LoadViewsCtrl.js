@@ -10,7 +10,6 @@ class Page_LoadViewsCtrl extends Controller {
 
   async prerender(trx) {
     this.setTitle('loadViews() Test');
-    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
     this.unloadCSS(['/assets/css/theme.css']);
 
     await this.loadViews([
@@ -20,21 +19,6 @@ class Page_LoadViewsCtrl extends Controller {
       ['#primary.html#part3', 'playground/page-loadviews/part3.html', 'prepend']
     ], true);
   }
-
-
-  async postrender(trx) {
-    this.lazyJS([
-      'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
-    ]);
-
-  }
-
-
-  destroy(elem, event) {
-    this.unloadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
-    this.unlazyJS();
-  }
-
 
 }
 

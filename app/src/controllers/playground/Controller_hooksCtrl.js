@@ -11,7 +11,7 @@ class Controller_hooksCtrl extends Controller {
 
   async prerender(trx) {
     console.log('Controller_hooks prerender::', trx);
-    this.setTitle('Controller hooks Test');
+    this.setTitle('Controller Hooks Test');
     this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
     this.unloadCSS(['/assets/css/theme.css']);
 

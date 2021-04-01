@@ -10,7 +10,6 @@ class DataRgCtrl extends Controller {
 
   async prerender(trx) {
     this.setTitle('DataRg Test');
-    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
     this.unloadCSS(['/assets/css/theme.css']);
     this.addCSS(`
       .my-italic {
@@ -41,7 +40,7 @@ class DataRgCtrl extends Controller {
   }
 
   async postrender(trx) {
-    this.lazyJS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js']);
+
   }
 
   async init(trx) {
@@ -49,8 +48,6 @@ class DataRgCtrl extends Controller {
   }
 
   destroy(elem, event) {
-    this.unloadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
-    this.unlazyJS();
   }
 
 
