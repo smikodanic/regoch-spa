@@ -100,7 +100,7 @@
     </li>
     <li>
       <b>loadCSS <i>(urls:string[]): &lt;void&gt;</i></b>
-      <p class="desc">Create &lt;link rel="stylesheet"&gt; tags and load CSS.Usually use it in the prerender() controller method.
+      <p class="desc">Create &lt;link rel="stylesheet"&gt; tags and load CSS. Usually use it in the prerender() controller method.
         <br><b>urls</b> - array of CSS file URLs
       </p>
     </li>
@@ -108,6 +108,19 @@
       <b>unloadCSS <i>(urls:string[]): &lt;void&gt;</i></b>
       <p class="desc">Remove &lt;link rel="stylesheet"&gt; tags and unload CSS. Usually use it in the prerender() controller method.
         <br><b>urls</b> - array of CSS file URLs
+      </p>
+    </li>
+    <li>
+      <b>addCSS <i>(cssRules:string, ref:string): &lt;void&gt;</i></b>
+      <p class="desc">Append &lt;style data-rg-ref="#ref"&gt; tag in the HEAD tag. Usually use it in the prerender() controller method.
+        <br><b>cssRules</b> - CSS rules, for example: <small>div {font-weight: bold; color:red;}</small>
+        <br><b>ref</b> - reference used to delete the element
+      </p>
+    </li>
+    <li>
+      <b>delCSS <i>(ref:string): &lt;void&gt;</i></b>
+      <p class="desc">Remove &lt;style data-rg-ref="#ref"&gt; tag. Usually use it in the destroy() controller method.
+        <br><b>ref</b> - reference
       </p>
     </li>
     <li>

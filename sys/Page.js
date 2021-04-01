@@ -386,7 +386,7 @@ class Page extends DataRg {
   /************ CSS LOADERS *********/
   /**
    * Create <link rel="stylesheet"> tags and load CSS.
-   * Usually use it in the prerender() controller method.
+   * Usually use it in the prerender() controller hook.
    * @param {string[]} urls - array of CSS file URLs
    */
   loadCSS(urls) {
@@ -401,7 +401,7 @@ class Page extends DataRg {
 
   /**
    * Remove <link rel="stylesheet"> tags and unload CSS.
-   * Usually use it in the prerender() controller method.
+   * Usually use it in the prerender() controller hook.
    * @param {string[]} urls - array of CSS file URLs
    */
   unloadCSS(urls) {
@@ -409,6 +409,30 @@ class Page extends DataRg {
       const linkCSS = document.head.querySelector(`link[rel="stylesheet"][href="${url}"]`);
       if (!!linkCSS) { linkCSS.remove(); }
     }
+  }
+
+  /**
+   * Append <style data-rg-ref="#reference"></style> tags in the <head>.
+   * Usually use it in the prerender() controller hook.
+   * @param {string} cssRules - CSS rules, for example: div {font-weight: bold; color:red;}
+   * @param {string} ref - reference
+   */
+  addCSS(cssRules, ref) {
+    const style = document.createElement('style');
+    style.textContent = cssRules;
+    style.setAttribute('type', 'text/css');
+    style.setAttribute('data-rg-ref', ref);
+    document.head.appendChild(style);
+  }
+
+  /**
+   * Remove <style data-rg-ref="#reference"></style> tag.
+   * Usually use it in the destroy() controller hook.
+   * @param {string} ref - reference
+   */
+  delCSS(ref) {
+    const style = document.createElement(`style[data-rg-ref="${ref}"]`);
+    if (!!style) { style.remove(); }
   }
 
 
