@@ -36,6 +36,7 @@ class Controller extends Page {
     await this.rgSwitch();
     this.rgElem();
     this.rgPrint();
+    this.rgInset();
     this.rgClass();
     this.rgStyle();
   }

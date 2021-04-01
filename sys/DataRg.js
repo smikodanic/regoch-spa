@@ -406,6 +406,29 @@ class DataRg extends DataRgListeners {
 
 
   /**
+   * ${controllerProp}
+   * Parse and interpolate the ${controllerProperty} in the HTML text.
+   * Examples:
+   * <p data-rg-if="tf">The selected value is <b>${company.name}</b>.</p>
+   * @param {string} controllerProp - controller property which will be interpolated
+   * @returns {void}
+   */
+  rgInset(controllerProp) {
+    debug('rgInset', '--------- rgInset ------', 'navy', '#B6ECFF');
+    const reg = new RegExp('\\$\\{\\s*[a-zA-Z0-9_\.]+\\s*\\}', 'g');
+    const insets = document.body.innerHTML.match(reg); // ['${bankOwner}, '${   bank.employess.1.name }']
+    for (const inset of insets) {
+      const prop = inset.replace('${', '').replace('}', '').trim();
+      let val = this._getControllerValue(prop);
+      if (!val) { val = ''; console.error(`rgInset Error: Controller property "${prop}" is undefined.`);  }
+      document.body.innerHTML = document.body.innerHTML.replace(inset, val);
+      debug('rgInset', `${inset} -> ${val}`, 'navy');
+    }
+  }
+
+
+
+  /**
    * data-rg-class="<controllerProperty> [@@ add|replace]"
    * Parse the "data-rg-class" attribute. Set element class attribute.
    * Examples:

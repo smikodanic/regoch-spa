@@ -27,7 +27,7 @@
 
 <section class="docs-section" id="item-6-2">
   <h2 class="section-heading">Methods</h2>
-  <p>Use this methods in the controller when needed.</p>
+  <p>Do not use this methods in the controller until you know what you are doing. Just use data-rg- elements in the view's HTML code.</p>
 	<ul class="methods">
     <li>
       <b>rgHref <i>(): &lt;void&gt;</i></b>
@@ -38,26 +38,22 @@
     <li>
       <b>rgClick <i>(): &lt;void&gt;</i></b>
       <p class="desc">Parser for the <b>data-rg-click="&lt;controllerMethod&gt;"</b>. Event "click".
+      <br>The <b>$element</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-click="func(5, 'str', 8, 9, $element, $event)"</small>
       <br>Example: &lt;button data-rg-click="showData()"&gt;</p>
     </li>
     <li>
       <b>rgChange <i>(): &lt;void&gt;</i></b>
       <p class="desc">Parser for the <b>data-rg-change="&lt;controllerMethod&gt;"</b>. Event "change".
       Listen for change and execute the function i.e. controller method. Usually used in the HTML form fields like INPUT or SELECT tag.
+      <br>The <b>$element</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-change="func(5, 'str', 8, 9, $element, $event)"</small>
       <br>Example: &lt;input data-rg-change="showData()"&gt;</p>
     </li>
     <li>
       <b>rgEvt <i>(): &lt;void&gt;</i></b>
       <p class="desc">Parser for the <b>data-rg-evt="&lt;controllerMethod&gt;"</b>.
       Listen for any attached event and execute the function i.e. controller method.
+      <br>The <b>$element</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-evt="func(5, 'str', 8, 9, $element, $event)"</small>
       <br>Example: &lt;input data-rg-change="showData()"&gt;</p>
-    </li>
-    <li>
-      <b>rgEvt <i>(): &lt;void&gt;</i></b>
-      <p class="desc">Parser for the <b>data-rg-evt="&lt;controllerMethod&gt;"</b>.
-      Listen for any attached event and execute the function i.e. controller method.
-      <br>Example: data-rg-evt="mouseenter @@ myFunc($element, $event, 25, 'some text')"
-      <br>NOTICE: $element and $event are injected args. $element is the element on which the event is applied and the $event is the applied event.</p>
     </li>
     <li>
       <b>rgSet <i>(): &lt;void&gt;</i></b>

@@ -7,20 +7,21 @@ module.exports = (tip, text, color, background) => {
     loadHead: false,
 
     // DataRg.js
-    rgPrint: false,
-    rgClass: false,
-    rgStyle: false,
-    rgIf: false,
-    rgSwitch: false,
     rgFor: false,
     rgRepeat: false,
+    rgIf: false,
+    rgSwitch: false,
     rgElem: false,
+    rgPrint: false,
+    rgInset: true,
+    rgClass: false,
+    rgStyle: false,
 
     // DataRgListeners.js
     rgKILL: false,
     rgHref: false,
     rgClick: false,
-    rgChange: false,
+    rgChange: true,
     rgEvt: false,
     rgSet: false,
 

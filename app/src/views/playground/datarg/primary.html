@@ -72,6 +72,15 @@ product name: <input type="text" name="x" data-rg-set="product.name @@ print">
 
 
 <br><br>
+<h4>RG-INSET</h4>
+Bank owner: <b>${bankOwner}</b>
+<br>Bank name: <b>${  bank.name}</b>
+<br>Bank city: <b>${ bank.address.city }</b>
+<br>Second employee: <b>${  bank.employees.1.name  }</b>
+<br>Non exisitng controller property: <b>${bad_Property3}</b>
+
+
+<br><br>
 <h4>DATA-RG-CLASS</h4>
 <button data-rg-click="runCLASS()">runCLASS</button>
 <small>Open browser developer tools to see the effect after the button is clicked.</small>
@@ -131,6 +140,9 @@ class DataRgCtrl extends Controller {
       {name: 'Gen Ltd', size: 82},
       {name: 'Ren Ltd', size: 83}
     ];
+
+    // run INSET - interpolate ${ctrlProp}
+    this.runINSET();
   }
 
   async postrender(trx) {
@@ -219,6 +231,19 @@ class DataRgCtrl extends Controller {
     this.rgPrint('product.address.city');  // affect only data-rg-print with the product.address.city
   }
 
+  // set variables to test interpolation ${ctrlProp}
+  runINSET() {
+    this.bankOwner = 'Petar Pan';
+    this.bank = {
+      name: 'Beneficiary Bank LTD',
+      address: { city: 'NY'},
+      employees: [
+        {name: 'John Doe'},
+        {name: 'Melinda Doe'},
+      ]
+    };
+  }
+
   // add CSS classes 'my-red' and 'my-font-size' to the element data-rg-class="myKlases"
   runCLASS() {
     this.myKlases = ['my-red', 'my-font-size'];
@@ -293,7 +318,6 @@ module.exports =  DataRgCtrl;
 Click button multiple times to toggle the text color.
 <p style="font-weight:bold" data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
 
-
 <br><br>
 <h4>DATA-RG-PRINT &amp; DATA-RG-SET</h4>
 product name: <input type="text" name="x" data-rg-set="product.name @@ print">
@@ -307,6 +331,13 @@ product name: <input type="text" name="x" data-rg-set="product.name @@ print">
 <br>product.colors.1: <span data-rg-print="product.colors.1"></span>
 <br>product.colors.2: <span data-rg-print="product.colors.2"></span>
 
+<br><br>
+<h4>RG-INSET</h4>
+Bank owner: <b>${bankOwner}</b>
+<br>Bank name: <b>${  bank.name}</b>
+<br>Bank city: <b>${ bank.address.city }</b>
+<br>Second employee: <b>${  bank.employees.1.name  }</b>
+<br>Non exisitng controller property: <b>${bad_Property3}</b>
 
 <br><br>
 <h4>DATA-RG-CLASS</h4>
@@ -314,7 +345,6 @@ product name: <input type="text" name="x" data-rg-set="product.name @@ print">
 <small>Open browser developer tools to see the effect after the button is clicked.</small>
 <p class="my-italic" data-rg-class="myKlases">Class my-italic will remain</p>
 <p class="my-italic" data-rg-class="myKlases @@ replace">Class my-italic will be removed due to @@replace</p>
-
 
 <br><br>
 <h4>DATA-RG-STYLE</h4>

@@ -5,7 +5,7 @@ class DataRgCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.util = app.sys.util;
+    this.util = app.syslib.util;
   }
 
   async prerender(trx) {
@@ -38,6 +38,9 @@ class DataRgCtrl extends Controller {
       {name: 'Gen Ltd', size: 82},
       {name: 'Ren Ltd', size: 83}
     ];
+
+    // run INSET - interpolate ${ctrlProp}
+    this.runINSET();
   }
 
   async postrender(trx) {
@@ -124,6 +127,20 @@ class DataRgCtrl extends Controller {
     this.product.address.city = 'Zagreb';
     this.product.colors = ['blue', 'orange'];
     this.rgPrint('product.address.city');  // affect only data-rg-print with the product.address.city
+  }
+
+
+  // set variables to test interpolation ${ctrlProp}
+  runINSET() {
+    this.bankOwner = 'Petar Pan';
+    this.bank = {
+      name: 'Beneficiary Bank LTD',
+      address: { city: 'NY'},
+      employees: [
+        {name: 'John Doe'},
+        {name: 'Melinda Doe'},
+      ]
+    };
   }
 
   // add CSS classes 'my-red' and 'my-font-size' to the element data-rg-class="myKlases"

@@ -1,6 +1,6 @@
 const DataRg = require('./DataRg');
 const viewsCompiled = require('../app/dist/views/compiled.json');
-const HTTPClient = require('./HTTPClient');
+const HTTPClient = require('./lib/HTTPClient');
 const debug = require('./debug');
 
 

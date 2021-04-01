@@ -1,9 +1,9 @@
-const eventEmitter = require('./eventEmitter');
-const Form = require('./Form');
-const HTTPClient = require('./HTTPClient');
 const router = require('./router');
-const util = require('./util');
-const Cookie = require('./Cookie');
+const eventEmitter = require('./lib/eventEmitter');
+const Form = require('./lib/Form');
+const HTTPClient = require('./lib/HTTPClient');
+const util = require('./lib/util');
+const Cookie = require('./lib/Cookie');
 
 
 class App {
@@ -11,10 +11,10 @@ class App {
   constructor() {
     this.CONF = {};
     this.CONST = {};
-    this.sys = {};
+    this.syslib = {};
     this.lib = {};
     this.controllers = {};
-    this._system();
+    this._systemLibrary();
   }
 
 
@@ -53,14 +53,14 @@ class App {
 
 
 
-  /*============================== SYSTEM - this.sys ==============================*/
+  /*============================== SYSTEM - this.syslib ==============================*/
   /**
    * Inject system libraries.
    * @returns {void}
    */
-  _system() {
+  _systemLibrary() {
     if (!!this.controllers && !!this.controllers.length) { throw new Error('System should be defined before controllers.'); }
-    this.sys = { eventEmitter, util, Form, HTTPClient, Cookie };
+    this.syslib = { eventEmitter, util, Form, HTTPClient, Cookie };
   }
 
 

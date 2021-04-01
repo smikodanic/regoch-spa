@@ -2,7 +2,7 @@
  * HTML Form Library
  * According to W3C Standard https://html.spec.whatwg.org/multipage/forms.html
  */
-const debug = require('./debug');
+const debug = require('../debug');
 
 
 

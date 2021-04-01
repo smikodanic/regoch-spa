@@ -1,4 +1,4 @@
-const eventEmitter = require('./eventEmitter');
+const eventEmitter = require('./lib/eventEmitter');
 const debug = require('./debug');
 
 
@@ -211,7 +211,7 @@ class DataRgListeners {
    * @returns {void}
    */
   rgSet() {
-    debug('rgSet', '--------- rgSet ------', 'navy', '#B6ECFF');
+    debug('rgSet', '--------- rgSet ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-set';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -225,10 +225,12 @@ class DataRgListeners {
       const prop = attrValSplited[0].trim(); // controller property name
       const propSplitted = prop.split('.'); // company.name
 
+      let obj = this;
+      obj[prop] = elem.value; // set the initial value
+
       const handler = event => {
         // console.log(event);
         let i = 1;
-        let obj = this;
         for (const prop of propSplitted) {
           if (i !== propSplitted.length) { obj[prop] = {}; obj = obj[prop]; }
           else { obj[prop] = elem.value; }
@@ -240,7 +242,7 @@ class DataRgListeners {
 
       elem.addEventListener('input', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'input'});
-      debug('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- listeners.length: ${this.rgListeners.length}`, 'navy');
+      debug('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- listeners.length: ${this.rgListeners.length}`, 'orange');
     }
 
   }

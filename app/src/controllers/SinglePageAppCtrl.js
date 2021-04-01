@@ -1,14 +1,12 @@
 const { Controller } = require('../../../sys');
-const HTTPclient = require('../../../sys/HTTPClient');
 
 
 class SinglePageAppCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.sys = app.sys;
-    this.hc = new HTTPclient();
-    this.util = app.sys.util;
+    this.syslib = app.syslib;
+    this.util = app.syslib.util;
   }
 
 

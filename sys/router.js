@@ -1,5 +1,5 @@
 const RegochRouter = require('regoch-router');
-const eventEmitter = require('./eventEmitter');
+const eventEmitter = require('./lib/eventEmitter');
 
 
 

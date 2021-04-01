@@ -14,6 +14,7 @@ module.exports = [
   ['when', '/playground/page-loadviews', 'Page_LoadViewsCtrl'],
   ['when', '/playground/controller-hooks', 'Controller_hooksCtrl'],
   ['when', '/playground/datarg', 'DataRgCtrl'],
+  ['when', '/playground/datarglisteners', 'DataRgListenersCtrl'],
 
 
   ['notfound', 'NotfoundCtrl'],
