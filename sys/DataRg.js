@@ -115,7 +115,7 @@ class DataRg extends DataRgListeners {
       let act = attrValSplited[1] || '';
       act = act.trim() || 'add';
 
-      if (act == 'replace') { elem.removeAttribute('class'); }
+      if (act == 'replace' && !!valArr.length) { elem.removeAttribute('class'); }
       for (const val of valArr) { elem.classList.add(val); }
 
       debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${ctrlProp} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');

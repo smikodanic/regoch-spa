@@ -20,8 +20,7 @@ class DataRgCtrl extends Controller {
   }
 
   async init(trx) {
-    this.printModifTest();
-
+    this.runPRINT();
   }
 
   destroy(elem, event) {
@@ -33,7 +32,7 @@ class DataRgCtrl extends Controller {
 
 
   // print initial value and after 1300ms the modified value
-  async printModifTest() {
+  async runPRINT() {
     this.product = {
       name: 'Toyota',
       address: {
@@ -48,6 +47,18 @@ class DataRgCtrl extends Controller {
     this.product.address.city = 'Zagreb';
     this.product.colors = ['blue', 'orange'];
     this.rgPrint('product.address.city');  // affect only data-rg-print with the product.address.city
+  }
+
+  // add CSS classes 'my-bold' and 'my-italic' to the element data-rg-class="myKlases"
+  runCLASS() {
+    this.myKlases = ['my-bold', 'my-italic'];
+    this.rgClass('myKlases');
+  }
+
+
+  runSTYLE(fontSize, color) {
+    this.myStajl = {fontSize, color};
+    this.rgStyle('myStajl');
   }
 
 
