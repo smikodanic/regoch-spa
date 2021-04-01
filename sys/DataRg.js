@@ -208,17 +208,10 @@ class DataRg extends DataRgListeners {
       const attrVal = elem.getAttribute(attrName); // ifAge @@ remove
       const attrValSplited = attrVal.split(this.separator);
 
-      const prop = attrValSplited[0].trim(); // controller property name company.name
-      const propSplitted = prop.split('.'); // ['company', 'name']
-      const prop1 = propSplitted[0]; // company
-      let val = this[prop1]; // controller property value
-      let i = 0;
-      for (const prop of propSplitted) {
-        if (i !== 0 && !!val) { val = val[prop]; }
-        i++;
-      }
+      const prop = attrValSplited[0].trim();
+      const val = this._getControllerValue(prop);
 
-      // show or hide element
+      // remove or hide element, hide is default
       let act = attrValSplited[1] || 'hide'; // hide | remove
       act = act.trim();
 
@@ -228,14 +221,14 @@ class DataRg extends DataRgListeners {
         parent.setAttribute('data-rg-ifparent', '');
       }
 
-
+      // hide/show elem
       if (act === 'hide') {
         !!val ? elem.style.visibility = 'visible' : elem.style.visibility = 'hidden'; // elem exists but not visible
       } else if (act === 'remove') {
         !!val ? '' : this._commentElement(elem);
       }
 
-      debug('rgIf', `${prop} = ${val} | act::"${act}"`, 'navy');
+      debug('rgIf', `${prop} = ${val} | ${elem.outerHTML}`, 'navy');
       await new Promise(r => setTimeout(r, 1));
     }
 
