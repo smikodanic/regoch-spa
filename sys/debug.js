@@ -13,7 +13,7 @@ module.exports = (tip, text, color, background) => {
     rgSwitch: false,
     rgElem: false,
     rgPrint: false,
-    rgInset: true,
+    rgInterpolate: false,
     rgClass: false,
     rgStyle: false,
 
@@ -21,7 +21,7 @@ module.exports = (tip, text, color, background) => {
     rgKILL: false,
     rgHref: false,
     rgClick: false,
-    rgChange: true,
+    rgChange: false,
     rgEvt: false,
     rgSet: false,
 

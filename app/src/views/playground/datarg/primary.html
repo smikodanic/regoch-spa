@@ -3,7 +3,7 @@
 
 <!-- examples -->
 
-<h3>GENERATORS</h3>
+<h3>--GENERATORS--</h3>
 
 <h4>DATA-RG-FOR</h4>
 <button data-rg-click="runFOR()">run FOR</button>
@@ -49,7 +49,7 @@
 
 
 <br><br>
-<h3>NON-GENERATORS</h3>
+<h3>--NON-GENERATORS--</h3>
 
 <h4>DATA-RG-ELEM</h4>
 <button data-rg-click="runELEM()">run ELEM</button>
@@ -72,15 +72,6 @@ product name: <input type="text" name="x" data-rg-set="product.name @@ print">
 
 
 <br><br>
-<h4>RG-INSET</h4>
-Bank owner: <b>${bankOwner}</b>
-<br>Bank name: <b>${  bank.name}</b>
-<br>Bank city: <b>${ bank.address.city }</b>
-<br>Second employee: <b>${  bank.employees.1.name  }</b>
-<br>Non exisitng controller property: <b>${bad_Property3}</b>
-
-
-<br><br>
 <h4>DATA-RG-CLASS</h4>
 <button data-rg-click="runCLASS()">runCLASS</button>
 <small>Open browser developer tools to see the effect after the button is clicked.</small>
@@ -96,264 +87,14 @@ Bank owner: <b>${bankOwner}</b>
 
 
 
+<br><br><br>
+<h3>--EXPERIMENTAL - Do not use!--</h3>
 
-
-<!-- code -->
-<br><br><br><br><br>
-<div class="play-desc">
-  <pre><code class="language-javascript">
-/*** CONTROLLER ***/
-class DataRgCtrl extends Controller {
-
-  constructor(app) {
-    super();
-    this.util = app.sys.util;
-  }
-
-  async prerender(trx) {
-    this.setTitle('DataRg Test');
-    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
-    this.unloadCSS(['/assets/css/theme.css']);
-    this.addCSS(`
-      .my-italic {
-        font-style: italic;
-      }
-      .my-red {
-        color: red;
-      }
-      .my-font-size {
-        font-size: 21px;
-      }
-    `, '#myCSS');
-    await this.loadView('#primary', 'playground/datarg/primary.html', 'inner');
-
-    // initial values for the runFOR example
-    this.limit = 3;
-    this.skip = 2;
-    this.companies = [
-      {name: 'Cloud Ltd', size: 3},
-      {name: 'Roto Ltd', size: 5},
-      {name: 'Zen Ltd', size: 8},
-      {name: 'Den Ltd', size: 9},
-      {name: 'Len Ltd', size: 10},
-      {name: 'Pen Ltd', size: 81},
-      {name: 'Gen Ltd', size: 82},
-      {name: 'Ren Ltd', size: 83}
-    ];
-
-    // run INSET - interpolate ${ctrlProp}
-    this.runINSET();
-  }
-
-  async postrender(trx) {
-    this.lazyJS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js']);
-  }
-
-  async init(trx) {
-    this.runPRINT();
-  }
-
-  destroy(elem, event) {
-    this.unloadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
-    this.unlazyJS();
-  }
-
-
-  /*********** GENERATORS **********/
-
-  // show array elements by using data-rg-for
-  async runFOR() {
-    this.companies = [
-      {name: 'Cloud2 Ltd', size: 3},
-      {name: 'Roto2 Ltd', size: 5},
-      {name: 'Zen2 Ltd', size: 8},
-      {name: 'Den2 Ltd', size: 81},
-      {name: 'Len2 Ltd', size: 82},
-      {name: 'Pen2 Ltd', size: 83},
-      {name: 'Gen2 Ltd', size: 84},
-      {name: 'Ren2 Ltd', size: 855}
-    ];
-    await this.rgFor('companies');
-    await this.rgPrint('companies');
-  }
-
-  // repeat the data-rg-repeat num times
-  async runREPEAT(num) {
-    this.colors = ['red', 'green', 'blue', 'navy', 'cyan'];
-    await this.rgRepeat(num, 'colorID');
-    this.rgSet('colors');
-    this.rgPrint('colors');
-  }
-
-  // toggle if and show hide elements
-  toggleIF() {
-    this.ifX = !this.ifX;
-    console.log('toggleIF::', this.ifX);
-    this.rgIf('ifX');
-  }
-
-  // Here are two tests. First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.
-  runSWITCH() {
-    this.myColorsArr = ['green2', 'blue2'];
-    this.rgSwitch('myColor'); // this.myColor
-    this.rgSwitch('myColorsArr @@ multiple'); // this.myColorsArr
-  }
-
-
-
-  /*********** NON-GENERATORS **********/
-
-  // toggle text color by using data-rg-elem
-  runELEM() {
-    this.toggle = !this.toggle;
-    if (this.toggle) {
-      this.rgelems.myElem.style.color = 'blue';
-    } else {
-      this.rgelems.myElem.style.color = 'silver';
-    }
-  }
-
-  // print initial value and after 1300ms the modified value
-  async runPRINT() {
-    this.product = {
-      name: 'Toyota',
-      address: {
-        city: 'London'
-      },
-      colors: ['red', 'green']
-    };
-    this.rgPrint('product'); // affect data-rg-print with the product
-
-    await this.util.sleep(1300);
-    console.log('Product properties changed!');
-    this.product.address.city = 'Zagreb';
-    this.product.colors = ['blue', 'orange'];
-    this.rgPrint('product.address.city');  // affect only data-rg-print with the product.address.city
-  }
-
-  // set variables to test interpolation ${ctrlProp}
-  runINSET() {
-    this.bankOwner = 'Petar Pan';
-    this.bank = {
-      name: 'Beneficiary Bank LTD',
-      address: { city: 'NY'},
-      employees: [
-        {name: 'John Doe'},
-        {name: 'Melinda Doe'},
-      ]
-    };
-  }
-
-  // add CSS classes 'my-red' and 'my-font-size' to the element data-rg-class="myKlases"
-  runCLASS() {
-    this.myKlases = ['my-red', 'my-font-size'];
-    this.rgClass('myKlases');
-  }
-
-  // add style attribute values
-  runSTYLE(fontSize, color) {
-    this.myStajl = {fontSize, color};
-    this.rgStyle('myStajl');
-  }
-
-}
-
-
-module.exports =  DataRgCtrl;
-  </code></pre>
-
-
-  <pre><code class="language-markup"><xmp>
-/*** VIEW ***/
-<h3>GENERATORS</h3>
-
-<h4>DATA-RG-FOR</h4>
-<button data-rg-click="runFOR()">run FOR</button>
-<p data-rg-for="companies:limit:skip" style="color:green"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
-<p data-rg-for="companies:limit:skip @@ inner" style="color:orangered"><span data-rg-print="companies.$i.name @@ append">$i name:</span><br></p>
-
-<br><br>
-<h4>DATA-RG-REPEAT</h4>
-<p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>
-<button data-rg-click="runREPEAT(4)">run REPEAT</button>
-<p id="colorID" data-rg-repeat="3">$i+1 <input data-rg-set="colors.$i @@ print"> <span data-rg-print="colors.$i"></span></p>
-
-<br><br>
-<h4>DATA-RG-IF</h4>
-<div>
- <button data-rg-click="toggleIF()">toggle IF</button>
-  <br>-- start <span data-rg-if="ifX @@ remove">company name 1</span>
-  <br><b>-- middle</b> <span data-rg-if="ifX @@ hide">company name 2</span>
-  <br>-- end
-</div>
-  <p data-rg-if="ifX @@ remove">company name 3</p>
-
-<br><br>
-<h4>DATA-RG-SWITCH</h4>
-<p>Here are two tests. <br>First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.</p>
-<i>-- switch one example</i>
-<br><input type="text" data-rg-set="myColor @@ print" placeholder="type red, green or blue">
-<button data-rg-click="runSWITCH()" data-rg-print="myColor @@ inset">run SWITCH "${}"</button>
-<ul data-rg-switch="myColor">
-  <li data-rg-switchcase="red">red</li>
-  <li data-rg-switchcase="green">green</li>
-  <li data-rg-switchcase="blue">blue</li>
-  <li data-rg-switchdefault>silver (default)</li>
-</ul>
-<br>
-<br><i>--switch multiple example</i>
-<div data-rg-switch="myColorsArr @@ multiple">
-  <p data-rg-switchcase="red2">red2</p>
-  <p data-rg-switchcase="green2">green2</p>
-  <p data-rg-switchcase="blue2">blue2</p>
-  <p data-rg-switchdefault>silver2 (default)</p>
-</div>
-
-
-<br><br>
-<h3>NON-GENERATORS</h3>
-
-<h4>DATA-RG-ELEM</h4>
-<button data-rg-click="runELEM()">run ELEM</button>
-Click button multiple times to toggle the text color.
-<p style="font-weight:bold" data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
-
-<br><br>
-<h4>DATA-RG-PRINT &amp; DATA-RG-SET</h4>
-product name: <input type="text" name="x" data-rg-set="product.name @@ print">
-<!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
-<p data-rg-print="product.name @@ append">name: </p>
-<p data-rg-print="product.address.city @@ inset">The address.city is "${}" !</p>
-<p data-rg-print="product @@ append" style="color:Gray">JSON: </p>
-<br>
-<br>product.colors: <span data-rg-print="product.colors"></span>
-<br>product.colors.0: <span data-rg-print="product.colors.0"></span> <input type="text" name="xyz" data-rg-set="product.colors.0 @@ print" placeholder="change product.colors.0">
-<br>product.colors.1: <span data-rg-print="product.colors.1"></span>
-<br>product.colors.2: <span data-rg-print="product.colors.2"></span>
-
-<br><br>
-<h4>RG-INSET</h4>
-Bank owner: <b>${bankOwner}</b>
+<h4>RG-INTERPOLATE</h4>
+ISSUE: When applied breaks DataRgListeners.
+<button data-rg-click="runINTERPOLATE()">runINTERPOLATE</button>
+<br>Bank owner: <b>${bankOwner}</b>
 <br>Bank name: <b>${  bank.name}</b>
 <br>Bank city: <b>${ bank.address.city }</b>
 <br>Second employee: <b>${  bank.employees.1.name  }</b>
 <br>Non exisitng controller property: <b>${bad_Property3}</b>
-
-<br><br>
-<h4>DATA-RG-CLASS</h4>
-<button data-rg-click="runCLASS()">runCLASS</button>
-<small>Open browser developer tools to see the effect after the button is clicked.</small>
-<p class="my-italic" data-rg-class="myKlases">Class my-italic will remain</p>
-<p class="my-italic" data-rg-class="myKlases @@ replace">Class my-italic will be removed due to @@replace</p>
-
-<br><br>
-<h4>DATA-RG-STYLE</h4>
-<button data-rg-click="runSTYLE(21px, red)">run STYLE</button>
-<p style="font-weight:bold" data-rg-style="myStajl">"font-weight:bold" will remain</p>
-<p style="font-weight:bold" data-rg-style="myStajl @@ replace">"font-weight:bold" will be removed</p>
-
-  </xmp></code></pre>
-
-</div>
-
-

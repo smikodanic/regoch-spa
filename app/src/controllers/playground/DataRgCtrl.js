@@ -38,9 +38,6 @@ class DataRgCtrl extends Controller {
       {name: 'Gen Ltd', size: 82},
       {name: 'Ren Ltd', size: 83}
     ];
-
-    // run INSET - interpolate ${ctrlProp}
-    this.runINSET();
   }
 
   async postrender(trx) {
@@ -131,7 +128,7 @@ class DataRgCtrl extends Controller {
 
 
   // set variables to test interpolation ${ctrlProp}
-  runINSET() {
+  runINTERPOLATE() {
     this.bankOwner = 'Petar Pan';
     this.bank = {
       name: 'Beneficiary Bank LTD',
@@ -141,6 +138,7 @@ class DataRgCtrl extends Controller {
         {name: 'Melinda Doe'},
       ]
     };
+    this.rgInterpolate();
   }
 
   // add CSS classes 'my-red' and 'my-font-size' to the element data-rg-class="myKlases"

@@ -404,30 +404,6 @@ class DataRg extends DataRgListeners {
   }
 
 
-
-  /**
-   * ${controllerProp}
-   * Parse and interpolate the ${controllerProperty} in the HTML text.
-   * Examples:
-   * <p data-rg-if="tf">The selected value is <b>${company.name}</b>.</p>
-   * @param {string} controllerProp - controller property which will be interpolated
-   * @returns {void}
-   */
-  rgInset(controllerProp) {
-    debug('rgInset', '--------- rgInset ------', 'navy', '#B6ECFF');
-    const reg = new RegExp('\\$\\{\\s*[a-zA-Z0-9_\.]+\\s*\\}', 'g');
-    const insets = document.body.innerHTML.match(reg); // ['${bankOwner}, '${   bank.employess.1.name }']
-    for (const inset of insets) {
-      const prop = inset.replace('${', '').replace('}', '').trim();
-      let val = this._getControllerValue(prop);
-      if (!val) { val = ''; console.error(`rgInset Error: Controller property "${prop}" is undefined.`);  }
-      document.body.innerHTML = document.body.innerHTML.replace(inset, val);
-      debug('rgInset', `${inset} -> ${val}`, 'navy');
-    }
-  }
-
-
-
   /**
    * data-rg-class="<controllerProperty> [@@ add|replace]"
    * Parse the "data-rg-class" attribute. Set element class attribute.
@@ -505,6 +481,45 @@ class DataRg extends DataRgListeners {
     }
 
   }
+
+
+
+
+
+  /************ EXPERIMENTAL **********/
+  /**
+   * ${controllerProp}
+   * Parse and interpolate the ${controllerProperty} in the HTML text.
+   * Example: <p data-rg-if="tf">The selected value is <b>${company.name}</b>.</p>
+   * ISSUE: When applied breaks dataRgListeners because document.body.innerHTML is modified.
+   * @param {string} controllerProp - controller property which will be interpolated
+   * @returns {void}
+   */
+  rgInterpolate(controllerProp) {
+    debug('rgInterpolate', '--------- rgInterpolate ------', 'navy', '#B6ECFF');
+
+    // put the whole body in the temp var
+    if (!this.temp.body) { this.temp.body = document.body.innerHTML; }
+
+    // find insets i.e. ${ctrlProp} string
+    let reg = new RegExp('\\$\\{\\s*[a-zA-Z0-9_\.]+\\s*\\}', 'g');
+    if (controllerProp) { reg = new RegExp(`\\$\\{\\s*${controllerProp}\\s*\\}`, 'g'); } // reduce the number of inset elements and speed up the interpoaltion
+    const insets = this.temp.body.match(reg); // ['${bankOwner}, '${   bank.employess.1.name }']
+    if (!insets) { return; }
+
+    // replace ${ctrProp} with the value
+    document.body.innerHTML = this.temp.body;
+    for (const inset of insets) {
+      const prop = inset.replace('${', '').replace('}', '').trim();
+      let val = this._getControllerValue(prop);
+      if (!val) { val = ''; console.log(`%c  Warning rgInterpolate: Controller property ${inset} is undefined.`, `color:Maroon; background:LightYellow`); }
+      document.body.innerHTML = document.body.innerHTML.replace(inset, val);
+
+      debug('rgInterpolate', `${inset} -> ${val}`, 'navy');
+    }
+
+  }
+
 
 
 
