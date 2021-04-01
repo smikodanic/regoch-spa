@@ -40,7 +40,8 @@
 <section class="docs-section" id="item-5-2">
   <h2 class="section-heading">Methods</h2>
   <p>Use this methods in the controller when needed. The methods are written in the order how they are executed in the Controller.
-    When generatory are used in the controller always use <b>await</b>. For non-generators <b>await</b> is not needed.</p>
+    When generators are used in the controller always use <b>await</b> because the rest of the code (for example rgPrint) should wait that new elements are generated.
+    For non-generators <b>await</b> is not needed.</p>
 	<ul class="methods">
     <h4>GENERATORS</h4>
     Generators will produce new HTML elements or remove existing. It will change the DOM tree.
