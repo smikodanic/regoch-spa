@@ -39,8 +39,61 @@
 
 <section class="docs-section" id="item-5-2">
   <h2 class="section-heading">Methods</h2>
-  <p>Use this methods in the controller when needed.</p>
+  <p>Use this methods in the controller when needed. The methods are written in the order how they are executed in the Controller.
+    When generatory are used in the controller always use <b>await</b>. For non-generators <b>await</b> is not needed.</p>
 	<ul class="methods">
+    <h4>GENERATORS</h4>
+    Generators will produce new HTML elements or remove existing. It will change the DOM tree.
+    <li>
+      <i>async</i> <b>rgFor <i>(attrvalue:string): Promise&lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-for="&lt;propArr&gt;[:limit:skip] [@@ outer|inner]"</b> elements. Multiply the element. Use limit and skip for the pagination.
+      <br>If the iteration parameter <b style="color:brown">$i</b> is used then expressions like .$i or $i+1, $i-1, $i^2, ... will be parsed in the HTML file.
+      <br>For example: <small>&lt;p data-rg-for="companies"&gt;&lt;span data-rg-print="companies.$i.name @@ append"&gt;$i+1 name:&lt;/span&gt;&lt;/p&gt;</small>
+      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
+      <br>Examples:
+      <br>data-rg-for="companies @@ outer"
+      <br>data-rg-for="company.employees" - hide the element</p>
+    </li>
+    <li>
+      <i>async</i> <b>rgRepeat <i>(num:number, id:string): Promise&lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-repeat="&lt;num&gt;"</b> elements. Repeat the element <i>num</i> times.
+      <br>If the iteration parameter <b style="color:brown">$i</b> is used then expressions like .$i or $i+1, $i-1, $i^2, ... will be parsed in the HTML file.
+      <br><b>num</b> - number of the repeats
+      <br><b>id</b> - element's id, for example &lt;p id="myID" data-rg-repeat="5"&gt;</p>
+    </li>
+    <li>
+      <i>async</i> <b>rgIf <i>(attrvalue:string): Promise&lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-if="&lt;controllerProperty&gt; [@@ hide|remove]"</b> elements. Show, hide or remove the HTML element.
+      <br>When @@hide option is used the style="visibility:hidden;" or style="visibility:visible;" is added to the data-rg-if element.
+      <br>When @@remove option is used the data-rg-if element is completely commented. For example: <code class="language-markup">&lt;!--&lt;span data-rg-if="ifAge @@ remove"&gt;Lorem ipsum&lt;/span&gt;--&gt;</code>
+      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
+      <br>Examples:
+      <br>* data-rg-if="ifAge" - hide the element
+      <br>* data-rg-if="ifAge @@ hide" - hide the element
+      <br>* data-rg-if="ifAge @@ remove" - remove the element</p>
+    </li>
+    <li>
+      <i>async</i> <b>rgSwitch <i>(controllerProp:string): Promise&lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-switch="&lt;controllerProperty&gt; [@@ multiple]"</b> elements. Show or remove elements depending if "data-rg-switchcase" value matches controller property.
+      <br>Notice1: The data-rg-if can hide elements while data-rg-switch will only remove them.
+      <br>Notice2: With @@multiple many switchcases can be shown.
+      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
+      <br>Example:
+      <br>data-rg-switch="age"
+      <br>data-rg-switchcase="18"
+      <br>data-rg-switchcase="21"
+    </li>
+  </ul>
+
+  <ul class="methods">
+    <h4>NON-GENERATORS</h4>
+    Non-generators will will affect only one element with the specified data-rg- attribute.
+    <li>
+      <b>rgElem <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Parse the <b>data-rg-elem="&lt;rgelemsProp&gt;"</b> elements. Transfer the DOM element to the controller property "this.rgelems".
+      <br><b>num</b> - number of the repeats
+      <br><b>id</b> - element's id, for example &lt;p id="myID" data-rg-repeat="5"&gt;</p>
+    </li>
     <li>
       <b>rgPrint <i>(attrvalueProp:string): &lt;void&gt;</i></b>
       <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [@@ inner|outer|sibling|prepend|append|inset]"</b> elements. Print the controller's property in the view.
@@ -60,49 +113,6 @@
       <p class="desc">Parse the <b>data-rg-style="&lt;controllerProperty&gt; [@@ add|replace]"</b> elements. Set the element style attribute.
       <br>When <i>@@add</i> is used the new styles will be appended to the existing styles. If the <i>@@replace</i> is used then all styles will be replaced.</th>
       <br><b>controllerProp</b> - controller property which defines "style" attribute</p>
-    </li>
-    <li>
-      <b>rgIf <i>(attrvalue:string): &lt;void&gt;</i></b>
-      <p class="desc">Parse the <b>data-rg-if="&lt;controllerProperty&gt; [@@ hide|remove]"</b> elements. Show, hide or remove the HTML element.
-      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
-      <br>Examples:
-      <br>* data-rg-if="ifAge" - hide the element
-      <br>* data-rg-if="ifAge @@ hide" - hide the element
-      <br>* data-rg-if="ifAge @@ remove" - remove the element</p>
-    </li>
-    <li>
-      <b>rgSwitch <i>(controllerProp:string): &lt;void&gt;</i></b>
-      <p class="desc">Parse the <b>data-rg-switch="&lt;controllerProperty&gt; [@@ multiple]"</b> elements. Show or remove elements depending if "data-rg-switchcase" value matches controller property.
-      <br>Notice1: The data-rg-if can hide elements while data-rg-switch will completely remove them.
-      <br>Notice2: With @@ multiple many switchcases can be shown.
-      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
-      <br>Example:
-      <br>data-rg-switch="age"
-      <br>data-rg-switchcase="18"
-      <br>data-rg-switchcase="21"
-    </li>
-    <li>
-      <b>rgFor <i>(attrvalue:string): &lt;void&gt;</i></b>
-      <p class="desc">Parse the <b>data-rg-for="&lt;propArr&gt;[:limit:skip] [@@ outer|inner]"</b> elements. Multiply the element. Use limit and skip for the pagination.
-      <br>If the iteration parameter <b style="color:brown">$i</b> is used then expressions like .$i or $i+1, $i-1, $i^2, ... will be parsed in the HTML file.
-      <br>For example: <small>&lt;p data-rg-for="companies"&gt;&lt;span data-rg-print="companies.$i.name @@ append"&gt;$i+1 name:&lt;/span&gt;&lt;/p&gt;</small>
-      <br><b>attrvalue</b> - attribute value (limit parsing to only one HTML element)
-      <br>Examples:
-      <br>data-rg-for="companies @@ outer"
-      <br>data-rg-for="company.employees" - hide the element</p>
-    </li>
-    <li>
-      <b>rgRepeat <i>(num:number, id:string): &lt;void&gt;</i></b>
-      <p class="desc">Parse the <b>data-rg-repeat="&lt;num&gt;"</b> elements. Repeat the element <i>num</i> times.
-      <br>If the iteration parameter <b style="color:brown">$i</b> is used then expressions like .$i or $i+1, $i-1, $i^2, ... will be parsed in the HTML file.
-      <br><b>num</b> - number of the repeats
-      <br><b>id</b> - element's id, for example &lt;p id="myID" data-rg-repeat="5"&gt;</p>
-    </li>
-    <li>
-      <b>rgElem <i>(): &lt;void&gt;</i></b>
-      <p class="desc">Parse the <b>data-rg-elem="&lt;rgelemsProp&gt;"</b> elements. Transfer the DOM element to the controller property "this.rgelems".
-      <br><b>num</b> - number of the repeats
-      <br><b>id</b> - element's id, for example &lt;p id="myID" data-rg-repeat="5"&gt;</p>
     </li>
   </ul>
 </section>

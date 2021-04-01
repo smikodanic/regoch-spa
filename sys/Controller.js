@@ -25,9 +25,19 @@ class Controller extends Page {
   async render(trx) {
     this.loadInc(true); // defined in Page.js
     await new Promise(resolve => setTimeout(resolve, 400));
-
-    this.parseListeners();
     this.parseNonListeners();
+    this.parseListeners();
+  }
+
+  async parseNonListeners() {
+    await this.rgFor();
+    await this.rgRepeat();
+    await this.rgIf();
+    await this.rgSwitch();
+    this.rgElem();
+    this.rgPrint();
+    this.rgClass();
+    this.rgStyle();
   }
 
   async parseListeners() {
@@ -36,17 +46,6 @@ class Controller extends Page {
     this.rgChange();
     this.rgEvt();
     this.rgSet();
-  }
-
-  async parseNonListeners() {
-    this.rgPrint();
-    this.rgClass();
-    this.rgStyle();
-    this.rgIf();
-    this.rgSwitch();
-    this.rgFor();
-    this.rgRepeat();
-    this.rgElem();
   }
 
 
