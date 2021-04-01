@@ -136,7 +136,7 @@ class DataRgListeners {
           const funcArgs = this._getFuncArgs(matched[2], elem, event);
           if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
           this[funcName](...funcArgs);
-          debug('rgChange', `${funcName} | ${funcArgs}`, 'orange');
+          debug('rgChange', `controller method: "${funcName}" with args: "${funcArgs}"`, 'orange');
         } catch (err) {
           throw new Error(err.message);
         }

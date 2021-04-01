@@ -10,7 +10,7 @@ module.exports = (tip, text, color, background) => {
     rgFor: false,
     rgRepeat: false,
     rgIf: false,
-    rgSwitch: true,
+    rgSwitch: false,
     rgElem: false,
     rgPrint: false,
     rgInterpolate: false,
@@ -21,7 +21,7 @@ module.exports = (tip, text, color, background) => {
     rgKILL: false,
     rgHref: false,
     rgClick: false,
-    rgChange: true,
+    rgChange: false,
     rgEvt: false,
     rgSet: false,
 
