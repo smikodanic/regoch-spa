@@ -16,13 +16,18 @@
   "main": "./sys/index.js",
   "scripts": {
     "inst": "rm -rf node_modules && npm install",
-    "dev": "gulp default"
+    "dev": "gulp default",
+    "build": "npm install && gulp build && rm -rf node_modules && npm install --only=production"
+  },
+  "bin": {
+    "rg": "./bin/index.js"
   },
   "dependencies": {
     "regoch-router": "^1.0.1"
   },
   "devDependencies": {
     "browserify": "^17.0.0",
+    "commander": "^7.2.0",
     "fs-extra": "^9.1.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
@@ -32,13 +37,14 @@
     "gulp-minify": "^3.1.0",
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^3.0.0",
+    "inquirer": "^8.0.0",
     "rimraf": "^3.0.2",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
   "directories": {
-    "example": "examples",
-    "src": "src"
+    "src": "app/src",
+    "bin": "./bin"
   },
   "repository": {
     "type": "git",
