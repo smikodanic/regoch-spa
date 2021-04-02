@@ -13,16 +13,6 @@ class DataRgListenersCtrl extends Controller {
     await this.loadView('#primary', 'playground/datarglisteners/primary.html', 'inner');
   }
 
-  async postrender(trx) {
-    this.lazyJS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js']);
-  }
-
-  async init(trx) {
-  }
-
-  destroy(elem, event) {
-  }
-
 
 
   // A) fetch the API response and show it in the data-rg-print element   B) change the clicked button color

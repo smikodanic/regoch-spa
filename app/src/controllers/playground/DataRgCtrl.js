@@ -39,16 +39,11 @@ class DataRgCtrl extends Controller {
     ];
   }
 
-  async postrender(trx) {
-
-  }
-
   async init(trx) {
     this.runPRINT();
   }
 
-  destroy(elem, event) {
-  }
+
 
 
   /*********** GENERATORS **********/
