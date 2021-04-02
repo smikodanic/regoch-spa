@@ -193,18 +193,6 @@ class Cookie {
 
 
 
-  /**
-   * Empty cookie value by specific name.
-   * @param {string} name - cookie name
-   * @returns {void}
-   */
-  empty(name) {
-    if (!document) { throw new Error('The document is not available.'); }
-    document.cookie = `${name}=;`; // empty cookie value
-    if (this.debug) { console.log('cookie-empty(): ', name); }
-  }
-
-
 
   /**
    * Check if cookie exists.
