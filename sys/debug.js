@@ -27,6 +27,7 @@ module.exports = (tip, text, color, background) => {
 
     // Form.js
     setControl: false,
+    setControls: false,
     getControl: false,
     delControl: false
   };

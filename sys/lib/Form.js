@@ -46,6 +46,23 @@ class Form {
   }
 
 
+
+  /**
+   * Set the multiple form controls with one object.
+   * @param {object} obj - the object which represent the object values, or example: {name:'John Doe', age:23, employed:true}
+   * @returns {void}
+   */
+  setControls(obj) {
+    debug('setControls', '--------- setControls ------', 'green', '#88DBC0');
+    const keys = Object.keys(obj);
+    for (const key of keys) {
+      const val = obj[key];
+      this.setControl(key, val);
+    }
+  }
+
+
+
   /**
    * Get the form control value.
    * @param {string} key - the value of the "name" HTML attribute
