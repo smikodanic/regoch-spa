@@ -31,7 +31,7 @@
 	<ul class="methods">
     <li>
       <b>rgHref <i>(): &lt;void&gt;</i></b>
-      <p class="desc">Href click listener for changing URLs (browser history states).
+      <p class="desc">Href click listener for changing URLs. It will push new browser history state <i>window.history.pushState(state, title, url)</i>.
       <br>Just add <b>data-rg-href</b> attribute to the existing A tag and the href value will work as single page app.
       <br>Example: &lt;a href="/product/12" data-rg-href&gt;Product 12&lt;/a&gt;</p>
     </li>

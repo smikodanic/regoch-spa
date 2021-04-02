@@ -20,6 +20,8 @@ const Page_LoadViewsCtrl = require('./controllers/playground/Page_LoadViewsCtrl'
 const Controller_hooksCtrl = require('./controllers/playground/Controller_hooksCtrl');
 const DataRgCtrl = require('./controllers/playground/DataRgCtrl');
 const DataRgListenersCtrl = require('./controllers/playground/DataRgListenersCtrl');
+const CookieCtrl = require('./controllers/playground/CookieCtrl');
+const FormCtrl = require('./controllers/playground/FormCtrl');
 
 
 
@@ -47,6 +49,8 @@ app
     Controller_hooksCtrl,
     DataRgCtrl,
     DataRgListenersCtrl,
+    CookieCtrl,
+    FormCtrl,
 
     // not found page
     NotfoundCtrl

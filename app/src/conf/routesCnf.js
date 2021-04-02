@@ -15,6 +15,8 @@ module.exports = [
   ['when', '/playground/controller-hooks', 'Controller_hooksCtrl'],
   ['when', '/playground/datarg', 'DataRgCtrl'],
   ['when', '/playground/datarglisteners', 'DataRgListenersCtrl'],
+  ['when', '/playground/cookie', 'CookieCtrl'],
+  ['when', '/playground/form', 'FormCtrl'],
 
 
   ['notfound', 'NotfoundCtrl'],

@@ -78,6 +78,13 @@ class DataRgListenersCtrl extends Controller {
 
 
 
+  // show the history
+  historyData() {
+    console.log('window.history::', window.history);
+  }
+
+
+
 }
 
 
