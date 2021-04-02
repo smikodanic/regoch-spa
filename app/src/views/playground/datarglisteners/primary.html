@@ -29,3 +29,12 @@ Update data-rg-switch and data-rg-if every time the SELECT is changed. <br>
   <li data-rg-switchcase="three">THREE</li>
 </ol>
 <div><p data-rg-if="ifThree" data-rg-print="mySelect @@ inset">The selected value is <b>${}</b>.</p></div>
+
+
+<br><br>
+<h4>EVT</h4>
+<span style="font-weight:bold" data-rg-evt="
+  mouseenter @@ runEVT($element, $event, 'red') &&
+  mouseleave @@ runEVT($element, $event, 'green') &&
+  click @@ runEVT($element, $event, 'blue')
+">mouseenter and click this text</span>

@@ -151,7 +151,7 @@ class DataRgListeners {
 
 
   /**
-   * data-rg-evt="eventName @@ <function>"
+   * data-rg-evt="eventName1 @@ <function1> [&& eventName2 @@ <function2>]"
    * Listen for event and execute the function i.e. controller method.
    * https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseenter_event
    * Examples:

@@ -50,8 +50,8 @@
     </li>
     <li>
       <b>rgEvt <i>(): &lt;void&gt;</i></b>
-      <p class="desc">Parser for the <b>data-rg-evt="&lt;controllerMethod&gt;"</b>.
-      Listen for any attached event and execute the function i.e. controller method.
+      <p class="desc">Parser for the <b>data-rg-evt="eventName1 @@ <function1> [&& eventName2 @@ <function2>]"</b>.
+      Listen for any attached event and execute the function i.e. controller method. Events can be chained with the <b>&&</b>.
       <br>The <b>$element</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-evt="func(5, 'str', 8, 9, $element, $event)"</small>
       <br>Example: &lt;input data-rg-change="showData()"&gt;</p>
     </li>
@@ -74,7 +74,16 @@
 <a href="/product/12">Product 12</a> - this will send a request to the server
   </xmp></code></pre>
 
-  <h4>1. data-rg-set</h4>
+  <h4>2. data-rg-evt</h4>
+  <pre><code class="language-markup"><xmp>
+<span style="font-weight:bold" data-rg-evt="
+  mouseenter @@ runEVT($element, $event, 'red') &&
+  mouseleave @@ runEVT($element, $event, 'green') &&
+  click @@ runEVT($element, $event, 'blue')
+">mouseenter and click this text</span>
+  </xmp></code></pre>
+
+  <h4>3. data-rg-set</h4>
   <pre><code class="language-markup"><xmp>
 <p id="colorID" data-rg-repeat="3">$i+1 <input data-rg-set="colors.$i @@ print"> <span data-rg-print="colors.$i"></span></p>
   </xmp></code></pre>
