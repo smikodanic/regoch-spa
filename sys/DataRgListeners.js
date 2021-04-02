@@ -91,6 +91,8 @@ class DataRgListeners {
     for (const elem of elems) {
       const funcDef = elem.getAttribute(attrName).trim(); // string 'myFunc(x, y, ...restArgs)'
       const matched = funcDef.match(/^(.+)\((.*)\)$/);
+      if (!matched) { console.error(`Error data-rg-click: "${funcDef}" has bad definition.`); continue; }
+
       const funcName = matched[1]; // function name: myFunc
 
       const handler = event => {
@@ -128,6 +130,8 @@ class DataRgListeners {
     for (const elem of elems) {
       const funcDef = elem.getAttribute(attrName).trim(); // string 'myFunc(x, y, ...restArgs)'
       const matched = funcDef.match(/^(.+)\((.*)\)$/);
+      if (!matched) { console.error(`Error data-rg-change: "${funcDef}" has bad definition.`); continue; }
+
       const funcName = matched[1]; // function name: myFunc
 
       const handler = event => {
@@ -176,6 +180,8 @@ class DataRgListeners {
         const funcDef = attrValSplited[1].trim();
 
         const matched = funcDef.match(/^(.+)\((.*)\)$/);
+        if (!matched) { console.error(`Error data-rg-evt: "${funcDef}" has bad definition.`); continue; }
+
         const funcName = matched[1]; // function name: myFunc
 
         const handler = event => {
