@@ -14,7 +14,13 @@ class App {
     this.syslib = {};
     this.lib = {};
     this.controllers = {};
-    this._systemLibrary();
+
+    // define global variable
+    window.regoch = {
+      viewsCompiled: {}
+    };
+
+    this._systemLibrary(); // app.syslib
   }
 
 
@@ -85,6 +91,19 @@ class App {
 
 
 
+  /*============================== LIBRARY - this.lib ==============================*/
+  /**
+   * Inject the content of the app/dist/views/compild.json .
+   * @param {object} viewsCompiled
+   */
+  compiled(viewsCompiled) {
+    const controllersCount = Object.keys(this.controllers).length;
+    if (controllersCount !== 0) { throw new Error('The method compiled() should be used before the method controller() !'); }
+    window.regoch.viewsCompiled = viewsCompiled;
+  }
+
+
+
   /*============================== CONTROLLERS & ROUTES - this.controllers ==============================*/
   /**
    * Create controller instances and inject into the this.controllers.
@@ -92,7 +111,9 @@ class App {
    * @returns {App}
    */
   controller(Ctrls) {
-    for(const Ctrl of Ctrls) { this.controllers[Ctrl.name] = new Ctrl(this); }
+    for(const Ctrl of Ctrls) {
+      this.controllers[Ctrl.name] = new Ctrl(this);
+    }
     return this;
   }
 

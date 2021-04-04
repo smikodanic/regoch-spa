@@ -1,4 +1,4 @@
-const { App } = require('../../sys');
+const { App } = require('regoch-spa');
 
 // conf
 const routesCnf = require('./conf/routesCnf');

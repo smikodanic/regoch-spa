@@ -1,4 +1,5 @@
 const { App } = require('../../sys');
+const viewsCompiled = require('../dist/views/compiled.json');
 
 // conf
 const routesCnf = require('./conf/routesCnf');
@@ -36,7 +37,7 @@ app
   .freeze();
 
 app.libInject({StringExt, Rand});
-
+app.compiled(viewsCompiled);
 app
   .controller([
     // docs

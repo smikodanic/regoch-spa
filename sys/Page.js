@@ -1,8 +1,6 @@
 const DataRg = require('./DataRg');
-const viewsCompiled = require('../app/dist/views/compiled.json');
 const HTTPClient = require('./lib/HTTPClient');
 const debug = require('./debug');
-
 
 
 class Page extends DataRg {
@@ -24,7 +22,9 @@ class Page extends DataRg {
       }
     };
     this.httpClient = new HTTPClient(opts);
+    this.viewsCompiled = window.regoch.viewsCompiled;
   }
+
 
 
   /************** INCLUDES ****************/
@@ -72,7 +72,7 @@ class Page extends DataRg {
 
       // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
       let nodes, str;
-      if (!!viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
+      if (!!this.viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
         const cnt = this.fetchCompiledView(viewPath, cssSel);
         nodes = cnt.nodes;
         str = cnt.str;
@@ -169,7 +169,7 @@ class Page extends DataRg {
 
     // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
     let nodes, str;
-    if (!!viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
+    if (!!this.viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
       const cnt = this.fetchCompiledView(viewPath, cssSel);
       nodes = cnt.nodes;
       str = cnt.str;
@@ -293,14 +293,14 @@ class Page extends DataRg {
   fetchCompiledView(viewPath, cssSel) {
     // convert HTML string to Document
     const parser = new DOMParser();
-    const doc = parser.parseFromString(viewsCompiled[viewPath], 'text/html');
+    const doc = parser.parseFromString(this.viewsCompiled[viewPath], 'text/html');
 
     // define nodes and string
     let nodes; // array of DOM nodes (Node[])
     let str; // HTML content as string (string)
     if (!cssSel) {
-      nodes = /\<title|\<meta|\<link\<base/.test(viewsCompiled[viewPath]) ? doc.head.childNodes : doc.body.childNodes;
-      str = viewsCompiled[viewPath];
+      nodes = /\<title|\<meta|\<link\<base/.test(this.viewsCompiled[viewPath]) ? doc.head.childNodes : doc.body.childNodes;
+      str = this.viewsCompiled[viewPath];
     } else {
       const elem = doc.querySelector(cssSel);
       nodes = [elem];
@@ -493,7 +493,7 @@ class Page extends DataRg {
 
     // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
     let nodes, str;
-    if (!!viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
+    if (!!this.viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
       const cnt = this.fetchCompiledView(viewPath);
       nodes = cnt.nodes;
       str = cnt.str;

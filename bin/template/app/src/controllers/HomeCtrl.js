@@ -1,4 +1,4 @@
-const { Controller } = require('../../../sys');
+const { Controller } = require('regoch-spa');
 
 
 class HomeCtrl extends Controller {
