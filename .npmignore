@@ -1,2 +1,5 @@
+.gulp
 app
+node_modules
+server
 regoch.json

@@ -1,9 +1,0 @@
-{
-  "compile": {
-    "views": [
-      "inc/header.html"
-    ]
-  }
-}
-
-

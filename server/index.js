@@ -1,4 +1,4 @@
-const HTTPServer = require('../sys/HTTPServer.js');
+const HTTPServer = require('./HTTPServer.js');
 
 const httpOpts = {
   port: 4400,
