@@ -23,8 +23,28 @@
 </section>
 
 <section class="docs-section" id="item-1-2">
-  <h2 class="section-heading">Installation</h2>
-	<pre><code class="language-bash">npm install -g regoch-spa</code></pre>
+  <h2 class="section-heading">Installation &amp; Development</h2>
+  <p>Install and start to develop your single page app in a few steps:</p>
+	<pre><code class="language-bash">
+  $ sudo npm install -g gulp
+  $ sudo npm install -g regoch-cli
+  $ rg spa-new myApp
+  $ cd myApp
+  $ npm run inst   (or $ npm install)
+  $ npm run dev    (or $ gulp)
+  </code></pre>
+
+  <br><br>
+  <h2 class="section-heading">Installation &amp; Deploy</h2>
+  <p>Build and deploy your application on the server:</p>
+	<pre><code class="language-bash">
+  $ sudo npm install -g gulp
+  $ sudo npm install -g pm2
+  $ git clone [myApp]
+  $ cd myApp
+  $ npm run build   (or $ gulp build)
+  $ pm2 start server --name myApp
+  </code></pre>
 </section>
 
 <section class="docs-section" id="item-1-3">
