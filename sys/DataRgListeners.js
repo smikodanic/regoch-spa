@@ -229,29 +229,53 @@ class DataRgListeners {
       const bindTo = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
 
       const prop = attrValSplited[0].trim(); // controller property name
-      const propSplitted = prop.split('.'); // company.name
 
-      let obj = this;
-      obj[prop] = elem.value; // set the initial value
+      debug('rgSet', `initial value: ${elem.value}, bindTo: ${bindTo}`, 'orange');
+      this._setControllerValue(prop, elem.value);
+      if (bindTo === 'print') { this.rgPrint(prop); }
 
       const handler = event => {
-        // console.log(event);
-        let i = 1;
-        for (const prop of propSplitted) {
-          if (i !== propSplitted.length) { obj[prop] = {}; obj = obj[prop]; }
-          else { obj[prop] = elem.value; }
-          i++;
-        }
+        this._setControllerValue(prop, elem.value);
         if (bindTo === 'print') { this.rgPrint(prop); }
-        debug('rgSet', `controller property:: ${prop} = ${obj[prop]}`, 'orange');
+        debug('rgSet', `controller property:: ${prop} = ${elem.value}`, 'orange');
       };
 
       elem.addEventListener('input', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'input'});
-      debug('rgSet', `pushed::  ${attrName} -- ${elem.localName} --- listeners.length: ${this.rgListeners.length}`, 'orange');
+      debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
     }
 
   }
+
+
+
+
+
+  /********** PRIVATES ************/
+  /**
+   * Set the controller property's value.
+   * For example controller's property is this.product.name
+   * @param {string} prop - controller property name, for example: product.name
+   * @returns {any}
+   */
+  _setControllerValue(prop, val) {
+    const propSplitted = prop.split('.'); // ['product', 'name']
+    let i = 1;
+    let obj = this;
+    for (const prop of propSplitted) {
+      if (i !== propSplitted.length) { // not last property
+        if (obj[prop] === undefined) { obj[prop] = {}; }
+        obj = obj[prop];
+      }
+      else { // on last property associate the value
+        obj[prop] = val;
+      }
+      i++;
+    }
+  }
+
+
+
 
 }
 

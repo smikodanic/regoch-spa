@@ -149,7 +149,7 @@ class DataRg extends DataRgListeners {
       elem.style.visibility = 'hidden';
       elem.innerHTML = '';
 
-      // remove generated data-rg-for elements, i.e. elements with the data-rg-for-gen attribute
+      // remove generated data-rg-repeat elements, i.e. elements with the data-rg-repeat-gen attribute
       const genElems = document.querySelectorAll(`[data-rg-repeat-gen="${attrVal}"]`);
       for (const genElem of genElems) { genElem.remove(); }
 

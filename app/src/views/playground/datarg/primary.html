@@ -13,7 +13,8 @@
 <br><br>
 <h4>DATA-RG-REPEAT</h4>
 <p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>
-<button data-rg-click="runREPEAT(4)">run REPEAT</button>
+<p>Initially the P element will be repeated 3 times due to <b>data-rg-repeat="3"</b> attribute. When the button "run REPEAT" is clicked the element will be repeated 5 times.</p>
+<button data-rg-click="runREPEAT(5)">run REPEAT</button>
 <p id="colorID" data-rg-repeat="3">$i+1 <input data-rg-set="colors.$i @@ print"> <span data-rg-print="colors.$i"></span></p>
 
 <br><br>
@@ -52,24 +53,30 @@
 <h3>--NON-GENERATORS--</h3>
 
 <h4>DATA-RG-ELEM</h4>
-<button data-rg-click="runELEM()">run ELEM</button>
-Click button multiple times to toggle the text color.
+<button data-rg-click="runELEM()">run ELEM</button> <small>Click button multiple times to toggle the text color.</small>
 <p style="font-weight:bold" data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
 
 
 <br><br>
 <h4>DATA-RG-PRINT &amp; DATA-RG-SET</h4>
-product name: <input type="text" name="x" data-rg-set="product.name @@ print">
+<button data-rg-click="runPRINT()">run PRINT</button> <small>Click on the button to change the print values</small>
 <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
-<p data-rg-print="product.name @@ append">name: </p>
-<p data-rg-print="product.address.city @@ inset">The address.city is "${}" !</p>
-<p data-rg-print="product @@ append" style="color:Gray">JSON: </p>
 <br>
+<br><span data-rg-print="product.name @@ append">product.name: </span> &nbsp;<input type="text" name="x" data-rg-set="product.name @@ print" placeholder="change product.name">
+<p data-rg-print="product.address.city @@ inset">The product.address.city is "${}" !</p>
+<p data-rg-print="product @@ append" style="color:Gray">JSON: </p>
+<br><small>array test</small>
 <br>product.colors: <span data-rg-print="product.colors"></span>
 <br>product.colors.0: <span data-rg-print="product.colors.0"></span> <input type="text" data-rg-set="product.colors.0 @@ print" placeholder="change product.colors.0">
 <br>product.colors.1: <span data-rg-print="product.colors.1"></span>
 <br>product.colors.2: <span data-rg-print="product.colors.2"></span> <input type="text" data-rg-set="product.colors.2 @@ print" placeholder="change product.colors.2">
 
+
+<br><br>
+<h4>DATA-RG-PRINT &amp; DATA-RG-SET (initial value)</h4>
+<p>Set the initial value of the input tag with the <b>value</b> attribute.</p>
+Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat.name @@ print">
+<br><span data-rg-print="pet.cat.name @@ inset">Pet name is "${}".</span>
 
 <br><br>
 <h4>DATA-RG-CLASS</h4>
@@ -88,11 +95,13 @@ product name: <input type="text" name="x" data-rg-set="product.name @@ print">
 
 
 <br><br><br>
-<h3>--EXPERIMENTAL - Do not use!--</h3>
+<h3 style="color:plum">-- EXPERIMENTAL METHODS --</h3>
 
 <h4>RG-INTERPOLATE</h4>
-ISSUE: When applied breaks DataRgListeners.
-<button data-rg-click="runINTERPOLATE()">runINTERPOLATE</button>
+The method is experimental. Use data-rg-print instead.
+<br>ISSUE: When applied breaks DataRgListeners.
+<br>
+<br><button data-rg-click="runINTERPOLATE()">runINTERPOLATE</button>
 <br>Bank owner: <b>${bankOwner}</b>
 <br>Bank name: <b>${  bank.name}</b>
 <br>Bank city: <b>${ bank.address.city }</b>

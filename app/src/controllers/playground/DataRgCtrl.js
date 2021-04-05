@@ -37,10 +37,9 @@ class DataRgCtrl extends Controller {
       {name: 'Gen Ltd', size: 82},
       {name: 'Ren Ltd', size: 83}
     ];
-  }
 
-  async init(trx) {
-    this.runPRINT();
+    // initial values for the runSWITCH example
+    this.myColor = 'red';
   }
 
 

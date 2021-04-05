@@ -26,6 +26,7 @@ class Controller extends Page {
     this.loadInc(true); // defined in Page.js
     await new Promise(resolve => setTimeout(resolve, 400));
     this.parseNonListeners();
+    await new Promise(resolve => setTimeout(resolve, 400));
     this.parseListeners();
   }
 
