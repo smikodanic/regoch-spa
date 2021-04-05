@@ -17,10 +17,8 @@
   "scripts": {
     "inst": "rm -rf node_modules && npm install",
     "dev": "gulp default",
-    "build": "npm install && gulp build && rm -rf node_modules && npm install --only=production"
-  },
-  "bin": {
-    "rg": "./bin/index.js"
+    "build": "gulp build",
+    "prod": "rm -rf node_modules && npm install --only=production && pm2 start server --name regoch-spa"
   },
   "dependencies": {
     "regoch-router": "^1.0.1",
@@ -43,8 +41,7 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "directories": {
-    "src": "app/src",
-    "bin": "./bin"
+    "src": "app/src"
   },
   "repository": {
     "type": "git",

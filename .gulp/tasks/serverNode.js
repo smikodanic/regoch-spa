@@ -37,7 +37,7 @@ module.exports.start = async () => {
 
 
 module.exports.stop = async () => {
-  global.nodeProc.kill('SIGINT');
+  if (!!global.nodeProc) { global.nodeProc.kill('SIGINT'); }
 }
 
 
