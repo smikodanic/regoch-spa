@@ -1,0 +1,178 @@
+<header class="docs-header">
+  <h1 class="docs-heading">RWS</h1>
+  <section class="docs-intro">
+    <i>class RWS</i>
+    <p>The most important class which defines methods to start the websocket server and listen events.</p>
+  </section>
+</header>
+
+
+<section class="docs-section" id="item-3-1">
+  <h2 class="section-heading">Properties</h2>
+  <h4>RWS</h4>
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>wsOpts</td>
+      <td>websocket server options (see the table below)</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>server</td>
+      <td>HTTP server instance</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>dataTransfer</td>
+      <td>data transfer instance</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>socketStorage</td>
+      <td>socket storage instance</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+  </table>
+
+  <br><br>
+  <h4>wsOpts</h4>
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>timeout</td>
+      <td>Close socket after ms inactivity. If 0 never close. Default: 5 min</td>
+      <td>number</td>
+      <td>5*60*1000</td>
+    </tr>
+    <tr>
+      <td>maxConns</td>
+      <td>Limit connections to the server</td>
+      <td>number</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <td>maxIPConns</td>
+      <td>limit connections from the same IP address. If 0 then infinite.</td>
+      <td>number</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>storage</td>
+      <td>socket storage type: memory, redis, mongodb, ...</td>
+      <td>string</td>
+      <td>memory</td>
+    </tr>
+    <tr>
+      <td>subprotocol</td>
+      <td>protocol used internally in the server and client: jsonRWS, raw</td>
+      <td>string</td>
+      <td>jsonRWS</td>
+    </tr>
+    <tr>
+      <td>tightening</td>
+      <td>delays in the server process execution (miliseconds)</td>
+      <td>number</td>
+      <td>400</td>
+    </tr>
+    <tr>
+      <td>version</td>
+      <td>websocket version</td>
+      <td>number</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>debug</td>
+      <td>debug incoming and outgoing messages</td>
+      <td>boolean</td>
+      <td>false</td>
+    </tr>
+  </table>
+</section>
+
+
+
+ <section class="docs-section" id="item-3-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods to start the websocket server and listen its events.</p>
+	<ul class="methods">
+    <li>
+      <b>constructor <i>(wsOpts :object) :void</i></b>
+      <p class="desc">Create the RWS class instance.
+      <pre><code class="language-js">
+const { RWS } = require('regoch-websocket-server');
+const wsOpts = {
+  timeout: 5*60*1000, // close the socket if the client didn't send any message in this period of miliseconds
+  maxConns: 5,
+  maxIPConns: 3,
+  storage: 'memory',
+  subprotocol: 'jsonRWS',
+  tightening: 100,
+  version: 13,
+  debug: false
+};
+const rws = new RWS(wsOpts);
+      </code></pre>
+      </p>
+    </li>
+    <li>
+      <b>bootup <i>(httpServer :HTTPServer) :void</i></b>
+      <p class="desc">Start the websocket server on the top of the HTTP server.
+      <br><b>httpServer</b> - instance of the <a href="https://nodejs.org/api/http.html" target="_blank">NodeJS HTTP Server</a></p>
+    </li>
+    <li>
+      <b>on <i>(eventName :string, listener :Function) :void</i></b>
+      <p class="desc">Listen the websocket events: 'connection', 'message', 'route'
+        <br><b>eventName</b> - event name: 'connection', 'message', 'route'
+        <br><b>listener</b> - callback function
+      </p>
+    </li>
+  </ul>
+</section>
+
+
+ <section class="docs-section" id="item-3-3">
+  <h2 class="section-heading">Events</h2>
+	<ul class="methods">
+    <li>
+      <b>on <i>('connection', (socket :Socket) => { ... }) :void</i></b>
+      <p class="desc">When client is connected to the websocket server.
+        <br><b>socket</b> - net socket <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">https://nodejs.org/api/net.html#net_class_net_socket</a>
+      </p>
+    </li>
+    <li>
+      <b>on <i>('message', (msg :any, msgSTR :string, msgBUF :Buffer, socket :Socket) => { ... }) :void</i></b>
+      <p class="desc">When client sent the message to the websocket server.
+        <br><b>msg</b> - the message after subprotocol is applied
+        <br><b>msgSTR</b> - the message converted from buffer to string
+        <br><b>msgBUF</b> - the message in buffer format (originally sent from the client, unmodified, with no parsing)
+        <br><b>socket</b> - connected client, net socket <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">https://nodejs.org/api/net.html#net_class_net_socket</a>
+      </p>
+    </li>
+    <li>
+      <b>on <i>('route', (msg, socket, dataTransfer, socketStorage, eventEmitter) => { ... }) :void</i></b>
+      <p class="desc">When client sent message with the route command.
+        For example: <small>{id: 210129163129492000, from: 210129163129492111, to: 0, cmd: 'route', payload: {uri: 'shop/login', body: {username:'mark', password:'thG5$#w'}}}</small>
+        <br><b>msg</b> - the message after subprotocol is applied
+        <br><b>socket</b> - connected client, net socket <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">https://nodejs.org/api/net.html#net_class_net_socket</a>
+        <br><b>dataTransfer</b> - DataTransfer instance
+        <br><b>socketStorage</b> - SocketStorage instance
+        <br><b>eventEmitter</b> - NodeJS EventEmitter instance
+      </p>
+    </li>
+  </ul>
+</section>
+

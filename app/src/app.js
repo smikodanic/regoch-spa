@@ -13,6 +13,7 @@ const Rand = require('./lib/Rand');
 // controllers
 const HomeCtrl = require('./controllers/HomeCtrl');
 const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
+const WebsocketServerCtrl = require('./controllers/WebsocketServerCtrl');
 const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 
 // controllers - playground
@@ -43,6 +44,7 @@ app
     // docs
     HomeCtrl,
     SinglePageAppCtrl,
+    WebsocketServerCtrl,
 
     // playground
     Page_LoadIncCtrl,
@@ -57,6 +59,3 @@ app
     NotfoundCtrl
   ])
   .routes(routesCnf).run();
-
-
-

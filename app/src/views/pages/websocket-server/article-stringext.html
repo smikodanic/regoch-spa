@@ -1,0 +1,56 @@
+<header class="docs-header">
+  <h1 class="docs-heading">StringExt</h1>
+  <section class="docs-intro">
+    <i>class StringExt</i>
+    <p>The String extension. Extended string methods.</p>
+  </section>
+</header>
+
+
+<section class="docs-section" id="item-6-1">
+  <h2 class="section-heading">Properties</h2>
+  <i>No class properties.</i>
+</section>
+
+
+
+ <section class="docs-section" id="item-6-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods to extends original <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" target="_blank">String class</a>.</p>
+	<ul class="methods">
+
+    <li>
+      <b>constructor <i>() :void</i></b>
+      <p class="desc">Create the StringExt class instance. <u>No need to use because it's already instantiated in the RWS class.</u>
+      <pre><code class="language-js">
+const { StringExt } = require('regoch-websocket-server');
+new StringExt();
+
+console.log('some tekst'.cliBoja('red', 'italic')); // prints red text
+});
+      </code></pre>
+      </p>
+    </li>
+    <li>
+      <b>trimall <i>() :void</i></b>
+      <p class="desc">Trim empty spaces from left and right and remove tab spaces inside text.</p>
+    </li>
+    <li>
+      <b>clean <i>() :void</i></b>
+      <p class="desc">Remove all whitespaces.</p>
+    </li>
+    <li>
+      <b>beautify <i>() :void</i></b>
+      <p class="desc">Remove unwanted chars.</p>
+    </li>
+    <li>
+      <b>cliBoja <i>(optFG :string, optSPEC :string) :void</i></b>
+      <p class="desc">Print colored text in the terminal.
+        <br><b>optFG</b> - foreground color: <i>black, red, green, yellow, blue, magenta, cyan, white, crimson</i>
+        <br><b>optSPEC</b> - special: bright, <i>bold, italic, underline, revers, hidden, overwritten</i>
+      </p>
+    </li>
+
+  </ul>
+</section>
+

@@ -1,0 +1,29 @@
+<header class="docs-header">
+  <h1 class="docs-heading">RFC6455</h1>
+  <section class="docs-intro">
+    <p>The standard is described at the offical <a href="https://tools.ietf.org/html/rfc6455" target="_blank">RFC6455 Standard</a> page.
+    Here we bring schemas which will help to understand the section <a href="https://tools.ietf.org/html/rfc6455#section-5.2" target="_blank">5.2. Data Framing</a>
+    what is essential in the Regoch Websocket Server</p>
+  </section>
+</header>
+
+<section class="docs-section" id="item-1-1">
+  <h2>Basic postulates</h2>
+  <br>1) The <b>mask</b> is defined in the first bit of the second byte. When messages are sent from the client <b>mask = 1</b> and masking bytes exist.
+  Masking bytes always have 4 bytes length. If the message is sent from the server to client there's no masking bytes and the <b>mask = 0</b>.
+  <br>2) The payload length in the second byte is the most important for defining payload data length.
+  <br>- if the <b>payload length defined in the second byte is <i style="color:maroon">&lt;126</i></b> then there's no extension to define payload length
+  <br>- if the <b>payload length defined in the second byte is <i style="color:maroon">=126 =0b1111110</i></b> then there are 2 bytes (16 bits) extension to define payload length
+  <br>- if the <b>payload length defined in the second byte is <i style="color:maroon">=127 =0b1111110</i></b> then there are 8 bytes (64 bits) extension to define payload length
+
+  <br><br>
+  <h2 class="section-heading">&middot; Sending messages from client to server</h2>
+  <h4>Small Messages (&lt; 126 B), Medium Messages (= 126 B), Large Messages (= 127 B)</h4>
+  <img class="img-fluid" src="/assets/regoch/img/websocket-server/rfc6455-1.png" alt="RFC6455 diagram 1">
+
+  <br><br>
+  <h2 class="section-heading">&middot; Sending messages from server to client</h2>
+  <h4>Small Messages (&lt; 126 B), Medium Messages (= 126 B), Large Messages (= 127 B)</h4>
+  <img class="img-fluid" src="/assets/regoch/img/websocket-server/rfc6455-2.png" alt="RFC6455 diagram 2">
+</section>
+

@@ -1,0 +1,74 @@
+<header class="docs-header">
+  <h1 class="docs-heading">RWSHttpServer</h1>
+  <section class="docs-intro">
+    <i>class RWSHttpServer</i>
+    <p>The internal HTTP server. Simple creates a HTTP server instance on which websocket server will be attached.</p>
+  </section>
+</header>
+
+
+<section class="docs-section" id="item-4-1">
+  <h2 class="section-heading">Properties</h2>
+  <h4>httpOpts</h4>
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>port</td>
+      <td>HTTP server port number</td>
+      <td>number</td>
+      <td>3000</td>
+    </tr>
+    <tr>
+      <td>timeout</td>
+      <td>ms of inactivity after ws will be closed. If 0 then the ws will never close. Default is 5 minutes.</td>
+      <td>number</td>
+      <td>5*60*1000</td>
+    </tr>
+  </table>
+</section>
+
+
+
+ <section class="docs-section" id="item-4-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods to start, stop or restart the HTTP server.</p>
+	<ul class="methods">
+
+    <li>
+      <b>constructor <i>(httpOpts :object) :void</i></b>
+      <p class="desc">Create the RWSHttpServer class instance.
+      <pre><code class="language-js">
+const { RWSHttpServer } = require('regoch-websocket-server');
+const httpOpts = {
+  port: 3211,
+  timeout: 0 // if 0 the socket connection will never timeout
+};
+const rwsHttpServer = new RWSHttpServer(httpOpts);
+const httpServer = rwsHttpServer.start(); // nodeJS HTTP server instance
+setTimeout(() => {
+  rwsHttpServer.restart();
+  // rwsHttpServer.stop();
+}, 3400);
+      </code></pre>
+      </p>
+    </li>
+    <li>
+      <b>start <i>() :httpServer</i></b>
+      <p class="desc">Start the HTTP server. Creates and return NodeJS HTTP Server instance.</p>
+    </li>
+    <li>
+      <i>async</i> <b>stop <i>() :Promise&lt;void&gt;</i></b>
+      <p class="desc">Stop the HTTP server.</p>
+    </li>
+    <li>
+      <i>async</i> <b>restart <i>() :Promise&lt;void&gt;</i></b>
+      <p class="desc">Restart the HTTP server.</p>
+    </li>
+  </ul>
+</section>
+
