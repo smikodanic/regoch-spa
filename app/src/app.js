@@ -12,9 +12,13 @@ const Rand = require('./lib/Rand');
 
 // controllers
 const HomeCtrl = require('./controllers/HomeCtrl');
-const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
 const WebsocketServerCtrl = require('./controllers/WebsocketServerCtrl');
 const WebsocketClientsCtrl = require('./controllers/WebsocketClientsCtrl');
+const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
+const MobileAppCtrl = require('./controllers/MobileAppCtrl');
+const DatabaseCtrl = require('./controllers/DatabaseCtrl');
+const RouterCtrl = require('./controllers/RouterCtrl');
+const ContactCtrl = require('./controllers/ContactCtrl');
 const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 
 // controllers - playground
@@ -44,9 +48,13 @@ app
   .controller([
     // docs
     HomeCtrl,
-    SinglePageAppCtrl,
     WebsocketServerCtrl,
     WebsocketClientsCtrl,
+    SinglePageAppCtrl,
+    MobileAppCtrl,
+    DatabaseCtrl,
+    RouterCtrl,
+    ContactCtrl,
 
     // playground
     Page_LoadIncCtrl,

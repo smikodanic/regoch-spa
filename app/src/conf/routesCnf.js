@@ -10,6 +10,10 @@ module.exports = [
   ['when', '/single-page-app', 'SinglePageAppCtrl'],
   ['when', '/websocket-server', 'WebsocketServerCtrl'],
   ['when', '/websocket-clients', 'WebsocketClientsCtrl'],
+  ['when', '/mobile-app', 'MobileAppCtrl'],
+  ['when', '/database', 'DatabaseCtrl'],
+  ['when', '/router', 'RouterCtrl'],
+  ['when', '/contact', 'ContactCtrl'],
 
   // playground
   ['when', '/playground/page-loadinc', 'Page_LoadIncCtrl'],
@@ -19,7 +23,6 @@ module.exports = [
   ['when', '/playground/datarglisteners', 'DataRgListenersCtrl'],
   ['when', '/playground/cookie', 'CookieCtrl'],
   ['when', '/playground/form', 'FormCtrl'],
-
 
   ['notfound', 'NotfoundCtrl'],
   // ['do', log1, log2]
