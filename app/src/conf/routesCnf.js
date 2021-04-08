@@ -9,6 +9,7 @@ module.exports = [
   ['when', '/', 'HomeCtrl'],
   ['when', '/single-page-app', 'SinglePageAppCtrl'],
   ['when', '/websocket-server', 'WebsocketServerCtrl'],
+  ['when', '/websocket-clients', 'WebsocketClientsCtrl'],
 
   // playground
   ['when', '/playground/page-loadinc', 'Page_LoadIncCtrl'],

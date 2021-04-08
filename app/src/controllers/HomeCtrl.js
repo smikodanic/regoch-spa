@@ -15,7 +15,7 @@ module.exports = class HomeCtrl extends Controller {
 
     await this.loadView('#primary', 'pages/home/primary.html', 'sibling');
     this.loadViews([
-      ['#top', 'pages/shared/top.html'],
+      ['#top', 'pages/home/top.html'],
       ['#main', 'pages/home/main.html'],
       ['#bottom', 'pages/home/bottom.html']
     ]);

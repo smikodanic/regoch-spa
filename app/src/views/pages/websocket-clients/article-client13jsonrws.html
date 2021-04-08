@@ -1,0 +1,330 @@
+<header class="docs-header">
+  <h1 class="docs-heading">Client13jsonRWS</h1>
+  <section class="docs-intro">
+    <p>
+      The websocket client for:
+      <br>- websocket version 13
+      <br>- subprotocol: jsonRWS (Router can be used on the client side)
+      <br><br>
+      Subprotocol jsonRWS the message fomat <b style="color:orangered">{id :number, from :number, to :number, cmd :string, payload :any}</b>
+    </p>
+  </section>
+</header>
+
+
+<section class="docs-section" id="item-2-1">
+  <h2 class="section-heading">Properties</h2>
+  <h4>Client13jsonRWS</h4>
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>wcOpts</td>
+      <td>websocket client options (see the table below)</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>socketID</td>
+      <td>socket id (18 digits number)</td>
+      <td>number</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>attempt</td>
+      <td>reconnect attempt counter</td>
+      <td>number</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>router</td>
+      <td>Router instance</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><span style="color:gray">wsocket</span></td>
+      <td>Websocket instance https://developer.mozilla.org/en-US/docs/Web/API/WebSocket (Browser)</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><span style="color:gray">socket</span></td>
+      <td>TCP Socket https://nodejs.org/api/net.html#net_class_net_socket (NodeJS)</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+  </table>
+
+  <br><br>
+  <h4>wcOpts</h4>
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>wsURL</td>
+      <td>websocket URL: ws://localhost:3211/something?authkey=TRTmrt</td>
+      <td>string</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>timeout</td>
+      <td>Timeout when question to the server is sent and answer is not received</td>
+      <td>number</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reconnectAttempts</td>
+      <td>the number of recconnection attempts</td>
+      <td>number</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reconnectDelay</td>
+      <td>delay in ms between two recconnection attempts</td>
+      <td>number</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>subprotocols</td>
+      <td>websocket subprotocols: ['jsonRWS', 'raw']</td>
+      <td>string[]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>debug</td>
+      <td>debug incoming and outgoing messages</td>
+      <td>boolean</td>
+      <td>false</td>
+    </tr>
+  </table>
+</section>
+
+
+
+
+ <section class="docs-section" id="item-2-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods to connect the websocket client to the server and send the messages from the client to server.</p>
+	<ul class="methods">
+    <li>
+      <b>constructor <i>(wcOpts :object) :void</i></b>
+      <p class="desc">Create the Client13jsonRWS class instance.
+      <pre><code class="language-js">
+const { Client13jsonRWS } = require('regoch-websocket-browser');
+const wcOpts = {
+  wsURL: 'ws://localhost:3211?authkey=TRTmrt',
+  timeout: 3*1000, // wait 3secs for answer
+  reconnectAttempts: 5, // try to reconnect 5 times
+  reconnectDelay: 3000, // delay between reconnections is 3 seconds
+  subprotocols: ['jsonRWS'],
+  debug: true
+};
+const client = new Client13jsonRWS(wcOpts);
+const wsocket = await client.connect();
+      </code></pre>
+      </p>
+    </li>
+    <li>
+      <b>connect <i>() :Promise&lt;WebSocket|Socket&gt;</i></b>
+      <p class="desc">Connect to the websocket server via wsURL. Returned value is the promise with the resolved Socket.
+      In Browser it's <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket" target="_blank">WebSocket</a> and in nodeJS it's
+      <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">TCP Socket</a></p>
+    </li>
+    <li>
+      <b>disconnect <i>() :void</i></b>
+      <p class="desc">Disconnect from the server.</p>
+    </li>
+    <li>
+      <i>async</i> <b>reconnect <i>() :void</i></b>
+      <p class="desc">Try to reconnect the client when the socket is closed. This method is fired on every 'close' socket's event.</p>
+    </li>
+    <li>
+      <b>blockReconnect <i>() :void</i></b>
+      <p class="desc">Block reconnect usually after disconnect() method is used.</p>
+    </li>
+
+    <br><br>
+    <h4>Receiver</h4>
+    <li>
+      <b style="color:Gray">onMessage <i>(cb :Function, toEmit :boolean) :void</i></b>
+      <p class="desc">Receive the message event and push it to message stream.
+        <br><i>This method is used internally and it's not recommended to use in your app.</i>
+        <br><b>cb</b> - callback function which will be executed on every message <small>(msg, msgSTR, msgBUF) => {...}</small>
+        <br><b>toEmit</b> - to emit the message into the eventEmitter
+      </p>
+    </li>
+
+    <br><br>
+    <h4>Questions</h4>
+    <li>
+      <b style="color:Gray">question <i>(cmd :string) :Promise&lt;object&gt;</i></b>
+      <p class="desc"> Send question and expect the answer. Returned value is the promise with the answered object.
+        <br><i>This method is used internally and it's not recommended to use in your app.</i>
+        <br><b>cmd</b> the command in the message object <small>{id, from, to, cmd, payload}</small>
+      </p>
+    </li>
+    <li>
+      <i>async</i> <b>infoSocketId <i>() :Promise&lt;number&gt;</i></b>
+      <p class="desc"> Send a question about the client's socket ID.</p>
+    </li>
+    <li>
+      <i>async</i> <b>infoSocketList <i>() :Promise&lt;number[]&gt;</i></b>
+      <p class="desc"> Send a question about all socket IDs connected to the server.</p>
+    </li>
+    <li>
+      <i>async</i> <b>infoRoomList <i>() :Promise&lt;{name:string, socketIds:number[]}[]&gt;</i></b>
+      <p class="desc"> Send a question about all rooms in the server.</p>
+    </li>
+    <li>
+      <i>async</i> <b>infoRoomListmy <i>() :Promise&lt;{name:string, socketIds:number[]}[]&gt;</i></b>
+      <p class="desc"> Send question about all rooms where the client was entered.</p>
+    </li>
+
+    <br><br>
+    <h4>Senders</h4>
+    <li>
+      <b style="color:Gray">carryOut <i>(to :number, cmd :string, payload :any) :void</i></b>
+      <p class="desc"> Send message to the websocket server.
+        <br><i>This method is used internally and it's not recommended to use in your app.</i>
+        <br><b>to</b> the receiver socket id
+        <br><b>cmd</b> the command in the message object <small>{id, from, to, cmd, payload}</small>
+        <br><b>payload</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
+      </p>
+    </li>
+    <li>
+      <b>sendOne <i>(to :number, msg :any) :void</i></b>
+      <p class="desc">Send message (payload) to one client.
+        <br><b>to</b> the receiver socket id: 210205081923171300
+        <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
+      </p>
+    </li>
+    <li>
+      <b>send <i>(to :number[], msg :any) :void</i></b>
+      <p class="desc">Send message (payload) to one or more clients.
+        <br><b>to</b> array of the receiver socket ids: [210205081923171300, 210205082042463230]
+        <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
+      </p>
+    </li>
+    <li>
+      <b>broadcast <i>(msg :any) :void</i></b>
+      <p class="desc">Send message (payload) to all clients except the sender.
+        <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
+      </p>
+    </li>
+    <li>
+      <b>sendAll <i>(msg :any) :void</i></b>
+      <p class="desc">Send message (payload) to all clients and the sender.
+        <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
+      </p>
+    </li>
+
+    <br><br>
+    <h4>Rooms</h4>
+    <li>
+      <b>roomEnter <i>(roomName :string) :void</i></b>
+      <p class="desc">Subscribe in the room.
+        <br><b>roomName</b> the room name: 'tech-chat'
+      </p>
+    </li>
+    <li>
+      <b>roomExit <i>(roomName :string) :void</i></b>
+      <p class="desc">Unsubscribe in the room.
+        <br><b>roomName</b> the room name: 'tech-chat'
+      </p>
+    </li>
+    <li>
+      <b>roomExitAll <i>() :void</i></b>
+      <p class="desc">Unsubscribe from the all rooms.</p>
+    </li>
+    <li>
+      <b>roomSend <i>(roomName :string, msg :any) :void</i></b>
+      <p class="desc">Send a message to the room. The sender doesn't need to be subscribed in the room.
+        <br><b>roomName</b> the room name: 'tech-chat'
+        <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
+      </p>
+    </li>
+
+
+    <br><br>
+    <h4>Other API Commands</h4>
+    <li>
+      <b>setNick <i>(nickname :string) :void</i></b>
+      <p class="desc">Setup a client's nick name.
+        <br><b>nickname</b> nick name
+      </p>
+    </li>
+    <li>
+      <b>route <i>(uri :string, body :any) :void</i></b>
+      <p class="desc">Send route command to the server's router.
+        <br><b>uri</b> route URI, for example /shop/product/55?x=3 (the payload part in the message object <small>{id, from, to, cmd, payload}</small>)
+        <br><b>body</b> body data (the payload part in the message object <small>{id, from, to, cmd, payload}</small>)
+      </p>
+    </li>
+
+    <br><br>
+    <h4>Listeners</h4>
+    <li>
+      <b>on <i>(eventName :string, listener :Function) :void</i></b>
+      <p class="desc">Listen eventName and execute listener on every event.
+        <br><b>eventName</b> event name: 'connected', 'message', 'route'
+        <br><b>listener</b> the callback function
+      </p>
+    </li>
+    <li>
+      <b>once <i>(eventName :string, listener :Function) :void</i></b>
+      <p class="desc">Listen eventName and execute the listener only once.
+        <br><b>eventName</b> event name: 'connected', 'message', 'route'
+        <br><b>listener</b> the callback function
+      </p>
+    </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-2-3">
+  <h2 class="section-heading">Events</h2>
+	<ul class="methods">
+    <li>
+      <b>on <i>('connected', () => { ... }) :void</i></b>
+      <p class="desc">When client is connected to the websocket server.</p>
+    </li>
+    <li>
+      <b>on <i>('message', (msg :any, msgSTR :string, msgBUF :Buffer) => { ... }) :void</i></b>
+      <p class="desc">When client received the message from the websocket server.
+        <br><b>msg</b> - the message after subprotocol is applied (jsonRWS)
+        <br><b>msgSTR</b> - the message converted from buffer to string
+        <br><b style="color:silver">msgBUF</b> - the message in buffer format (only in regoch-websocket-nodejs)
+      </p>
+    </li>
+    <li>
+      <b>on <i>('route', (msg :any, msgSTR :string, msgBUF :Buffer) => { ... }) :void</i></b>
+      <p class="desc">When client received message from the server with the route command.
+        For example: <small>{"id":210408084514971400,"from":0,"to":210408084507407140,"cmd":"route","payload":{"uri":"/returned/back/21","body":{"x":"something","y":28}}}</small>
+        <br><b>msg</b> - the message after subprotocol is applied (jsonRWS)
+        <br><b>msgSTR</b> - the message converted from buffer to string
+        <br><b style="color:silver">msgBUF</b> - the message in buffer format (only in regoch-websocket-nodejs)
+      </p>
+    </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-2-4">
+  <h2 class="section-heading">Examples</h2>
+  <b>regoch-websocket-browser</b> &rarr; <a href="https://github.com/smikodanic/regoch-websocket-browser/tree/master/examples" target="_blank">https://github.com/smikodanic/regoch-websocket-browser/tree/master/examples</a>
+  <br><b>regoch-websocket-nodejs</b> &rarr; <a href="https://github.com/smikodanic/regoch-websocket-nodejs/tree/master/examples" target="_blank">https://github.com/smikodanic/regoch-websocket-nodejs/tree/master/examples</a>
+  <br><b>regoch-websocket-angular</b> &rarr; <a href="https://github.com/smikodanic/NgxRegoch/tree/master/src/app" target="_blank">https://github.com/smikodanic/NgxRegoch/tree/master/src/app</a>
+</section>
+
+
+
+
