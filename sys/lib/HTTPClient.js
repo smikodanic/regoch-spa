@@ -204,11 +204,16 @@ class HTTPClient {
     if (!!body_obj && !/GET/i.test(method)) {
       answer.req.payload = body_obj;
       const body_str = JSON.stringify(body_obj);
-      this.headers['content-length'] = body_str.length;
+
+      /*** 3) send request to server (with body) ***/
+      this.xhr.send(body_str);
+
+    } else {
+      /*** 3) send request to server (without body) ***/
+      this.xhr.send();
     }
 
-    /*** 3) send request to server ***/
-    this.xhr.send();
+
 
     /** 4) wait for response */
     const promise = new Promise ((resolve, reject) => {

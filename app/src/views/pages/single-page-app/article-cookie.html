@@ -16,7 +16,7 @@ class MyCtrl extends Controller {
       httpOnly: false,
       sameSite: 'strict' // 'strict' for GET and POST, 'lax' only for POST
     };
-    this.cookie = new app.sys.Cookie(cookieOpts);
+    this.cookie = new app.syslib.Cookie(cookieOpts);
   }
 }
       </code></pre>
@@ -151,7 +151,7 @@ class MyCtrl extends Controller {
       httpOnly: false,
       sameSite: 'strict' // 'strict' for GET and POST, 'lax' only for POST
     };
-    this.cookie = new app.sys.Cookie(cookieOpts);
+    this.cookie = new app.syslib.Cookie(cookieOpts);
   }
 
   test() {

@@ -22,7 +22,7 @@ class Form {
   setControl(key, val) {
     debug('setControl', '--------- setControl ------', 'green', '#A1F8DC');
     debug('setControl', `${key} = ${val}`, 'green');
-    const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
+    const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
     for (const elem of elems) {
@@ -70,7 +70,7 @@ class Form {
    */
   getControl(key) {
     debug('getControl', '--------- getControl ------', 'green', '#A1F8DC');
-    const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
+    const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
     let val;
@@ -110,7 +110,7 @@ class Form {
   delControl(key) {
     debug('delControl', '--------- delControl ------', 'green', '#A1F8DC');
     debug('delControl', key, 'green');
-    const elems = document.querySelectorAll(`form[data-rg-form="${this.formName}"] [name="${key}"]`);
+    const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
     for (const elem of elems) {
