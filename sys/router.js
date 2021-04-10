@@ -1,5 +1,5 @@
 const RegochRouter = require('regoch-router');
-const eventEmitter = require('./lib/eventEmitter');
+const navigator = require('./lib/navigator');
 
 
 
@@ -8,6 +8,7 @@ class Router {
   constructor() {
     this.regochRouter = new RegochRouter({debug: false});
   }
+
 
 
   /**
@@ -27,6 +28,7 @@ class Router {
 
     this.regochRouter.def(route, prerender, render, postrender, init);
   }
+
 
 
   /**
@@ -56,6 +58,7 @@ class Router {
   }
 
 
+
   /**
    * Redirect from one route to another route.
    * @param {string} fromRoute - new route
@@ -76,13 +79,21 @@ class Router {
     const uri = window.location.pathname + window.location.search; // /page1.html?q=12
     this._testRoutes(uri);
 
-    // test URI against routes when element with data-rg-hrf attribute is clicked
-    eventEmitter.on('pushstate', event => {
+    // test URI against routes when element with data-rg-href attribute is clicked
+    navigator.onPushstate(event => {
       const uri = window.location.pathname + window.location.search; // browser address bar URL
-      // console.log(uri, event.detail.href);
+      console.log('pushstate:::', uri, event.detail);
       this._testRoutes(uri);
     });
+
+    navigator.onPopstate(event => {
+      const uri = window.location.pathname + window.location.search; // browser address bar URL
+      console.log('popstate:::', uri, event.detail);
+      this._testRoutes(uri);
+    });
+
   }
+
 
 
   /**

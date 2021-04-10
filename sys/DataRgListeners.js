@@ -1,4 +1,4 @@
-const eventEmitter = require('./lib/eventEmitter');
+const navigator = require('./lib/navigator');
 const debug = require('./debug');
 
 
@@ -56,15 +56,11 @@ class DataRgListeners {
         await this.destroy(elem, event);
         this.rgKILL();
 
-        // push state and change browser's address bar
-        const href = elem.getAttribute('href').trim();
+        // change browser's address bar and emit 'pushstate' event
+        const href = elem.getAttribute('href').trim(); // new URL in the browser's address bar
         const state = { href };
         const title = elem.getAttribute(attrName).trim();
-        const url = href; // new URL in the browser's address bar
-        window.history.pushState(state, title, url);
-
-        // fire event and test routes
-        eventEmitter.emit('pushstate', state);
+        navigator.goto(href, state, title);
       };
 
       elem.addEventListener('click', handler);

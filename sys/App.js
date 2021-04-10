@@ -4,6 +4,9 @@ const Form = require('./lib/Form');
 const HTTPClient = require('./lib/HTTPClient');
 const util = require('./lib/util');
 const Cookie = require('./lib/Cookie');
+const Auth = require('./lib/Auth');
+const navigator = require('./lib/navigator');
+
 
 
 class App {
@@ -66,7 +69,7 @@ class App {
    */
   _systemLibrary() {
     if (!!this.controllers && !!this.controllers.length) { throw new Error('System should be defined before controllers.'); }
-    this.syslib = { eventEmitter, util, Form, HTTPClient, Cookie };
+    this.syslib = { eventEmitter, util, Form, HTTPClient, Cookie, Auth, navigator };
   }
 
 

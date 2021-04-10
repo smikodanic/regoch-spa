@@ -33,6 +33,9 @@ class HTTPClient {
 
     // init the xhr
     this.xhr = new XMLHttpRequest();
+
+    // set interceptor
+    this.interceptor;
   }
 
 
@@ -190,6 +193,8 @@ class HTTPClient {
       return ans; // send answer and stop further execution
     }
 
+    /*** 0) intercept the request ***/
+    if(!!this.interceptor) { this.interceptor(); }
 
 
     /*** 1) init HTTP request ***/
@@ -199,6 +204,7 @@ class HTTPClient {
     // set the options
     this.xhr.timeout = this.opts.timeout;
     Object.keys(this.opts.headers).forEach(prop => this.xhr.setRequestHeader(prop, this.opts.headers[prop]));
+
 
     /*** 2) add body to HTTP request ***/
     if (!!body_obj && !/GET/i.test(method)) {
@@ -420,6 +426,15 @@ class HTTPClient {
    */
   kill() {
     this.xhr.abort();
+  }
+
+
+  /**
+   * Set the interceptor function which will be executed every time before the HTTP request is sent.
+   * @param {Function} interceptor - callback function, for example (httpClient) => { httpClient.setHeader('Authorization', 'JWT aswas); }
+   */
+  setInterceptor(interceptor) {
+    this.interceptor = interceptor.bind(this);
   }
 
 
