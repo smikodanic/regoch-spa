@@ -5,8 +5,6 @@ class ContactCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.syslib = app.syslib;
-    this.util = app.syslib.util;
   }
 
 

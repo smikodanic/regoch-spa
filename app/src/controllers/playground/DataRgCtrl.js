@@ -1,11 +1,10 @@
-const { Controller } = require('../../../../sys');
+const { Controller, syslib } = require('../../../../sys');
 
 
 class DataRgCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.util = app.syslib.util;
   }
 
   async prerender(trx) {
@@ -110,7 +109,7 @@ class DataRgCtrl extends Controller {
     };
     this.rgPrint('product'); // affect data-rg-print with the product
 
-    await this.util.sleep(1300);
+    await syslib.util.sleep(1300);
     console.log('Product properties changed!');
     this.product.address.city = 'Zagreb';
     this.product.colors = ['blue', 'orange'];

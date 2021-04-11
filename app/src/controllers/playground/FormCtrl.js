@@ -1,12 +1,11 @@
-const { Controller } = require('../../../../sys');
+const { Controller, syslib } = require('../../../../sys');
 
 
 class FormCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.util = app.syslib.util;
-    this.userForm = new app.syslib.Form('userF');
+    this.userForm = new syslib.Form('userF');
   }
 
   async prerender(trx) {
@@ -20,14 +19,14 @@ class FormCtrl extends Controller {
   async setFullName() {
     this.userForm.setControl('fullName', 'John');
 
-    await this.util.sleep(1300);
+    await syslib.util.sleep(1300);
     this.userForm.setControl('fullName', 'Johnny');
 
-    await this.util.sleep(800);
+    await syslib.util.sleep(800);
     const fullName = this.userForm.getControl('fullName');
     console.log('fullName::', fullName);
 
-    await this.util.sleep(800);
+    await syslib.util.sleep(800);
     this.userForm.delControl('fullName');
   }
   async getFullName() {
@@ -47,9 +46,9 @@ class FormCtrl extends Controller {
 
   async setCountry() {
     this.userForm.setControl('country', 'Croatia');
-    await this.util.sleep(1300);
+    await syslib.util.sleep(1300);
     this.userForm.setControl('country', 'UK');
-    await this.util.sleep(1300);
+    await syslib.util.sleep(1300);
     this.userForm.delControl('country');
   }
   async getCountry() {

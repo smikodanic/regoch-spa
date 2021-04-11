@@ -22,8 +22,6 @@ class App {
     window.regoch = {
       viewsCompiled: {}
     };
-
-    this._systemLibrary(); // app.syslib
   }
 
 
@@ -62,18 +60,6 @@ class App {
 
 
 
-  /*============================== SYSTEM - this.syslib ==============================*/
-  /**
-   * Inject system libraries.
-   * @returns {void}
-   */
-  _systemLibrary() {
-    if (!!this.controllers && !!this.controllers.length) { throw new Error('System should be defined before controllers.'); }
-    this.syslib = { eventEmitter, util, Form, HTTPClient, Cookie, Auth, navigator };
-  }
-
-
-
   /*============================== LIBRARY - this.lib ==============================*/
   /**
    * Add libraries to libraries already injected by libInject()
@@ -94,14 +80,14 @@ class App {
 
 
 
-  /*============================== LIBRARY - this.lib ==============================*/
+  /*============================== COMPILED VIEWS ==============================*/
   /**
-   * Inject the content of the app/dist/views/compild.json .
+   * Inject the content of the app/dist/views/compiled.json .
    * @param {object} viewsCompiled
    */
   compiled(viewsCompiled) {
     const controllersCount = Object.keys(this.controllers).length;
-    if (controllersCount !== 0) { throw new Error('The method compiled() should be used before the method controller() !'); }
+    if (controllersCount > 0) { throw new Error('The method compiled() should be used before the method controller() !'); }
     window.regoch.viewsCompiled = viewsCompiled;
   }
 
@@ -110,12 +96,15 @@ class App {
   /*============================== CONTROLLERS & ROUTES - this.controllers ==============================*/
   /**
    * Create controller instances and inject into the this.controllers.
-   * @param  {string[][]} Ctrls
+   * @param  {Class[]} Ctrls - array of controller classes
+   * @param  {Auth} auth - Auth class instance
    * @returns {App}
    */
-  controller(Ctrls) {
+  controller(Ctrls, auth) {
     for(const Ctrl of Ctrls) {
-      this.controllers[Ctrl.name] = new Ctrl(this);
+      const ctrl = new Ctrl(this);
+      ctrl.auth = !!auth ? auth : { autoLogin: () => {}, hasRole: () => {}, isLogged: () => {} };
+      this.controllers[Ctrl.name] = ctrl;
     }
     return this;
   }
@@ -133,9 +122,10 @@ class App {
       if (cmd === 'when') {
         const route = routeCnf[1]; // '/page1'
         const ctrlName = routeCnf[2]; // 'Page1Ctrl'
+        const isGuarded = routeCnf[3]; // true
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
-        router.when(route, ctrl);
+        router.when(route, ctrl, isGuarded);
       } else if (cmd === 'notfound') {
         const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
@@ -158,8 +148,8 @@ class App {
    * Run the app by executing the router.
    * @returns {void}
    */
-  run() {
-    router.use();
+  async run() {
+    await router.use();
   }
 
 }

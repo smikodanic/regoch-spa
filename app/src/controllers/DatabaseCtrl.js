@@ -1,12 +1,10 @@
-const { Controller } = require('../../../sys');
+const { Controller, syslib } = require('../../../sys');
 
 
 class DatabaseCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.syslib = app.syslib;
-    this.util = app.syslib.util;
   }
 
 
@@ -29,7 +27,7 @@ class DatabaseCtrl extends Controller {
 
   async postrender(trx) {
 
-    await this.util.sleep(1300);
+    await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',
       '/assets/js/highlight-custom.js',

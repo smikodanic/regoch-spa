@@ -1,4 +1,4 @@
-const { Controller } = require('../../../../sys');
+const { Controller, syslib } = require('../../../../sys');
 
 
 class CookieCtrl extends Controller {
@@ -7,7 +7,7 @@ class CookieCtrl extends Controller {
     super();
     this.input1;
     this.input2;
-    this.cookieForm = new app.syslib.Form('cookieF');
+    this.cookieForm = new syslib.Form('cookieF');
 
     const cookieOpts = {
       domain: 'localhost',
@@ -17,7 +17,7 @@ class CookieCtrl extends Controller {
       httpOnly: false,
       sameSite: 'strict' // 'strict' for GET and POST, 'lax' only for POST
     };
-    this.cookie = new app.syslib.Cookie(cookieOpts, true);
+    this.cookie = new syslib.Cookie(cookieOpts, true);
   }
 
   async prerender(trx) {
