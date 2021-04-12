@@ -10,7 +10,7 @@ class Navigator {
   /**
    * Navigates to a view using an absolute URL path.
    * https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
-   * @param {string} url - absolute URL path
+   * @param {string} url - absolute URL path, /customer/product/25
    * @param {any} state - fetch it with event.detail
    * @param {string} title
    */

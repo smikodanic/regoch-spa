@@ -1,18 +1,9 @@
 const router = require('./router');
-const eventEmitter = require('./lib/eventEmitter');
-const Form = require('./lib/Form');
-const HTTPClient = require('./lib/HTTPClient');
-const util = require('./lib/util');
-const Cookie = require('./lib/Cookie');
-const Auth = require('./lib/Auth');
-const navigator = require('./lib/navigator');
-
 
 
 class App {
 
   constructor() {
-    this.CONF = {};
     this.CONST = {};
     this.syslib = {};
     this.lib = {};
@@ -25,18 +16,7 @@ class App {
   }
 
 
-  /*============================== CONFIGURATIONS & CONSTANTS - this.CONF & this.CONST ==============================*/
-  /**
-   * Set configuration.
-   * @param {string} name
-   * @param {any} value
-   * @returns {App}
-   */
-  conf(name, value) {
-    this.CONF[name] = value;
-    return this;
-  }
-
+  /*============================== CONSTANTS - this.CONST ==============================*/
   /**
    * Set constants.
    * @param {string} name
@@ -49,13 +29,13 @@ class App {
   }
 
   /**
-   * Freeze constant and configuration objects what prevents modifications in the controllers.
+   * Freeze constant objects what prevents accidental modifications in the controllers.
    * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
    * @returns {void}
    */
   freeze() {
     Object.freeze(this.CONF);
-    Object.freeze(this.CONST);
+
   }
 
 
@@ -97,15 +77,31 @@ class App {
   /**
    * Create controller instances and inject into the this.controllers.
    * @param  {Class[]} Ctrls - array of controller classes
-   * @param  {Auth} auth - Auth class instance
    * @returns {App}
    */
-  controller(Ctrls, auth) {
+  controller(Ctrls) {
     for(const Ctrl of Ctrls) {
       const ctrl = new Ctrl(this);
-      ctrl.auth = !!auth ? auth : { autoLogin: () => {}, hasRole: () => {}, isLogged: () => {} };
       this.controllers[Ctrl.name] = ctrl;
     }
+    return this;
+  }
+
+
+
+  /**
+   * Inject the auth library into the all controllers and use it as this.auth in the controller.
+   * Useful in apps where authentication guards are required in all routes, for example when building a web panel.
+   * @param {Auth} auth - Auth class instance
+   * @returns {App}
+   */
+  authInject(auth) {
+    const controllersCount = Object.keys(this.controllers).length;
+    if (controllersCount === 0) { throw new Error('The method authInject() should be used after the method controller() !'); }
+    for (const ctrlName of Object.keys(this.controllers)) {
+      this.controllers[ctrlName].auth = auth;
+    }
+
     return this;
   }
 
@@ -122,10 +118,10 @@ class App {
       if (cmd === 'when') {
         const route = routeCnf[1]; // '/page1'
         const ctrlName = routeCnf[2]; // 'Page1Ctrl'
-        const isGuarded = routeCnf[3]; // true
+        const authGuards = routeCnf[3]; // {autoLogin:boolean, isLogged:boolean, hasRole:boolean}
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
-        router.when(route, ctrl, isGuarded);
+        router.when(route, ctrl, authGuards);
       } else if (cmd === 'notfound') {
         const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
@@ -148,8 +144,8 @@ class App {
    * Run the app by executing the router.
    * @returns {void}
    */
-  async run() {
-    await router.use();
+  run() {
+    router.use();
   }
 
 }

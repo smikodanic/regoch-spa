@@ -1,10 +1,9 @@
-const { App } = require('../../sys');
+const { App, syslib } = require('../../sys');
 const viewsCompiled = require('../dist/views/compiled.json');
+const routes = require('./routes');
 
 // conf
-const routesCnf = require('./conf/routesCnf');
-const apiCnf = require('./conf/apiCnf');
-const httpClientCnf = require('./conf/httpClientCnf');
+const { authOpts, cookieOpts, httpClientOpts } = require('./conf');
 
 // lib
 const StringExt = require('./lib/StringExt');
@@ -29,14 +28,20 @@ const DataRgCtrl = require('./controllers/playground/DataRgCtrl');
 const DataRgListenersCtrl = require('./controllers/playground/DataRgListenersCtrl');
 const CookieCtrl = require('./controllers/playground/CookieCtrl');
 const FormCtrl = require('./controllers/playground/FormCtrl');
+const LoginCtrl = require('./controllers/playground/LoginCtrl');
+const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
+
+
+// auth
+const cookie = new syslib.Cookie(cookieOpts);
+const httpClient = new syslib.HTTPClient(httpClientOpts);
+const auth = new syslib.Auth(authOpts, cookie, httpClient);
 
 
 
 const app = new App();
 
 app
-  .conf('API', apiCnf)
-  .conf('httpClient', httpClientCnf)
   .const('myNum', 10)
   .const('myStr', 'some thing')
   .const('myObj', {a: 22})
@@ -64,8 +69,11 @@ app
     DataRgListenersCtrl,
     CookieCtrl,
     FormCtrl,
+    LoginCtrl,
+    LoginokCtrl,
 
     // not found page
     NotfoundCtrl
   ])
-  .routes(routesCnf).run();
+  .authInject(auth)
+  .routes(routes).run();

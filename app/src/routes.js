@@ -23,6 +23,8 @@ module.exports = [
   ['when', '/playground/datarglisteners', 'DataRgListenersCtrl'],
   ['when', '/playground/cookie', 'CookieCtrl'],
   ['when', '/playground/form', 'FormCtrl'],
+  ['when', '/playground/login', 'LoginCtrl', {autoLogin: true}],
+  ['when', '/playground/customer/dashboard', 'LoginokCtrl', {isLogged: true, hasRole: true}],
 
   ['notfound', 'NotfoundCtrl'],
   // ['do', log1, log2]

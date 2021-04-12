@@ -12,50 +12,28 @@ class Auth {
   /**
    * opts:
    {
-    optsHttpClient :object,  // HTTPClient options
-    optsCookie :object,     // Cookie options
     apiLogin :string,       // API login URL: http://127.0.0.1:8001/users/login
     afterGoodLogin :string, // redirect after succesful login: '/{loggedUserRole}'
     afterBadLogin :string,  // redirect after unsuccesful login: '/login'
     afterLogout :string     // URL after logout: '/login'
+   }
    * @param {object} opts - auth options
+   * @param {Cookie} cookie - Cookie class instance
+   * @param {HTTPClient} httpClient - HTTPClient class instance
    */
-  constructor(opts) {
+  constructor(opts, cookie, httpClient) {
+    this.opts = opts;
+    this.cookieLib = cookie;
+    this.httpClientLib = httpClient;
+
     this.jwtToken; // JWT Token string: 'JWT ...'
     this.loggedUser; // the user object: {first_name, last_name, username, ...}
-
-    if (!opts.optsHttpClient) {
-      opts.optsHttpClient = {
-        encodeURI: true,
-        timeout: 21000,
-        retry: 0,
-        retryDelay: 1300,
-        maxRedirects: 0,
-        headers: {
-          'authorization': '',
-          'accept': 'application/json',
-          'content-type': 'application/json; charset=utf-8'
-        }
-      };
-    }
-    this.httpClientLib = new HTTPClient(opts.optsHttpClient);
-
-    if (!opts.optsCookie) {
-      opts.optsCookie = {
-        // domain: 'localhost',
-        path: '/',
-        expires: 5, // number of days or exact date
-        secure: false,
-        httpOnly: false,
-        sameSite: 'strict' // 'strict' for GET and POST, 'lax' only for POST
-      };
-    }
-    this.cookieLib = new Cookie(opts.optsCookie);
-
-    this.opts = opts;
   }
 
 
+
+
+  /******* CONTROLLER METHODS (use in the controller's constructor as app.auth) ******/
   /**
    * Send login request to the API.
    * @param {object} creds - credentials object send as body to the API, for example: {username, password}
@@ -83,7 +61,8 @@ class Auth {
     } else {
       this.loggedUser = null;
       this.cookieLib.removeAll();
-      throw new Error(answer.res.content.message);
+      const errMSg = !!answer.res.content ? answer.res.content.message : 'No answer from the server. Probably the API server is down.';
+      throw new Error(errMSg);
     }
 
   }
@@ -123,9 +102,12 @@ class Auth {
 
 
 
+
+
+  /******* ROUTER METHODS (use in the router as authGuards) ******/
   /**
    * Check if user is logged and if yes do auto login e.g. redirect to afterGoodLogin URL.
-   * @returns {void}
+   * @returns {boolean}
    */
   autoLogin() {
     const loggedUser = this.getLoggedUserInfo(); // get loggedUser info after successful username:password login
@@ -134,9 +116,26 @@ class Auth {
     if (!!loggedUser && !!loggedUser.username) {
       const afterGoodLoginURL = this.opts.afterGoodLogin.replace('{loggedUserRole}', loggedUser.role);
       navigator.goto(afterGoodLoginURL);
+      throw new Error(`Autologin to ${afterGoodLoginURL} is triggered.`);
     }
   }
 
+
+  /**
+   * Check if user is logged and if not redirect to afterBadLogin URL.
+   * @returns {boolean}
+   */
+  isLogged() {
+    const loggedUser = this.getLoggedUserInfo(); // get loggedUser info after successful username:password login
+    const isAlreadyLogged = !!loggedUser && !!loggedUser.username;
+    console.log('isAlreadyLogged:', isAlreadyLogged);
+
+    // redirect to afterBadLogin URL
+    if (!isAlreadyLogged) {
+      navigator.goto(this.opts.afterBadLogin);
+      throw new Error('This route is blocked because the user is not logged in.');
+    }
+  }
 
 
   /**
@@ -146,43 +145,22 @@ class Auth {
    * @returns {boolean}
    */
   hasRole() {
-    const loggedUser = this.authService.getLoggedUserInfo(); // get loggedUser info after successful username:password login
+    const loggedUser = this.getLoggedUserInfo(); // get loggedUser info after successful username:password login
 
     // get current URL and check if user's role (admin, customer) is contained in it
     const currentUrl = window.location.pathname + window.location.search; // browser address bar URL: /admin/product/23
 
-    let tf = false;
+    let urlHasRole = false;
     if (!!loggedUser && !!loggedUser.role) {
-      tf = currentUrl.indexOf(loggedUser.role) !== -1;
+      urlHasRole = currentUrl.indexOf(loggedUser.role) !== -1;
     }
 
-    if (!tf) {
+    console.log('urlHasRole:', urlHasRole);
+    if (!urlHasRole) {
       navigator.goto(this.opts.afterBadLogin);
-      console.error('This route is blocked because user doesn\'t have good role. The route is redirected.');
+      throw new Error('This route is blocked because the user doesn\'t have valid role.');
     }
-
-    return tf;
   }
-
-
-
-  /**
-   * Check if user is logged and if not redirect to afterBadLogin URL.
-   * @returns {boolean}
-   */
-  isLogged() {
-    const loggedUser = this.authService.getLoggedUserInfo(); // get loggedUser info after successful username:password login
-    const isAlreadyLogged = !!loggedUser && !!loggedUser.username;
-
-    // redirect to afterBadLogin URL
-    if (!isAlreadyLogged) {
-      navigator.goto(this.opts.afterBadLogin);
-      console.error('This route is blocked because user doesn\'t have good role. The route is redirected.');
-    }
-
-    return isAlreadyLogged;
-  }
-
 
 
 }

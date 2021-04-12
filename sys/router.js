@@ -10,23 +10,33 @@ class Router {
   }
 
 
-
   /**
    * Define route
    * @param {string} route - route, for example: '/page1.html'
    * @param {object} ctrl - route controller instance
+   * @param {{autoLogin:boolean, isLogged:boolean, hasRole:boolean}} authGuards - Auth guards
    * @returns {void}
    */
-  when(route, ctrl) {
+  when(route, ctrl, authGuards) {
     if (!route) { throw new Error(`Route is not defined for ${ctrl.constructor.name} controller.`); }
+    if (authGuards && (authGuards.autoLogin || authGuards.isLogged || authGuards.hasRole) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::authInject().`); }
 
-    // controller methods
+    // Controller methods
     const prerender = ctrl.prerender.bind(ctrl);
     const render = ctrl.render.bind(ctrl);
     const postrender = ctrl.postrender.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
 
-    this.regochRouter.def(route, prerender, render, postrender, init);
+    // Auth guards
+    const autoLogin = ctrl.auth.autoLogin.bind(ctrl.auth);
+    const isLogged = ctrl.auth.isLogged.bind(ctrl.auth);
+    const hasRole = ctrl.auth.hasRole.bind(ctrl.auth);
+    const guards = [];
+    if (!!authGuards && authGuards.autoLogin) { guards.push(autoLogin); }
+    if (!!authGuards && authGuards.isLogged) { guards.push(isLogged); }
+    if (!!authGuards && authGuards.hasRole) { guards.push(hasRole); }
+
+    this.regochRouter.def(route, ...guards, prerender, render, postrender, init);
   }
 
 
@@ -75,10 +85,6 @@ class Router {
    * Execute all defined routes.
    */
   use() {
-    // test URI against routes when browser's Reload button is clicked
-    const uri = window.location.pathname + window.location.search; // /page1.html?q=12
-    this._testRoutes(uri);
-
     // test URI against routes when element with data-rg-href attribute is clicked
     navigator.onPushstate(event => {
       const uri = window.location.pathname + window.location.search; // browser address bar URL
@@ -92,6 +98,9 @@ class Router {
       this._testRoutes(uri);
     });
 
+    // test URI against routes when browser's Reload button is clicked
+    const uri = window.location.pathname + window.location.search; // /page1.html?q=12
+    this._testRoutes(uri);
   }
 
 
@@ -105,7 +114,7 @@ class Router {
     this.regochRouter.trx = { uri };
     this.regochRouter.exe()
       // .then(trx => console.log('Route executed trx:: ', trx))
-      .catch(err => console.error('ERRrouter:: ', err));
+      .catch(err => console.log(`%cRouterWarning: ${err.message}`, `color:#FF6500; background:#FFFEEE`));
   }
 
 
