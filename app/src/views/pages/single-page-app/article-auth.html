@@ -94,12 +94,11 @@
   <br>2) with App:libInject()</p>
 	<ul class="methods">
     <li>
-      <i>async</i> <b>login <i>(username :string, password :string): Promise&lt;any&gt;</i></b>
+      <i>async</i> <b>login <i>(creds :object): Promise&lt;any&gt;</i></b>
       <p class="desc">Call API's apiLogin URL. The returned value is the API response JS object. On succesful login two cookies are created:
       <br>a) <i>auth_jwtToken</i> with value for example: 'JWT aWqra...'
       <br>b) <i>auth_loggedUser</i> with value of the user object which is returned by the API
-      <br><b>username</b> - the user's username
-      <br><b>password</b> - the user's password
+      <br><b>creds</b> - credentials object sent as body to the API. Usually it's <i>{username :string, password :string}</i>
       </p>
     </li>
     <li>
