@@ -2,7 +2,7 @@
 interface CookieOpts {
   domain?: string;
   path?: string;
-  expires?: number | Date; // number of days or exact date
+  expires?: number | Date; // number of hours or exact date
   secure?: boolean;
   httpOnly?: boolean;
   sameSite?: string; // 'strict' for GET and POST, 'lax' only for POST
@@ -249,7 +249,7 @@ class Cookie {
       let expires;
       if (typeof this.cookieOpts.expires === 'number') {
         const d = new Date();
-        d.setTime(d.getTime() + (this.cookieOpts.expires * 24 * 60 * 60 * 1000));
+        d.setTime(d.getTime() + (this.cookieOpts.expires * 60 * 60 * 1000));
         expires = d.toUTCString();
       } else {
         expires = this.cookieOpts.expires.toUTCString();

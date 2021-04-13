@@ -6,17 +6,19 @@
     <p>
       Manipulate with the browser cookies.
       <pre><code class="language-js">
+const { Controller, syslib } = require('regoch-spa');
+
 class MyCtrl extends Controller {
   constructor(app) {
     const cookieOpts = {
       domain: 'localhost',
       path: '/',
-      expires: 5, // number of days or exact date
+      expires: 5, // number of hours or exact date
       secure: false,
       httpOnly: false,
       sameSite: 'strict' // 'strict' for GET and POST, 'lax' only for POST
     };
-    this.cookie = new app.syslib.Cookie(cookieOpts);
+    this.cookie = new syslib.Cookie(cookieOpts);
   }
 }
       </code></pre>
@@ -24,7 +26,7 @@ class MyCtrl extends Controller {
   </section>
 </header>
 
-<section class="docs-section" id="item-7-1">
+<section class="docs-section" id="item-11-1">
   <h2 class="section-heading">Properties</h2>
   <table style="width:100%">
     <tr>
@@ -70,7 +72,7 @@ class MyCtrl extends Controller {
     </tr>
     <tr>
       <td>expires</td>
-      <td>number of days when cookie will expire or exact expiration date</td>
+      <td>number of hours when cookie will expire or exact expiration date</td>
       <td>number|Date</td>
       <td></td>
     </tr>
@@ -98,49 +100,51 @@ class MyCtrl extends Controller {
   More info at <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies" target="_blank">https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies</a>
 </section>
 
-<section class="docs-section" id="item-7-2">
+<section class="docs-section" id="item-11-2">
   <h2 class="section-heading">Methods</h2>
   <p>Use this methods in the controller after "Cookie" class is instantiated.</p>
 	<ul class="methods">
     <li>
-      <b>put <i>(name:string, value:string): &lt;void&gt;</i></b>
+      <b>put <i>(name :string, value :string): void</i></b>
       <p class="desc">Set cookie. Cookie value is string.</p>
     </li>
     <li>
-      <b>putObject <i>(name:string, value:object): &lt;void&gt;</i></b>
+      <b>putObject <i>(name :string, value :object): void</i></b>
       <p class="desc">Set cookie. Cookie value is object.</p>
     </li>
     <li>
-      <b>getAll <i>(): &lt;string&gt;</i></b>
+      <b>getAll <i>(): string</i></b>
       <p class="desc">Get all cookies in string format (cook1=jedan1; cook2=dva2;).</p>
     </li>
     <li>
-      <b>get <i>(name:string): &lt;string&gt;</i></b>
+      <b>get <i>(name :string): string</i></b>
       <p class="desc">Get a cookie by specific name. Returned value is string.</p>
     </li>
     <li>
-      <b>getObject <i>(name:string): &lt;object&gt;</i></b>
+      <b>getObject <i>(name :string): object</i></b>
       <p class="desc">Get a cookie by specific name. Returned value is object.</p>
     </li>
     <li>
-      <b>remove <i>(name:string): &lt;void&gt;</i></b>
+      <b>remove <i>(name :string): void</i></b>
       <p class="desc">Remove cookie by specific name.</p>
     </li>
     <li>
-      <b>removeAll <i>(): &lt;void&gt;</i></b>
+      <b>removeAll <i>(): void</i></b>
       <p class="desc">Remove all cookies.</p>
     </li>
     <li>
-      <b>exists <i>(name:string): &lt;boolean&gt;</i></b>
+      <b>exists <i>(name :string): boolean</i></b>
       <p class="desc">Check if the cookie exists.</p>
     </li>
   </ul>
 </section>
 
 
-<section class="docs-section" id="item-7-3">
+<section class="docs-section" id="item-11-3">
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-javascript">
+const { Controller, syslib } = require('regoch-spa');
+
 class MyCtrl extends Controller {
   constructor(app) {
     const cookieOpts = {
@@ -151,7 +155,7 @@ class MyCtrl extends Controller {
       httpOnly: false,
       sameSite: 'strict' // 'strict' for GET and POST, 'lax' only for POST
     };
-    this.cookie = new app.syslib.Cookie(cookieOpts);
+    this.cookie = new syslib.Cookie(cookieOpts);
   }
 
   test() {

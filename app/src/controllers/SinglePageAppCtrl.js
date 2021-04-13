@@ -27,12 +27,15 @@ class SinglePageAppCtrl extends Controller {
       ['#article-page', 'pages/single-page-app/article-page.html'],
       ['#article-datarg', 'pages/single-page-app/article-datarg.html'],
       ['#article-datarglisteners', 'pages/single-page-app/article-datarglisteners.html'],
+      ['#article-router', 'pages/single-page-app/article-router.html'],
+
+      ['#article-auth', 'pages/single-page-app/article-auth.html'],
       ['#article-cookie', 'pages/single-page-app/article-cookie.html'],
       ['#article-eventemitter', 'pages/single-page-app/article-eventemitter.html'],
       ['#article-form', 'pages/single-page-app/article-form.html'],
       ['#article-httpclient', 'pages/single-page-app/article-httpclient.html'],
+      ['#article-navigator', 'pages/single-page-app/article-navigator.html'],
       ['#article-util', 'pages/single-page-app/article-util.html'],
-      ['#article-router', 'pages/single-page-app/article-router.html'],
       // ['#footer', 'pages/single-page-app/footer.html']
     ], true);
 

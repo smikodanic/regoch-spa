@@ -7,7 +7,7 @@
 
 <section class="docs-section" id="item-3-1">
   <h2 class="section-heading">Properties</h2>
-  Inherits from the Page class.
+  No properties. All properties are inherited from the Page class.
 </section>
 
 <section class="docs-section" id="item-3-2">
@@ -15,29 +15,35 @@
   <p>
     Use this methods in the controller as lifecycle hooks.
     <br><b style="color:orange">PRERENDER &rarr; RENDER &rarr; POSTRENDER &rarr; INIT &rarr; DESTROY</b>
+    <br>
+    <br>The lifecycle hooks are related to render HTML elements with <b>data-rg-</b> attribute. The regoch SPA framework will render all elements with
+    data-rg- attributes. Here is the example of one data-rg- element: <small>&lt;span data-rg-print="product.name"&gt;&lt;/span&gt;</small>
+    which will set SPAN innerHTML with product.name (controller property value).
   </p>
 	<ul class="methods">
     <li>
-      <i>async</i> <b>prerender <i>(trx:object): Promise&lt;void&gt;</i></b>
+      <i>async</i> <b>prerender <i>(trx :object): Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code before the "data-rg-..." elements are rendered.
+      <br><b>trx</b> - regoch router transitional variable (carrier). See <a href="/router#item-2-2" data-rg-href>here</a>.</p>
+    </li>
+    <li>
+      <i>async</i> <strong>render <i>(trx :object): Promise&lt;void&gt;</i></strong>
+      <p class="desc">Render all elements with the "data-rg-..." attribute. Don't use it in the controller.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
-      <i>async</i> <strong>render <i>(trx:object): Promise&lt;void&gt;</i></strong>
-      <p class="desc">Render all elemets with the "data-rg-..." attribute. Don't use it in the controller.
-      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
-    </li>
-    <li>
-      <i>async</i> <b>postrender <i>(trx:object): Promise&lt;void&gt;</i></b>
+      <i>async</i> <b>postrender <i>(trx :object): Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code after the "data-rg-..." elements are rendered.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
-    <li><i>async</i> <b>init <i>(trx:object): Promise&lt;void&gt;</i></b>
+    <li><i>async</i> <b>init <i>(trx :object): Promise&lt;void&gt;</i></b>
       <p class="desc">Executes the controller code after the postrender.
+      It should be used to call internal controller methods. Thus internal controller logic will be nicely separated from the data-rg render process.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
-    <li><i>async</i> <b>destroy <i>(elem:Element, event:Event): Promise&lt;void&gt;</i></b>
-     <p class="desc">Executes the controller code on destroying the controller, i.e. when element with the "data-rg-href" attribute is clicked.
+    <li><i>async</i> <b>destroy <i>(elem :Element, event :Event): Promise&lt;void&gt;</i></b>
+      <p class="desc">Executes the controller code on destroying the controller, i.e. when element with the "data-rg-href" attribute is clicked.
+      <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element). This is very important to save browser's (app) memory space and to prevent memory leaks.
       <br><b>elem</b> - data-rg-href element which caused controller destruction (the Element which is clicked)
       <br><b>event</b> - event (the 'click' event) which was applied on the "elem" and caused the controller destruction and URL change</p>
     </li>
@@ -49,12 +55,13 @@
 <section class="docs-section" id="item-3-3">
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-javascript">
-const { Controller } = require('regoch-spa');
+const { Controller, syslib } = require('regoch-spa');
 
 module.exports = class HomeCtrl extends Controller {
 
   constructor(app) {
     super();
+    this.util = syslib.util;
   }
 
   async prerender(trx) {
@@ -89,11 +96,20 @@ module.exports = class HomeCtrl extends Controller {
 
   async init(trx) {
     // MAIN CONTROLLER LOGIC GOES HERE
+    this.myTest();
   }
 
 
   async destroy(elem, event) {
-    // CODE TO EXECUTE WHEN URL IS CHANGED
+    // CODE TO EXECUTE WHEN URL IS CHANGED i.e. WHEN CONTROLLER IS DESTROYED
+    this.unlazyJS();
+  }
+
+
+
+
+  myTest() {
+    console.log('This is INIT test.');
   }
 
 

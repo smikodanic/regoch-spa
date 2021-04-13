@@ -1,0 +1,79 @@
+<header class="docs-header">
+  <h1 class="docs-heading">navigator</h1>
+  <section class="docs-intro">
+    <i>instance of the class Navigator</i>
+    <br><br>
+    <p>A library for navigate through the URLs by changing browser's address bar data.</p>
+  </section>
+</header>
+
+
+<section class="docs-section" id="item-15-1">
+  <h2 class="section-heading">Properties</h2>
+  <p>There is no properties in the class.</p>
+</section>
+
+
+<section class="docs-section" id="item-15-2">
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods in the controller.</p>
+	<ul class="methods">
+    <li>
+      <b>goto <i>(url :string, state :string, title :string): void</i></b>
+      <p class="desc">Navigates to a view using an absolute URL path.
+        More at <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/History/pushState</a>
+        <br><b>url</b> - absolute URL path, for example: '/customer/product/25'
+        <br><b>state</b> - The state data. Fetch it with event.detail.
+        <br><b>title</b> - Not used in major browsers.
+      </p>
+    </li>
+    <li>
+      <b>forward <i>(): void</i></b>
+      <p class="desc">Go forward like forward button is clicked.</p>
+    </li>
+    <li>
+      <b>back <i>(): void</i></b>
+      <p class="desc">Go back like back button is clicked.</p>
+    </li>
+    <li>
+      <b>go <i>(delta :number): void</i></b>
+      <p class="desc">Loads a specific page from the session history.
+      You can use it to move forwards and backwards through the history depending on the delta value.
+      <br><b>delta</b> - history index number, for example: -1 is like back(), and 1 is like forward()</p>
+    </li>
+    <li>
+      <b>reload <i>(): void</i></b>
+      <p class="desc">Reloads the page like refresh button is clicked.</p>
+    </li>
+
+    <br><br>
+    <h4>LISTENERS</h4>
+    <li>
+      <b>onPushstate <i>(listener :Function): void</i></b>
+      <p class="desc">Listen for the 'pushstate' event, for example when data-rg-href is clicked or when goto() is used.
+      <br><b>listener</b> - callback function which will be executed on 'pushstate' event</p>
+    </li>
+    <li>
+      <b>onPopstate <i>(listener :Function): void</i></b>
+      <p class="desc">Listen for the 'popstate' event, for example when BACK,FORWARD button is clicked or when back(),forward() is used.
+      <br><b>listener</b> - callback function which will be executed on 'popstate' event</p>
+    </li>
+  </ul>
+</section>
+
+
+<section class="docs-section" id="item-15-3">
+  <h2 class="section-heading">Example</h2>
+  <pre><code class="language-js">
+const { Controller, syslib } = require('regoch-spa');
+
+class MyCtrl extends Controller {
+  async redirectMe() {
+    syslib.navigator.goto('/admin/products/list');
+  }
+}
+  </code></pre>
+</section>
+
+
+

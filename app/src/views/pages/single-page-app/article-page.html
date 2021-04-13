@@ -5,9 +5,9 @@
     <p class="mt-3">
     This class will load and render views in the <b>data-rg-view</b> and includes in the <b>data-rg-inc</b> elements.
     <br>- <b>Views</b> are the HTML files located in the /src/views/ directory and loaded only when it is called by the controller.
-    Which controller i.e. view will be taken depends on the URL. The views are loaded in the element with <b>data-rg-view</b> attribute.
+    Which controller i.e. view will be taken depends on the current URL. The views are loaded in the element with <b>data-rg-view</b> attribute.
     The possible load destinations are: inner, outer, sibling, prepend and append.
-    <br>- <b>Includes</b> are HTML files located in the /src/views/inc/ directory and will be rendered every time regardless to the controller and URL.
+    <br>- <b>Includes</b> are HTML files located in the /src/views/inc/ directory and will be rendered every time regardless of the controller and current URL.
     The inc files are loaded in the elements with the <b>data-rg-inc</b> attribute.
     The possible load destinations are: inner, outer, sibling, prepend and append.
     </p>
@@ -35,6 +35,12 @@
     <td>object</td>
     <td></td>
   </tr>
+  <tr>
+    <td>viewsCompiled</td>
+    <td>compiled views, the object injected by the App::controllerViewsCompiled() method</td>
+    <td>object</td>
+    <td></td>
+  </tr>
   </table>
 </section>
 
@@ -43,21 +49,24 @@
 	<ul class="methods">
     <li>
       <i>async</i> <b>loadInc <i>(delIncgens:boolean = true): Promise&lt;void&gt;</i></b>
-      <p class="desc">Load inc HTML file in the element with the <b>data-rg-inc="file.html [@@ inner|outer|sibling|prepend|append] [@@ cssSelector]"</b> attribute.
-      This method is called recursively if the "data-rg-inc" elements are nested.
+      <p class="desc">Load /views/inc/file.html HTML file in the element with the
+      <br><b>data-rg-inc="file.html [@@ inner|outer|sibling|prepend|append] [@@ cssSelector]"</b> attribute.
+      <br>This method is called recursively if the "data-rg-inc" elements are nested.
+      <br><b>delIncgens</b> - delete data-rg-incgen elements (only in the first iteration)
+      <br>
       <br>The render process:
       <br>1) Select all elements which has data-rg-inc but not data-rg-cin.
-      <br>2) Put data-rg-cin which marks that the data-rg-inc element has beed parsed in the current iteration.
-      <br>3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Every loaded element will have data-rg-incgen attribute to mark elements generated with data-rg.inc.
+      <br>2) Put data-rg-cin which marks that the data-rg-inc element has beed parsed in the current iteration. This will prevent infinite render loops.
+      <br>3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Elements where sibling, append and prepend is used will get data-rg-incgen attribute to mark elements generated with data-rg-inc.
       <br>4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
-      <br>note) Multiple iterations will haeppen when data-rg-inc elements are nested. To make reset all data-rg-incgen elements will be deleted but only in the first iteration.
-      <br><b>delIncgens</b> - delete data-rg-incgen elements (only in the first iteration)
+      <br>
+      <br>Note: Multiple iterations will haeppen when data-rg-inc elements are nested. To make reset all data-rg-incgen elements will be deleted but only in the first iteration.
     </li>
     <li>
       <i>async</i> <b>loadView <i>(viewName:string, viewPath:string, dest:string = 'inner', cssSel:string): Promise&lt;{elem, str, nodes}&gt;</i></b>
       <p class="desc">Load view file from /views/ directory in the element with the <b>data-rg-view="#viewName"</b> attribute. This method should be used in the controller.
       <br>IMPORTANT:
-      <br>A) When 'sibling', 'prepend' and 'append' is used comment and text nodes will not be injected (only HTML elements i.e. nodeType === 1)).
+      <br>A) When 'sibling', 'prepend' and 'append' is used, the comment and text nodes will not be injected (only HTML elements i.e. nodeType === 1)).
       <br>B) Never put data-rg-view inside data-rg-inc !
       <br><b>viewName</b> - view name, for example: '#home'
       <br><b>viewPath</b> - view file path (relative to /view/ directory): 'pages/home/main.html'
@@ -67,7 +76,7 @@
     </li>
     <li>
       <i>async</i> <b>loadViews <i>(viewDefs:any[][], isAsync:boolean): Promise&lt;void&gt;</i></b>
-      <p class="desc">Load multiple views.
+      <p class="desc">Load multiple views. This is shortcut for the <i>loadView()</i> method.
         <br>TIP1: Use this method in the prerender() method if the views contain data-rg- elements. This is because render() will render those elements.
         <br>TIP2: When isAsync=false is used the views should be compiled by the regoch.json.
       <br><b>viewDefs</b> - array of arrays: [[viewName, viewPath, dest, cssSel]]
@@ -77,7 +86,7 @@
     </li>
     <li>
       <b>emptyView <i>(viewName:string, dest:string = 'inner'): &lt;void&gt;</i></b>
-      <p class="desc">Empty the view content.
+      <p class="desc">Empty the view content in the data-rg-view element.
       <br><b>viewName</b> - - view name, for example: '#home'
       <br><b>dest</b> - destination where the view was placed and should be deleted: inner, outer, sibling, prepend, append
       </p>
@@ -90,7 +99,7 @@
     </li>
     <li>
       <b>unlazyJS <i>(): &lt;void&gt;</i></b>
-      <p class="desc">Remove SCRIPT tags with the <i>data-rg-lazy</i> attribute.</p>
+      <p class="desc">Remove all SCRIPT tags with the <i>data-rg-lazy</i> attribute. Usually it should be used in the <i>destroy()</i> controller hook.</p>
     </li>
     <li>
       <i>async</i>  <b>loadJS <i>(urls:string[]): &lt;void&gt;</i></b>
@@ -114,7 +123,7 @@
       <b>addCSS <i>(cssRules:string, ref:string): &lt;void&gt;</i></b>
       <p class="desc">Append &lt;style data-rg-ref="#ref"&gt; tag in the HEAD tag. Usually use it in the prerender() controller method.
         <br><b>cssRules</b> - CSS rules, for example: <small>div {font-weight: bold; color:red;}</small>
-        <br><b>ref</b> - reference used to delete the element
+        <br><b>ref</b> - reference used to delete the generated element with <i>delCSS()</i>
       </p>
     </li>
     <li>
@@ -136,9 +145,9 @@
       </p>
     </li>
     <li>
-      <b>setKeywords <i>(keys:string): &lt;void&gt;</i></b>
+      <b>setKeywords <i>(kys:string): &lt;void&gt;</i></b>
       <p class="desc">Set the page keywords.
-        <br><b>keys</b> - comma separated keywords, for example: 'regoch, app, database'
+        <br><b>kys</b> - comma separated keywords, for example: 'regoch, app, database'
       </p>
     </li>
     <li>

@@ -22,7 +22,7 @@ class Page extends DataRg {
       }
     };
     this.httpClient = new HTTPClient(opts);
-    this.viewsCompiled = window.regoch.viewsCompiled;
+    // this.viewsCompiled is defined by the App:controllerViewsCompiled()
   }
 
 

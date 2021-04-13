@@ -132,19 +132,6 @@ class Form {
 
 
 
-  /********** MISC *********/
-  /**
-   * Debugger. Use it as debug(var1, var2, var3)
-   * @returns {void}
-   */
-  debugger(tip, text, color, background) {
-    if (this.debug[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
-  }
-
-
-
-
-
 }
 
 module.exports = Form;

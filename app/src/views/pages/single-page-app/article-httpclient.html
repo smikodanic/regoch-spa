@@ -3,11 +3,12 @@
   <section class="docs-intro">
     <i>class HTTPClient</i>
     <br><br>
-    <p>HTTPClient can be used in the controller to send HTTP request to the HTTP servers. In most cases it will be used to fetch the JSON data.</p>
+    <p>HTTPClient can be used in the controller to send HTTP request to HTTP servers.
+    <br>In most cases it will be used to fetch the JSON data from API.</p>
   </section>
 </header>
 
-<section class="docs-section" id="item-10-1">
+<section class="docs-section" id="item-14-1">
   <h2 class="section-heading">Properties</h2>
   <table style="width:100%">
     <tr>
@@ -15,6 +16,12 @@
       <th>Description</th>
       <th>Type</th>
       <th>Default</th>
+    </tr>
+    <tr>
+      <td>opts</td>
+      <td>options (see the table below)</td>
+      <td>object</td>
+      <td></td>
     </tr>
     <tr>
       <td>url</td>
@@ -29,7 +36,7 @@
       <td>http:</td>
     </tr>
     <tr>
-      <td>host</td>
+      <td>hostname</td>
       <td>server, host name</td>
       <td>string</td>
       <td></td>
@@ -65,11 +72,12 @@
       <td></td>
     </tr>
     <tr>
-      <td>opts</td>
-      <td>options (see the table below)</td>
-      <td>object</td>
+      <td>interceptor</td>
+      <td>a function which will be executed before the HTTP request is sent. It's defined by the <i>setInterceptor()</i>.</td>
+      <td>Function</td>
       <td></td>
     </tr>
+
   </table>
 
   <br><br>The <b>opts</b> properties:
@@ -88,7 +96,7 @@
     </tr>
     <tr>
       <td>timeout</td>
-      <td>the request timeout, if 0 never timeout</td>
+      <td>the request timeout, if 0 or false it will never timeout</td>
       <td>number</td>
       <td>8000</td>
     </tr>
@@ -119,12 +127,12 @@
   </table>
 </section>
 
-<section class="docs-section" id="item-10-2">
+<section class="docs-section" id="item-14-2">
   <h2 class="section-heading">Methods</h2>
   <p>Use this methods in the controller after "Cookie" class is instantiated.</p>
 	<ul class="methods">
     <li>
-      <i>async</i> <b>askOnce <i>(url:string, method:string = 'GET', body_obj: any): Promise&lt;answer&gt;</i></b>
+      <i>async</i> <b>askOnce <i>(url :string, method :string = 'GET', body_obj :any): Promise&lt;answer&gt;</i></b>
       <p class="desc">Sending one HTTP request to HTTP server.
       <br>- 301 redirections are not handled.
       <br>- retries are not handled
@@ -134,7 +142,7 @@
       </p>
     </li>
     <li>
-      <i>async</i> <b>ask <i>(url:string, method:string = 'GET', body_obj: any): Promise&lt;answer&gt;</i></b>
+      <i>async</i> <b>ask <i>(url :string, method :string = 'GET', body_obj :any): Promise&lt;answer&gt;</i></b>
       <p class="desc">Sending one HTTP request to HTTP server.
       <br>- 301 redirections are handled.
       <br>- retries are handled
@@ -144,7 +152,7 @@
       </p>
     </li>
     <li>
-      <i>async</i> <b>askJSON <i>(url:string, method:string = 'GET', body: any): Promise&lt;answer&gt;</i></b>
+      <i>async</i> <b>askJSON <i>(url :string, method :string = 'GET', body :any): Promise&lt;answer&gt;</i></b>
       <p class="desc">Fetch the JSON. Redirections and retries are not handled.
       <br><b>url</b> - requested URL
       <br><b>method</b> - GET, POST, PUT, DELETE, ...
@@ -152,7 +160,7 @@
       </p>
     </li>
     <li>
-      <i>async</i> <b>askHTML <i>(url:string, cssSel:string): Promise&lt;answer&gt;</i></b>
+      <i>async</i> <b>askHTML <i>(url :string, cssSel :string): Promise&lt;answer&gt;</i></b>
       <p class="desc">Get the HTML file content or part of it filtered by the css selector. Redirections and retries are not handled.
       <br><b>url</b> - requested URL
       <br><b>cssSel</b> - CSS selector to fetch a part of the HTML file
@@ -169,13 +177,43 @@
       <b>kill <i>(): void</i></b>
       <p class="desc">Stop the sent request.</p>
     </li>
+    <li>
+      <b>setInterceptor <i>(interceptor :Function): void</i></b>
+      <p class="desc">Set the interceptor function which will be executed every time before the HTTP request is sent.
+      <br><b>interceptor</b> - callback function, for example (httpClient) => { httpClient.setHeader('Authorization', 'JWT aswas); }</p>
+    </li>
+
+    <br><br>
+    <h4>HEADERS</h4>
+    <li>
+      <b>setReqHeaders <i>(headerObj :object): void</i></b>
+      <p class="desc">Change request header object. Previously defined this.headers will be completely overwritten.
+      <br><b>headerObj</b> - for example: <small>{'authorization', 'user-agent', accept, 'cache-control', 'host', 'accept-encoding', 'connection'}</small></p>
+    </li>
+    <li>
+      <b>setReqHeader <i>(headerName :string, headerName :string): void</i></b>
+      <p class="desc">Change a request header.</p>
+    </li>
+    <li>
+      <b>delReqHeaders <i>(headerNames :string[]): void</i></b>
+      <p class="desc">Delete multiple request headers.
+      <br><b>headerNames</b> - array of header names, for example: <small>['content-type', 'accept']</small></p>
+    </li>
+    <li>
+      <b>getReqHeaders <i>(): object</i></b>
+      <p class="desc">Get the object of HTTP request headers.</p>
+    </li>
+    <li>
+      <b>getResHeaders <i>(): object</i></b>
+      <p class="desc">Get the object of HTTP response headers.</p>
+    </li>
   </ul>
 </section>
 
 
-<section class="docs-section" id="item-10-2">
+<section class="docs-section" id="item-14-2">
   <h2 class="section-heading">Answer</h2>
-  <p>On every request the answer is received which has standardised format:
+  <p>On every request the answer is received and it has the same format:
 
   <pre><code class="language-javascript">
 {
@@ -213,9 +251,11 @@
 
 
 
-<section class="docs-section" id="item-10-3">
+<section class="docs-section" id="item-14-3">
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-js">
+const { Controller, syslib } = require('regoch-spa');
+
 class MyCtrl extends Controller {
   constructor(app) {
     const opts = {
@@ -230,7 +270,7 @@ class MyCtrl extends Controller {
           'content-type': 'text/html; charset=UTF-8'
         }
       };
-    this.hc = new app.syslib.HTTPClient(opts);
+    this.hc = new syslib.HTTPClient(opts);
   }
 
   async test() {

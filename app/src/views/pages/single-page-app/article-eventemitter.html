@@ -7,36 +7,38 @@
   </section>
 </header>
 
-<section class="docs-section" id="item-7-2">
+<section class="docs-section" id="item-12-2">
   <h2 class="section-heading">Methods</h2>
   <p>Use this methods in the controller after "Cookie" class is instantiated.</p>
 	<ul class="methods">
     <li>
-      <b>emit <i>(eventName:string, detail:any): &lt;void&gt;</i></b>
+      <b>emit <i>(eventName :string, detail :any): &lt;void&gt;</i></b>
       <p class="desc">Create and emit the event with the custom detail data.</p>
     </li>
     <li>
-      <b>on <i>(eventName:string, listener:Function): &lt;void&gt;</i></b>
+      <b>on <i>(eventName :string, listener :Function): &lt;void&gt;</i></b>
       <p class="desc">Attach the event listener. The listener function will be executed on every catched event.</p>
     </li>
     <li>
-      <b>once <i>(eventName:string, listener:Function): &lt;void&gt;</i></b>
+      <b>once <i>(eventName :string, listener :Function): &lt;void&gt;</i></b>
       <p class="desc">Attach the event listener. The listener function will be executed only first time on catched event.</p>
     </li>
     <li>
-      <b>off <i>(eventName:string): &lt;void&gt;</i></b>
+      <b>off <i>(eventName :string): &lt;void&gt;</i></b>
       <p class="desc">Remove the event listener.</p>
     </li>
   </ul>
 </section>
 
 
-<section class="docs-section" id="item-7-3">
+<section class="docs-section" id="item-12-3">
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-javascript">
+const { Controller, syslib } = require('regoch-spa');
+
 class MyCtrl extends Controller {
   constructor(app) {
-    this.eventEmitter = new app.syslib.eventEmitter;
+    this.eventEmitter = new syslib.eventEmitter;
   }
 
   test() {

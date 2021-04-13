@@ -273,7 +273,6 @@ class HTTPClient {
     });
 
     return promise;
-
   }
 
 
@@ -308,7 +307,6 @@ class HTTPClient {
     }
 
 
-
     /*** b) HANDLE RETRIES when status = 408 timeout */
     let retryCounter = 1;
 
@@ -319,14 +317,11 @@ class HTTPClient {
       answer = await this.askOnce(url, method, body_obj);
       answers.push(answer);
 
-
       retryCounter++;
     }
 
 
-
     return answers;
-
   }
 
 
@@ -351,7 +346,7 @@ class HTTPClient {
     }
 
     // JSON request headers
-    this.setHeaders({
+    this.setReqHeaders({
       'content-type': 'application/json; charset=utf-8',
       'accept': 'application/json'
     });
@@ -368,8 +363,8 @@ class HTTPClient {
     }
 
     return answer;
-
   }
+
 
 
   /**
@@ -410,7 +405,7 @@ class HTTPClient {
    * @returns {Promise<answer>}
    */
   async askJS(url) {
-    this.setHeaders({
+    this.setReqHeaders({
       'content-type': 'application/javascript; charset=utf-8',
       'accept': 'application/javascript'
     });
@@ -423,6 +418,7 @@ class HTTPClient {
 
   /**
    * Stop the sent request.
+   * @returns {void}
    */
   kill() {
     this.xhr.abort();
@@ -431,7 +427,8 @@ class HTTPClient {
 
   /**
    * Set the interceptor function which will be executed every time before the HTTP request is sent.
-   * @param {Function} interceptor - callback function, for example (httpClient) => { httpClient.setHeader('Authorization', 'JWT aswas); }
+   * @param {Function} interceptor - callback function, for example (httpClient) => { httpClient.setReqHeader('Authorization', 'JWT aswas); }
+   * @returns {void}
    */
   setInterceptor(interceptor) {
     this.interceptor = interceptor.bind(this);
@@ -444,38 +441,41 @@ class HTTPClient {
   /********** HEADERS *********/
 
   /**
-   * Change header object.
+   * Change request header object.
    * Previously defined this.headers properties will be overwritten.
    * @param {Object} headerObj - {'authorization', 'user-agent', accept, 'cache-control', 'host', 'accept-encoding', 'connection'}
+   * @returns {void}
    */
-  setHeaders(headerObj) {
+  setReqHeaders(headerObj) {
     this.headers = Object.assign(this.headers, headerObj);
   }
 
   /**
-   * Set (add/update) header.
+   * Set (add/update) request header.
    * Previously defined header will be overwritten.
    * @param {String} headerName - 'content-type'
    * @param {String} headerValue - 'text/html; charset=UTF-8'
+   * @returns {void}
    */
-  setHeader(headerName, headerValue) {
+  setReqHeader(headerName, headerValue) {
     const headerObj = {[headerName]: headerValue};
     this.headers = Object.assign(this.headers, headerObj);
   }
 
   /**
-   * Change header object.
-   * @param {Array} headerNames - array of header names    ['content-type', 'accept']
+   * Delete multiple request headers.
+   * @param {Array} headerNames - array of header names, for example: ['content-type', 'accept']
+   * @returns {void}
    */
-  delHeaders(headerNames) {
+  delReqHeaders(headerNames) {
     headerNames.forEach(headerName => {
       delete this.headers[headerName];
     });
   }
 
-
   /**
    * Get request headers
+   * @returns {object}
    */
   getReqHeaders() {
     return this.headers;
@@ -483,7 +483,8 @@ class HTTPClient {
 
 
   /**
-   * Get response headers.
+   * Get response HTTP headers.
+   * @returns {object}
    */
   getResHeaders() {
     const headersStr = this.xhr.getAllResponseHeaders();

@@ -88,13 +88,13 @@ class Router {
     // test URI against routes when element with data-rg-href attribute is clicked
     navigator.onPushstate(event => {
       const uri = window.location.pathname + window.location.search; // browser address bar URL
-      console.log('pushstate:::', uri, event.detail);
+      // console.log('pushstate:::', uri, event.detail);
       this._testRoutes(uri);
     });
 
     navigator.onPopstate(event => {
       const uri = window.location.pathname + window.location.search; // browser address bar URL
-      console.log('popstate:::', uri, event.detail);
+      // console.log('popstate:::', uri, event.detail);
       this._testRoutes(uri);
     });
 

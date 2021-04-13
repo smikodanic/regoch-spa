@@ -5,24 +5,24 @@ const navigator = require('./navigator');
 
 
 /**
- * Authentication with the JWT token and cookie setup.
+ * Authentication with the JWT token and cookie.
  */
 class Auth {
 
   /**
-   * opts:
+   * authOpts:
    {
     apiLogin :string,       // API login URL: http://127.0.0.1:8001/users/login
     afterGoodLogin :string, // redirect after succesful login: '/{loggedUserRole}'
     afterBadLogin :string,  // redirect after unsuccesful login: '/login'
     afterLogout :string     // URL after logout: '/login'
    }
-   * @param {object} opts - auth options
+   * @param {object} authOpts - auth options
    * @param {Cookie} cookie - Cookie class instance
    * @param {HTTPClient} httpClient - HTTPClient class instance
    */
-  constructor(opts, cookie, httpClient) {
-    this.opts = opts;
+  constructor(authOpts, cookie, httpClient) {
+    this.authOpts = authOpts;
     this.cookieLib = cookie;
     this.httpClientLib = httpClient;
 
@@ -40,7 +40,7 @@ class Auth {
    * @returns {Promise<any>}
    */
   async login(creds) {
-    const url = this.opts.apiLogin;
+    const url = this.authOpts.apiLogin;
     const answer = await this.httpClientLib.askJSON(url, 'POST', creds);
 
     if (answer.status === 200) {
@@ -53,7 +53,7 @@ class Auth {
       this.cookieLib.putObject('auth_loggedUser', apiResp.loggedUser); // set cookie 'auth_loggedUser' and class property 'this.loggedUser': {first_name: , last_name: , ...}
 
       // redirect to URL
-      const afterGoodLoginURL = this.opts.afterGoodLogin.replace('{loggedUserRole}', apiResp.loggedUser.role);
+      const afterGoodLoginURL = this.authOpts.afterGoodLogin.replace('{loggedUserRole}', apiResp.loggedUser.role);
       navigator.goto(afterGoodLoginURL);
 
       return apiResp;
@@ -77,7 +77,7 @@ class Auth {
     this.cookieLib.removeAll(); // delete all cookies
     this.loggedUser = undefined; // remove class property
     await new Promise(r => setTimeout(r, ms));
-    navigator.goto(this.opts.afterLogout); // change URL
+    navigator.goto(this.authOpts.afterLogout); // change URL
   }
 
 
@@ -93,7 +93,7 @@ class Auth {
 
   /**
    * Get JWT token from cookie
-   * @return string - JWT eyJhbGciOiJIUzI1NiIsInR...
+   * @return {string} - JWT eyJhbGciOiJIUzI1NiIsInR...
    */
   getJWTtoken() {
     const jwtToken = this.jwtToken || this.cookieLib.get('auth_jwtToken');
@@ -114,7 +114,7 @@ class Auth {
 
     // redirect to URL
     if (!!loggedUser && !!loggedUser.username) {
-      const afterGoodLoginURL = this.opts.afterGoodLogin.replace('{loggedUserRole}', loggedUser.role);
+      const afterGoodLoginURL = this.authOpts.afterGoodLogin.replace('{loggedUserRole}', loggedUser.role);
       navigator.goto(afterGoodLoginURL);
       throw new Error(`Autologin to ${afterGoodLoginURL} is triggered.`);
     }
@@ -128,11 +128,10 @@ class Auth {
   isLogged() {
     const loggedUser = this.getLoggedUserInfo(); // get loggedUser info after successful username:password login
     const isAlreadyLogged = !!loggedUser && !!loggedUser.username;
-    console.log('isAlreadyLogged:', isAlreadyLogged);
 
     // redirect to afterBadLogin URL
     if (!isAlreadyLogged) {
-      navigator.goto(this.opts.afterBadLogin);
+      navigator.goto(this.authOpts.afterBadLogin);
       throw new Error('This route is blocked because the user is not logged in.');
     }
   }
@@ -155,9 +154,8 @@ class Auth {
       urlHasRole = currentUrl.indexOf(loggedUser.role) !== -1;
     }
 
-    console.log('urlHasRole:', urlHasRole);
     if (!urlHasRole) {
-      navigator.goto(this.opts.afterBadLogin);
+      navigator.goto(this.authOpts.afterBadLogin);
       throw new Error('This route is blocked because the user doesn\'t have valid role.');
     }
   }

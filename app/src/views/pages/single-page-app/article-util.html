@@ -8,7 +8,7 @@
 </header>
 
 
-<section class="docs-section" id="item-10-2">
+<section class="docs-section" id="item-16-1">
   <h2 class="section-heading">Methods</h2>
   <p>Use this methods in the controller.</p>
 	<ul class="methods">
@@ -21,17 +21,15 @@
 </section>
 
 
-<section class="docs-section" id="item-10-3">
+<section class="docs-section" id="item-16-2">
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-js">
-class MyCtrl extends Controller {
-  constructor(app) {
-    this.util = app.syslib.util;
-  }
+const { Controller, syslib } = require('regoch-spa');
 
+class MyCtrl extends Controller {
   async test() {
-    await this.util.sleep(1300); // wait for 1.3 seconds before sending HTTP request
-    const answer = await this.hc.askJSON('https://jsonplaceholder.typicode.com/todos/1');
+    await syslib.util.sleep(1300); // wait for 1.3 seconds before sending HTTP request
+    const answer = await this.httpClient.askJSON('https://jsonplaceholder.typicode.com/todos/1');
   }
 }
   </code></pre>

@@ -5,12 +5,9 @@ class LoginokCtrl extends Controller {
 
   constructor(app) {
     super();
-
   }
 
   async prerender(trx) {
-    console.log('prerender LOGINOK');
-
     this.setTitle('Auth Login OK');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/loginok/primary.html', 'inner');
@@ -18,11 +15,12 @@ class LoginokCtrl extends Controller {
 
   async tryLogout() {
     try {
-      await this.auth.logout(400);
+      await this.auth.logout(100);
     } catch (err) {
       console.error(err);
     }
   }
+
 
 
 

@@ -10,7 +10,7 @@
 </header>
 
 
-<section class="docs-section" id="item-21-1">
+<section class="docs-section" id="item-7-1">
   <h2 class="section-heading">Properties</h2>
   <table style="width:100%">
   <tr>
@@ -21,7 +21,7 @@
   </tr>
   <tr>
     <td>regochRouter</td>
-    <td>instance of the regoch-router class</td>
+    <td>instance of the "regoch-router" npm class</td>
     <td>object</td>
     <td></td>
   </tr>
@@ -29,7 +29,7 @@
 </section>
 
 
-<section class="docs-section" id="item-21-2">
+<section class="docs-section" id="item-7-2">
   <h2 class="section-heading">Methods</h2>
   <p>Do NOT use this methods in the controller unless you know what you'r doing.</p>
 	<ul class="methods">
@@ -52,8 +52,25 @@
   </ul>
 </section>
 
+<section class="docs-section" id="item-7-3">
+  <h2 class="section-heading">Route Guards</h2>
+  There are several route guards to do auto login and to protect the route from unauthorised access.
+  <ol>
+    <li><b>autoLogin</b> - if the user already logged redirect to the "afterGoodLogin" URL</li>
+    <li><b>isLogged</b> - checks if the user is logged, if not redirect to "afterBadLogin" URL</li>
+    <li><b>hasRole</b> - checks if the logged user has role contained in the URL, if not redirect to "afterBadLogin" URL</li>
+  </ol>
+  <br>The example:
+  <pre><code class="language-js">
+const routesCnf = [
+  ['when' '/login' 'LoginCtrl', {<b>autoLogin: true</b>}],
+  ['when' '/admin/product/:id' 'AdminProductCtrl', {isLogged: true, hasRole: true}]
+];
+  </code></pre>
+</section>
 
-<section class="docs-section" id="item-21-3">
+
+<section class="docs-section" id="item-7-4">
   <h2 class="section-heading">Example</h2>
   <p>The example shows how to define routes i.e. how to asscoiate the controller to specific route.
   There's no need to use the Router methods directly. Instead of that use APP method <b>routes()</b></p>

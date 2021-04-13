@@ -3,6 +3,8 @@
   <section class="docs-intro">
     <p>
       The Regoch SPA is framework for developing single page, web applications. Simple and inutitive for use and extremly fast.
+      <br>Together with the Cordova it can be also used for mobile apps development.
+      <br>Due to its simplicity you can learn this framework in a few hours.
       <br>
       <br>&nbsp;<i>The website regoch.org is completely made in the Regoch SPA framework.</i>
     </p>
@@ -12,19 +14,21 @@
 <section class="docs-section" id="item-1-1">
   <h2 class="section-heading">Features</h2>
   <ul>
-    <li>lightweight application - very small size of the compiled file (~50kB only)</li>
-    <li>JS files compiled with the gulp and browserify (very fast)</li>
-    <li>use CommonJS and write the code just like you are doing that in NodeJS <b>by using require()</b></li>
+    <li>no slow compilation as in Angular, Vue or React (no such compilation at all)</li>
+    <li>lightweight application - small app file size (~50kB only)</li>
+    <li>JS files builded with the gulp and browserify (very fast)</li>
+    <li>use <a href="https://nodejs.org/docs/latest/api/modules.html" target="_blank">CommonJS</a> and write the code just like you are doing that in NodeJS by using <b>require()</b></li>
     <li>no typescript, no heavy compiling, no bullshit</li>
     <li>Model-View-Controller (MVC), intuitive app structure</li>
     <li>easy to learn and to use</li>
     <li>due to its small size you can build very fast mobile apps</li>
+    <li>shallow learning curve</li>
   </ul>
 </section>
 
 <section class="docs-section" id="item-1-2">
   <h2 class="section-heading">Installation &amp; Development</h2>
-  <p>Install and start to develop your single page app in a few steps:</p>
+  <p>Install the <b>regoch-cli</b> and start to develop your single page app in a few steps:</p>
 	<pre><code class="language-bash">
   $ sudo npm install -g gulp-cli regoch-cli
   $ rg spa-new myApp
@@ -34,11 +38,11 @@
   </code></pre>
 
   <br><br>
-  <h2 class="section-heading">Installation &amp; Deploy</h2>
+  <h2 class="section-heading">Installation &amp; Server Deployment</h2>
   <p>Build and deploy your application on the server:</p>
 	<pre><code class="language-bash">
   $ sudo npm install -g gulp-cli pm2
-  $ git clone [myApp]
+  $ git clone &lt;myApp&gt;
   $ cd myApp
   $ npm run build   (or $ gulp build)
   $ pm2 start server --name myApp
@@ -50,7 +54,7 @@
   <p>
     Use Regoch-SPA CLI (Command Line Interface) to init the new app.
     This command will create the files and directory structure with the basic example app.
-    <pre><code class="language-bash">rg new appName</code></pre>
+    <pre><code class="language-bash">rg spa-new &lt;appName&gt;</code></pre>
 
 <br><br>After that open /src/app.js and edit it.
 <pre><code class="language-javascript">
@@ -85,7 +89,9 @@ app
 
 <section class="docs-section" id="item-1-4">
   <h2 class="section-heading">Playground</h2>
-	To learn more quickly visit our playground examples:
+	To learn more quickly visit our playground examples. The controller code is
+  <a href="https://github.com/smikodanic/regoch-spa/tree/master/app/src/controllers/playground" target="_blank">here</a>
+  and HTML views are <a href="https://github.com/smikodanic/regoch-spa/tree/master/app/src/views/playground" target="_blank">here</a>.
   <ul>
     <li><a href="/playground/controller-hooks" target="_blank">Controller Lifecycle Hooks</a> - shows in which order will be executed constructor, prerender, postrender, init, destroy</li>
     <li><a href="/playground/page-loadinc" target="_blank">Page::loadInc()</a> - test the loadInc() method with nested data-rg-inc elements</li>

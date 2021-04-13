@@ -5,26 +5,23 @@ class App {
 
   constructor() {
     this.CONST = {};
-    this.syslib = {};
     this.lib = {};
     this.controllers = {};
-
-    // define global variable
-    window.regoch = {
-      viewsCompiled: {}
-    };
+    window.regochSPA = {}; // define global variable
   }
 
 
-  /*============================== CONSTANTS - this.CONST ==============================*/
+  /*============================== CONSTANTS ==============================*/
   /**
    * Set constants.
    * @param {string} name
-   * @param {any} value
+   * @param {any} val
    * @returns {App}
    */
-  const(name, value) {
-    this.CONST[name] = value;
+  const(name, val) {
+    const controllersCount = Object.keys(this.controllers).length;
+    if (controllersCount > 0) { throw new Error('The method const() should be defined before the method controller().'); }
+    this.CONST[name] = val;
     return this;
   }
 
@@ -34,19 +31,28 @@ class App {
    * @returns {void}
    */
   freeze() {
-    Object.freeze(this.CONF);
+    Object.freeze(this.CONST);
+  }
 
+  /**
+   * Remove all constants.
+   * @returns {void}
+   */
+  constEmpty() {
+    this.CONST = {};
   }
 
 
 
-  /*============================== LIBRARY - this.lib ==============================*/
+  /*============================== LIBRARIES ==============================*/
   /**
    * Add libraries to libraries already injected by libInject()
    * @param {object} libs - libraries which will be added to existing this.lib -  {Lib1, lib2}
    * @returns {void}
    */
   libInject(libs) {
+    const controllersCount = Object.keys(this.controllers).length;
+    if (controllersCount > 0) { throw new Error('The method libInject() should be defined before the method controller().'); }
     this.lib = Object.assign(this.lib, libs);
   }
 
@@ -60,22 +66,9 @@ class App {
 
 
 
-  /*============================== COMPILED VIEWS ==============================*/
+  /*============================== CONTROLLERS ==============================*/
   /**
-   * Inject the content of the app/dist/views/compiled.json .
-   * @param {object} viewsCompiled
-   */
-  compiled(viewsCompiled) {
-    const controllersCount = Object.keys(this.controllers).length;
-    if (controllersCount > 0) { throw new Error('The method compiled() should be used before the method controller() !'); }
-    window.regoch.viewsCompiled = viewsCompiled;
-  }
-
-
-
-  /*============================== CONTROLLERS & ROUTES - this.controllers ==============================*/
-  /**
-   * Create controller instances and inject into the this.controllers.
+   * Create controller instances and inject into the app.controllers.
    * @param  {Class[]} Ctrls - array of controller classes
    * @returns {App}
    */
@@ -88,6 +81,21 @@ class App {
   }
 
 
+  /**
+   * Define controller property/value. Sometimes it's useful that all controllers have same property with the same value.
+   * @param {string} name - controller property name
+   * @returns
+   */
+  controllerProp(name, val) {
+    const controllersCount = Object.keys(this.controllers).length;
+    if (controllersCount === 0) { throw new Error(`The controller property "${name}" should be defined after the method controller() is used.`); }
+    for (const ctrlName of Object.keys(this.controllers)) {
+      this.controllers[ctrlName][name] = val;
+    }
+
+    return this;
+  }
+
 
   /**
    * Inject the auth library into the all controllers and use it as this.auth in the controller.
@@ -95,17 +103,27 @@ class App {
    * @param {Auth} auth - Auth class instance
    * @returns {App}
    */
-  authInject(auth) {
-    const controllersCount = Object.keys(this.controllers).length;
-    if (controllersCount === 0) { throw new Error('The method authInject() should be used after the method controller() !'); }
-    for (const ctrlName of Object.keys(this.controllers)) {
-      this.controllers[ctrlName].auth = auth;
-    }
-
+  controllerAuth(auth) {
+    this.controllerProp('auth', auth);
     return this;
   }
 
 
+  /**
+   * Inject the content of the app/dist/views/compiled.json.
+   * Useful to speed up the HTML view load, especially in data-rg-inc elements.
+   * @param {object} viewsCompiled - the content of the views/compiled.json file
+   * @returns {App}
+   */
+  controllerViewsCompiled(viewsCompiled) {
+    this.controllerProp('viewsCompiled', viewsCompiled);
+    return this;
+  }
+
+
+
+
+  /*============================== ROUTES ==============================*/
   /**
    * Define routes
    * @param {string[][]} routesCnf
@@ -136,6 +154,7 @@ class App {
         router.redirect(fromRoute, toRoute);
       }
     }
+
     return this;
   }
 

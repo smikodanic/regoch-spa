@@ -48,7 +48,7 @@ app
   .freeze();
 
 app.libInject({StringExt, Rand});
-app.compiled(viewsCompiled);
+
 app
   .controller([
     // docs
@@ -75,5 +75,8 @@ app
     // not found page
     NotfoundCtrl
   ])
-  .authInject(auth)
+  .controllerAuth(auth)
+  .controllerViewsCompiled(viewsCompiled);
+
+app
   .routes(routes).run();

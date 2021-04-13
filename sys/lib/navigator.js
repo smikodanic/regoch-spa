@@ -2,7 +2,7 @@ const eventEmitter = require('./eventEmitter');
 
 
 /**
- * Navigate to certain URL by changing browser's address bar.
+ * Navigate to certain URL by changing browser's address bar data.
  */
 class Navigator {
 
@@ -11,7 +11,7 @@ class Navigator {
    * Navigates to a view using an absolute URL path.
    * https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
    * @param {string} url - absolute URL path, /customer/product/25
-   * @param {any} state - fetch it with event.detail
+   * @param {any} state - the state data. Fetch it with event.detail
    * @param {string} title
    */
   goto(url, state, title) {
@@ -41,8 +41,9 @@ class Navigator {
   }
 
   /**
-   *  Loads a specific page from the session history.
+   * Loads a specific page from the session history.
    * You can use it to move forwards and backwards through the history depending on the delta value.
+   * @param {number} delta - history index number, for example: -1 is like back(), and 1 is like forward()
    */
   go(delta) {
     window.history.go(delta);
