@@ -19,7 +19,7 @@ class Router {
    */
   when(route, ctrl, authGuards) {
     if (!route) { throw new Error(`Route is not defined for ${ctrl.constructor.name} controller.`); }
-    if (authGuards && (authGuards.autoLogin || authGuards.isLogged || authGuards.hasRole) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::authInject().`); }
+    if (authGuards && (authGuards.autoLogin || authGuards.isLogged || authGuards.hasRole) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
     // Controller methods
     const prerender = ctrl.prerender.bind(ctrl);
@@ -27,16 +27,23 @@ class Router {
     const postrender = ctrl.postrender.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
 
-    // Auth guards
-    const autoLogin = ctrl.auth.autoLogin.bind(ctrl.auth);
-    const isLogged = ctrl.auth.isLogged.bind(ctrl.auth);
-    const hasRole = ctrl.auth.hasRole.bind(ctrl.auth);
-    const guards = [];
-    if (!!authGuards && authGuards.autoLogin) { guards.push(autoLogin); }
-    if (!!authGuards && authGuards.isLogged) { guards.push(isLogged); }
-    if (!!authGuards && authGuards.hasRole) { guards.push(hasRole); }
+    if (ctrl.auth) {
+      // Auth guards
+      const autoLogin = ctrl.auth.autoLogin.bind(ctrl.auth);
+      const isLogged = ctrl.auth.isLogged.bind(ctrl.auth);
+      const hasRole = ctrl.auth.hasRole.bind(ctrl.auth);
 
-    this.regochRouter.def(route, ...guards, prerender, render, postrender, init);
+      const guards = [];
+      if (!!authGuards && authGuards.autoLogin) { guards.push(autoLogin); }
+      if (!!authGuards && authGuards.isLogged) { guards.push(isLogged); }
+      if (!!authGuards && authGuards.hasRole) { guards.push(hasRole); }
+
+      this.regochRouter.def(route, ...guards, prerender, render, postrender, init);
+
+    } else {
+      this.regochRouter.def(route, prerender, render, postrender, init);
+    }
+
   }
 
 

@@ -150,7 +150,7 @@ class App {
         router.do(...funcs);
       } else if (cmd === 'redirect') {
         const fromRoute = routeCnf[1];
-        const toRoute = routeCnf[1];
+        const toRoute = routeCnf[2];
         router.redirect(fromRoute, toRoute);
       }
     }
