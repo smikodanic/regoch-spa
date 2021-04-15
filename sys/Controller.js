@@ -69,11 +69,10 @@ class Controller extends Page {
   /**
    * Destroy the controller when the data-rg-href element is clicked (see parse.href()).
    * - remove all data-rg-... element lsiteners
-   * * @param {HTMLElement} elem - element with data-rg-href which caused controller destruction
-   * * @param {Event} event - event (usually click) which was applied on the elem and cause controller destruction
+   * * @param {Event} pevent - popstate or pushstate event which caused URL change
    * @returns {Promise<void>}
    */
-  async destroy(elem, event) {}
+  async destroy(pevent) {}
 
 
 

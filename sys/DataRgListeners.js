@@ -8,8 +8,7 @@ const debug = require('./debug');
 class DataRgListeners {
 
   constructor() {
-    // listener collector [{attrName, elem, handler}] -- attribute name, element with the data-rg-... attribute and its corresponding handler
-    this.rgListeners = [];
+    this.rgListeners = []; // listener collector [{attrName, elem, handler}] -- attribute name, element with the data-rg-... attribute and its corresponding handler
   }
 
 
@@ -52,12 +51,8 @@ class DataRgListeners {
       const handler = async event => {
         event.preventDefault();
 
-        // destroy the current controller and kill the event listeners
-        await this.destroy(elem, event);
-        this.rgKILL();
-
         // change browser's address bar and emit 'pushstate' event
-        const href = elem.getAttribute('href').trim(); // new URL in the browser's address bar
+        const href = elem.getAttribute('href').trim();
         const state = { href };
         const title = elem.getAttribute(attrName).trim();
         navigator.goto(href, state, title);
@@ -268,6 +263,26 @@ class DataRgListeners {
       }
       i++;
     }
+  }
+
+
+  /**
+   * Create and clean function arguments
+   * @param {string[]} args - array of function arguments: [x,y,...restArgs]
+   * @param {HTMLElement} elem - HTML element on which is the event applied
+   * @param {Event} event - applied event
+   * @returns {string[]}
+   */
+  _getFuncArgs(args, elem, event) {
+    const funcArgs = args
+      .split(',')
+      .map(arg => {
+        arg = arg.trim().replace(/\'|\"/g, '');
+        if (arg === '$element') { arg = elem; }
+        if (arg === '$event') { arg = event; }
+        return arg;
+      });
+    return funcArgs;
   }
 
 

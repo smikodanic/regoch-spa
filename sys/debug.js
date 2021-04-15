@@ -1,5 +1,8 @@
 module.exports = (tip, text, color, background) => {
   const debugOpts = {
+    // router.js
+    router: false,
+
     // Page.js
     loadInc: false,
     loadView: false,

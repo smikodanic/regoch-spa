@@ -1,5 +1,6 @@
 const RegochRouter = require('regoch-router');
 const navigator = require('./lib/navigator');
+const debug = require('./debug');
 
 
 
@@ -21,7 +22,10 @@ class Router {
     if (!route) { throw new Error(`Route is not defined for ${ctrl.constructor.name} controller.`); }
     if (authGuards && (authGuards.autoLogin || authGuards.isLogged || authGuards.hasRole) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
-    // Controller methods
+    // Navigator functions
+    const setCurrent = navigator.setCurrent.bind(navigator, ctrl);
+
+    // Controller functions
     const prerender = ctrl.prerender.bind(ctrl);
     const render = ctrl.render.bind(ctrl);
     const postrender = ctrl.postrender.bind(ctrl);
@@ -38,10 +42,10 @@ class Router {
       if (!!authGuards && authGuards.isLogged) { guards.push(isLogged); }
       if (!!authGuards && authGuards.hasRole) { guards.push(hasRole); }
 
-      this.regochRouter.def(route, ...guards, prerender, render, postrender, init);
+      this.regochRouter.def(route, setCurrent, ...guards, prerender, render, postrender, init);
 
     } else {
-      this.regochRouter.def(route, prerender, render, postrender, init);
+      this.regochRouter.def(route, setCurrent, prerender, render, postrender, init);
     }
 
   }
@@ -92,36 +96,53 @@ class Router {
    * Execute all defined routes.
    */
   use() {
-    // test URI against routes when element with data-rg-href attribute is clicked
-    navigator.onPushstate(event => {
-      const uri = window.location.pathname + window.location.search; // browser address bar URL
-      // console.log('pushstate:::', uri, event.detail);
-      this._testRoutes(uri);
+    /* 1) test URI against routes when element with data-rg-href attribute is clicked
+       2) test URI against routes when BACK/FORWARD button is clicked */
+    navigator.onUrlChange(pevent => {
+      this._testRoutes(pevent);
     });
 
-    navigator.onPopstate(event => {
-      const uri = window.location.pathname + window.location.search; // browser address bar URL
-      // console.log('popstate:::', uri, event.detail);
-      this._testRoutes(uri);
-    });
-
-    // test URI against routes when browser's Reload button is clicked
-    const uri = window.location.pathname + window.location.search; // /page1.html?q=12
-    this._testRoutes(uri);
+    this._testRoutes(); // test URI against routes when browser's Reload button is clicked
   }
 
 
 
   /**
    * Match routes against current browser URI.
-   * @param {string} uri - browser's address bar URI
+   * @param {Event} pevent - popstate or pushstate event
    * @returns {void}
    */
-  _testRoutes(uri) {
-    this.regochRouter.trx = { uri };
-    this.regochRouter.exe()
-      // .then(trx => console.log('Route executed trx:: ', trx))
-      .catch(err => console.log(`%cRouterWarning: ${err.message}`, `color:#FF6500; background:#FFFEEE`));
+  async _testRoutes(pevent) {
+    navigator.setPrevious(); // copy current to previous
+
+    const uri = navigator.getCurrentURI(); // get the current uri: /page/2?id=55 (no hash in the uri)
+
+    // execute route middlewares, i.e. controller only if the URL is changed
+    if (uri !== navigator.previous.uri) {
+      try {
+        if(navigator && navigator.previous && navigator.previous.ctrl) {
+          navigator.previous.ctrl.rgKILL(); // kill controller's event listeners
+          navigator.previous.ctrl.destroy(pevent); // execute destroy() hook defined in the controller
+        }
+
+        this.regochRouter.trx = { uri };
+        const trx = await this.regochRouter.exe();
+
+        if (debug().router) {
+          console.log('_testRoutes::pevent:::', pevent);
+          console.log('_testRoutes::trx:::', trx);
+          console.log('_testRoutes::current.uri:::', navigator.current.uri); // current URI is set in the controller middleware (setCurrent() function)
+          console.log('_testRoutes::previous.uri:::', navigator.previous.uri);
+        }
+
+
+      } catch(err) {
+        console.log(`%cRouterWarning: ${err.message}`, `color:#FF6500; background:#FFFEEE`);
+      }
+
+    } else {
+      if (debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navigator.previous.uri}". Controller is not executed !`);}
+    }
   }
 
 

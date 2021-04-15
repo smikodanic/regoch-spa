@@ -565,26 +565,6 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * Create and clean function arguments
-   * @param {string[]} args - array of function arguments: [x,y,...restArgs]
-   * @param {HTMLElement} elem - HTML element on which is the event applied
-   * @param {Event} event - applied event
-   * @returns {string[]}
-   */
-  _getFuncArgs(args, elem, event) {
-    const funcArgs = args
-      .split(',')
-      .map(arg => {
-        arg = arg.trim().replace(/\'|\"/g, '');
-        if (arg === '$element') { arg = elem; }
-        if (arg === '$event') { arg = event; }
-        return arg;
-      });
-    return funcArgs;
-  }
-
-
-  /**
    * Wrap element in the comment.
    * @param {Element} elem - HTML element DOM object
    * @returns {void}
