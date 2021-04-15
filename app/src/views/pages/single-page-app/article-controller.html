@@ -41,11 +41,10 @@
       It should be used to call internal controller methods. Thus internal controller logic will be nicely separated from the data-rg render process.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
-    <li><i>async</i> <b>destroy <i>(elem :Element, event :Event): Promise&lt;void&gt;</i></b>
-      <p class="desc">Executes the controller code on destroying the controller, i.e. when element with the "data-rg-href" attribute is clicked.
+    <li><i>async</i> <b>destroy <i>(pevent :Event): Promise&lt;void&gt;</i></b>
+      <p class="desc">Executes the controller code on destroying the controller, i.e. on navigator.onUrlChange event.
       <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element). This is very important to save browser's (app) memory space and to prevent memory leaks.
-      <br><b>elem</b> - data-rg-href element which caused controller destruction (the Element which is clicked)
-      <br><b>event</b> - event (the 'click' event) which was applied on the "elem" and caused the controller destruction and URL change</p>
+      <br><b>pevent</b> - the 'popstate' (back/forward buttons) or 'pushstate' (data-rg-href element click) event</p>
     </li>
 
   </ul>
