@@ -5,8 +5,6 @@ class Navigator2Ctrl extends Controller {
 
   constructor(app) {
     super();
-    this.navigator1Ctrl = app.controllers['Navigator1Ctrl'];
-    console.log(this.navigator1Ctrl);
   }
 
   async prerender(trx) {

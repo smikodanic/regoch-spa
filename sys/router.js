@@ -87,7 +87,10 @@ class Router {
    * @returns {Router}
    */
   redirect(fromRoute, toRoute) {
-    this.regochRouter.redirect(fromRoute, toRoute);
+    const cb = () => {
+      window.history.pushState(null, '', toRoute); // change URL in the address bar
+    };
+    this.regochRouter.redirect(fromRoute, toRoute, cb);
   }
 
 

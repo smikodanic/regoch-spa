@@ -58,9 +58,41 @@
 
 <section class="docs-section" id="item-2-2">
   <h2 class="section-heading">Transitional Variable</h2>
-  The transitional variable is the argument in the router middleware functions <small>(trx) => { ... }</small>.
-  In order to function properly the minimal and requred property is <b>uri</b>. Sometimes <b>body</b> property will be also required.
-  <br>Example: trx = <b style="color:orangered">{uri: '/product/save', body: {name: 'Toy', color: 'red'}}</b>
+  The transitional variable is the argument in the router middleware functions <small>(trx) => { ... }</small>. It's a data carrier through all route middleware functions.
+  <br>
+  <br>When defining the input <b>trx</b>, the minimal and required property is <b>uri</b>. Sometimes <b>body</b> property will be also required as the payload.
+  <br>Example how to define input trx:
+  <pre><code class="language-js">
+const Router = require('regoch-router');
+const regochRouter = new Router({debug: false});
+
+regochRouter.trx = {uri: '/product/save', body: {name: 'Toy', color: 'red'}}; // define input trx
+const trxOut = await regochRouter.exe(); // find matched route and execute route middlewares
+  </code></pre>
+  <br>
+  <br>During routing process the <b>trx</b> will get several useful properties which can be used in the middleware functions <i>async trx => { console.log(trx); }</i>.
+  For example.
+  <pre><code class="language-js">
+{
+  uri: '/shop/register/john/23/true?x=24',
+  body: {},
+  uriParsed: {
+    path: 'shop/register/john/23/true',
+    segments: 5,
+    queryString: 'x=24',
+    queryObject: { x: 24 }
+  },
+  routeParsed: {
+    full: 'shop/register/:name/:year/:employed',
+    segments: 5,
+    base: 'shop/register'
+  },
+  query: { x: 24 },
+  params: { name: 'john', year: 23, employed: true }
+}
+
+  </code></pre>
+
 </section>
 
 
@@ -72,37 +104,171 @@
 
     <li>
       <b>constructor <i>(routerOpts :object) :void</i></b>
-      <p class="desc">Create the Router class instance.
+      <p class="desc">Create the Router class instance.</p>
+    </li>
+    <li>
+      <b>set trx <i>(obj :{uri:string, body?:any, ...}) :void</i></b>
+      <p class="desc">Set the transitional variable with <small>regochRouter.trx = {uri: '/shop/products/save', body: {id: 12, name: 'Toyota Car'}}</small>.
+        <br><b>uri</b> - required property, for example: '/product/list?limit=25'
+        <br><b>body</b> - payload
       </p>
     </li>
     <li>
-      <b>set trx(obj :{uri, body, ...}) :void</b>
-      <p class="desc">Set the transitional variable.</p>
-    </li>
-    <li>
-      <b>get trx() :{uri, body, ...}</b>
-      <p class="desc">Get the transitional variable.</p>
+      <b>get trx <i>() :{uri, body, ...}</i></b>
+      <p class="desc">Get the transitional variable with <small>regochRouter.trx</small>.</p>
     </li>
     <li>
       <b>def <i>(route :string, ...funcs :Function[]) :Router</i></b>
       <p class="desc">Define route, routeParsed and associate corresponding functions to the route.
+      <br>For example: <small>regochRouter.def('/shop/login', trx => console.log(`LOGIN:: username:${trx.query.username} password:${trx.query.password}`));</small>
+      <br><b>route</b> - route string, for example: <i>/product/list?limit=25</i>
+      <br><b>funcs</b> - functions which will be executed when route is matched, for example <small>regochsRouter.def('/prodct/:id', f1, f2, f3, f4, f5)</small>
+      </p>
     </li>
     <li>
-      <b>redirect <i>(fromRoute :string, toRoute :string) :Router</i></b>
+      <b>redirect <i>(fromRoute :string, toRoute :string, cb :Function) :Router</i></b>
       <p class="desc">Redirect from one route to another route.
+        <br><b>fromRoute</b> - original route
+        <br><b>toRoute</b> - destination route
+        <br><b>cb</b> - callback function executed during redirection process, it's a route middleware appended to toRoute middlewares
+      </p>
     </li>
     <li>
       <b>notfound <i>(...funcs :Function[]) :Router</i></b>
-      <p class="desc">Execute funcs when no route found.
+      <p class="desc">Execute funcs when no route found.</p>
     </li>
     <li>
       <b>do <i>(...funcs :Function[]) :Router</i></b>
-      <p class="desc">Execute funcs always on every route.
+      <p class="desc">Execute funcs always on every route.</p>
     </li>
     <li>
-      <b>exe <i>() :trx</i></b>
-      <p class="desc">Execute the defined routes.
+      <i>async</i> <b>exe <i>() :Promise&lt;trx&gt;</i></b>
+      <p class="desc">Find the matched route and execute its middlewares.</p>
     </li>
   </ul>
 </section>
 
+
+
+<section class="docs-section" id="item-2-4">
+  <h2 class="section-heading">Example</h2>
+  <pre><code class="language-js">
+const Router = require('regoch-router');
+const router = new Router({debug: false});
+
+
+let trx = process.argv[2];
+try {
+  if (!trx) { throw new Error('Define "trx" as second parameter. For example: {"uri":"/shop/register/john/23/true","body":{}}'); }
+  trx = JSON.parse(trx); // convert string to object
+} catch (err) {
+  console.log(err.message);
+}
+
+
+
+// route functions
+const rFun1 = async (trx) => {
+  console.log('fja1::', trx);
+  trx.uri = 'aaa'; // will not be possible to change
+  trx.body = 'bbb'; // will not be possible to change
+  trx.a = 5;
+  trx.a++;
+};
+
+const rFun2 = (trx) => {
+  trx.b = 78;
+  // throw new Error('Intentional error');
+  console.log('fja2::', trx);
+};
+
+
+// set transitional object (which is used in )
+router.trx = trx; // {uri, body, ...}
+
+
+
+////////////////////// R O U T E S /////////////////////
+
+/***** REGEX MATCH (NO PARAMS) (_routeRegexMatch) *****/
+/* root route */
+// node 005router.js '{"uri": "/"}'
+router.def('/', trx => console.log('ROOT-A'), trx => console.log('ROOT-B')); // exact match
+
+/* exact match */
+// node 005router.js '{"uri": "/shop/list", "body": [{"id": 12}, {"id": 13}, {"id": 14}]}'
+router.def('/shop/list', rFun1, rFun2); // exact match
+
+
+/* examples with uri query string */
+// node 005router.js '{"uri": "/shop/login?username=peter&password=pan"}'
+router.def('/shop/login', trx => console.log(`LOGIN:: username:${trx.query.username} password:${trx.query.password}`));
+
+// node 005router.js '{"uri": "/shop/prod?myJson={\"qty\": 22}"}'   -- parse JSON
+router.def('/shop/prod', trx => console.log(`myJson:: ${JSON.stringify(trx.query.myJson)}`));
+
+
+/* examples with regular expression */
+// node 005router.js '{"uri": "/shop/getnames/12345"}'
+router.def('/shop/get.+/[0-9]+', trx => console.log('REGEXP MATCH'));
+
+
+
+
+/***** PARAM MATCH (_routeWithParamsMatch) *****/
+// node 005router.js '{"uri": "/shop/users/matej/44"}'
+router.def('/shop/users/:name/:age', trx => console.log(`name: ${typeof trx.params.name} ${trx.params.name} , age: ${typeof trx.params.age} ${trx.params.age}`));
+
+
+/* examples with uri query string */
+// node 005router.js '{"uri": "/shop/register/john/23/true?x=123&y=abc&z=false", "body": {"nick": "johnny"}}'
+router.def('/shop/register/:name/:year/:employed', trx => console.log(`employed: ${trx.params.employed}`));
+
+
+/* examples with regular expression */
+// node 005router.js '{"uri": "/shop/shops/www/CloudShop/1971"}'
+// node 005router.js '{"uri": "/shop/shop/www/CloudShop/1972"}'
+router.def('/shop/shop(s)?/w{3}/:name/:year', trx => console.log(`name: ${trx.params.name} year: ${trx.params.year}`));
+
+//// \\d+ replaces one or more digits (integer numbers)
+// node 005router.js '{"uri": "/shop/shop/5/BetaShop/1978/red"}'
+// node 005router.js '{"uri": "/shop/shop/567/Betashop/1979/green"}'
+router.def('/SHOP/shop/\\d+/:name/:year/:color', trx => console.log(`name: ${trx.params.name} year: ${trx.params.year} color: ${trx.params.color}`));
+
+
+// node 005router.js '{"uri": "/shop/shop567/{\"a\": 22}"}'
+router.def('/SHOP/shop\\d+/:myJSON', trx => console.log(`myJSON: ${JSON.stringify(trx.params.myJSON)}`));
+
+
+/***** REDIRECTS *****/
+// node 005router.js '{"uri": "/someurl"}'
+router.redirect('/someurl', '/');
+
+// node 005router.js '{"uri": "/shop/badurl"}'
+router.def('/shop/notfound', () => console.log('--SHOP ROUTE Not Found !--')).redirect('/shop/.+', '/shop/notfound'); // redirect any route to the '/notfound' route. SHOULD BE DEFINED LAST
+
+
+
+/***** NO MATCH (bad uri - Error 404) *****/
+// node 005router.js '{"uri": ""}'
+// node 005router.js '{"uri": "/badurl"}'
+router.notfound(trx => {console.log('Route not found.'); });
+
+
+
+
+/***** DO -  always will be executed on each URI *****/
+const f1 = (trx) => { console.log('always f1'); };
+const f2 = (trx) => { console.log('always f2'); };
+router.do(f1, f2);
+
+
+
+
+/***** EXECUTE ROUTER *****/
+router.exe()
+  .then(trx => console.log('then(trx):: ', trx))
+  .catch(err => console.log('ERRrouter:: ', err));
+
+  </code></pre>
+</section>

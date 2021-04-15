@@ -6,13 +6,19 @@
       It can be used both on the client and server side. The regoch Router is implemented in
       <a href="/websocket-server" data-rg-href>websocket server</a> and <a href="/websocket-clients" data-rg-href>clients</a>.
     </p>
+    <br>
+    <p>
+      <b>ROUTING</b>
+      <br>Routing is process that determines which function will be executed on the fly on a certain URI.
+      For example: context.uri = '/user/register' will execute user registration function.
+    </p>
   </section>
 </header>
 
 <section class="docs-section" id="item-1-1">
   <h2 class="section-heading">Features</h2>
   <ul>
-    <li>intuitive API simmilar to ExpressJS</li>
+    <li>intuitive API simmilar to ExpressJS middlewares</li>
     <li>redirection to another route</li>
     <li>not found route</li>
     <li>regular expressions in route def</li>
@@ -34,7 +40,7 @@
   <pre><code class="language-markup"><xmp>
 // NodeJS or browserify
 const Router = require('regoch-router');
-const router = new Router({debug: false});
+const regochRouter = new Router({debug: false});
 
 
 // Browser (client side)
