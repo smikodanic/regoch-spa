@@ -477,6 +477,32 @@ class DataRg extends DataRgListeners {
   }
 
 
+  /**
+   * <script src="..." data-rg-lazyjs>
+   * Parse the "data-rg-lazyjs" attribute. Reload all SCRIPT elements with data-rg-lazyjs attribute.
+   * Remove all SCRIPT tags with the data-rg-lazyjs attributes and immediatelly after reload them.
+   * @returns {void}
+   */
+  rgLazyjs() {
+    debug('rgLazyjs', '--------- rgLazyjs ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-lazyjs';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    debug('rgLazyjs', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    const urls = []; // url in the src attribute
+    for (const elem of elems) {
+      const url = elem.getAttribute('src');
+      debug('rgLazyjs', `  src="${url}"`, 'navy');
+      urls.push(url);
+    }
+
+    this.unlazyAllJS();
+    this.lazyJS(urls);
+  }
+
+
 
 
 

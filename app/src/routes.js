@@ -18,6 +18,7 @@ module.exports = [
   // playground
   ['when', '/playground/page-loadinc', 'Page_LoadIncCtrl'],
   ['when', '/playground/page-loadviews', 'Page_LoadViewsCtrl'],
+  ['when', '/playground/page-lazyjs', 'Page_LazyJSCtrl'],
   ['when', '/playground/controller-hooks', 'Controller_hooksCtrl'],
   ['when', '/playground/datarg', 'DataRgCtrl'],
   ['when', '/playground/datarglisteners', 'DataRgListenersCtrl'],

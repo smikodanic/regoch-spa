@@ -93,13 +93,21 @@
     </li>
     <li>
       <b>lazyJS <i>(urls:string[]): &lt;void&gt;</i></b>
-      <p class="desc">Create &lt;script&gt; tags and execute js scripts. All script tags will get <i>data-rg-lazy</i> attribute to mark lazy loaded JS files.
+      <p class="desc">Create &lt;script&gt; tags and execute js scripts. All script tags will get <i>data-rg-lazyjs</i> attribute to mark lazy loaded JS files.
+        <br>NOTICE: If <i>data-rg-lazyjs</i> is used in the index.html then every SCRIPT tag will be lazy loaded automatically on
+        every controller execution. This is done by the <b>rgLazyjs()</b> method in the DataRg.js.
         <br><b>urls</b> - array of JS script URLs
       </p>
     </li>
     <li>
-      <b>unlazyJS <i>(): &lt;void&gt;</i></b>
-      <p class="desc">Remove all SCRIPT tags with the <i>data-rg-lazy</i> attribute. Usually it should be used in the <i>destroy()</i> controller hook.</p>
+      <b>unlazyJS <i>(urls:string[]): &lt;void&gt;</i></b>
+      <p class="desc">Remove &lt;script&gt; tags with <i>data-rg-lazyjs</i> attribute and specific url in the <i>src</i> attribute.
+        <br><b>urls</b> - array of JS script URLs
+      </p>
+    </li>
+    <li>
+      <b>unlazyAllJS <i>(): &lt;void&gt;</i></b>
+      <p class="desc">Remove all SCRIPT tags with the <i>data-rg-lazyjs</i> attribute. Usually it should be used in the <i>destroy()</i> controller hook.</p>
     </li>
     <li>
       <i>async</i>  <b>loadJS <i>(urls:string[]): &lt;void&gt;</i></b>

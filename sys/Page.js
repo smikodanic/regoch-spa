@@ -343,17 +343,31 @@ class Page extends DataRg {
       script.type = 'text/javascript';
       script.src = url;
       script.defer = true;
-      script.setAttribute('data-rg-lazy', '');
+      script.setAttribute('data-rg-lazyjs', '');
       document.body.appendChild(script);
     }
   }
 
 
   /**
-   * Remove SCRIPT tags with the data-rg-lazy attribute.
+   * Remove SCRIPT tag with data-rg-lazyjs attribute and the specific url.
+   * @param {string[]} urls - array of JS script URLs
    */
-  unlazyJS() {
-    const elems = document.querySelectorAll(`script[data-rg-lazy]`) || [];
+  unlazyJS(urls) {
+    for (const url of urls) {
+      const elems = document.body.querySelectorAll(`script[src="${url}"][data-rg-lazyjs]`);
+      for (const elem of elems) {
+        if (!!elem) { elem.remove(); }
+      }
+    }
+  }
+
+
+  /**
+   * Remove all SCRIPT tags with the data-rg-lazyjs attribute.
+   */
+  unlazyAllJS() {
+    const elems = document.querySelectorAll(`script[data-rg-lazyjs]`) || [];
     for (const elem of elems) {
       if (!!elem) { elem.remove(); }
     }

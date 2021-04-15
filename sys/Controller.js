@@ -39,6 +39,7 @@ class Controller extends Page {
     this.rgPrint();
     this.rgClass();
     this.rgStyle();
+    this.rgLazyjs();
   }
 
   async parseListeners() {

@@ -19,6 +19,7 @@ module.exports = (tip, text, color, background) => {
     rgInterpolate: false,
     rgClass: false,
     rgStyle: false,
+    rgLazyjs: false,
 
     // DataRgListeners.js
     rgKILL: false,

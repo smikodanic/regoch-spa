@@ -1,0 +1,16 @@
+<h1>Page::lazyJS() &amp; Page::unlazyJS() Test</h1>
+<p>The example loads "Notify","Sweetalert" and a custom jQuery JS files.
+<br><i>NOTICE that unlazy will remove SCRIPT tags but it will not unload JS file from the browser memory.</i></p>
+<br>
+<br><button data-rg-click="popup()">POPUP</button> - will not work unless the "LAZY LOAD NOTIFY and SWEETALERT" is clicked
+<br>
+<br><button data-rg-click="lazyAll()">LAZY LOAD NOTIFY and SWEETALERT</button>  - load Notify and Sweetalert libs
+<br>
+<br><button data-rg-click="unlazyAll()">UNLAZY ALL LIBS</button> - remove all SCRIPT tags with data-rg-lazyjs (the scripts are still in the browser memory)
+<br>
+<br><button data-rg-click="unlazySweetalert()">UNLAZY SWEETALERT</button> - remove the SCRIPT tag which loads Sweetalert (the script is still in the browser memory)
+<br>
+<br>
+<br>
+<br><button data-rg-click="lazyTest()">LAZY LOAD jQuery TEST</button>  - /assets/regoch/js/lazytest.js
+<br><b class="lazytest">This should be red if the "/assets/regoch/js/lazytest.js" is loaded after DOM.</b>

@@ -21,6 +21,7 @@ const ContactCtrl = require('./controllers/ContactCtrl');
 const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 
 // controllers - playground
+const Page_LazyJSCtrl = require('./controllers/playground/Page_LazyJSCtrl');
 const Page_LoadIncCtrl = require('./controllers/playground/Page_LoadIncCtrl');
 const Page_LoadViewsCtrl = require('./controllers/playground/Page_LoadViewsCtrl');
 const Controller_hooksCtrl = require('./controllers/playground/Controller_hooksCtrl');
@@ -64,6 +65,7 @@ app
     ContactCtrl,
 
     // playground
+    Page_LazyJSCtrl,
     Page_LoadIncCtrl,
     Page_LoadViewsCtrl,
     Controller_hooksCtrl,
