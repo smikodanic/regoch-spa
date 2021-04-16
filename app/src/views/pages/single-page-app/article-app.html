@@ -78,6 +78,29 @@ Beside these properties the global <b style="color:orangered">window.regochSPA =
       <br><i>[['when', '/login', 'LoginCtrl'], {autoLogin:true}], ['when', '/customer/product/:id', 'CustomerProductCtrl'], {isLogged:true, hasRole:true}]]</i></p>
     </li>
     <li><b>run <i>(): void</i></b> - run the app, i.e. execute the router </li>
+
+    <br><br>
+    <h4>EVENT LISTENERS</h4>
+    <li>
+      <b>onReady <i>(cb :Function): void</i></b> - Fired when HTML doc with the all resources is loaded.
+      <a href="https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onload" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onload</a>
+    </li>
+    <li>
+      <b>onDOMLoaded <i>(cb :Function): void</i></b> - Fired when HTML doc is loaded without CSS, IMG and other resources.
+      <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event</a>
+    </li>
+    <li>
+      <b>createDOMObserver <i>(cb :Function): void</i></b> - Listen for the DOM changes. Creates app.DOMobserver.
+      <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver</a>
+      <pre><code class="language-javascript">
+app.createDOMObserver((mutationsList, observer) => { ... });
+const targetNode = document.querySelector('p#my-id);
+const config = { attributes: true, childList: true, subtree: true };
+app.DOMObserver.observe(targetNode, config);
+
+To stop observing the DOM changes use: app.DOMObserver.disconnect();
+      </code></pre>
+    </li>
   </ul>
 </section>
 

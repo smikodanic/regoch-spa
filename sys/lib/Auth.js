@@ -116,7 +116,7 @@ class Auth {
     if (!!loggedUser && !!loggedUser.username) {
       const afterGoodLoginURL = this.authOpts.afterGoodLogin.replace('{loggedUserRole}', loggedUser.role);
       navig.goto(afterGoodLoginURL);
-      throw new Error(`Autologin to ${afterGoodLoginURL} is triggered.`);
+      throw new Error(`AuthWarn:: Autologin to ${afterGoodLoginURL} is triggered.`);
     }
   }
 
@@ -132,7 +132,7 @@ class Auth {
     // redirect to afterBadLogin URL
     if (!isAlreadyLogged) {
       navig.goto(this.authOpts.afterBadLogin);
-      throw new Error('This route is blocked because the user is not logged in.');
+      throw new Error('AuthWarn:: This route is blocked because the user is not logged in.');
     }
   }
 
@@ -156,7 +156,7 @@ class Auth {
 
     if (!urlHasRole) {
       navig.goto(this.authOpts.afterBadLogin);
-      throw new Error('This route is blocked because the user doesn\'t have valid role.');
+      throw new Error('AuthWarn:: This route is blocked because the user doesn\'t have valid role.');
     }
   }
 

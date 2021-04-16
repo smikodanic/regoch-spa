@@ -167,6 +167,43 @@ class App {
     router.use();
   }
 
+
+  /********** EVENTS **********/
+  /**
+   * Fired when HTML doc with the all resources is loaded.
+   * https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onload
+   * @param {Function} cb - callback, () => { ... }
+   */
+  onReady(cb) {
+    window.onload = cb;
+  }
+
+
+  /**
+   * Fired when HTML doc is loaded without CSS, IMG and other resources.
+   * https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
+   * @param {Function} cb - callback, event => { ... }
+   */
+  onDOMLoaded(cb) {
+    document.addEventListener('DOMContentLoaded', cb);
+  }
+
+
+  /**
+   * Listen for the DOM changes. Creates app.DOMObserver.
+   * How to use:
+   * app.createDOMObserver((mutationsList, observer) => { ... });
+   * const targetNode = document.querySelector('p#my-id); const config = { attributes: true, childList: true, subtree: true };
+   * app.DOMObserver.observe(targetNode, config);
+   * To stop observing use: app.DOMObserver.disconnect();
+   * https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+   * @param {Function} cb - callback, (mutationsList, observer) => { ... }
+   */
+  createDOMObserver(cb) {
+    this.DOMObserver = new MutationObserver(cb);
+  }
+
+
 }
 
 

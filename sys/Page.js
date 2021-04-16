@@ -338,6 +338,7 @@ class Page extends DataRg {
    * @param {string[]} urls - array of JS script URLs
    */
   lazyJS(urls) {
+    if (!urls) { return; }
     for (const url of urls) {
       const script = document.createElement('script');
       script.type = 'text/javascript';
@@ -351,9 +352,10 @@ class Page extends DataRg {
 
   /**
    * Remove SCRIPT tag with data-rg-lazyjs attribute and the specific url.
-   * @param {string[]} urls - array of JS script URLs
+   * @param {string[] | undefined} urls - array of JS script URLs
    */
   unlazyJS(urls) {
+    if (!urls) { return; }
     for (const url of urls) {
       const elems = document.body.querySelectorAll(`script[src="${url}"][data-rg-lazyjs]`);
       for (const elem of elems) {
@@ -380,6 +382,7 @@ class Page extends DataRg {
    * @param {string[]} urls - array of JS script URLs
    */
   async loadJS(urls) {
+    if (!urls) { return; }
     for (let url of urls) {
       // correct the URL
       url = url.trim();
@@ -404,6 +407,7 @@ class Page extends DataRg {
    * @param {string[]} urls - array of CSS file URLs
    */
   loadCSS(urls) {
+    if (!urls) { return; }
     for (const url of urls) {
       const linkCSS = document.createElement('link');
       linkCSS.setAttribute('rel', 'stylesheet');
@@ -419,6 +423,7 @@ class Page extends DataRg {
    * @param {string[]} urls - array of CSS file URLs
    */
   unloadCSS(urls) {
+    if (!urls) { return; }
     for (const url of urls) {
       const linkCSS = document.head.querySelector(`link[rel="stylesheet"][href="${url}"]`);
       if (!!linkCSS) { linkCSS.remove(); }

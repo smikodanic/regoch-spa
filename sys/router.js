@@ -140,7 +140,8 @@ class Router {
 
 
       } catch(err) {
-        console.log(`%cRouterWarning: ${err.message}`, `color:#FF6500; background:#FFFEEE`);
+        if (/AuthWarn::/.test(err.message)) { console.log(`%c${err.message}`, `color:#FF6500; background:#FFFEEE`); }
+        else { console.error(err); }
       }
 
     } else {
