@@ -136,10 +136,10 @@ class App {
       if (cmd === 'when') {
         const route = routeCnf[1]; // '/page1'
         const ctrlName = routeCnf[2]; // 'Page1Ctrl'
-        const authGuards = routeCnf[3]; // {autoLogin:boolean, isLogged:boolean, hasRole:boolean}
+        const routeOpts = routeCnf[3]; // {renderDelay, authGuards: ['autoLogin', 'isLogged', 'hasRole']}
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
-        router.when(route, ctrl, authGuards);
+        router.when(route, ctrl, routeOpts);
       } else if (cmd === 'notfound') {
         const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
