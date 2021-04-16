@@ -26,17 +26,17 @@ class Page_LazyJSCtrl extends Controller {
     $.notify('Hello Regoč');
   }
 
-  lazyAll() {
-    this.lazyJS([
+  async lazyAll() {
+    await this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js',
       'https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js'
-    ]);
+    ], 1300); // wait 1.3 seconds before the lazy load start
   }
 
   lazyTest() {
     this.lazyJS([
-      '/assets/regoch/js/lazyTest.js'
-    ]);
+      '/assets/regoch/js/lazyTest2.js'
+    ], 1000);
   }
 
   unlazyAll() {
