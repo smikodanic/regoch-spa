@@ -203,7 +203,7 @@ class HTTPClient {
 
     // set the options
     this.xhr.timeout = this.opts.timeout;
-    Object.keys(this.opts.headers).forEach(prop => this.xhr.setRequestHeader(prop, this.opts.headers[prop]));
+    Object.keys(this.headers).forEach(prop => this.xhr.setRequestHeader(prop.toLowerCase(), this.headers[prop]));
 
 
     /*** 2) add body to HTTP request ***/
@@ -225,17 +225,14 @@ class HTTPClient {
     const promise = new Promise ((resolve, reject) => {
 
       this.xhr.onload = res => {
-        const content = res.target.response;
-
         // format answer
         const ans = {...answer}; // clone object to prevent overwrite of object properies once promise is resolved
         ans.status = this.xhr.status; // 2xx -ok response, 4xx -client error (bad request), 5xx -server error
         ans.statusMessage = this.xhr.statusText;
         ans.res.headers = this.getResHeaders();
-        ans.res.content = content;
+        ans.res.content = res.target.response;
         ans.time.res = this._getTime();
         ans.time.duration = this._getTimeDiff(ans.time.req, ans.time.res);
-
 
         resolve(ans);
       };
@@ -447,7 +444,11 @@ class HTTPClient {
    * @returns {void}
    */
   setReqHeaders(headerObj) {
-    this.headers = Object.assign(this.headers, headerObj);
+    Object.keys(this.headers).forEach(prop => {
+      const headerName = prop;
+      const headerValue = this.headers[prop];
+      this.setReqHeader(headerName, headerValue);
+    });
   }
 
   /**
@@ -458,7 +459,8 @@ class HTTPClient {
    * @returns {void}
    */
   setReqHeader(headerName, headerValue) {
-    const headerObj = {[headerName]: headerValue};
+    const headerName2 = headerName.toLowerCase();
+    const headerObj = {[headerName2]: headerValue};
     this.headers = Object.assign(this.headers, headerObj);
   }
 

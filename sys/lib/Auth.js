@@ -49,7 +49,7 @@ class Auth {
       this.jwtToken = apiResp.jwtToken;
       this.loggedUser = apiResp.loggedUser;
 
-      this.cookieLib.putObject('auth_jwtToken', apiResp.jwtToken); // set cookie 'auth_jwtToken': 'JWT xyz...'
+      this.cookieLib.put('auth_jwtToken', apiResp.jwtToken); // set cookie 'auth_jwtToken': 'JWT xyz...'
       this.cookieLib.putObject('auth_loggedUser', apiResp.loggedUser); // set cookie 'auth_loggedUser' and class property 'this.loggedUser': {first_name: , last_name: , ...}
 
       // redirect to URL
