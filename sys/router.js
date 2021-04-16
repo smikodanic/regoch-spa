@@ -58,13 +58,16 @@ class Router {
    * @returns {void}
    */
   notfound(ctrl) {
+    // navig functions
+    const setCurrent = navig.setCurrent.bind(navig, ctrl);
+
     // controller methods
     const prerender = ctrl.prerender.bind(ctrl);
     const render = ctrl.render.bind(ctrl);
     const postrender = ctrl.postrender.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
 
-    this.regochRouter.notfound(prerender, render, postrender, init);
+    this.regochRouter.notfound(setCurrent, prerender, render, postrender, init);
   }
 
 
