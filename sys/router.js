@@ -1,5 +1,5 @@
 const RegochRouter = require('regoch-router');
-const navigator = require('./lib/navigator');
+const navig = require('./lib/navig');
 const debug = require('./debug');
 
 
@@ -22,8 +22,8 @@ class Router {
     if (!route) { throw new Error(`Route is not defined for ${ctrl.constructor.name} controller.`); }
     if (authGuards && (authGuards.autoLogin || authGuards.isLogged || authGuards.hasRole) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
-    // Navigator functions
-    const setCurrent = navigator.setCurrent.bind(navigator, ctrl);
+    // navig functions
+    const setCurrent = navig.setCurrent.bind(navig, ctrl);
 
     // Controller functions
     const prerender = ctrl.prerender.bind(ctrl);
@@ -101,7 +101,7 @@ class Router {
   use() {
     /* 1) test URI against routes when element with data-rg-href attribute is clicked
        2) test URI against routes when BACK/FORWARD button is clicked */
-    navigator.onUrlChange(pevent => {
+    navig.onUrlChange(pevent => {
       this._testRoutes(pevent);
     });
 
@@ -116,16 +116,16 @@ class Router {
    * @returns {void}
    */
   async _testRoutes(pevent) {
-    navigator.setPrevious(); // copy current to previous
+    navig.setPrevious(); // copy current to previous
 
-    const uri = navigator.getCurrentURI(); // get the current uri: /page/2?id=55 (no hash in the uri)
+    const uri = navig.getCurrentURI(); // get the current uri: /page/2?id=55 (no hash in the uri)
 
     // execute route middlewares, i.e. controller only if the URL is changed
-    if (uri !== navigator.previous.uri) {
+    if (uri !== navig.previous.uri) {
       try {
-        if(navigator && navigator.previous && navigator.previous.ctrl) {
-          navigator.previous.ctrl.rgKILL(); // kill controller's event listeners
-          navigator.previous.ctrl.destroy(pevent); // execute destroy() hook defined in the controller
+        if(navig && navig.previous && navig.previous.ctrl) {
+          navig.previous.ctrl.rgKILL(); // kill controller's event listeners
+          navig.previous.ctrl.destroy(pevent); // execute destroy() hook defined in the controller
         }
 
         this.regochRouter.trx = { uri };
@@ -134,8 +134,8 @@ class Router {
         if (debug().router) {
           console.log('_testRoutes::pevent:::', pevent);
           console.log('_testRoutes::trx:::', trx);
-          console.log('_testRoutes::current.uri:::', navigator.current.uri); // current URI is set in the controller middleware (setCurrent() function)
-          console.log('_testRoutes::previous.uri:::', navigator.previous.uri);
+          console.log('_testRoutes::current.uri:::', navig.current.uri); // current URI is set in the controller middleware (setCurrent() function)
+          console.log('_testRoutes::previous.uri:::', navig.previous.uri);
         }
 
 
@@ -144,7 +144,7 @@ class Router {
       }
 
     } else {
-      if (debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navigator.previous.uri}". Controller is not executed !`);}
+      if (debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navig.previous.uri}". Controller is not executed !`);}
     }
   }
 

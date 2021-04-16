@@ -26,9 +26,9 @@ module.exports = [
   ['when', '/playground/form', 'FormCtrl'],
   ['when', '/playground/login', 'LoginCtrl', {autoLogin: true}],
   ['when', '/playground/customer/dashboard', 'LoginokCtrl', {isLogged: true, hasRole: true}],
-  ['when', '/playground/navigator1', 'Navigator1Ctrl'],
-  ['when', '/playground/navigator2', 'Navigator2Ctrl'],
-  ['redirect', '/playground/navigator3', '/playground/navigator1'],
+  ['when', '/playground/navig1', 'Navig1Ctrl'],
+  ['when', '/playground/navig2', 'Navig2Ctrl'],
+  ['redirect', '/playground/navig3', '/playground/navig1'],
 
   ['notfound', 'NotfoundCtrl'],
   // ['do', log1, log2]

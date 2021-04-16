@@ -4,7 +4,7 @@ const eventEmitter = require('./eventEmitter');
 /**
  * Navigate to certain URL by changing browser's address bar data.
  */
-class Navigator {
+class Navig {
 
   constructor() {
     this.previous = {};
@@ -146,4 +146,4 @@ class Navigator {
 }
 
 
-module.exports = new Navigator();
+module.exports = new Navig();

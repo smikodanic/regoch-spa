@@ -31,8 +31,8 @@ const CookieCtrl = require('./controllers/playground/CookieCtrl');
 const FormCtrl = require('./controllers/playground/FormCtrl');
 const LoginCtrl = require('./controllers/playground/LoginCtrl');
 const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
-const Navigator1Ctrl = require('./controllers/playground/Navigator1Ctrl');
-const Navigator2Ctrl = require('./controllers/playground/Navigator2Ctrl');
+const Navig1Ctrl = require('./controllers/playground/Navig1Ctrl');
+const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
 
 
 // auth
@@ -75,8 +75,8 @@ app
     FormCtrl,
     LoginCtrl,
     LoginokCtrl,
-    Navigator1Ctrl,
-    Navigator2Ctrl,
+    Navig1Ctrl,
+    Navig2Ctrl,
 
     // not found page
     NotfoundCtrl

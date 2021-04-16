@@ -1,4 +1,4 @@
-const navigator = require('./lib/navigator');
+const navig = require('./lib/navig');
 const debug = require('./debug');
 
 
@@ -55,7 +55,7 @@ class DataRgListeners {
         const href = elem.getAttribute('href').trim();
         const state = { href };
         const title = elem.getAttribute(attrName).trim();
-        navigator.goto(href, state, title);
+        navig.goto(href, state, title);
       };
 
       elem.addEventListener('click', handler);

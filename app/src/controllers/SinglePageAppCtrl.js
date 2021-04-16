@@ -34,7 +34,7 @@ class SinglePageAppCtrl extends Controller {
       ['#article-eventemitter', 'pages/single-page-app/article-eventemitter.html'],
       ['#article-form', 'pages/single-page-app/article-form.html'],
       ['#article-httpclient', 'pages/single-page-app/article-httpclient.html'],
-      ['#article-navigator', 'pages/single-page-app/article-navigator.html'],
+      ['#article-navig', 'pages/single-page-app/article-navig.html'],
       ['#article-util', 'pages/single-page-app/article-util.html'],
       // ['#footer', 'pages/single-page-app/footer.html']
     ], true);

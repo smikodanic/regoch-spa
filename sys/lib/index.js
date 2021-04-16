@@ -6,7 +6,7 @@ const Cookie = require('./Cookie');
 const eventEmitter = require('./eventEmitter');
 const Form = require('./Form');
 const HTTPClient = require('./HTTPClient');
-const navigator = require('./navigator');
+const navig = require('./navig');
 const util = require('./util');
 
 
@@ -16,6 +16,6 @@ module.exports = {
   eventEmitter,
   Form,
   HTTPClient,
-  navigator,
+  navig,
   util
 };
