@@ -337,8 +337,9 @@ class Page extends DataRg {
    * Create <script> tags and execute js scripts.
    * @param {string[]} urls - array of JS script URLs
    */
-  lazyJS(urls) {
+  async lazyJS(urls, preDelay = 0) {
     if (!urls) { return; }
+    await new Promise(r => setTimeout(r, preDelay));
     for (const url of urls) {
       const script = document.createElement('script');
       script.type = 'text/javascript';

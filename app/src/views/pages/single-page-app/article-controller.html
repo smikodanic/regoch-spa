@@ -11,7 +11,7 @@
 </section>
 
 <section class="docs-section" id="item-3-2">
-  <h2 class="section-heading">Methods</h2>
+  <h2 class="section-heading">Hook Methods</h2>
   <p>
     Use this methods in the controller as lifecycle hooks.
     <br><b style="color:orange">PRERENDER &rarr; RENDER &rarr; POSTRENDER &rarr; INIT &rarr; DESTROY</b>
@@ -27,8 +27,10 @@
       <br><b>trx</b> - regoch router transitional variable (carrier). See <a href="/router#item-2-2" data-rg-href>here</a>.</p>
     </li>
     <li>
-      <i>async</i> <strong>render <i>(trx :object): Promise&lt;void&gt;</i></strong>
+      <i>async</i> <strong>render <i>(renderDelay :number, trx :object): Promise&lt;void&gt;</i></strong>
       <p class="desc">Render all elements with the "data-rg-..." attribute. Don't use it in the controller.
+      <br><b>renderDelay</b> - delay in <b>miliseconds</b> between stages in the controller render hook.
+      The developer can define it in the <a href="/single-page-app#item-7-3" data-rg-href>route option</a>.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>

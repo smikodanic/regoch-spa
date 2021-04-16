@@ -34,11 +34,11 @@
   <p>Do NOT use this methods in the controller unless you know what you'r doing.</p>
 	<ul class="methods">
     <li>
-      <b>when <i>(route:string, ctrl:object): void</i></b>
-      <p class="desc">Define the route.</p>
+      <b>when <i>(route:string, ctrl:object, routeOpts:object = {}): void</i></b>
+      <p class="desc">Define the route and give it the controller.</p>
     </li>
     <li>
-      <b>notfound <i>(route:string, ctrl:object): void</i></b>
+      <b>notfound <i>(ctrl:object): void</i></b>
       <p class="desc">Define the not found route.</p>
     </li>
     <li>
@@ -47,24 +47,37 @@
     </li>
     <li>
       <b>redirect <i>(fromRoute:string, toRoute:string): void</i></b>
-      <p class="desc">redirect from one route to another, so that the toRoute controller will be executed.</p>
+      <p class="desc">Redirect from one route to another, so that the toRoute controller will be executed.</p>
+    </li>
+    <li>
+      <b>use <i>(): void</i></b>
+      <p class="desc">Test defined routes and if the route is matched against URL execute the route middlewares i.e. the controller hooks.</p>
     </li>
   </ul>
 </section>
 
 <section class="docs-section" id="item-7-3">
-  <h2 class="section-heading">Route Guards</h2>
-  There are several route guards to do auto login and to protect the route from unauthorised access.
+  <h2 class="section-heading">Route Options</h2>
+  <ul>
+    <li><b>renderDelay :number</b> - delay in <b>miliseconds</b> between stages in the controller render hook.
+    With this option the developer can tune up the rendering speed. It's specially useful when nested <i>data-rg-inc</i> elements are used
+    or in case when Page::lazyJS() method is used. The default is <b>0</b> miliseconds.
+    <br>Those stages are: <i>DELAY &rarr; loadInc &rarr; DELAY &rarr; parseNonListeners &rarr; DELAY &rarr; parseListeners &rarr; DELAY</i></li>
+    <li><b>authGuards :string[]</b> - route guards to do auto login and to protect the route from unauthorised access
+    <br>for example: <small>{authGuards: ['autoLogin']}</small></li>
+  </ul>
+  <br>
   <ol>
-    <li><b>autoLogin</b> - if the user already logged redirect to the "afterGoodLogin" URL</li>
-    <li><b>isLogged</b> - checks if the user is logged, if not redirect to "afterBadLogin" URL</li>
-    <li><b>hasRole</b> - checks if the logged user has role contained in the URL, if not redirect to "afterBadLogin" URL</li>
+    <h4>authGuards</h4>
+    <li><i>'autoLogin'</i> - if the user already logged redirect to the "afterGoodLogin" URL</li>
+    <li><i>'isLogged'</i> - checks if the user is logged, if not redirect to "afterBadLogin" URL</li>
+    <li><i>'hasRole'</i> - checks if the logged user has role contained in the URL, if not redirect to "afterBadLogin" URL</li>
   </ol>
   <br>The example:
   <pre><code class="language-js">
 const routesCnf = [
-  ['when' '/login' 'LoginCtrl', {<b>autoLogin: true</b>}],
-  ['when' '/admin/product/:id' 'AdminProductCtrl', {isLogged: true, hasRole: true}]
+  ['when' '/login' 'LoginCtrl', {renderDelay: 300, authGuards: ['autoLogin']}],
+  ['when' '/admin/product/:id' 'AdminProductCtrl', {authGuards: ['isLogged', 'hasRole']}]
 ];
   </code></pre>
 </section>

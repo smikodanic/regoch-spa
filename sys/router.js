@@ -19,9 +19,12 @@ class Router {
    * @returns {void}
    */
   when(route, ctrl, routeOpts = {}) {
-    if (!route) { throw new Error(`Route is not defined for ${ctrl.constructor.name} controller.`); }
-
+    const renderDelay = routeOpts.renderDelay || 0;
     const authGuards = routeOpts.authGuards || [];
+
+    // prechecks
+    if (!route && !!ctrl) { throw new Error(`Route is not defined for "${ctrl.constructor.name}" controller.`); }
+    if (!!route && !ctrl) { throw new Error(`Controller is not defined for route "${route}".`); }
     if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
     // navig functions
@@ -29,7 +32,7 @@ class Router {
 
     // Controller functions
     const prerender = ctrl.prerender.bind(ctrl);
-    const render = ctrl.render.bind(ctrl);
+    const render = ctrl.render.bind(ctrl, renderDelay);
     const postrender = ctrl.postrender.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
 

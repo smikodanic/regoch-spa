@@ -1,4 +1,5 @@
 const Page = require('./Page');
+const util = require('./lib/util');
 
 
 class Controller extends Page {
@@ -22,12 +23,14 @@ class Controller extends Page {
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
    * @returns {Promise<void>}
    */
-  async render(trx) {
+  async render(renderDelay, trx) {
+    await util.sleep(renderDelay);
     await this.loadInc(true); // defined in Page.js
-    // await new Promise(resolve => setTimeout(resolve, 400));
+    await util.sleep(renderDelay);
     this.parseNonListeners();
-    // await new Promise(resolve => setTimeout(resolve, 400));
+    await util.sleep(renderDelay);
     this.parseListeners();
+    await util.sleep(renderDelay);
   }
 
   async parseNonListeners() {
