@@ -18,6 +18,12 @@ Click on the button to get the history data. Open the browser dev tools console.
 <br><small data-rg-print="answer.res.content @@ inset">DATA: ${}</small>
 
 
+<br><br>
+<h4>DATA-RG-KEYUP</h4>
+Focus the INPUT field, type some letters and press enter. (Open console to watch the result.)
+<br><input type="text" style="width:210" data-rg-keyup="runKEYUP($element, $event)"> - bind to all keyup event codes
+<br><input type="text" style="width:210" data-rg-keyup="runKEYUP($element, $event) @@ enter"> - bind to "enter" keyup event.code
+
 
 <br><br>
 <h4>DATA-RG-CHANGE</h4>

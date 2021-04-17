@@ -107,6 +107,55 @@ class DataRgListeners {
 
 
   /**
+   * <input type="text" data-rg-keyup="<function> @@ enter">
+   * Parse the "data-rg-keyup" attribute. Listen for the keyup event on certain element and execute the controller method.
+   * @returns {void}
+   */
+  rgKeyup() {
+    debug('rgKeyup', '--------- rgKeyup ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-keyup';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      const attrValSplited = attrVal.split(this.separator);
+      if (!attrValSplited[0]) { throw new Error(`Attribute "data-rg-keyup" has bad definition (data-rg-keyup="${attrVal}").`); }
+
+      const eventName = 'keyup';
+
+      let keyCode = attrValSplited[1] || '';
+      keyCode = keyCode.trim().toLowerCase();
+
+      const funcDef = attrValSplited[0].trim();
+      const matched = funcDef.match(/^(.+)\((.*)\)$/);
+      if (!matched) { console.error(`Error data-rg-keyup: "${funcDef}" has bad definition.`); continue; }
+      const funcName = matched[1]; // function name: myFunc
+
+      const handler = event => {
+        event.preventDefault();
+        const eventCode = event.code.toLowerCase();
+        if (!!keyCode && keyCode !== eventCode) { return; }
+        try {
+          const funcArgs = this._getFuncArgs(matched[2], elem, event);
+          if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
+          this[funcName](...funcArgs);
+          debug('rgKeyup', `${funcName} | ${funcArgs} | ${eventCode}`, 'orange');
+        } catch (err) {
+          throw new Error(err.message);
+        }
+      };
+
+      elem.addEventListener(eventName, handler);
+      this.rgListeners.push({eventName, attrName, elem, handler, eventName});
+      debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | event: ${eventName} | total: ${this.rgListeners.length}`, 'orange');
+    }
+
+  }
+
+
+  /**
    * data-rg-change="<function>"
    * data-rg-change="myFunc()"
    * Listen for change and execute the function i.e. controller method.
@@ -270,7 +319,7 @@ class DataRgListeners {
    * Create and clean function arguments
    * @param {string[]} args - array of function arguments: [x,y,...restArgs]
    * @param {HTMLElement} elem - HTML element on which is the event applied
-   * @param {Event} event - applied event
+   * @param {Event} event - applied event: click, keyup, ...
    * @returns {string[]}
    */
   _getFuncArgs(args, elem, event) {

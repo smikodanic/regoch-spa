@@ -48,6 +48,7 @@ class Controller extends Page {
   async parseListeners() {
     this.rgHref();
     this.rgClick();
+    this.rgKeyup();
     this.rgChange();
     this.rgEvt();
     this.rgSet();

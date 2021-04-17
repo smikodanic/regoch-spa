@@ -77,6 +77,13 @@ class DataRgListenersCtrl extends Controller {
   }
 
 
+  // run on keyup event
+  runKEYUP(elem, evt) {
+    console.log('runKEYUP elem::', elem);
+    console.log('runKEYUP evt', evt);
+  }
+
+
 
   // show the history
   historyData() {
