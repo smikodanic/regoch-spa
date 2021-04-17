@@ -81,7 +81,7 @@ app
     // not found page
     NotfoundCtrl
   ])
-  .controllerAuth(auth)
+  .controllerAuth(auth) // needed for route authGuards
   .controllerViewsCompiled(viewsCompiled);
 
 app

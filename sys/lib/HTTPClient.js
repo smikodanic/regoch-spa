@@ -152,7 +152,7 @@ class HTTPClient {
    * @param {any} body_obj - http body payload
    * @returns {Promise<answer>}
    */
-  askOnce(url, method = 'GET', body_obj) {
+  async askOnce(url, method = 'GET', body_obj) {
 
     // answer (response object)
     const answer = {
@@ -194,7 +194,7 @@ class HTTPClient {
     }
 
     /*** 0) intercept the request ***/
-    if(!!this.interceptor) { this.interceptor(); }
+    if(!!this.interceptor) { await this.interceptor(); }
 
 
     /*** 1) init HTTP request ***/
@@ -438,8 +438,7 @@ class HTTPClient {
   /********** HEADERS *********/
 
   /**
-   * Change request header object.
-   * Previously defined this.headers properties will be overwritten.
+   * Change request header object. The headerObj will be appended to previously defined this.headers and headers with the same name will be overwritten.
    * @param {Object} headerObj - {'authorization', 'user-agent', accept, 'cache-control', 'host', 'accept-encoding', 'connection'}
    * @returns {void}
    */
