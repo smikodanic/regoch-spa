@@ -8,12 +8,15 @@ const debug = require('./debug');
 class DataRgListeners {
 
   constructor() {
-    this.rgListeners = []; // listener collector [{attrName, elem, handler}] -- attribute name, element with the data-rg-... attribute and its corresponding handler
+    // collector of the data-rg- listeners  [{attrName, elem, handler, eventName}]
+    this.rgListeners = [];
   }
 
 
   /**
-   * Remove all listeners (click, input, ...) from the elements with the "data-rg-..." attribute
+   * Remove all listeners (click, input, keyup, ...) from the elements with the "data-rg-..." attribute
+   * when controller is destroyed i.e. when URL is changed. See /sys/router.js
+   * @returns {void}
    */
   async rgKILL() {
     debug('rgKILL', '------- rgKILL -------', 'orange', '#FFD8B6');
@@ -51,25 +54,25 @@ class DataRgListeners {
       const handler = async event => {
         event.preventDefault();
 
-        // change browser's address bar and emit 'pushstate' event
+        // change browser's address bar (emit 'pushstate' event)
         const href = elem.getAttribute('href').trim();
         const state = { href };
         const title = elem.getAttribute(attrName).trim();
         navig.goto(href, state, title);
+        debug('rgHref', `Clicked data-rg-href element. href: ${href}`, 'orange');
       };
 
       elem.addEventListener('click', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'click'});
       debug('rgHref', `pushed::  tag: ${elem.localName} | href="${elem.pathname}" | total: ${this.rgListeners.length}`, 'orange');
-
     }
   }
 
 
 
   /**
-   * data-rg-click="<function>"
-   * data-rg-click="myFunc()"
+   * data-rg-click="<controllerMethod>"
+   * <button data-rg-click="myFunc()">CLICK ME</button>
    * Listen for click and execute the function i.e. controller method.
    * @returns {void}
    */
@@ -80,40 +83,33 @@ class DataRgListeners {
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const funcDef = elem.getAttribute(attrName).trim(); // string 'myFunc(x, y, ...restArgs)'
-      const matched = funcDef.match(/^(.+)\((.*)\)$/);
-      if (!matched) { console.error(`Error data-rg-click: "${funcDef}" has bad definition.`); continue; }
-
-      const funcName = matched[1]; // function name: myFunc
+      const attrVal = elem.getAttribute(attrName); // string 'myFunc(x, y, ...restArgs)'
+      if (!attrVal) { console.error(`Attribute "data-rg-click" has bad definition (data-rg-click="${attrVal}").`); continue; }
+      const funcDef = attrVal.trim();
 
       const handler = event => {
         event.preventDefault();
-        try {
-          const funcArgs = this._getFuncArgs(matched[2], elem, event);
-          if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
-          this[funcName](...funcArgs);
-          debug('rgClick', `${funcName} | ${funcArgs}`, 'orange');
-        } catch (err) {
-          throw new Error(err.message);
-        }
+        const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
+        this._funcExe(funcName, funcArgs);
+        debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
       };
 
       elem.addEventListener('click', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'click'});
-      debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${funcName}" | total: ${this.rgListeners.length}`, 'orange');
+      debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
-
   }
 
 
   /**
-   * <input type="text" data-rg-keyup="<function> @@ enter">
+   * data-rg-keayup="<controllerMethod> [@@ keyCode]"
+   * <input type="text" data-rg-keyup="myFunc()"> - it will execute myFunc on every key
+   * <input type="text" data-rg-keyup="myFunc() @@ enter"> - it will execute myFunc on Enter
    * Parse the "data-rg-keyup" attribute. Listen for the keyup event on certain element and execute the controller method.
    * @returns {void}
    */
   rgKeyup() {
-    debug('rgKeyup', '--------- rgKeyup ------', 'navy', '#B6ECFF');
-
+    debug('rgKeyup', '--------- rgKeyup ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-keyup';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -121,43 +117,34 @@ class DataRgListeners {
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split(this.separator);
-      if (!attrValSplited[0]) { throw new Error(`Attribute "data-rg-keyup" has bad definition (data-rg-keyup="${attrVal}").`); }
 
-      const eventName = 'keyup';
+      if (!attrValSplited[0]) { console.error(`Attribute "data-rg-keyup" has bad definition (data-rg-keyup="${attrVal}").`); continue; }
+      const funcDef = attrValSplited[0].trim();
 
       let keyCode = attrValSplited[1] || '';
       keyCode = keyCode.trim().toLowerCase();
 
-      const funcDef = attrValSplited[0].trim();
-      const matched = funcDef.match(/^(.+)\((.*)\)$/);
-      if (!matched) { console.error(`Error data-rg-keyup: "${funcDef}" has bad definition.`); continue; }
-      const funcName = matched[1]; // function name: myFunc
-
       const handler = event => {
         event.preventDefault();
+
         const eventCode = event.code.toLowerCase();
         if (!!keyCode && keyCode !== eventCode) { return; }
-        try {
-          const funcArgs = this._getFuncArgs(matched[2], elem, event);
-          if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
-          this[funcName](...funcArgs);
-          debug('rgKeyup', `${funcName} | ${funcArgs} | ${eventCode}`, 'orange');
-        } catch (err) {
-          throw new Error(err.message);
-        }
+
+        const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
+        this._funcExe(funcName, funcArgs);
+        debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
       };
 
-      elem.addEventListener(eventName, handler);
-      this.rgListeners.push({eventName, attrName, elem, handler, eventName});
-      debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | event: ${eventName} | total: ${this.rgListeners.length}`, 'orange');
+      elem.addEventListener('keyup', handler);
+      this.rgListeners.push({attrName, elem, handler, eventName: 'keyup'});
+      debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
-
   }
 
 
   /**
-   * data-rg-change="<function>"
-   * data-rg-change="myFunc()"
+   * data-rg-change="<controllerMethod>"
+   * <select data-rg-change="myFunc()">
    * Listen for change and execute the function i.e. controller method.
    * @returns {void}
    */
@@ -168,38 +155,30 @@ class DataRgListeners {
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const funcDef = elem.getAttribute(attrName).trim(); // string 'myFunc(x, y, ...restArgs)'
-      const matched = funcDef.match(/^(.+)\((.*)\)$/);
-      if (!matched) { console.error(`Error data-rg-change: "${funcDef}" has bad definition.`); continue; }
-
-      const funcName = matched[1]; // function name: myFunc
+      const attrVal = elem.getAttribute(attrName); // string 'myFunc(x, y, ...restArgs)'
+      if (!attrVal) { console.error(`Attribute "data-rg-change" has bad definition (data-rg-change="${attrVal}").`); continue; }
+      const funcDef = attrVal.trim();
 
       const handler = event => {
         event.preventDefault();
-        try {
-          const funcArgs = this._getFuncArgs(matched[2], elem, event);
-          if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
-          this[funcName](...funcArgs);
-          debug('rgChange', `controller method: "${funcName}" with args: "${funcArgs}"`, 'orange');
-        } catch (err) {
-          throw new Error(err.message);
-        }
+        const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
+        this._funcExe(funcName, funcArgs);
+        debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
       };
 
       elem.addEventListener('change', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'change'});
-      debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${funcName}" | total: ${this.rgListeners.length}`, 'orange');
+      debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
 
   }
 
 
   /**
-   * data-rg-evt="eventName1 @@ <function1> [&& eventName2 @@ <function2>]"
+   * data-rg-evt="eventName1 @@ <controllerMethod1> [&& eventName2 @@ <controllerMetho2>]"
    * Listen for event and execute the function i.e. controller method.
-   * https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseenter_event
-   * Examples:
-   * data-rg-evt="mouseenter @@ myFunc($element, $event, 25, 'some text')"  - $element and $event are the DOM objects related to the element
+   * Example:
+   * data-rg-evt="mouseenter @@ myFunc($element, $event, 25, 'some text')"  - $element and $event are the DOM objects of the data-rg-evt element
    * @returns {void}
    */
   rgEvt() {
@@ -214,31 +193,21 @@ class DataRgListeners {
 
       for (const directive of directives) {
         const attrValSplited = directive.split(this.separator);
-        if (!attrValSplited[0] || !attrValSplited[1]) { throw new Error(`Attribute "data-rg-evt" has bad definition (data-rg-evt="${attrVal}").`); }
+        if (!attrValSplited[0] || !attrValSplited[1]) { console.error(`Attribute "data-rg-evt" has bad definition (data-rg-evt="${attrVal}").`); continue; }
 
         const eventName = attrValSplited[0].trim();
         const funcDef = attrValSplited[1].trim();
 
-        const matched = funcDef.match(/^(.+)\((.*)\)$/);
-        if (!matched) { console.error(`Error data-rg-evt: "${funcDef}" has bad definition.`); continue; }
-
-        const funcName = matched[1]; // function name: myFunc
-
         const handler = event => {
           event.preventDefault();
-          try {
-            const funcArgs = this._getFuncArgs(matched[2], elem, event);
-            if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
-            this[funcName](...funcArgs);
-            debug('rgEvt', `${funcName} | ${funcArgs}`, 'orange');
-          } catch (err) {
-            throw new Error(err.message);
-          }
+          const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
+          this._funcExe(funcName, funcArgs);
+          debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
         };
 
         elem.addEventListener(eventName, handler);
         this.rgListeners.push({eventName, attrName, elem, handler, eventName});
-        debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-change="${funcName}" | event: ${eventName} | total: ${this.rgListeners.length}`, 'orange');
+        debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-evt | event: ${eventName} | total: ${this.rgListeners.length}`, 'orange');
       }
 
     }
@@ -253,7 +222,7 @@ class DataRgListeners {
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"
-   * data-rg-set="product.name @@ print" -> bind to view directly by calling print() method directly
+   * data-rg-set="product.name @@ print" -> after set do print() which will update the view as the user type
    * @returns {void}
    */
   rgSet() {
@@ -265,20 +234,18 @@ class DataRgListeners {
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split(this.separator);
-
-      const bindTo = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
+      if (!attrValSplited[0]) { console.error(`Attribute "data-rg-set" has bad definition (data-rg-set="${attrVal}").`); continue; }
 
       const prop = attrValSplited[0].trim(); // controller property name
-
-      debug('rgSet', `initial value: ${elem.value}, bindTo: ${bindTo}`, 'orange');
-      this._setControllerValue(prop, elem.value);
-      if (bindTo === 'print') { this.rgPrint(prop); }
+      const doAfter = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
 
       const handler = event => {
         this._setControllerValue(prop, elem.value);
-        if (bindTo === 'print') { this.rgPrint(prop); }
+        if (doAfter === 'print') { this.rgPrint(prop); }
         debug('rgSet', `controller property:: ${prop} = ${elem.value}`, 'orange');
       };
+
+      handler(); // Execute the handler when controller is executed. This will set controller property defined in constructor() in the view.
 
       elem.addEventListener('input', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'input'});
@@ -296,7 +263,8 @@ class DataRgListeners {
    * Set the controller property's value.
    * For example controller's property is this.product.name
    * @param {string} prop - controller property name, for example: product.name
-   * @returns {any}
+   * @param {any} val - controller property value
+   * @returns {void}
    */
   _setControllerValue(prop, val) {
     const propSplitted = prop.split('.'); // ['product', 'name']
@@ -316,14 +284,20 @@ class DataRgListeners {
 
 
   /**
-   * Create and clean function arguments
-   * @param {string[]} args - array of function arguments: [x,y,...restArgs]
-   * @param {HTMLElement} elem - HTML element on which is the event applied
-   * @param {Event} event - applied event: click, keyup, ...
-   * @returns {string[]}
+   * Parse function definition and return function name and arguments.
+   * For example: products.list(25, 'str', $event, $element) -> {funcName: 'products.list', funcArgs: [55, elem]}
+   * @param {string} funcDef - function definition in the data-rg- attribute
+   * @param {HTMLElement} elem - data-rg- HTML element on which is the event applied
+   * @param {Event} event - event (click, keyup, ...) applied on the data-rg- element
+   * @returns {{funcName:string, funcArgs:any[], funcArgsStr:string}
    */
-  _getFuncArgs(args, elem, event) {
-    const funcArgs = args
+  _funcParse(funcDef, elem, event) {
+    const matched = funcDef.match(/^(.+)\((.*)\)$/);
+    if (!matched) { console.error(`Error data-rg-keyup: "${funcDef}" has bad definition.`); return; }
+    const funcName = matched[1] || ''; // function name: products.list
+
+    const funcArgsStr = matched[2] || ''; // function arguments: 25, 'str', $event, $element
+    const funcArgs = funcArgsStr
       .split(',')
       .map(arg => {
         arg = arg.trim().replace(/\'|\"/g, '');
@@ -331,7 +305,37 @@ class DataRgListeners {
         if (arg === '$event') { arg = event; }
         return arg;
       });
-    return funcArgs;
+
+    return {funcName, funcArgs, funcArgsStr};
+  }
+
+
+  /**
+   * Execute the function. It can be the controller method or the function defined in the controller proerty.
+   * @param {string} funcName - function name, for example: runKEYUP or products.list
+   * @param {any[]} funcArgs - function argumants
+   * @return {void}
+   */
+  _funcExe(funcName, funcArgs) {
+    try {
+
+      if (/\./.test(funcName)) {
+        // execute the function in the controller property, for example: this.print.inConsole = () => {...}
+        const propSplitted = funcName.split('.'); // ['print', 'inConsole']
+        let obj = this;
+        for (const prop of propSplitted) {
+          obj = obj[prop];
+        }
+        obj(...funcArgs);
+      } else {
+        // execute the controller method
+        if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
+        this[funcName](...funcArgs);
+      }
+
+    } catch (err) {
+      console.error(err);
+    }
   }
 
 

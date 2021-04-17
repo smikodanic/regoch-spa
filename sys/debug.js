@@ -25,10 +25,10 @@ module.exports = (tip, text, color, background) => {
     rgKILL: false,
     rgHref: false,
     rgClick: false,
+    rgKeyup: false,
     rgChange: false,
     rgEvt: false,
     rgSet: false,
-    rgKeyup: false,
 
     // Form.js
     setControl: false,

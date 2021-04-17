@@ -263,7 +263,6 @@ class DataRg extends DataRgListeners {
 
       const prop = attrValSplited[0].trim();
       const val = this._getControllerValue(prop);
-      console.log(prop, val);
 
       // get data-rg-switchcase and data-rg-switchdefault attribute values
       let switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');

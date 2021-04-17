@@ -4,8 +4,8 @@
 <!-- examples -->
 
 <h4>DATA-RG-HREF</h4>
-<a href="./datarglisteners">LINK1</a> - This will reload the page becasue there in no <b>data-rg-href</b> attribute.
-<br><a href="./datarglisteners" data-rg-href>LINK2</a> - This will not reload the page and will act as single page app link.
+<a href="/">LINK1</a> - This will reload the page becasue there in no <b>data-rg-href</b> attribute.
+<br><a href="/" data-rg-href>LINK2</a> - This will not reload the page and will act as single page app link.
 
 <h4>history</h4>
 Click on the button to get the history data. Open the browser dev tools console.
@@ -16,6 +16,8 @@ Click on the button to get the history data. Open the browser dev tools console.
 <h4>DATA-RG-CLICK</h4>
 <button data-rg-click="runCLICK(5, 'str', 8, 9, $element)">Fetch Data</button> <small>Click the button to fetch JSON from the server.</small>
 <br><small data-rg-print="answer.res.content @@ inset">DATA: ${}</small>
+<br>
+<br><button data-rg-click="print.inConsole.makeRed($element)">CLICK</button> - run function defined in the controller property: "print.inConsole($element)"
 
 
 <br><br>
