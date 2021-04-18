@@ -1,9 +1,9 @@
 const { App, syslib } = require('../../sys');
-const viewsCompiled = require('../dist/views/compiled.json');
+const viewsCompiled = require('./views/compiled.json');
 const routes = require('./routes');
 
 // conf
-const { authOpts, cookieOpts, httpClientOpts } = require('./conf');
+const { apiConst, authOpts, cookieOpts, httpClientOpts } = require('./conf');
 
 // lib
 const StringExt = require('./lib/StringExt');
@@ -45,6 +45,7 @@ const auth = new syslib.Auth(authOpts, cookie, httpClient);
 const app = new App();
 
 app
+  .const('apiConst', apiConst)
   .const('myNum', 10)
   .const('myStr', 'some thing')
   .const('myObj', {a: 22})

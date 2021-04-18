@@ -11,7 +11,6 @@ module.exports = async () => {
   const regochJsonPath = path.join(cwd, 'regoch.json');
   const regochJson = require(regochJsonPath);
   const files = regochJson.compile.views;
-  console.log('compiled views (/dist/views/compiled.json):\n', files);
 
   let views = {};
   for (const file of files) {
@@ -22,10 +21,12 @@ module.exports = async () => {
     views[file] = content;
   }
 
-  const fileDest = path.join(cwd, 'app/dist/views/compiled.json');
+  const fileDest = path.join(cwd, 'app/src/views/compiled.json');
   await fse.ensureFile(fileDest);
   await fse.writeFile(fileDest, JSON.stringify(views, null, 2), {encoding: 'utf8'});
 
   delete require.cache[regochJsonPath];
+
+  console.log('👌  Views compiled to "app/src/views/compiled.json":\n', files);
 }
 

@@ -1,11 +1,11 @@
-const apiCnf = require('./apiCnf');
+const apiConst = require('./apiConst');
 const authOpts = require('./authOpts');
 const cookieOpts = require('./cookieOpts');
 const httpClientOpts = require('./httpClientOpts');
 
 
 module.exports = {
-  apiCnf,
+  apiConst,
   authOpts,
   cookieOpts,
   httpClientOpts

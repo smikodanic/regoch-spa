@@ -8,13 +8,14 @@ module.exports.start = async () => {
 
   /*** EVENTS ***/
   global.nodeProc.stdout.on('data', async dataBuff => {
-    const dataStr = dataBuff.toString();
+    const dataStr = dataBuff.toString().replace(/\n$/, '');
     console.log(dataStr);
   });
 
   global.nodeProc.stderr.on('data', dataBuff => {
-    console.log(`stderr: ${dataBuff}`);
-    if (/is already in use/i.test(dataBuff.toString())) {
+    const dataStr = dataBuff.toString().replace(/\n$/, '');
+    console.log(`\x1b[31mstderr: ${dataStr}\x1b[0m`);
+    if (/is already in use/i.test(dataStr)) {
       spawn('killall', ['-9v', 'node']);
       console.log('😒  Killed all nodejs processes!');
       module.exports.start();
@@ -22,7 +23,7 @@ module.exports.start = async () => {
   });
 
   global.nodeProc.on('error', (error) => {
-    console.log(`error: ${error.message}`);
+    console.log(`\x1b[31merror: ${error.message}\x1b[0m`);
     module.exports.stop();
     process.exit();
   });

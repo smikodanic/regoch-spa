@@ -67,7 +67,7 @@ class Page extends DataRg {
       const viewPath = !!path_dest_cssSel && !!path_dest_cssSel.length ? 'inc/' + path_dest_cssSel[0] : '';
       const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
       const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
-      if(debug().loadInc) { console.log('path_dest_cssSel:: ', viewPath, dest, cssSel); }
+      if(debug().loadInc) { console.log('\n******** path_dest_cssSel:: ', viewPath, dest, cssSel, '********'); }
       if (!viewPath) { console.error('viewPath is not defined'); return; }
 
       // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.

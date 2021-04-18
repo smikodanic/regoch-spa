@@ -1,7 +1,8 @@
+const env = require('../env');
 const HTTPServer = require('./HTTPServer');
 
 const httpOpts = {
-  port: 4400,
+  port: env.server.port,
   timeout: 5*60*1000, // if 0 never timeout
   indexFile: '/app/dist/views/index.html',
   distDir: '/app/dist',
