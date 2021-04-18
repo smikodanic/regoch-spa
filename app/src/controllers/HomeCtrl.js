@@ -5,6 +5,7 @@ module.exports = class HomeCtrl extends Controller {
 
   constructor(app) {
     super();
+    // console.log(app.CONST);
   }
 
   async prerender(trx) {
@@ -18,7 +19,7 @@ module.exports = class HomeCtrl extends Controller {
       ['#top', 'pages/home/top.html'],
       ['#main', 'pages/home/main.html'],
       ['#bottom', 'pages/home/bottom.html']
-    ]);
+    ], true);
   }
 
 

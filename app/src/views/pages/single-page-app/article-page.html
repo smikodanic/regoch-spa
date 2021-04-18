@@ -36,8 +36,8 @@
     <td></td>
   </tr>
   <tr>
-    <td>viewsCompiled</td>
-    <td>compiled views, the object injected by the App::controllerViewsCompiled() method</td>
+    <td>viewsCached</td>
+    <td>cached views, the object injected by the App::controllerViewsCached() method</td>
     <td>object</td>
     <td></td>
   </tr>
@@ -79,10 +79,10 @@
       <i>async</i> <b>loadViews <i>(viewDefs:any[][], isAsync:boolean): Promise&lt;void&gt;</i></b>
       <p class="desc">Load multiple views. This is shortcut for the <i>loadView()</i> method.
         <br>TIP1: Use this method in the prerender() method if the views contain data-rg- elements. This is because render() will render those elements.
-        <br>TIP2: When isAsync=false is used the views should be compiled by the regoch.json.
+        <br>TIP2: When isAsync=false is used the views should be cached by the regoch.json.
       <br><b>viewDefs</b> - array of arrays: [[viewName, viewPath, dest, cssSel]]
       <br><b>isAsync</b> - When <i>true</i> the views are loaded synchronously, one by one (serially).
-      The <i>false</i> is used to load multiple views in parallel. This speeds up the load time but the views must be compiled by regoch.json.
+      The <i>false</i> is used to load multiple views in parallel. This speeds up the load time but the views should be cached by regoch.json.
       </p>
     </li>
     <li>

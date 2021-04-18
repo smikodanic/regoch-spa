@@ -68,9 +68,9 @@ Beside these properties the global <b style="color:orangered">window.regochSPA =
       Useful in apps where authentication guards are required in all routes, for example when building a web panel.
       <p><b>auth</b> - instance of the Auth class</p>
     </li>
-    <li><b>controllerViewsCompiled <i>(viewsCompiled :object): App</i></b> - Inject the content of the app/dist/views/compiled.json.
+    <li><b>controllerViewsCached <i>(viewsCached :object): App</i></b> - Inject the content of the /app/cache/views.json.
       Useful to speed up the HTML view load, especially in data-rg-inc elements.
-      <p><b>viewsCompiled</b> - the content of the views/compiled.json file. Use regoch.json to produce compiled.json.</p>
+      <p><b>viewsCcached</b> - the content of the /app/cache/views.json file. Use regoch.json to produce /app/cache/views.json.</p>
     </li>
     <li>
       <b>routes <i>(routesCnf :any[][]): App</i></b> - define the app routes
@@ -109,7 +109,7 @@ To stop observing the DOM changes use: app.DOMObserver.disconnect();
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-javascript">
 const { App } = require('regoch-spa');
-const viewsCompiled = require('../dist/views/compiled.json'); // use regoch.json to generate compiled.json
+const viewsCached = require('../cache/views.json'); // use regoch.json to generate /cache/views.json
 
 // lib
 const StringExt = require('./lib/StringExt');
@@ -122,8 +122,8 @@ const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 
 // routes
 const routesCnf = [
-  ['when', '/', 'HomeCtrl'],
-  ['when', '/product/:id', 'ProductCtrl'],
+  ['when', '/', 'HomeCtrl', {renderDelay: 400}],
+  ['when', '/product/:id', 'ProductCtrl', {authGuards: ['isLogged', 'hasRole']}],
   ['notfound', 'NotfoundCtrl']
 ]
 
@@ -134,10 +134,13 @@ app
   .const('myStr', 'some thing')
   .const('myObj', {a: 22})
   .freeze();
-app.libInject({ StringExt, Rand });
-app.compiled(viewsCompiled);
+app
+  .libInject({ StringExt, Rand });
 app
   .controller([HomeCtrl, SinglePageAppCtrl, NotfoundCtrl])
+  .controllerAuth(auth) // needed for route authGuards
+  .controllerViewsCached(viewsCached);
+app
   .routes(routesCnf)
   .run();
     </code></pre>

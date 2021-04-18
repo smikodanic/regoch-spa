@@ -22,7 +22,7 @@ class Page extends DataRg {
       }
     };
     this.httpClient = new HTTPClient(opts);
-    // this.viewsCompiled is defined by the App:controllerViewsCompiled()
+    // this.viewsCached is defined by the App:controllerViewsCached()
   }
 
 
@@ -70,13 +70,13 @@ class Page extends DataRg {
       if(debug().loadInc) { console.log('\n******** path_dest_cssSel:: ', viewPath, dest, cssSel, '********'); }
       if (!viewPath) { console.error('viewPath is not defined'); return; }
 
-      // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
+      // Get HTML content. First try from the cached JSON and if it doesn't exist then request from the server.
       let nodes, str;
-      if (!!this.viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
-        const cnt = this.fetchCompiledView(viewPath, cssSel);
+      if (!!this.viewsCached[viewPath]) { // HTML content from the cached file /cache/views.json
+        const cnt = this.fetchCachedView(viewPath, cssSel);
         nodes = cnt.nodes;
         str = cnt.str;
-        debug('loadInc', '--from compiled JSON', '#8B0892');
+        debug('loadInc', '--from cached JSON', '#8B0892');
       } else { // HTML content by requesting the server
         const cnt = await this.fetchRemoteView(viewPath, cssSel);
         nodes = cnt.nodes;
@@ -168,13 +168,13 @@ class Page extends DataRg {
     if (!elem) { throw new Error(`Element ${attrSel} not found.`); }
     if (!viewPath){ throw new Error(`View path is not defined.`); }
 
-    // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
+    // Get HTML content. First try from the cached JSON and if it doesn't exist then request from the server.
     let nodes, str;
-    if (!!this.viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
-      const cnt = this.fetchCompiledView(viewPath, cssSel);
+    if (!!this.viewsCached[viewPath]) { // HTML content from the cached file /cache/views.json
+      const cnt = this.fetchCachedView(viewPath, cssSel);
       nodes = cnt.nodes;
       str = cnt.str;
-      debug('loadView', '--from compiled JSON', '#8B0892');
+      debug('loadView', '--from cached JSON', '#8B0892');
     } else { // HTML content by requesting the server
       const cnt = await this.fetchRemoteView(viewPath, cssSel);
       nodes = cnt.nodes;
@@ -238,7 +238,7 @@ class Page extends DataRg {
 
   /**
    * Load multiple views.
-   * TIP: When using isAsync=false compile views in the regoch.json.
+   * TIP: When using isAsync=false cache views in the regoch.json.
    * @param {any[][]} viewDefs - array of arrays: [[viewName, viewPath, dest, cssSel]]
    * @param {boolean} isAsync - to load asynchronously one by one
    * @returns {void}
@@ -288,22 +288,22 @@ class Page extends DataRg {
 
   /*************** HTML CONTENT FETCHERS *****************/
   /**
-   * Fetch view from a compiled file (../app/dist/views/compiled.json).
+   * Fetch view from a cached file app/cache/views.json.
    * @param {string} viewPath - view file path (relative to /view/ directory): 'pages/home/main.html'
    * @param {string} cssSel - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
    * @returns {object}
    */
-  fetchCompiledView(viewPath, cssSel) {
+  fetchCachedView(viewPath, cssSel) {
     // convert HTML string to Document
     const parser = new DOMParser();
-    const doc = parser.parseFromString(this.viewsCompiled[viewPath], 'text/html');
+    const doc = parser.parseFromString(this.viewsCached[viewPath], 'text/html');
 
     // define nodes and string
     let nodes; // array of DOM nodes (Node[])
     let str; // HTML content as string (string)
     if (!cssSel) {
-      nodes = /\<title|\<meta|\<link\<base/.test(this.viewsCompiled[viewPath]) ? doc.head.childNodes : doc.body.childNodes;
-      str = this.viewsCompiled[viewPath];
+      nodes = /\<title|\<meta|\<link\<base/.test(this.viewsCached[viewPath]) ? doc.head.childNodes : doc.body.childNodes;
+      str = this.viewsCached[viewPath];
     } else {
       const elem = doc.querySelector(cssSel);
       nodes = [elem];
@@ -515,13 +515,13 @@ class Page extends DataRg {
     if (!elem) { throw new Error(`Element HEAD not found.`); }
     if (!viewPath){ throw new Error(`View path is not defined.`); }
 
-    // Get HTML content. First try from the compiled JSON and if it doesn't exist then request from the server.
+    // Get HTML content. First try from the cached JSON and if it doesn't exist then request from the server.
     let nodes, str;
-    if (!!this.viewsCompiled[viewPath]) { // HTML content from the compiled file /dist/views/compiled.json
-      const cnt = this.fetchCompiledView(viewPath);
+    if (!!this.viewsCached[viewPath]) { // HTML content from the cached file /cache/views.json
+      const cnt = this.fetchCachedView(viewPath);
       nodes = cnt.nodes;
       str = cnt.str;
-      debug('loadHead', '--from compiled JSON', '#8B0892');
+      debug('loadHead', '--from cached JSON', '#8B0892');
     } else { // HTML content by requesting the server
       const cnt = await this.fetchRemoteView(viewPath);
       nodes = cnt.nodes;

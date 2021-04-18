@@ -110,13 +110,13 @@ class App {
 
 
   /**
-   * Inject the content of the app/dist/views/compiled.json.
+   * Inject the content of the /app/cache/views.json.
    * Useful to speed up the HTML view load, especially in data-rg-inc elements.
-   * @param {object} viewsCompiled - the content of the views/compiled.json file
+   * @param {object} viewsCached - the content of the /app/cache/views.json file
    * @returns {App}
    */
-  controllerViewsCompiled(viewsCompiled) {
-    this.controllerProp('viewsCompiled', viewsCompiled);
+  controllerViewsCached(viewsCached) {
+    this.controllerProp('viewsCached', viewsCached);
     return this;
   }
 

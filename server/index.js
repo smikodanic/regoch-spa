@@ -1,8 +1,13 @@
-const env = require('../env');
+const regochPath = `${process.cwd()}/regoch.json`;
+const regochJson = require(regochPath);
+const env = process.env.NODE_ENV || regochJson.cache.env || 'development';
+const envPath = `${process.cwd()}/env/${env}.js`;
+const envJs = require(envPath);
+
 const HTTPServer = require('./HTTPServer');
 
 const httpOpts = {
-  port: env.server.port,
+  port: envJs.server.port,
   timeout: 5*60*1000, // if 0 never timeout
   indexFile: '/app/dist/views/index.html',
   distDir: '/app/dist',

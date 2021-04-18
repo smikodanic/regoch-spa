@@ -1,5 +1,5 @@
 const { App, syslib } = require('../../sys');
-const viewsCompiled = require('./views/compiled.json');
+const viewsCached = require('../cache/views.json');
 const routes = require('./routes');
 
 // conf
@@ -83,7 +83,7 @@ app
     NotfoundCtrl
   ])
   .controllerAuth(auth) // needed for route authGuards
-  .controllerViewsCompiled(viewsCompiled);
+  .controllerViewsCached(viewsCached);
 
 app
   .routes(routes).run();

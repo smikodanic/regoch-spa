@@ -1,6 +1,6 @@
 {
-  "env": "development",
-  "compile": {
+  "cache": {
+    "env": "production",
     "views": [
       "inc/header.html",
       "inc/footer.html",
@@ -12,5 +12,3 @@
     ]
   }
 }
-
-

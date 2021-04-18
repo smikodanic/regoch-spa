@@ -1,5 +1,5 @@
 /**
- * Bundle HTML views in the one JS file.
+ * Bundle HTML views in one JS file.
  */
 const fse = require('fs-extra');
 const path = require('path');
@@ -10,7 +10,7 @@ module.exports = async () => {
   const cwd = process.cwd();
   const regochJsonPath = path.join(cwd, 'regoch.json');
   const regochJson = require(regochJsonPath);
-  const files = regochJson.compile.views;
+  const files = regochJson.cache.views;
 
   let views = {};
   for (const file of files) {
@@ -21,12 +21,12 @@ module.exports = async () => {
     views[file] = content;
   }
 
-  const fileDest = path.join(cwd, 'app/src/views/compiled.json');
+  const fileDest = path.join(cwd, 'app/cache/views.json');
   await fse.ensureFile(fileDest);
   await fse.writeFile(fileDest, JSON.stringify(views, null, 2), {encoding: 'utf8'});
 
   delete require.cache[regochJsonPath];
 
-  console.log('👌  Views compiled to "app/src/views/compiled.json":\n', files);
+  console.log('👌  Cached views to "app/cache/views.json":\n', files);
 }
 

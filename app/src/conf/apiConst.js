@@ -1,4 +1,4 @@
-const env = require('../env.json');
+const env = require('../../cache/env');
 
 module.exports = {
   baseURL: env.api.baseURL
