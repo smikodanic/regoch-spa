@@ -86,7 +86,8 @@ class Page extends DataRg {
 
       if(debug().loadInc) {
         console.log('elem::', elem);
-        console.log('str::', str, '\n\n');
+        console.log('nodes loaded::', nodes);
+        // console.log('str loaded::', str);
       }
 
 
@@ -181,8 +182,10 @@ class Page extends DataRg {
       debug('loadView', '--from server', '#8B0892');
     }
 
-    if(debug().loadView) { console.log('nodes::', nodes); }
-    if(debug().loadView) { console.log('str::', str); }
+    if(debug().loadView) {
+      console.log('nodes loaded::', nodes);
+      // console.log('str loaded::', str);
+    }
 
 
     // empty content from the element by removing the data-rg-viewgen elements

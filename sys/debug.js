@@ -4,7 +4,7 @@ module.exports = (tip, text, color, background) => {
     router: false,
 
     // Page.js
-    loadInc: false,
+    loadInc: true,
     loadView: false,
     emptyView: false,
     loadHead: false,

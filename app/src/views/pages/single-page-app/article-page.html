@@ -47,6 +47,7 @@
 <section class="docs-section" id="item-4-2">
   <h2 class="section-heading">Methods</h2>
 	<ul class="methods">
+    <h4>HTML</h4>
     <li>
       <i>async</i> <b>loadInc <i>(delIncgens:boolean = true): Promise&lt;void&gt;</i></b>
       <p class="desc">Load /views/inc/file.html HTML file in the element with the
@@ -88,9 +89,12 @@
       <b>emptyView <i>(viewName:string, dest:string = 'inner'): &lt;void&gt;</i></b>
       <p class="desc">Empty the view content in the data-rg-view element.
       <br><b>viewName</b> - - view name, for example: '#home'
-      <br><b>dest</b> - destination where the view was placed and should be deleted: inner, outer, sibling, prepend, append
+      <br><b>dest</b> - destination where the view was placed and should be deleted: inner, outer, sibling, prepend, append. Default is inner.
       </p>
     </li>
+
+    <br><br>
+    <h4>JavaScript Resources</h4>
     <li>
       <i>async</i> <b>lazyJS <i>(urls:string[], waitMS:number): &lt;void&gt;</i></b>
       <p class="desc">Create &lt;script&gt; tags and execute js scripts. All script tags will get <i>data-rg-lazyjs</i> attribute to mark lazy loaded JS files.
@@ -117,6 +121,9 @@
         <br><b>urls</b> - array of JS script URLs
       </p>
     </li>
+
+    <br><br>
+    <h4>CSS Resources</h4>
     <li>
       <b>loadCSS <i>(urls:string[]): &lt;void&gt;</i></b>
       <p class="desc">Create &lt;link rel="stylesheet"&gt; tags and load CSS. Usually use it in the prerender() controller method.
@@ -142,6 +149,9 @@
         <br><b>ref</b> - reference
       </p>
     </li>
+
+    <br><br>
+    <h4>Head &amp; Meta</h4>
     <li>
       <b>setTile <i>(title:string): &lt;void&gt;</i></b>
       <p class="desc">Set the text in the &lt;title&gt; tag.

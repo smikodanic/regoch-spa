@@ -24,6 +24,13 @@ class DataRgListenersCtrl extends Controller {
   }
 
 
+  // this is needed so that LINK2 work correctly
+  async destroy() {
+    this.loadCSS(['/assets/css/theme.css']);
+    this.emptyView('#primary');
+  }
+
+
 
   // A) fetch the API response and show it in the data-rg-print element   B) change the clicked button color
   async runCLICK(n, str, ...rest) {
