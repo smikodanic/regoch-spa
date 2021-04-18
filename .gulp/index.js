@@ -45,7 +45,7 @@ task('watchers', async () => {
 
   await watch([
     'regoch.json'
-  ], series('compileViews', 'browserifyMinifyMap'));
+  ], series('compileViews','createEnv', 'browserifyMinifyMap'));
 
   await watch([
     'env/*.js'
