@@ -61,7 +61,7 @@
       <br>3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Elements where sibling, append and prepend is used will get data-rg-incgen attribute to mark elements generated with data-rg-inc.
       <br>4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
       <br>
-      <br>Note: Multiple iterations will haeppen when data-rg-inc elements are nested. To make reset all data-rg-incgen elements will be deleted but only in the first iteration.
+      <br>Note: Multiple iterations will heppen when data-rg-inc elements are nested. To make reset all data-rg-incgen elements will be deleted but only in the first iteration.
     </li>
     <li>
       <i>async</i> <b>loadView <i>(viewName:string, viewPath:string, dest:string = 'inner', cssSel:string): Promise&lt;{elem, str, nodes}&gt;</i></b>
@@ -188,6 +188,31 @@
 
 
 <section class="docs-section" id="item-4-3">
+  <h2 class="section-heading">Cache</h2>
+  To speed up load time the Regoch SPA is using cached views which are stored in the <i>/app/cache/views.js</i>.
+  <br>Methods <b>loadInc()</b> and <b>loadView()</b> first looks up into the <i>/app/cache/views.json</i> to find the view.
+  If the view is not present there it sends request to the server.
+  <br>To generate the cached view the developer should use <i>regoch.json</i> and gulp will do the rest:
+  <pre><code class="language-js">///// regoch.json tells the gulp which files to cache /////
+{
+  "cache": {
+    "env": "production",
+    "views": [
+      "inc/header.html",
+      "inc/footer.html",
+      "pages/home/primary.html",
+      "pages/home/top.html",
+      "pages/home/main.html",
+      "pages/home/bottom.html",
+      "pages/single-page-app/sidebar.html"
+    ]
+  }
+}
+  </code></pre>
+</section>
+
+
+<section class="docs-section" id="item-4-4">
   <h2 class="section-heading">Examples</h2>
   <h4>1. data-rg-inc</h4>
   The example shows how to use "data-rg-inc" attribute. In the most cases the method loadInc() shouldn't be used in the controller's code because data-rg-inc elements are rendered automatically.
