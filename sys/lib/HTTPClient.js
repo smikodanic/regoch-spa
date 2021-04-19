@@ -102,14 +102,14 @@ class HTTPClient {
    * @return formatted error
    */
   _formatError(error, url) {
-    // console.log(error);
+    // console.log('_formatError::', error, url);
     const err = new Error(error);
 
 
     // reformatting NodeJS errors
-    if (error.code === 'ENOTFOUND') {
-      err.status = 400;
-      err.message = `400 Bad Request [ENOTFOUND] ${url}`;
+    if (error.target.status === 0) {
+      err.status = 0;
+      err.message = `Status:0 Bad Request ${url}`;
     } else {
       err.status = error.status || 400;
       err.message = error.message;

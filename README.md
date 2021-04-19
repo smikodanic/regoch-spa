@@ -7,6 +7,6 @@
 
 
 ### Licence
-“Freely you received, freely you give”, Matthew 10:5-8
+Copyright (c) 2020 Saša Mikodanić licensed under [MIT](./LICENSE).
 
-Copyright (c) 2020 Saša Mikodanić licensed under [MIT](./LICENSE) .
+“Freely you received, freely you give”, Matthew 10:5-8

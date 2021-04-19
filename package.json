@@ -5,7 +5,7 @@
   "description": "Regoch SPA is the javascript framework for single page applications.",
   "author": "Sasa Mikodanic <smikodanic@gmail.com>",
   "homepage": "http://www.regoch.org/single-page-app",
-  "license": "AGPL-3.0",
+  "license": "MIT",
   "keywords": [
     "spa",
     "single page app",

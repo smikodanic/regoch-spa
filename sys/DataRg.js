@@ -363,8 +363,12 @@ class DataRg extends DataRgListeners {
       let val = this._getControllerValue(prop);
 
       // correct val
-      val = !!val ? val : '';
-      if (typeof val === 'object') { val = JSON.stringify(val); }
+      if (!val) { val = elem.textContent; } // the default value is defined in the HTML tag
+      else if (typeof val === 'object') { val = JSON.stringify(val); }
+      else if (typeof val === 'number') { val = +val; }
+      else if (typeof val === 'string') { val = val || ''; }
+      else if (typeof val === 'boolean') { val = val.toString(); }
+      else { val = val; }
 
       // save temporary initial innerHTML
       const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
