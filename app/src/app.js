@@ -33,6 +33,7 @@ const LoginCtrl = require('./controllers/playground/LoginCtrl');
 const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
 const Navig1Ctrl = require('./controllers/playground/Navig1Ctrl');
 const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
+const ScopeCtrl = require('./controllers/playground/ScopeCtrl');
 
 
 // auth
@@ -78,11 +79,12 @@ app
     LoginokCtrl,
     Navig1Ctrl,
     Navig2Ctrl,
+    ScopeCtrl,
 
     // not found page
     NotfoundCtrl
   ])
-  .controllerRenderDelay(10)
+  .controllerRenderDelay(100)
   .controllerAuth(auth) // needed for route authGuards
   .controllerViewsCached(viewsCached);
 

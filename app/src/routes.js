@@ -29,6 +29,7 @@ module.exports = [
   ['when', '/playground/navig1', 'Navig1Ctrl'],
   ['when', '/playground/navig2', 'Navig2Ctrl'],
   ['redirect', '/playground/navig3', '/playground/navig1'],
+  ['when', '/playground/scope', 'ScopeCtrl', {renderDelay: 10}],
 
   ['notfound', 'NotfoundCtrl'],
   // ['do', log1, log2]

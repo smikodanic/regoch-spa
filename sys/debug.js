@@ -3,6 +3,11 @@ module.exports = (tip, text, color, background) => {
     // router.js
     router: false,
 
+    // Controller.js
+    renderDelay: false,
+    scopeSet: false,
+    scopeGet: false,
+
     // Page.js
     loadInc: false,
     loadView: false,

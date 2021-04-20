@@ -18,7 +18,7 @@ class DataRgListenersCtrl extends Controller {
   }
 
   async prerender(trx) {
-    this.setTitle('DataRg Test');
+    this.setTitle('DataRgListeners Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/datarglisteners/primary.html', 'inner');
   }

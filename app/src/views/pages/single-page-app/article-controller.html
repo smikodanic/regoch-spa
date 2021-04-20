@@ -72,6 +72,41 @@
 
 
 <section class="docs-section" id="item-3-4">
+  <h2 class="section-heading">$scope</h2>
+  The scope is the object which binds the HTML (view) and the JavaScript (controller).
+  It is available for both the view and the controller.
+  Every time the <b>this.$scope</b> is changed all DataRg and DataRgListeners methods are executed so the view is completely updated.
+  This is similar to Angular 1 <i>$scope</i> parameter.
+  <br>
+  <br>Example with the $scope:
+  <pre><code>
+// controller
+const products = aawait this.httpClient.askJSON('http://api.example.com/products/list');
+this.$scope = {products}
+
+// view
+&lt;tr data-rg-for="$scope.products"&gt;
+  &lt;td data-rg-print="$scope.products.$i.name"&gt;&lt;/td&gt;
+&lt;/tr&gt;
+  </code></pre>
+
+  <br>
+  <br>Another way to do this is to call rgFor() and rgPrint() methods:
+  <pre><code>
+// controller
+this.products = aawait this.httpClient.askJSON('http://api.example.com/products/list');
+await this.rgFor('products');
+this.rgPrint('products');
+
+// view
+&lt;tr data-rg-for="products"&gt;
+  &lt;td data-rg-print="products.$i.name"&gt;&lt;/td&gt;
+&lt;/tr&gt;
+  </code></pre>
+</section>
+
+
+<section class="docs-section" id="item-3-5">
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-javascript">
 const { Controller, syslib } = require('regoch-spa');

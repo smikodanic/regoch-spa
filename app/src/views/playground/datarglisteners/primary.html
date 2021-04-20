@@ -30,7 +30,7 @@ Focus the INPUT field, type some letters and press enter. (Open console to watch
 <br><br>
 <h4>DATA-RG-CHANGE</h4>
 Update data-rg-switch and data-rg-if every time the SELECT is changed. <br>
-<select data-rg-change="runCHANGE()" data-rg-set="mySelect">
+<select data-rg-change="runCHANGE()" data-rg-set="mySelect @@ rgSwitch, rgPrint">
   <option value="one">one</option>
   <option value="two" selected>two</option>
   <option value="three">three</option>
@@ -40,7 +40,11 @@ Update data-rg-switch and data-rg-if every time the SELECT is changed. <br>
   <li data-rg-switchcase="two">TWO</li>
   <li data-rg-switchcase="three">THREE</li>
 </ol>
-<div><p data-rg-if="ifThree" data-rg-print="mySelect @@ inset">The selected value is <b>${}</b>.</p></div>
+<div>
+  Selected value is: <b data-rg-print="mySelect"></b>
+  <p data-rg-if="ifThree" data-rg-print="mySelect @@ inset">The selected value is <b>${}</b> (data-rg-if example).</p>
+</div>
+<div></div>
 
 
 <br><br>

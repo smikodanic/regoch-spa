@@ -40,7 +40,7 @@ class DataRgListeners {
    * data-rg-href
    * <a href="/product/12" data-rg-href>Product 12</a>
    * Href listeners and changing URLs (browser history states).
-   * NOTICE: Click on data-rg-href element will destroy the controller.
+   * NOTICE: Click on data-rg-href element will destroy the controller i.e. rgKILL() will be invoked.
    * @returns {void}
    */
   rgHref() {
@@ -74,12 +74,16 @@ class DataRgListeners {
    * data-rg-click="<controllerMethod>"
    * <button data-rg-click="myFunc()">CLICK ME</button>
    * Listen for click and execute the function i.e. controller method.
+   * @param {string} controllerMeth - controller method name
    * @returns {void}
    */
-  rgClick() {
+  rgClick(controllerMeth) {
     debug('rgClick', '--------- rgClick ------', 'orange', '#FFD8B6');
+
     const attrName = 'data-rg-click';
-    const elems = document.querySelectorAll(`[${attrName}]`);
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
+    debug('rgClick', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -106,12 +110,16 @@ class DataRgListeners {
    * <input type="text" data-rg-keyup="myFunc()"> - it will execute myFunc on every key
    * <input type="text" data-rg-keyup="myFunc() @@ enter"> - it will execute myFunc on Enter
    * Parse the "data-rg-keyup" attribute. Listen for the keyup event on certain element and execute the controller method.
+   * @param {string} controllerMeth - controller method name
    * @returns {void}
    */
-  rgKeyup() {
+  rgKeyup(controllerMeth) {
     debug('rgKeyup', '--------- rgKeyup ------', 'orange', '#FFD8B6');
+
     const attrName = 'data-rg-keyup';
-    const elems = document.querySelectorAll(`[${attrName}]`);
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
+    debug('rgKeyup', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -146,12 +154,16 @@ class DataRgListeners {
    * data-rg-change="<controllerMethod>"
    * <select data-rg-change="myFunc()">
    * Listen for change and execute the function i.e. controller method.
+   * @param {string} controllerMeth - controller method name
    * @returns {void}
    */
-  rgChange() {
+  rgChange(controllerMeth) {
     debug('rgChange', '--------- rgChange ------', 'orange', '#FFD8B6');
+
     const attrName = 'data-rg-change';
-    const elems = document.querySelectorAll(`[${attrName}]`);
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
+    debug('rgChange', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -170,12 +182,11 @@ class DataRgListeners {
       this.rgListeners.push({attrName, elem, handler, eventName: 'change'});
       debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
-
   }
 
 
   /**
-   * data-rg-evt="eventName1 @@ <controllerMethod1> [&& eventName2 @@ <controllerMetho2>]"
+   * data-rg-evt="eventName1 @@ <controllerMethod1> [&& eventName2 @@ <controllerMethod2>]"
    * Listen for event and execute the function i.e. controller method.
    * Example:
    * data-rg-evt="mouseenter @@ myFunc($element, $event, 25, 'some text')"  - $element and $event are the DOM objects of the data-rg-evt element
@@ -185,6 +196,7 @@ class DataRgListeners {
     debug('rgEvt', '--------- rgEvt ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-evt';
     const elems = document.querySelectorAll(`[${attrName}]`);
+    debug('rgEvt', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -209,26 +221,29 @@ class DataRgListeners {
         this.rgListeners.push({eventName, attrName, elem, handler, eventName});
         debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-evt | event: ${eventName} | total: ${this.rgListeners.length}`, 'orange');
       }
-
     }
-
   }
 
 
 
   /**
-   * data-rg-set="<controllerProperty> [@@ print]"
+   * data-rg-set="<controllerProp> [@@ <doAfter>]"
    * Parse the "data-rg-set" attribute. Sets the controller property in HTML form field like INPUT, SELECT, TEXTAREA, ....
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"
-   * data-rg-set="product.name @@ print" -> after set do print() which will update the view as the user type
+   * data-rg-set="product.name @@ rgPrint" -> after set do rgPrint() which will update the view as the user type
+   * data-rg-set="product.name @@ rgSwich" -> after set do rgSwitch() which will render data-rg-switch elements
+   * @param {string} controllerProp - controller property name
    * @returns {void}
    */
-  rgSet() {
+  rgSet(controllerProp) {
     debug('rgSet', '--------- rgSet ------', 'orange', '#FFD8B6');
+
     const attrName = 'data-rg-set';
-    const elems = document.querySelectorAll(`[${attrName}]`);
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgSet', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -237,11 +252,16 @@ class DataRgListeners {
       if (!attrValSplited[0]) { console.error(`Attribute "data-rg-set" has bad definition (data-rg-set="${attrVal}").`); continue; }
 
       const prop = attrValSplited[0].trim(); // controller property name
-      const doAfter = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // 'print'
+      const doAfter_str = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // what to do after the controller property is set: 'rgPrint', 'rgSwitch'
+      const doAfter_arr = !!doAfter_str ? doAfter_str.split(',') : [];
 
       const handler = event => {
         this._setControllerValue(prop, elem.value);
-        if (doAfter === 'print') { this.rgPrint(prop); }
+
+        for (const doAfter of doAfter_arr) {
+          const doAfter2 = doAfter.trim();
+          this[doAfter2](prop);
+        }
         debug('rgSet', `controller property:: ${prop} = ${elem.value}`, 'orange');
       };
 
@@ -251,7 +271,6 @@ class DataRgListeners {
       this.rgListeners.push({attrName, elem, handler, eventName: 'input'});
       debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
     }
-
   }
 
 

@@ -1,11 +1,13 @@
 const Page = require('./Page');
 const util = require('./lib/util');
+const debug = require('./debug');
 
 
 class Controller extends Page {
 
   constructor() {
     super();
+    this._$scope = {};
   }
 
 
@@ -24,34 +26,34 @@ class Controller extends Page {
    * @returns {Promise<void>}
    */
   async render(trx) {
+    if (debug().renderDelay) { console.log('renderDelay::', this.renderDelay); }
     await util.sleep(this.renderDelay);
     await this.loadInc(true); // defined in Page.js
     await util.sleep(this.renderDelay);
-    this.parseNonListeners();
-    await util.sleep(this.renderDelay);
+    await this.parseNonListeners();
     this.parseListeners();
-    await util.sleep(this.renderDelay);
   }
 
-  async parseNonListeners() {
-    await this.rgFor();
+  async parseNonListeners(controllerProp = '') {
+    await this.rgFor(controllerProp);
     await this.rgRepeat();
-    await this.rgIf();
-    await this.rgSwitch();
+    await this.rgIf(controllerProp);
+    await this.rgSwitch(controllerProp);
     this.rgElem();
-    this.rgPrint();
-    this.rgClass();
-    this.rgStyle();
+    this.rgPrint(controllerProp);
+    this.rgClass(controllerProp);
+    this.rgStyle(controllerProp);
     this.rgLazyjs();
+    // this.rgInterpolate(controllerProp);
   }
 
-  async parseListeners() {
+  parseListeners(controllerProp) {
     this.rgHref();
     this.rgClick();
     this.rgKeyup();
     this.rgChange();
     this.rgEvt();
-    this.rgSet();
+    this.rgSet(controllerProp);
   }
 
 
@@ -82,20 +84,29 @@ class Controller extends Page {
 
 
 
+  /**
+   * Set the controller's $scope property.
+   * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
+   */
+  set $scope(val) {
+    debug('scopeSet', '--------- scopeSet ------', 'green', '#D9FC9B');
 
-  /********** MISC **********/
-  isHtmlLoaded() {
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('HTML document is loaded.');
-      console.log(document.readyState); // loading, interactive, complete
-    });
+    this._$scope = {...this._$scope, ...val}; // append the val to the $scope
+    if (debug().scopeSet) { console.log('val::', val); }
+    if (debug().scopeSet) { console.log('$scope::', this._$scope); }
+
+    this.parseNonListeners('$scope').then(() => { this.parseListeners('$scope'); });
   }
 
-  isLoaded() {
-    window.onload = () => {
-      console.log('HTML document and CSS, JS, images and other resources are loaded.');
-      console.log(document.readyState);
-    };
+
+  /**
+   * Get the $scope value.
+   * It can be called as this.$scope.myVar in the controller or as data-rg-print="$scope.myVar"
+   */
+  get $scope() {
+    debug('scopeGet', '--------- scopeGet ------', 'green', '#D9FC9B');
+    if (debug().scopeGet) { console.log('$scope::', this._$scope); }
+    return this._$scope;
   }
 
 

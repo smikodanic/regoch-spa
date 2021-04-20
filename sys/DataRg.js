@@ -19,27 +19,20 @@ class DataRg extends DataRgListeners {
   /************** GENERATORS (generate or remove HTML elements) *************/
 
   /**
-   * data-rg-for="<propArr>[:limit:skip] [@@ outer|inner]"
+   * data-rg-for="<controllerProp>[:<limit>][:<skip>] [@@ outer|inner]"
    * Parse the "data-rg-for" attribute. Multiply element.
    * Examples:
    * data-rg-for="companies"
    * data-rg-for="company.employers"
-   * @param {string} attrvalue - attribute value (limit parsing to only one HTML element)
+   * @param {string} controllerProp - controller property name
    * @returns {Promise<void>}
    */
-  async rgFor(attrvalue) {
+  async rgFor(controllerProp) {
     debug('rgFor', '--------- rgFor ------', 'navy', '#B6ECFF');
 
-    // define attribute
-    let attrDef;
     const attrName = 'data-rg-for';
-    if (!attrvalue) {
-      attrDef = attrName;
-    } else {
-      attrDef = `${attrName}^="${attrvalue}"`;
-    }
-
-    const elems = document.querySelectorAll(`[${attrDef}]`);
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
     debug('rgFor', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
@@ -110,9 +103,7 @@ class DataRg extends DataRgListeners {
       }
 
       debug('rgFor', `act:: ${act}`, 'navy');
-      await new Promise(r => setTimeout(r, 1)); // give some delay to resolve the promise created by async
     }
-
   }
 
 
@@ -167,9 +158,7 @@ class DataRg extends DataRgListeners {
       }
 
       debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
-      await new Promise(r => setTimeout(r, 1));
     }
-
   }
 
 
@@ -183,26 +172,19 @@ class DataRg extends DataRgListeners {
    * data-rg-if="ifAge" - hide the element
    * data-rg-if="ifAge @@ hide" - hide the element
    * data-rg-if="ifAge @@ remove" - remove the element
-   * @param {string} attrvalue - attribute value (limit parsing to only one HTML element)
+   * @param {string} controllerProp - controller property name
    * @returns {void}
    */
-  async rgIf(attrvalue) {
+  async rgIf(controllerProp) {
     debug('rgIf', '--------- rgIf ------', 'navy', '#B6ECFF');
 
-    // define attribute
-    let attrDef;
     const attrName = 'data-rg-if';
-    if (!attrvalue) {
-      attrDef = attrName;
-    } else {
-      attrDef = `${attrName}^="${attrvalue}"`;
-    }
-
-    this._rgIf_uncommentAll(); // uncomment all data-rg-if elements
-
-    const elems = document.querySelectorAll(`[${attrDef}]`);
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
     debug('rgIf', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
+
+    this._rgIf_uncommentAll(); // uncomment all data-rg-if elements
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // ifAge @@ remove
@@ -229,9 +211,7 @@ class DataRg extends DataRgListeners {
       }
 
       debug('rgIf', `${prop} = ${val} | ${elem.outerHTML}`, 'navy');
-      await new Promise(r => setTimeout(r, 1));
     }
-
   }
 
 
@@ -251,7 +231,7 @@ class DataRg extends DataRgListeners {
 
     const attrName = 'data-rg-switch';
     let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}="${controllerProp}"]`); }
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
     debug('rgSwitch', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
@@ -292,9 +272,7 @@ class DataRg extends DataRgListeners {
       }
 
       if (!isMatched && !!switchdefaultElem) { elem.innerHTML = switchdefaultElem.outerHTML; }
-      await new Promise(r => setTimeout(r, 1));
     }
-
   }
 
 
@@ -303,7 +281,7 @@ class DataRg extends DataRgListeners {
   /************ NON-GENERATORS (affect to one element, will not generate new HTML elements) ***********/
 
   /**
-   * data-rg-elem="<rgelemsProp>"
+   * data-rg-elem="<rgelemsProp>"     --> rgelemsProp is the property of the this.rgelems, for example data-rg-elem="myElement" => this.rgelems.myElement
    * Parse the "data-rg-elem" attribute. Transfer the DOM element to the controller property "this.rgelems".
    * Examples:
    * data-rg-elem="paragraf" -> fetch it with this.rgelems['paragraf']
@@ -335,23 +313,16 @@ class DataRg extends DataRgListeners {
    * data-rg-print="product" - product is the controller property
    * data-rg-print="product.name @@ outer"
    * data-rg-print="product.name @@ sibling"
-   * @param {string} attrvalueProp - part of the attribute value which relates to the controller property,
+   * @param {string} controllerProp - part of the attribute value which relates to the controller property,
    * for example product.name in the data-rg-print="product.name @@ inner". This speed up parsing because it's limited only to one element.
    * @returns {void}
    */
-  rgPrint(attrvalueProp) {
+  rgPrint(controllerProp) {
     debug('rgPrint', '--------- rgPrint ------', 'navy', '#B6ECFF');
 
-    // define attribute
-    let attrDef;
     const attrName = 'data-rg-print';
-    if (!attrvalueProp) {
-      attrDef = attrName;
-    } else {
-      attrDef = `${attrName}^="${attrvalueProp}"`;
-    }
-
-    const elems = document.querySelectorAll(`[${attrDef}]`);
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
     debug('rgPrint', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
@@ -478,6 +449,7 @@ class DataRg extends DataRgListeners {
     }
 
   }
+
 
 
   /**

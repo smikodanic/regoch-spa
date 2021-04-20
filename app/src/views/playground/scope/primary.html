@@ -1,0 +1,15 @@
+<h1>$scope Test</h1>
+<p><b>$scope</b> is the controller property. When it's changed the <i>data-rg-</i> elements are rendered.</p>
+
+<h4>data-rg-print</h4>
+<span data-rg-print="$scope">$scope</span>
+
+<br><br>
+<h4>data-rg-for</h4>
+<table>
+  <tr data-rg-for="$scope.products">
+    <td data-rg-print="$scope.products.$i.name"></td>
+    <td data-rg-print="$scope.products.$i.price @@ inset">€ ${}</td>
+    <td><button data-rg-click="runCLICK($i)">click</button></td>
+  </tr>
+</table>
