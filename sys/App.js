@@ -121,6 +121,17 @@ class App {
   }
 
 
+  /**
+   * Define controller's renderDelay property.
+   * @param {object} renderDelay - the content of the /app/cache/views.json file
+   * @returns {App}
+   */
+  controllerRenderDelay(renderDelay) {
+    this.controllerProp('renderDelay', renderDelay);
+    return this;
+  }
+
+
 
 
   /*============================== ROUTES ==============================*/

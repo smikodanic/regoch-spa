@@ -19,7 +19,7 @@ class Router {
    * @returns {void}
    */
   when(route, ctrl, routeOpts = {}) {
-    const renderDelay = routeOpts.renderDelay || 0;
+    ctrl.renderDelay = routeOpts.renderDelay || ctrl.renderDelay || 0; // default is 0 ms
     const authGuards = routeOpts.authGuards || [];
 
     // prechecks
@@ -32,7 +32,7 @@ class Router {
 
     // Controller functions
     const prerender = ctrl.prerender.bind(ctrl);
-    const render = ctrl.render.bind(ctrl, renderDelay);
+    const render = ctrl.render.bind(ctrl);
     const postrender = ctrl.postrender.bind(ctrl);
     const init = ctrl.init.bind(ctrl);
 

@@ -64,6 +64,10 @@ Beside these properties the global <b style="color:orangered">window.regochSPA =
       <br><b>val</b> - controller property value</p>
     </li>
     <li>
+      <b>controllerRenderDelay <i>(renderDelay :number): App</i></b> - delay in miliseconds between stages in the controller <i>render()</i> hook.
+      <p><b>renderDelay</b> - delay in miliseconds (default is 0)</p>
+    </li>
+    <li>
       <b>controllerAuth <i>(auth :Auth): App</i></b> - Inject the auth library into the all controllers and use it as <i>this.auth</i>.
       Useful in apps where authentication guards are required in all routes, for example when building a web panel.
       <p><b>auth</b> - instance of the Auth class</p>
@@ -138,6 +142,7 @@ app
   .libInject({ StringExt, Rand });
 app
   .controller([HomeCtrl, SinglePageAppCtrl, NotfoundCtrl])
+  .controllerRenderDelay(10) // 10 miliseconds delay in the render() hook
   .controllerAuth(auth) // needed for route authGuards
   .controllerViewsCached(viewsCached);
 app

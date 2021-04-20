@@ -23,14 +23,14 @@ class Controller extends Page {
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
    * @returns {Promise<void>}
    */
-  async render(renderDelay, trx) {
-    await util.sleep(renderDelay);
+  async render(trx) {
+    await util.sleep(this.renderDelay);
     await this.loadInc(true); // defined in Page.js
-    await util.sleep(renderDelay);
+    await util.sleep(this.renderDelay);
     this.parseNonListeners();
-    await util.sleep(renderDelay);
+    await util.sleep(this.renderDelay);
     this.parseListeners();
-    await util.sleep(renderDelay);
+    await util.sleep(this.renderDelay);
   }
 
   async parseNonListeners() {
