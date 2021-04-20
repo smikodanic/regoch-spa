@@ -362,18 +362,17 @@ class DataRg extends DataRgListeners {
       const prop = attrValSplited[0].trim(); // controller property name company.name
       let val = this._getControllerValue(prop);
 
+      // save temporary initial innerHTML
+      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
+      if (!this.temp[tempVarName]) { this.temp[tempVarName] = elem.innerHTML; }
+
       // correct val
-      if (!val) { val = elem.textContent; } // the default value is defined in the HTML tag
+      if (val === undefined) { val = elem.textContent; } // the default value is defined in the HTML tag
       else if (typeof val === 'object') { val = JSON.stringify(val); }
       else if (typeof val === 'number') { val = +val; }
       else if (typeof val === 'string') { val = val || ''; }
       else if (typeof val === 'boolean') { val = val.toString(); }
       else { val = val; }
-
-      // save temporary initial innerHTML
-      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-      if (!this.temp[tempVarName]) { this.temp[tempVarName] = elem.innerHTML; }
-
 
       // load content in the element
       let act = attrValSplited[1] || 'inner';
@@ -391,6 +390,7 @@ class DataRg extends DataRgListeners {
       } else if (act === 'append') {
         elem.innerHTML = this.temp[tempVarName] + ' ' + val;
       } else if (act === 'inset') {
+        if (/\$\{\}/.test(val) || val === undefined) { val = '${}'; } // val contains ${} or it's undefined
         elem.innerHTML = this.temp[tempVarName].replace('${}', val);
       } else {
         elem.innerHTML = val;
