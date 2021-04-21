@@ -38,7 +38,7 @@ class DataRgCtrl extends Controller {
     ];
 
     // initial values for the runSWITCH example
-    this.myColor = 'red';
+    this.myColor = 'green';
   }
 
 

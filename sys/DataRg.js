@@ -12,7 +12,7 @@ class DataRg extends DataRgListeners {
     super();
     this.separator = '@@';
     this.temp = {}; // controller temporary variable (exists untill controller exists)
-    this.rgelems = {};
+    this.rgelems = {}; // set by rgElem()
   }
 
 
@@ -60,13 +60,7 @@ class DataRg extends DataRgListeners {
 
       const max = skip + limit < val.length ? skip + limit : val.length;
 
-
-      // save temporary initial innerHTML and outerHTML
-      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-      if (!this.temp[tempVarName]) {
-        this.temp[tempVarName] = elem.innerHTML;
-      }
-
+      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
 
       let act = attrValSplited[1] || 'outer'; // outer|inner
       act = act.trim();
@@ -84,7 +78,7 @@ class DataRg extends DataRgListeners {
         for (let i = skip; i < max; i++) {
           const j = max - 1 - i + skip;
           const newElem = elem.cloneNode();
-          newElem.innerHTML = this.temp[tempVarName];
+          newElem.innerHTML = this._getTemp(attrName, attrVal);
           newElem.style.visibility = '';
           newElem.removeAttribute('data-rg-for');
           newElem.setAttribute('data-rg-for-gen', attrVal);
@@ -97,7 +91,7 @@ class DataRg extends DataRgListeners {
         // multiply the innerHTML in the data-rg-for-gen element
         elem.innerHTML = '';
         for (let i = skip; i < max; i++) {
-          elem.innerHTML += this._parse$i(i, this.temp[tempVarName]); // replace .$i or $i+1 , $i-1, $i^1, ...;
+          elem.innerHTML += this._parse$i(i, this._getTemp(attrName, attrVal)); // replace .$i or $i+1 , $i-1, $i^1, ...;
         }
 
       }
@@ -130,11 +124,7 @@ class DataRg extends DataRgListeners {
       const attrVal = elem.getAttribute(attrName); // '10 @@ #comp'
       const max = +num || +attrVal.trim();
 
-      // save temporary initial innerHTML and outerHTML
-      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-      if (!this.temp[tempVarName]) {
-        this.temp[tempVarName] = elem.innerHTML;
-      }
+      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
 
       // hide the original (reference) element
       elem.style.visibility = 'hidden';
@@ -148,7 +138,7 @@ class DataRg extends DataRgListeners {
       for (let i = 0; i < max; i++) {
         const j = max - 1 - i;
         const newElem = elem.cloneNode();
-        newElem.innerHTML = this.temp[tempVarName];
+        newElem.innerHTML = this._getTemp(attrName, attrVal);
         newElem.style.visibility = '';
         newElem.removeAttribute('id');
         newElem.removeAttribute('data-rg-repeat');
@@ -248,14 +238,9 @@ class DataRg extends DataRgListeners {
       let switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');
       let switchdefaultElem = elem.querySelector('[data-rg-switch] > [data-rg-switchdefault]');
 
-      // temporary save
-      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-      if (!this.temp[tempVarName]) {
-        this.temp[tempVarName] = {switchcaseElems, switchdefaultElem};
-      } else {
-        switchcaseElems = this.temp[tempVarName].switchcaseElems;
-        switchdefaultElem = this.temp[tempVarName].switchdefaultElem;
-      }
+      this._setTemp(attrName, attrVal, {switchcaseElems, switchdefaultElem}); // set this.temp
+      switchcaseElems = this._getTemp(attrName, attrVal).switchcaseElems;
+      switchdefaultElem = this._getTemp(attrName, attrVal).switchdefaultElem;
 
       // empty the element with data-rg-switch attribute
       elem.innerHTML = '';
@@ -333,9 +318,7 @@ class DataRg extends DataRgListeners {
       const prop = attrValSplited[0].trim(); // controller property name company.name
       let val = this._getControllerValue(prop);
 
-      // save temporary initial innerHTML
-      const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-      if (!this.temp[tempVarName]) { this.temp[tempVarName] = elem.innerHTML; }
+      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
 
       // correct val
       if (val === undefined) { val = elem.textContent; } // the default value is defined in the HTML tag
@@ -357,12 +340,12 @@ class DataRg extends DataRgListeners {
         elem.nextSibling.remove();
         elem.parentNode.insertBefore(textNode, elem.nextSibling);
       } else if (act === 'prepend') {
-        elem.innerHTML = val + ' ' + this.temp[tempVarName];
+        elem.innerHTML = val + ' ' + this._getTemp(attrName, attrVal);
       } else if (act === 'append') {
-        elem.innerHTML = this.temp[tempVarName] + ' ' + val;
+        elem.innerHTML = this._getTemp(attrName, attrVal) + ' ' + val;
       } else if (act === 'inset') {
         if (/\$\{\}/.test(val) || val === undefined) { val = '${}'; } // val contains ${} or it's undefined
-        elem.innerHTML = this.temp[tempVarName].replace('${}', val);
+        elem.innerHTML = this._getTemp(attrName, attrVal).replace('${}', val);
       } else {
         elem.innerHTML = val;
       }
@@ -600,6 +583,30 @@ class DataRg extends DataRgListeners {
         }
       }
     }
+  }
+
+
+  /**
+   * Set the temporary variable this.tmp.
+   * @param {string} attrName - attribute name, for example: 'data-rg-for'
+   * @param {string} attrVal - attribute value, for example: 'myFunc()'
+   * @param {any} tempVal - value set in the temporary variable
+   */
+  _setTemp(attrName, attrVal, tempVal) {
+    const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
+    if (!this.temp[tempVarName]) {
+      this.temp[tempVarName] = tempVal;
+    }
+  }
+
+  /**
+   * Set the temporary variable this.tmp.
+   * @param {string} attrName - attribute name, for example: 'data-rg-for'
+   * @param {string} attrVal - attribute value, for example: 'myFunc()'
+   */
+  _getTemp(attrName, attrVal) {
+    const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
+    return this.temp[tempVarName];
   }
 
 
