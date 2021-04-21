@@ -54,7 +54,12 @@
       <br>Examples:
       <br>data-rg-for="companies @@ outer"
       <br>data-rg-for="company.employees" - hide the element
-      <br><i>NOTICE: The controllerProp should be an array.</i></p>
+      <br><i>NOTICE: The controllerProp should be an array.</i>
+      <br>
+      <br><b>data-rg-for options:</b>
+      <br>- <b>@@outer</b> - the original data-rg-for is hidden, and new data-rg-for-gen elements are created as siblings
+      <br>- <b>@@inner</b> - the innerHTML of the data-rg-for is multiplied
+      </p>
     </li>
     <li>
       <i>async</i> <b>rgRepeat <i>(num :number, id :string) :Promise&lt;void&gt;</i></b>
@@ -107,8 +112,8 @@
     <li>
       <b>rgClass <i>(controllerProp :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-class="&lt;controllerProperty&gt; [@@ add|replace]"</b> elements. Set the element class attribute.
-      <br>When <i>@@add</i> is used the new classes will be appended to the existing classes. If the <i>@@replace</i> is used then all classes will be replaced.
-      <br><b>controllerProp</b> - controller property which defines "class" attribute</p>
+      <br>When <i>@@add</i> is used the new classes will be appended to the existing classes. If the <i>@@replace</i> is used then all classes will be replaced. The default is <i>add</i>.
+      <br><b>controllerProp</b> - controller property which defines "class" attributes. It should be an array, for example: <small>this.classes = ['active', 'bold']</small></p>
     </li>
     <li>
       <b>rgStyle <i>(controllerProp :string) :void</i></b>

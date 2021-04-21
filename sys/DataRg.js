@@ -55,7 +55,7 @@ class DataRg extends DataRgListeners {
       let prop = propLimSkpSplited[0];
       prop = prop.trim();
       const val = this._getControllerValue(prop);
-      if(debug().rgFor) { console.log('val::', val, ' limit::', limit, ' skip::', skip); }
+      if(debug().rgFor) { console.log('rgFor() -->', 'val::', val, ' limit::', limit, ' skip::', skip); }
       if (!val) { return; }
 
       const max = skip + limit < val.length ? skip + limit : val.length;
@@ -83,13 +83,13 @@ class DataRg extends DataRgListeners {
         // multiply element by cloning and adding sibling elements
         for (let i = skip; i < max; i++) {
           const j = max - 1 - i + skip;
-          const innerHTML = this._parse$i(j, this.temp[tempVarName]); // replace .$i or $i+1 , $i-1, $i^1, ...
           const newElem = elem.cloneNode();
-          newElem.innerHTML = innerHTML;
+          newElem.innerHTML = this.temp[tempVarName];
           newElem.style.visibility = '';
           newElem.removeAttribute('data-rg-for');
           newElem.setAttribute('data-rg-for-gen', attrVal);
           elem.parentNode.insertBefore(newElem, elem.nextSibling);
+          newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
         }
 
       } else if (act === 'inner') {
@@ -102,7 +102,7 @@ class DataRg extends DataRgListeners {
 
       }
 
-      debug('rgFor', `act:: ${act}`, 'navy');
+      debug('rgFor', `data-rg-for="${attrVal}" --- ctrlProp:: ${prop}`, 'navy');
     }
   }
 
@@ -147,14 +147,14 @@ class DataRg extends DataRgListeners {
       // multiply element by cloning and adding sibling elements
       for (let i = 0; i < max; i++) {
         const j = max - 1 - i;
-        const innerHTML = this._parse$i(j, this.temp[tempVarName]); // replace .$i or $i+1 , $i-1, $i^1, ...
         const newElem = elem.cloneNode();
-        newElem.innerHTML = innerHTML;
+        newElem.innerHTML = this.temp[tempVarName];
         newElem.style.visibility = '';
         newElem.removeAttribute('id');
         newElem.removeAttribute('data-rg-repeat');
         newElem.setAttribute('data-rg-repeat-gen', attrVal);
         elem.parentNode.insertBefore(newElem, elem.nextSibling);
+        newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
       }
 
       debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
@@ -395,8 +395,8 @@ class DataRg extends DataRgListeners {
       const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
       const attrValSplited = attrVal.split(this.separator);
 
-      const ctrlProp = attrValSplited[0].trim();
-      const valArr = this[ctrlProp] || []; // ['my-bold', 'my-italic']
+      const prop = attrValSplited[0].trim(); // controller property name company.name
+      const valArr = this._getControllerValue(prop) || []; // ['my-bold', 'my-italic']
 
       let act = attrValSplited[1] || '';
       act = act.trim() || 'add';
@@ -404,7 +404,7 @@ class DataRg extends DataRgListeners {
       if (act == 'replace' && !!valArr.length) { elem.removeAttribute('class'); }
       for (const val of valArr) { elem.classList.add(val); }
 
-      debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${ctrlProp} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
+      debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${prop} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
     }
 
   }
