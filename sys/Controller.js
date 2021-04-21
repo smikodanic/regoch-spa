@@ -41,6 +41,7 @@ class Controller extends Page {
     await this.rgSwitch(controllerProp);
     this.rgElem();
     this.rgPrint(controllerProp);
+    this.rgEcho();
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
     this.rgLazyjs();

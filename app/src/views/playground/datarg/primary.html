@@ -65,7 +65,7 @@
 <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
 <br>
 <br><span data-rg-print="product.name @@ append">product.name: </span> &nbsp;<input type="text" name="x" data-rg-set="product.name @@ rgPrint" placeholder="change product.name">
-<p data-rg-print="product.address.city @@ inset">The product.address.city is "${}" !</p>
+<p data-rg-print="product.address.city @@ append">The product.address.city is</p>
 <p data-rg-print="product @@ append" style="color:Gray">JSON: </p>
 <br><small>array test</small>
 <br>product.colors: <span data-rg-print="product.colors"></span>
@@ -78,7 +78,13 @@
 <h4>DATA-RG-PRINT &amp; DATA-RG-SET (initial value)</h4>
 <p>Set the initial value of the input tag with the <b>value</b> attribute.</p>
 Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat.name @@ rgPrint">
-<br><span data-rg-print="pet.cat.name @@ inset">Pet name is "${}".</span>
+<br><span data-rg-print="pet.cat.name @@ append">Pet name is</span>
+
+
+<br><br><br>
+<h4>DATA-RG-ECHO</h4>
+<span data-rg-echo="This is the echoed text!"></span>
+
 
 <br><br>
 <h4>DATA-RG-CLASS</h4>

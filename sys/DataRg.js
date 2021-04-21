@@ -343,15 +343,38 @@ class DataRg extends DataRgListeners {
         elem.innerHTML = val + ' ' + this._getTemp(attrName, attrVal);
       } else if (act === 'append') {
         elem.innerHTML = this._getTemp(attrName, attrVal) + ' ' + val;
-      } else if (act === 'inset') {
-        if (/\$\{\}/.test(val) || val === undefined) { val = '${}'; } // val contains ${} or it's undefined
-        elem.innerHTML = this._getTemp(attrName, attrVal).replace('${}', val);
       } else {
         elem.innerHTML = val;
       }
 
       debug('rgPrint', `${prop}:: ${val} | act::"${act}"`, 'navy');
     }
+  }
+
+
+
+  /**
+   * data-rg-echo="<text>"
+   * Parse the "data-rg-echo" attribute. Prints the "text" in the HTML element as innerHTML.
+   * Examples:
+   * data-rg-echo="$i+1"  --> prints the iteration number
+   * @returns {void}
+   */
+  rgEcho(text) {
+    debug('rgEcho', '--------- rgEcho ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-echo';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!text) { elems = document.querySelectorAll(`[${attrName}^="${text}"]`); }
+    debug('rgEcho', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    // associate values
+    for (const elem of elems) {
+      const txt = elem.getAttribute('data-rg-echo');
+      if (!/\$i/.test(txt)) { elem.textContent = txt; } // if doesn't contain $i iteration variable
+    }
+
   }
 
 

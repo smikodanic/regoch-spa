@@ -55,10 +55,10 @@ class DataRgListeners {
         event.preventDefault();
 
         // change browser's address bar (emit 'pushstate' event)
-        const href = !!elem.getAttribute('href') ? elem.getAttribute('href').trim() : '';
+        const href = elem.getAttribute('href');
         const state = { href };
         const title = elem.getAttribute(attrName).trim();
-        navig.goto(href, state, title);
+        if (!!href) { navig.goto(href.trim(), state, title); }
         debug('rgHref', `Clicked data-rg-href element. href: ${href}`, 'orange');
       };
 

@@ -103,11 +103,15 @@
     </li>
     <li>
       <b>rgPrint <i>(controllerProp :string) :void</i></b>
-      <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [@@ inner|outer|sibling|prepend|append|inset]"</b> elements. Print the controller's property in the view.
-      <br>TIP1: When <i>inset</i> is used the value will be printed on the place in the HTML file marhed with the <b>${}</b>
-      <br>TIP2: If the value is the JS object or array it is automatically recognised and convertd to the JSON string.
+      <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [@@ inner|outer|sibling|prepend|append]"</b> elements. Print the controller's property in the view.
+      <br>TIP2: If the value is the JS object or array it is automatically recognised and converted to the JSON string.
       <br><b>controllerProp</b> - controller property name. The part of the attribute value which relates to the controller property, for example
       <i>product.name</i> in the data-rg-print="product.name @@ inner". This speed up rendering because it's limited only to one element.</p>
+    </li>
+    <li>
+      <b>rgEcho <i>(text :string) :void</i></b>
+      <p class="desc">Parse the <b>data-rg-echo="&lt;text&gt;"</b> elements. Print the <i>text</i> in the view as textContent.
+      <br><b>str</b> - the value which is printed in the textContent of the element, for example: <small>&lt;span data-rg-echo="$i+1"&gt;&lt;/span&gt;</small>.</p>
     </li>
     <li>
       <b>rgClass <i>(controllerProp :string) :void</i></b>
