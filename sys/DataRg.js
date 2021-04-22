@@ -318,6 +318,7 @@ class DataRg extends DataRgListeners {
   /**
    * data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"
    * data-rg-print="company.name @@ inner"
+   * data-rg-print="company.name @@ inner @@ keep"   - keep the innerHTML when value is undefined
    * Parse the "data-rg-print" attribute. Print the controller's property to view.
    * Examples:
    * data-rg-print="product" - product is the controller property
@@ -349,8 +350,12 @@ class DataRg extends DataRgListeners {
       let act = attrValSplited[1] || 'inner';
       act = act.trim();
 
+      // to keep the innerHTML as value when val is undefined
+      const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false;
+
+
       // correct val
-      if (val === undefined) { val = act === 'inner' ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
+      if (val === undefined) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
       else if (typeof val === 'object') { val = JSON.stringify(val); }
       else if (typeof val === 'number') { val = +val; }
       else if (typeof val === 'string') { val = val || ''; }
@@ -374,7 +379,7 @@ class DataRg extends DataRgListeners {
         elem.innerHTML = val;
       }
 
-      debug('rgPrint', `${prop}:: ${val} | act::"${act}"`, 'navy');
+      debug('rgPrint', `${prop}:: ${val} | act::"${act}" | toKeep::"${toKeep}`, 'navy');
     }
   }
 
