@@ -31,7 +31,7 @@ class Controller extends Page {
     await this.loadInc(true); // defined in Page.js
     await util.sleep(this.renderDelay);
     await this.parseNonListeners();
-    this.parseListeners();
+    if (!this.rgListeners.length) { this.parseListeners(); } // ensure that data-rg- element has only one listener
   }
 
 
@@ -100,10 +100,11 @@ class Controller extends Page {
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
    */
   async rerender(controllerProp) {
-    debug('rerender', `--------- rerender | controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
+    debug('rerender', `--------- rerender (start) | controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
     await this.rgKILL();
     await this.parseNonListeners(controllerProp);
-    await this.parseListeners(controllerProp);
+    if (!this.rgListeners.length) { this.parseListeners(controllerProp); } // ensure that data-rg- element has only one listener
+    debug('rerender', `--------- rerender (end) | controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
   }
 
 
@@ -142,11 +143,11 @@ class Controller extends Page {
    * @param {string} name - the $scope property name
    * @param {any} val - the $scope value
    */
-  $scopeSet(name, val) {
+  async $scopeSet(name, val) {
     debug('scopeSet', '--------- scopeSet ------', 'green', '#D9FC9B');
     this._$scope[name] = val;
     if (debug().scopeSet) { console.log('$scopeSet::', this._$scope); }
-    this.rerender(`$scope.${name}`);
+    await this.rerender(`$scope.${name}`);
   }
 
 

@@ -66,7 +66,7 @@
       <p class="desc"> The <i>$scope</i> object setter. The view will be re-rendered by rerender() method.
       <br><b>val</b> - new $scope value</p>
     </li>
-    <li><b>$scopeSet <i>(name :string, val :any) :void</i></b>
+    <li><i>async</i> <b>$scopeSet <i>(name :string, val :any) :void</i></b>
       <p class="desc"> Add/update the <i>$scope</i> property.  The view will be re-rendered by rerender() method.
       <br><b>name</b> - $scope property name
       <br><b>val</b> - value of the $scope property</p>
@@ -103,8 +103,8 @@
   <br>Example with the $scope:
   <pre><code>
 // controller
-const products = aawait this.httpClient.askJSON('http://api.example.com/products/list');
-this.$scopeSet('products', products); // this will re-render the view explicitly, without calling rgFor() and rgPrint()
+const products = await this.httpClient.askJSON('http://api.example.com/products/list');
+await this.$scopeSet('products', products); // this will re-render the view explicitly, without calling rgFor() and rgPrint()
 
 
 // view
