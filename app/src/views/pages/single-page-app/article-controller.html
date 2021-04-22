@@ -18,42 +18,65 @@
 </section>
 
 <section class="docs-section" id="item-3-2">
-  <h2 class="section-heading">Hook Methods</h2>
-  <p>
-    Use this methods in the controller as lifecycle hooks.
-    <br><b style="color:orange">PRERENDER &rarr; RENDER &rarr; POSTRENDER &rarr; INIT &rarr; DESTROY</b>
-    <br>
-    <br>The lifecycle hooks are related to render HTML elements with <b>data-rg-</b> attribute. The regoch SPA framework will render all elements with
-    data-rg- attributes. Here is the example of one data-rg- element: <small>&lt;span data-rg-print="product.name"&gt;&lt;/span&gt;</small>
-    which will set SPAN innerHTML with product.name (controller property value).
-  </p>
+  <h2 class="section-heading">Methods</h2>
+  <p>Use this methods in the controller as lifecycle hooks, to rerender the view or to manipulate with the <b>$scope</b> object.</p>
 	<ul class="methods">
+    <h4>LifeCycle Hook Methods</h4>
+    <b style="color:orange">PRERENDER &rarr; RENDER &rarr; POSTRENDER &rarr; INIT &rarr; DESTROY</b>
+    <br><span style="font-size:smaller">The lifecycle hooks are methods which are related to render HTML elements with <b>data-rg-</b> attribute. The regoch SPA framework will render all elements with
+    data-rg- attributes. Here is the example of one data-rg- element: <small>&lt;span data-rg-print="product.name"&gt;&lt;/span&gt;</small>
+    which will set SPAN innerHTML with product.name (controller property value).</span>
     <li>
-      <i>async</i> <b>prerender <i>(trx :object): Promise&lt;void&gt;</i></b>
+      <i>async</i> <b>prerender <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code before the "data-rg-..." elements are rendered.
       <br><b>trx</b> - regoch router transitional variable (carrier). See <a href="/router#item-2-2" data-rg-href>here</a>.</p>
     </li>
     <li>
-      <i>async</i> <strong>render <i>(trx :object): Promise&lt;void&gt;</i></strong>
+      <i>async</i> <strong>render <i>(trx :object) :Promise&lt;void&gt;</i></strong>
       <p class="desc">Render all elements with the "data-rg-..." attribute. <span style="color:orangered">Don't use it in the controller.</span>
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
-      <i>async</i> <b>postrender <i>(trx :object): Promise&lt;void&gt;</i></b>
+      <i>async</i> <b>postrender <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code after the "data-rg-..." elements are rendered.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
-    <li><i>async</i> <b>init <i>(trx :object): Promise&lt;void&gt;</i></b>
+    <li><i>async</i> <b>init <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">Executes the controller code after the postrender.
       It should be used to call internal controller methods. Thus internal controller logic will be nicely separated from the data-rg render process.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
-    <li><i>async</i> <b>destroy <i>(pevent :Event): Promise&lt;void&gt;</i></b>
+    <li><i>async</i> <b>destroy <i>(pevent :Event) :Promise&lt;void&gt;</i></b>
       <p class="desc">Executes the controller code on destroying the controller, i.e. on navig.onUrlChange event.
       <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element). This is very important to save browser's (app) memory space and to prevent memory leaks.
       <br><b>pevent</b> - the 'popstate' (back/forward buttons) or 'pushstate' (data-rg-href element click) event</p>
     </li>
 
+    <br><br>
+    <h4>Auxilary Render Methods</h4>
+    <li><b>rerender <i>(controllerProp :string) :void</i></b>
+      <p class="desc"> Re-render the view i.e. the data-rg- elements with the controllerProp. For example: <i>data-rg-print="first_name"</i>, where first_name is the controllerProp.
+      <br>The <i>data-rg-inc</i> and <i>data-rg-view</i> will not be rerendered by this method.
+      <br><b>controllerProp</b> - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."</p>
+    </li>
+
+    <br><br>
+    <h4>$scope Methods</h4>
+    <li><i>set</i> <b>$scope <i>(val :any) :void</i></b>
+      <p class="desc"> The <i>$scope</i> object setter. The view will be re-rendered by rerender() method.
+      <br><b>val</b> - new $scope value</p>
+    </li>
+    <li><b>$scopeSet <i>(name :string, val :any) :void</i></b>
+      <p class="desc"> Add/update the <i>$scope</i> property.  The view will be re-rendered by rerender() method.
+      <br><b>name</b> - $scope property name
+      <br><b>val</b> - value of the $scope property</p>
+    </li>
+    <li><i>get</i> <b>$scope <i>() :any</i></b>
+      <p class="desc"> Get the <i>$scope</i> value. It's getter. The view will NOT be re-rendered.</p>
+    </li>
+    <li><b>$scopeReset <i>() :void</i></b>
+      <p class="desc"> Set the <i>$scope</i> to empty object <b>{}</b>.  The view will be re-rendered by rerender() method.</p>
+    </li>
   </ul>
 </section>
 
@@ -73,8 +96,7 @@
 
 <section class="docs-section" id="item-3-4">
   <h2 class="section-heading">$scope</h2>
-  The scope is the object which binds the HTML (view) and the JavaScript (controller).
-  It is available for both the view and the controller.
+  The scope is the object which binds the HTML (view) and the JavaScript (controller). It is available for both the view and the controller.
   Every time the <b>this.$scope</b> is changed all DataRg and DataRgListeners methods are executed so the view is completely updated.
   This is similar to Angular 1 <i>$scope</i> parameter.
   <br>
@@ -82,7 +104,8 @@
   <pre><code>
 // controller
 const products = aawait this.httpClient.askJSON('http://api.example.com/products/list');
-this.$scope = {products}
+this.$scopeSet('products', products); // this will re-render the view explicitly, without calling rgFor() and rgPrint()
+
 
 // view
 &lt;tr data-rg-for="$scope.products"&gt;

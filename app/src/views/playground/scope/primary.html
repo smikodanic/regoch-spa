@@ -1,15 +1,24 @@
 <h1>$scope Test</h1>
 <p><b>$scope</b> is the controller property. When it's changed the <i>data-rg-</i> elements are rendered.</p>
 
-<h4>data-rg-print</h4>
-<span data-rg-print="$scope">$scope</span>
+<br><button data-rg-click="runSETTER()">$scope setter</button> - set the $scope and rerender the view
+<br><button data-rg-click="runSET()">$scopeSet</button> - set the $scope.products and rerender the view
+<br><button data-rg-click="runGETTER()">$scope getter</button> - get the $scope.products (open the console to see result)
+<br><button data-rg-click="runRESET()">$scopeReset</button> - should update the view with the empty $scope
+
 
 <br><br>
-<h4>data-rg-for</h4>
+<h4>data-rg-print="$scope"</h4>
+<span data-rg-print="$scope" style="font:12px Verdana"><b>$scope::</b> </span>
+
+
+<br><br>
+<h4>data-rg-for="$scope.products"</h4>
 <table>
-  <tr data-rg-for="$scope.products">
+  <tr data-rg-for="$scope.products" class="zebra$i%2">
+    <td class="$i+1">$i + 1</td>
     <td data-rg-print="$scope.products.$i.name"></td>
-    <td data-rg-print="$scope.products.$i.price @@ inset">€ ${}</td>
-    <td><button data-rg-click="runCLICK($i)">click</button></td>
+    <td data-rg-print="$scope.products.$i.price @@ append">€</td>
+    <td><button data-rg-click="showProduct($i)">click</button></td>
   </tr>
 </table>

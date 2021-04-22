@@ -34,29 +34,6 @@ class Controller extends Page {
     this.parseListeners();
   }
 
-  async parseNonListeners(controllerProp = '') {
-    await this.rgFor(controllerProp);
-    await this.rgRepeat();
-    await this.rgIf(controllerProp);
-    await this.rgSwitch(controllerProp);
-    this.rgElem();
-    this.rgPrint(controllerProp);
-    this.rgEcho();
-    this.rgClass(controllerProp);
-    this.rgStyle(controllerProp);
-    this.rgLazyjs();
-    // this.rgInterpolate(controllerProp);
-  }
-
-  parseListeners(controllerProp) {
-    this.rgHref();
-    this.rgClick();
-    this.rgKeyup();
-    this.rgChange();
-    this.rgEvt();
-    this.rgSet(controllerProp);
-  }
-
 
   /**
    * Run after render of the HTML elements with data-rg-... attribute. (see Router.js)
@@ -85,18 +62,66 @@ class Controller extends Page {
 
 
 
+  /************ AUXILARY RENDER METHODS ************/
   /**
-   * Set the controller's $scope property.
+   * Parse data-rg- elements with no listeners. The methods from DataRg.
+   * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
+   */
+  async parseNonListeners(controllerProp = '') {
+    await this.rgFor(controllerProp);
+    await this.rgRepeat();
+    await this.rgIf(controllerProp);
+    await this.rgSwitch(controllerProp);
+    this.rgElem();
+    this.rgEcho();
+    this.rgPrint(controllerProp);
+    this.rgClass(controllerProp);
+    this.rgStyle(controllerProp);
+    this.rgLazyjs();
+    // this.rgInterpolate(controllerProp);
+  }
+
+  /**
+   * Parse data-rg- elements with the listeners. The methods from DataRgListeners.
+   * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
+   */
+  parseListeners(controllerProp) {
+    this.rgHref();
+    this.rgClick();
+    this.rgKeyup();
+    this.rgChange();
+    this.rgEvt();
+    this.rgSet(controllerProp);
+  }
+
+
+  /**
+   * Re-render the view i.e. the data-rg- elements with the controllerProp. For example: data-rg-print="first_name", where first_name is the controllerProp.
+   * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
+   */
+  async rerender(controllerProp) {
+    debug('rerender', `--------- rerender | controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
+    await this.rgKILL();
+    await this.parseNonListeners(controllerProp);
+    await this.parseListeners(controllerProp);
+  }
+
+
+
+
+
+  /********* $scope  *********/
+
+  /**
+   * Set the controller's $scope object.
    * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
+   * @param {any} val - the $scope value
    */
   set $scope(val) {
-    debug('scopeSet', '--------- scopeSet ------', 'green', '#D9FC9B');
-
-    this._$scope = {...this._$scope, ...val}; // append the val to the $scope
-    if (debug().scopeSet) { console.log('val::', val); }
-    if (debug().scopeSet) { console.log('$scope::', this._$scope); }
-
-    this.parseNonListeners('$scope').then(() => { this.parseListeners('$scope'); });
+    debug('scopeSetter', '--------- scopeSetter ------', 'green', '#D9FC9B');
+    this._$scope = val;
+    if (debug().scopeSetter) { console.log('$scopeSetter::', this._$scope); }
+    this.rerender('$scope');
   }
 
 
@@ -105,10 +130,36 @@ class Controller extends Page {
    * It can be called as this.$scope.myVar in the controller or as data-rg-print="$scope.myVar"
    */
   get $scope() {
-    debug('scopeGet', '--------- scopeGet ------', 'green', '#D9FC9B');
-    if (debug().scopeGet) { console.log('$scope::', this._$scope); }
+    debug('scopeGetter', '--------- scopeGettter ------', 'green', '#D9FC9B');
+    if (debug().scopeGetter) { console.log('$scopeGetter::', this._$scope); }
     return this._$scope;
   }
+
+
+  /**
+   * Add/update the $scope proerty.
+   * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
+   * @param {string} name - the $scope property name
+   * @param {any} val - the $scope value
+   */
+  $scopeSet(name, val) {
+    debug('scopeSet', '--------- scopeSet ------', 'green', '#D9FC9B');
+    this._$scope[name] = val;
+    if (debug().scopeSet) { console.log('$scopeSet::', this._$scope); }
+    this.rerender(`$scope.${name}`);
+  }
+
+
+  /**
+   * Set the $scope to empty object {}.
+   * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
+   */
+  $scopeReset() {
+    debug('scopeReset', '--------- scopeReset ------', 'green', '#D9FC9B');
+    this.$scope = {};
+    if (debug().scopeReset) { console.log('$scopeReset::', this._$scope); }
+  }
+
 
 
 }

@@ -15,7 +15,7 @@ Click on the button to get the history data. Open the browser dev tools console.
 <br><br>
 <h4>DATA-RG-CLICK</h4>
 <button data-rg-click="runCLICK(5, 'str', 8, 9, $element)">Fetch Data</button> <small>Click the button to fetch JSON from the server.</small>
-<br><small data-rg-print="answer.res.content @@ inset">DATA: ${}</small>
+<br><small data-rg-print="answer.res.content @@ append">DATA:</small>
 <br>
 <br><button data-rg-click="print.inConsole.makeRed($element)">CLICK</button> - run function defined in the controller property: "print.inConsole($element)"
 
@@ -42,7 +42,7 @@ Update data-rg-switch and data-rg-if every time the SELECT is changed. <br>
 </ol>
 <div>
   Selected value is: <b data-rg-print="mySelect"></b>
-  <p data-rg-if="ifThree" data-rg-print="mySelect @@ inset">The selected value is <b>${}</b> (data-rg-if example).</p>
+  <p data-rg-if="ifThree">The selected value is <b data-rg-print="mySelect @@ inset"></b> (data-rg-if example).</p>
 </div>
 <div></div>
 

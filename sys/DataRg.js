@@ -33,7 +33,7 @@ class DataRg extends DataRgListeners {
     const attrName = 'data-rg-for';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgFor', `found elements:: ${elems.length}`, 'navy');
+    debug('rgFor', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -55,7 +55,7 @@ class DataRg extends DataRgListeners {
       let prop = propLimSkpSplited[0];
       prop = prop.trim();
       const val = this._getControllerValue(prop);
-      if(debug().rgFor) { console.log('rgFor() -->', 'val::', val, ' limit::', limit, ' skip::', skip); }
+      if(debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
       if (!val) { return; }
 
       const max = skip + limit < val.length ? skip + limit : val.length;
@@ -96,7 +96,6 @@ class DataRg extends DataRgListeners {
 
       }
 
-      debug('rgFor', `data-rg-for="${attrVal}" --- ctrlProp:: ${prop}`, 'navy');
     }
   }
 
@@ -171,7 +170,7 @@ class DataRg extends DataRgListeners {
     const attrName = 'data-rg-if';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgIf', `found elements:: ${elems.length}`, 'navy');
+    debug('rgIf', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     this._rgIf_uncommentAll(); // uncomment all data-rg-if elements
@@ -222,7 +221,7 @@ class DataRg extends DataRgListeners {
     const attrName = 'data-rg-switch';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgSwitch', `found elements:: ${elems.length}`, 'navy');
+    debug('rgSwitch', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -291,69 +290,6 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"
-   * data-rg-print="company.name @@ inner"
-   * Parse the "data-rg-print" attribute. Print the controller's property to view.
-   * Examples:
-   * data-rg-print="product" - product is the controller property
-   * data-rg-print="product.name @@ outer"
-   * data-rg-print="product.name @@ sibling"
-   * @param {string} controllerProp - part of the attribute value which relates to the controller property,
-   * for example product.name in the data-rg-print="product.name @@ inner". This speed up parsing because it's limited only to one element.
-   * @returns {void}
-   */
-  rgPrint(controllerProp) {
-    debug('rgPrint', '--------- rgPrint ------', 'navy', '#B6ECFF');
-
-    const attrName = 'data-rg-print';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgPrint', `found elements:: ${elems.length}`, 'navy');
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.separator);
-
-      const prop = attrValSplited[0].trim(); // controller property name company.name
-      let val = this._getControllerValue(prop);
-
-      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
-
-      // correct val
-      if (val === undefined) { val = elem.textContent; } // the default value is defined in the HTML tag
-      else if (typeof val === 'object') { val = JSON.stringify(val); }
-      else if (typeof val === 'number') { val = +val; }
-      else if (typeof val === 'string') { val = val || ''; }
-      else if (typeof val === 'boolean') { val = val.toString(); }
-      else { val = val; }
-
-      // load content in the element
-      let act = attrValSplited[1] || 'inner';
-      act = act.trim();
-      if (act === 'inner') {
-        elem.innerHTML = val;
-      } else if (act === 'outer') {
-        elem.outerHTML = val;
-      } else if (act === 'sibling') {
-        const textNode = document.createTextNode(val);
-        elem.nextSibling.remove();
-        elem.parentNode.insertBefore(textNode, elem.nextSibling);
-      } else if (act === 'prepend') {
-        elem.innerHTML = val + ' ' + this._getTemp(attrName, attrVal);
-      } else if (act === 'append') {
-        elem.innerHTML = this._getTemp(attrName, attrVal) + ' ' + val;
-      } else {
-        elem.innerHTML = val;
-      }
-
-      debug('rgPrint', `${prop}:: ${val} | act::"${act}"`, 'navy');
-    }
-  }
-
-
-
-  /**
    * data-rg-echo="<text>"
    * Parse the "data-rg-echo" attribute. Prints the "text" in the HTML element as innerHTML.
    * Examples:
@@ -378,6 +314,72 @@ class DataRg extends DataRgListeners {
   }
 
 
+
+  /**
+   * data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"
+   * data-rg-print="company.name @@ inner"
+   * Parse the "data-rg-print" attribute. Print the controller's property to view.
+   * Examples:
+   * data-rg-print="product" - product is the controller property
+   * data-rg-print="product.name @@ outer"
+   * data-rg-print="product.name @@ sibling"
+   * @param {string} controllerProp - part of the attribute value which relates to the controller property,
+   * for example product.name in the data-rg-print="product.name @@ inner". This speed up parsing because it's limited only to one element.
+   * @returns {void}
+   */
+  rgPrint(controllerProp) {
+    debug('rgPrint', '--------- rgPrint ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-print';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgPrint', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      const attrValSplited = attrVal.split(this.separator);
+
+      const prop = attrValSplited[0].trim(); // controller property name company.name
+      let val = this._getControllerValue(prop);
+
+      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
+
+      // define action
+      let act = attrValSplited[1] || 'inner';
+      act = act.trim();
+
+      // correct val
+      if (val === undefined) { val = act === 'inner' ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
+      else if (typeof val === 'object') { val = JSON.stringify(val); }
+      else if (typeof val === 'number') { val = +val; }
+      else if (typeof val === 'string') { val = val || ''; }
+      else if (typeof val === 'boolean') { val = val.toString(); }
+      else { val = val; }
+
+      // load content in the element
+      if (act === 'inner') {
+        elem.innerHTML = val;
+      } else if (act === 'outer') {
+        elem.outerHTML = val;
+      } else if (act === 'sibling') {
+        const textNode = document.createTextNode(val);
+        elem.nextSibling.remove();
+        elem.parentNode.insertBefore(textNode, elem.nextSibling);
+      } else if (act === 'prepend') {
+        elem.innerHTML = val + ' ' + this._getTemp(attrName, attrVal);
+      } else if (act === 'append') {
+        elem.innerHTML = this._getTemp(attrName, attrVal) + ' ' + val;
+      } else {
+        elem.innerHTML = val;
+      }
+
+      debug('rgPrint', `${prop}:: ${val} | act::"${act}"`, 'navy');
+    }
+  }
+
+
+
   /**
    * data-rg-class="<controllerProperty> [@@ add|replace]"
    * Parse the "data-rg-class" attribute. Set element class attribute.
@@ -394,7 +396,7 @@ class DataRg extends DataRgListeners {
     const attrName = 'data-rg-class';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgClass', `found elements:: ${elems.length}`, 'navy');
+    debug('rgClass', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -433,7 +435,7 @@ class DataRg extends DataRgListeners {
     const attrName = 'data-rg-style';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgStyle', `found elements:: ${elems.length}`, 'navy');
+    debug('rgStyle', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {

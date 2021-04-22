@@ -5,8 +5,11 @@ module.exports = (tip, text, color, background) => {
 
     // Controller.js
     renderDelay: false,
+    rerender: false,
+    scopeSetter: false,
+    scopeGetter: false,
     scopeSet: false,
-    scopeGet: false,
+    scopeReset: false,
 
     // Page.js
     loadInc: false,
@@ -21,7 +24,7 @@ module.exports = (tip, text, color, background) => {
     rgSwitch: false,
     rgElem: false,
     rgPrint: false,
-    rgEcho: true,
+    rgEcho: false,
     rgInterpolate: false,
     rgClass: false,
     rgStyle: false,
