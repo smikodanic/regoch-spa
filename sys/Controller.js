@@ -77,6 +77,7 @@ class Controller extends Page {
     this.rgPrint(controllerProp);
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
+    await util.sleep(this.renderDelay);
     this.rgLazyjs();
     // this.rgInterpolate(controllerProp);
   }
@@ -101,6 +102,7 @@ class Controller extends Page {
    */
   async rerender(controllerProp) {
     debug('rerender', `--------- rerender (start) | controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
+    if (debug().renderDelay) { console.log('renderDelay::', this.renderDelay); }
     await this.rgKILL();
     await this.parseNonListeners(controllerProp);
     if (!this.rgListeners.length) { this.parseListeners(controllerProp); } // ensure that data-rg- element has only one listener
