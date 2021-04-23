@@ -315,13 +315,18 @@ class DataRgListeners {
     if (!matched) { console.error(`Error data-rg-keyup: "${funcDef}" has bad definition.`); return; }
     const funcName = matched[1] || ''; // function name: products.list
 
-    const funcArgsStr = matched[2] || ''; // function arguments: 25, 'str', $event, $element
+    const funcArgsStr = matched[2] || ''; // function arguments: 25, 'str', $event, $element, this.products
     const funcArgs = funcArgsStr
       .split(',')
       .map(arg => {
         arg = arg.trim().replace(/\'|\"/g, '');
         if (arg === '$element') { arg = elem; }
         if (arg === '$event') { arg = event; }
+        if (/^this\./.test(arg)) {
+          const prop = arg.replace(/^this\./, ''); // remove this.
+          const val = this._getControllerValue(prop);
+          arg = val;
+        }
         return arg;
       });
 

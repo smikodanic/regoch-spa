@@ -17,7 +17,10 @@ Click on the button to get the history data. Open the browser dev tools console.
 <button data-rg-click="runCLICK(5, 'str', 8, 9, $element)">Fetch Data</button> <small>Click the button to fetch JSON from the server.</small>
 <br><small data-rg-print="answer.res.content @@ append">DATA:</small>
 <br>
-<br><button data-rg-click="print.inConsole.makeRed($element)">CLICK</button> - run function defined in the controller property: "print.inConsole($element)"
+<br><button data-rg-click="print.inConsole.makeRed($element)">CLICK</button> - run function defined in the controller property, for example <i>print.inConsole.makeRed($element)</i>
+<br>
+<br><button data-rg-click="runCLICK2(this.products)">CLICK 2</button> - test function argument as controller property, for example <i>data-rg-click="runCLICK2(this.products)"</i>
+<br><button data-rg-click="runCLICK2(this.products.1.name)">CLICK 2</button> - test function argument as controller property, for example <i>data-rg-click="runCLICK2(this.products.1.name)"</i>
 
 
 <br><br>

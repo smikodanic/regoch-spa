@@ -15,6 +15,12 @@ class DataRgListenersCtrl extends Controller {
         }
       }
     };
+
+    // test CLICK2
+    this.products = [
+      {name: 'Toy', price: 22.34},
+      {name: 'Flower', price: 88.56},
+    ];
   }
 
   async prerender(trx) {
@@ -45,6 +51,11 @@ class DataRgListenersCtrl extends Controller {
       elem.style.color = 'red';
       elem.style.backgroundColor = 'lightgreen';
     }
+  }
+
+
+  runCLICK2(prods) {
+    console.log('this.prods::', prods);
   }
 
   async callAPI() {
