@@ -340,27 +340,38 @@ class DataRg extends DataRgListeners {
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split(this.separator);
+      if (!attrValSplited.length) { console.error(`Attribute "data-rg-print" has bad definition (data-rg-print="${attrVal}").`); continue; }
 
-      const prop = attrValSplited[0].trim(); // controller property name company.name
-      let val = this._getControllerValue(prop);
 
       this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
 
-      // define action
-      let act = attrValSplited[1] || 'inner';
-      act = act.trim();
+      // get val and apply pipe to the val
+      const propPipe = attrValSplited[0].trim(); // controller property name with pipe:  company.name | slice(0,21)
+      const propPipeSplitted = propPipe.split('|');
+      const prop = propPipeSplitted[0].trim();
+      let val = this._getControllerValue(prop);
 
-      // to keep the innerHTML as value when val is undefined
-      const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false;
+
+      let pipe_funcDef = propPipeSplitted[1];
+      if (!!pipe_funcDef && !!val) {
+        pipe_funcDef = pipe_funcDef.trim();
+        const {funcName, funcArgs} = this._funcParse(pipe_funcDef);
+        val = val[funcName](...funcArgs);
+      }
 
 
       // correct val
+      const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false; // to keep the innerHTML as value when val is undefined
       if (val === undefined) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
       else if (typeof val === 'object') { val = JSON.stringify(val); }
       else if (typeof val === 'number') { val = +val; }
       else if (typeof val === 'string') { val = val || ''; }
       else if (typeof val === 'boolean') { val = val.toString(); }
       else { val = val; }
+
+      // define action
+      let act = attrValSplited[1] || 'inner';
+      act = act.trim();
 
       // load content in the element
       if (act === 'inner') {
@@ -379,7 +390,7 @@ class DataRg extends DataRgListeners {
         elem.innerHTML = val;
       }
 
-      debug('rgPrint', `${prop}:: ${val} | act::"${act}" | toKeep::"${toKeep}`, 'navy');
+      debug('rgPrint', `${propPipe}:: ${val} | act::"${act}" | toKeep::"${toKeep}`, 'navy');
     }
   }
 

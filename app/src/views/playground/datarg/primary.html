@@ -17,7 +17,7 @@
 <p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>
 <p>Initially the P element will be repeated 3 times due to <b>data-rg-repeat="3"</b> attribute. When the button "run REPEAT" is clicked the element will be repeated 5 times.</p>
 <button data-rg-click="runREPEAT(5)">run REPEAT</button>
-<p id="colorID" data-rg-repeat="3" class="$i+1">$i+1 <input data-rg-set="colors.$i @@ rgPrint"> <span data-rg-print="colors.$i"></span></p>
+<p id="petID" data-rg-repeat="3" class="$i+1">The pet #$i+1: <input data-rg-set="pets.$i @@ rgPrint"> <span data-rg-print="pets.$i"></span></p>
 
 <br><br>
 <h4>DATA-RG-IF</h4>
@@ -34,7 +34,7 @@
 <p>Here are two tests. <br>First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.</p>
 <i>-- switch one example</i>
 <br><input type="text" data-rg-set="myColor @@ rgPrint" placeholder="type red, green or blue">
-<button data-rg-click="runSWITCH()" data-rg-print="myColor @@ inset">run SWITCH "${}"</button>
+<button data-rg-click="runSWITCH()">run SWITCH "<span data-rg-print="myColor"></span>"</button>
 <ul data-rg-switch="myColor">
   <li data-rg-switchcase="red">red</li>
   <li data-rg-switchcase="green">green</li>
@@ -79,6 +79,14 @@
 <p>Set the initial value of the input tag with the <b>value</b> attribute.</p>
 Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat.name @@ rgPrint">
 <br><span data-rg-print="pet.cat.name @@ append">Pet name is</span>
+
+
+<br><br>
+<h4>DATA-RG-PRINT with the pipe</h4>
+<b>data-rg-print="longText" &rarr;</b> <span data-rg-print="longText"></span>
+<br><b>data-rg-print="longText | slice(0, 10)" &rarr;</b> <span data-rg-print="longText | slice(0, 10)"></span>
+<br><b>data-rg-print="longText | replace(/Lorem/ig, 'LOREM')" &rarr;</b> <span data-rg-print="longText | replace(/Lorem/ig, 'LOREM')"></span>
+
 
 
 <br><br><br>

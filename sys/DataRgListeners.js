@@ -243,7 +243,7 @@ class DataRgListeners {
     const attrName = 'data-rg-set';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgSet', `found elements:: ${elems.length}`, 'orange');
+    debug('rgSet', `found elements:: ${elems.length} , controllerProp:: ${controllerProp}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -322,7 +322,11 @@ class DataRgListeners {
         arg = arg.trim().replace(/\'|\"/g, '');
         if (arg === '$element') { arg = elem; }
         if (arg === '$event') { arg = event; }
-        if (/^this\./.test(arg)) {
+        if (/^\/.+\/i?g?$/.test(arg)) { // if regular expression, for example in replcae(/Some/i, 'some')
+          const mat = arg.match(/^\/(.+)\/(i?g?)$/);
+          arg = new RegExp(mat[1], mat[2]);
+        }
+        if (/^this\./.test(arg)) { // if contain this. i.e. controller property
           const prop = arg.replace(/^this\./, ''); // remove this.
           const val = this._getControllerValue(prop);
           arg = val;

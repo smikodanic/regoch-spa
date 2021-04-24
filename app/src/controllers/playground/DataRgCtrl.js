@@ -39,6 +39,9 @@ class DataRgCtrl extends Controller {
 
     // initial values for the runSWITCH example
     this.myColor = 'green';
+
+    // initail value for data-rg-print with the pipe
+    this.longText = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard.';
   }
 
 
@@ -64,10 +67,10 @@ class DataRgCtrl extends Controller {
 
   // repeat the data-rg-repeat num times
   async runREPEAT(num) {
-    this.colors = ['red', 'green', 'blue', 'navy', 'cyan'];
-    await this.rgRepeat(num, 'colorID');
-    this.rgSet('colors');
-    this.rgPrint('colors');
+    this.pets = ['cat', 'dog', 'horse', 'mouse', 'deva'];
+    await this.rgRepeat(num, 'petID');
+    this.rgSet('pets');
+    this.rgPrint('pets');
   }
 
   // toggle if and show hide elements

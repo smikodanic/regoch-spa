@@ -348,7 +348,6 @@ class Page extends DataRg {
       // check if SCRIPT already exists and if exists remove it
       const elems = document.body.querySelectorAll(`script[src="${url}"]`);
       if (elems.length) { this.unlazyJS([url]); }
-      await new Promise(r => setTimeout(r, 100));
 
       // add the SCRIPT tag
       const script = document.createElement('script');
@@ -441,7 +440,7 @@ class Page extends DataRg {
   unloadCSS(urls) {
     if (!urls) { return; }
     for (const url of urls) {
-      const elems = document.body.querySelectorAll(`link[rel="stylesheet"][href="${url}"]`);
+      const elems = document.head.querySelectorAll(`link[rel="stylesheet"][href="${url}"]`);
       for (const elem of elems) {
         if (!!elem) { elem.remove(); }
       }

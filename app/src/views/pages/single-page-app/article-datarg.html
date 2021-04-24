@@ -103,10 +103,13 @@
     </li>
     <li>
       <b>rgPrint <i>(controllerProp :string) :void</i></b>
-      <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [@@ inner|outer|sibling|prepend|append]"</b> elements. Print the controller's property in the view.
+      <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [| pipeFunc()] [@@ inner|outer|sibling|prepend|append]"</b> elements. Print the controller's property in the view.
       <br>TIP1: If the controller property value is <i>undefined</i> and action is <i>inner</i> then innerHTML value is printed.
         If the controller property value is <i>undefined</i> and action is not <i>inner</i> then empty string is printed.
       <br>TIP2: If the value is the JS object or array it is automatically recognised and converted to the JSON string.
+      <br>TIP3: The <b>pipeFunc</b> can be used to format the output, for example:
+      <br><small>data-rg-print="longText | slice(0, 10)"</small> or
+      <br><small>data-rg-print="longText | replace(/Lorem/ig, 'LOREM')"</small>
       <br><b>controllerProp</b> - controller property name. The part of the attribute value which relates to the controller property, for example
       <i>product.name</i> in the data-rg-print="product.name @@ inner". This speed up rendering because it's limited only to one element.</p>
     </li>
