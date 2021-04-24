@@ -75,6 +75,7 @@ class Controller extends Page {
     this.rgElem();
     this.rgEcho();
     this.rgPrint(controllerProp);
+    this.rgValue(controllerProp);
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
     await util.sleep(this.renderDelay);

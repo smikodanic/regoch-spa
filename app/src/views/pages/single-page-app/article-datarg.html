@@ -102,6 +102,11 @@
       <br><b>id</b> - element's id, for example &lt;p id="myID" data-rg-repeat="5"&gt;</p>
     </li>
     <li>
+      <b>rgEcho <i>(text :string) :void</i></b>
+      <p class="desc">Parse the <b>data-rg-echo="&lt;text&gt;"</b> elements. Print the <i>text</i> in the view as textContent.
+      <br><b>str</b> - the value which is printed in the textContent of the element, for example: <small>&lt;span data-rg-echo="$i+1"&gt;&lt;/span&gt;</small>.</p>
+    </li>
+    <li>
       <b>rgPrint <i>(controllerProp :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [| pipeFunc()] [@@ inner|outer|sibling|prepend|append]"</b> elements. Print the controller's property in the view.
       <br>TIP1: If the controller property value is <i>undefined</i> and action is <i>inner</i> then innerHTML value is printed.
@@ -114,21 +119,23 @@
       <i>product.name</i> in the data-rg-print="product.name @@ inner". This speed up rendering because it's limited only to one element.</p>
     </li>
     <li>
-      <b>rgEcho <i>(text :string) :void</i></b>
-      <p class="desc">Parse the <b>data-rg-echo="&lt;text&gt;"</b> elements. Print the <i>text</i> in the view as textContent.
-      <br><b>str</b> - the value which is printed in the textContent of the element, for example: <small>&lt;span data-rg-echo="$i+1"&gt;&lt;/span&gt;</small>.</p>
+      <b>rgValue <i>(controllerProp :string) :void</i></b>
+      <p class="desc">Parse the <b>data-rg-value="&lt;controllerProperty&gt;</b> elements. Set the element value attribute.
+      <br>It's specially useful when using in combination with <i>data-rg-for</i>:
+      <br><small>&lt;option data-rg-for="$scope.autos" data-rg-value="$scope.autos.$i.id" data-rg-print="$scope.autos.$i.name"&gt;&lt;/option&gt;</small>
+      <br><b>controllerProp</b> - controller property which defines the "value" attribute</p>
     </li>
     <li>
       <b>rgClass <i>(controllerProp :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-class="&lt;controllerProperty&gt; [@@ add|replace]"</b> elements. Set the element class attribute.
       <br>When <i>@@add</i> is used the new classes will be appended to the existing classes. If the <i>@@replace</i> is used then all classes will be replaced. The default is <i>add</i>.
-      <br><b>controllerProp</b> - controller property which defines "class" attributes. It should be an array, for example: <small>this.classes = ['active', 'bold']</small></p>
+      <br><b>controllerProp</b> - controller property which defines the "class" attributes. It should be an array, for example: <small>this.classes = ['active', 'bold']</small></p>
     </li>
     <li>
       <b>rgStyle <i>(controllerProp :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-style="&lt;controllerProperty&gt; [@@ add|replace]"</b> elements. Set the element style attribute.
       <br>When <i>@@add</i> is used the new styles will be appended to the existing styles. If the <i>@@replace</i> is used then all styles will be replaced.</th>
-      <br><b>controllerProp</b> - controller property which defines "style" attribute</p>
+      <br><b>controllerProp</b> - controller property which defines the "style" attribute</p>
     </li>
     <li>
       <b>rgLazyjs <i>() :void</i></b>

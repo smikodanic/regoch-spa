@@ -20,27 +20,27 @@ class Form {
    * @returns {void}
    */
   setControl(key, val) {
-    debug('setControl', '--------- setControl ------', 'green', '#A1F8DC');
-    debug('setControl', `${key} = ${val}`, 'green');
+    debug('setControl', `--------- setControl("${key}", "${val}") ------`, 'green', '#A1F8DC');
     const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
-    if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
+    if (!elems.length) { console.log(`%c FormWarn:: Form "${this.formName}" doesn't have control with name="${key}" attribute.`, `color:Maroon; background:LightYellow`); return; }
 
     for (const elem of elems) {
-      if (elem.type === 'checkbox') {
+      if (elem.type === 'checkbox') { // CHECKBOX
         elem.checked = false;
         if (val.indexOf(elem.value) !== -1) { elem.checked = true; } // val is array
-      } else if (elem.type === 'select-multiple') {
+      } else if (elem.type === 'select-multiple') { // on SELECT with multiple, for example <select name="family" size="4" multiple>
         const options = elem; // all options
         for (const option of options) {
           option.selected = false;
           if (val.indexOf(option.value) !== -1) { option.selected = true; }  // val is array
         }
-      } else if (elem.type === 'radio') {
+      } else if (elem.type === 'radio') { // RADIO
         elem.checked = false;
         if (val === elem.value) { elem.checked = true; }
-      } else {
+      } else { // INPUT, SELECT
         elem.value = val; // val is not array
       }
+      debug('setControl', `<${elem.type} name="${key}"> got value="${val}"`, 'green');
     }
 
   }
@@ -49,7 +49,7 @@ class Form {
 
   /**
    * Set the multiple form controls with one object.
-   * @param {object} obj - the object which represent the object values, or example: {name:'John Doe', age:23, employed:true}
+   * @param {object} obj - the object which represent the object values, for example: {name:'John Doe', age:23, employed:true}
    * @returns {void}
    */
   setControls(obj) {

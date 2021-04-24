@@ -54,7 +54,15 @@ full name: <input type="text" name="fullName">
 <button data-rg-click="emptyPet()">empty pet</button>
 
 
-<br><br><button data-rg-click="setAll()">set all</button>
+<br><br><br><button data-rg-click="generateAutos()">generate</button> - generate SELECT/OPTION by data-rg-for and set the default value
+<br><br>autos: <select name="autos" id="autos">
+  <option data-rg-for="$scope.autos" data-rg-value="$scope.autos.$i.id" data-rg-print="$scope.autos.$i.name"></option>
+</select>
+
+
+<br><br><br>
+<hr>
+<button data-rg-click="setAll()">set all</button>
 
 </form>
 

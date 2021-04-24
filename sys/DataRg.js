@@ -395,6 +395,36 @@ class DataRg extends DataRgListeners {
   }
 
 
+  /**
+   * data-rg-value="<controllerProperty>"
+   * Parse the "data-rg-value" attribute. Sets the "value" attribute with the controller property value.
+   * Examples:
+   * data-rg-value="product"
+   * data-rg-value="$scope.employee.name"
+   * @param {string} controllerProp - the attribute value which relates to the controller property
+   * @returns {void}
+   */
+  rgValue (controllerProp) {
+    debug('rgValue', '--------- rgValue ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-value';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgValue', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      if (!attrVal) { console.error(`Attribute "data-rg-value" has bad definition (data-rg-value="${attrVal}").`); continue; }
+
+      const prop = attrVal.trim();
+      const val = this._getControllerValue(prop);
+      elem.setAttribute('value', val);
+      debug('rgValue', `${prop}:: ${val}`, 'navy');
+    }
+  }
+
+
 
   /**
    * data-rg-class="<controllerProperty> [@@ add|replace]"
@@ -531,7 +561,7 @@ class DataRg extends DataRgListeners {
     for (const inset of insets) {
       const prop = inset.replace('${', '').replace('}', '').trim();
       let val = this._getControllerValue(prop);
-      if (!val) { val = ''; console.log(`%c  Warning rgInterpolate: Controller property ${inset} is undefined.`, `color:Maroon; background:LightYellow`); }
+      if (!val) { val = ''; console.log(`%c  DatRgWarn:: rgInterpolate: Controller property ${inset} is undefined.`, `color:Maroon; background:LightYellow`); }
       document.body.innerHTML = document.body.innerHTML.replace(inset, val);
 
       debug('rgInterpolate', `${inset} -> ${val}`, 'navy');

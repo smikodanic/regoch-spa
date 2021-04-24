@@ -93,12 +93,27 @@ class FormCtrl extends Controller {
   }
 
 
+  async generateAutos() {
+    const autos = [
+      {id: 1, name: 'Toyota', price: 8000},
+      {id: 2, name: 'WV', price: 4000},
+      {id: 3, name: 'BMW', price: 6000},
+      {id: 4, name: 'Fiat', price: 1000},
+      {id: 5, name: 'Audi', price: 5000}
+    ];
+
+    await this.$scopeSet('autos', autos);
+    this.userForm.setControl('autos', 2);
+  }
+
+
 
   async setAll() {
     this.userForm.setControls({
       fullName: 'John Doe',
       age: 48,
-      country: 'Kenya'
+      country: 'Kenya',
+      autos: 5
     });
   }
 
