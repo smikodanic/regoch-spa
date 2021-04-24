@@ -345,6 +345,12 @@ class Page extends DataRg {
     if (!urls) { return; }
     await new Promise(r => setTimeout(r, waitMS));
     for (const url of urls) {
+      // check if SCRIPT already exists and if exists remove it
+      const elems = document.body.querySelectorAll(`script[src="${url}"]`);
+      if (elems.length) { this.unlazyJS([url]); }
+      await new Promise(r => setTimeout(r, 100));
+
+      // add the SCRIPT tag
       const script = document.createElement('script');
       script.type = 'text/javascript';
       script.src = url;
@@ -414,6 +420,11 @@ class Page extends DataRg {
   loadCSS(urls) {
     if (!urls) { return; }
     for (const url of urls) {
+      // check if LINK tag already exists and if exists remove it
+      const elems = document.body.querySelectorAll(`link[href="${url}"]`);
+      if (elems.length) { this.unloadCSS([url]); }
+
+      // create LINK tag
       const linkCSS = document.createElement('link');
       linkCSS.setAttribute('rel', 'stylesheet');
       linkCSS.setAttribute('href', url);
@@ -430,8 +441,10 @@ class Page extends DataRg {
   unloadCSS(urls) {
     if (!urls) { return; }
     for (const url of urls) {
-      const linkCSS = document.head.querySelector(`link[rel="stylesheet"][href="${url}"]`);
-      if (!!linkCSS) { linkCSS.remove(); }
+      const elems = document.body.querySelectorAll(`link[rel="stylesheet"][href="${url}"]`);
+      for (const elem of elems) {
+        if (!!elem) { elem.remove(); }
+      }
     }
   }
 
