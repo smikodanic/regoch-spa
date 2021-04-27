@@ -30,31 +30,43 @@
   <p>Use this methods in the controller after "Cookie" class is instantiated.</p>
 	<ul class="methods">
     <li>
-      <b>setControl <i>(key :string, val :string): void</i></b>
+      <b>setControl <i>(key :string, val :string) :void</i></b>
       <p class="desc">Set the form control value.
       <br><b>key</b> - the value of the "name" HTML attribute
       <br><b>val</b> - the value
       </p>
     </li>
     <li>
-      <b>setControls <i>(obj :object): void</i></b>
+      <b>setControls <i>(obj :object) :void</i></b>
       <p class="desc">Set multiple form controls with one object.
       <br><b>obj</b> - the object which represent the object values, or example: <small></small>{name:'John Doe', age:23, employed:true}
       <br><i>NOTICE:</i> If the <b>obj</b> has subproperty it can be used in the name, for example:
       <small>const fruit = {seller: {name: 'Drog Ltd'}; this.testForm.setControls(fruit);</small> then in the view can be
-      <small>&lt;input type="text" name="<b style="color:brown">seller.name</b>"&gt;&lt;/small&gt;
+      <small>&lt;input type="text" name="<b style="color:brown">seller.name</b>"&gt;</small>
       </p>
     </li>
     <li>
-      <b>getControl <i>(key :string): string|number</i></b>
+      <b>getControl <i>(key :string) :string|number</i></b>
       <p class="desc">Get the form control value. Returned value type is string or number.
       <br><b>key</b> - the value of the "name" HTML attribute
       </p>
     </li>
     <li>
-      <b>delControl <i>(key :string): void</i></b>
+      <b>getControls <i>(keys :string[]) :object</i></b>
+      <p class="desc">Get the form control values. Returned value is the corresponding object.
+      <br><b>keys</b> - the values of the "name" HTML attributes (This is an JS Array!)
+      </p>
+    </li>
+    <li>
+      <b>delControl <i>(key :string) :void</i></b>
       <p class="desc">Empty the form control value.
       <br><b>key</b> - the value of the "name" HTML attribute
+      </p>
+    </li>
+    <li>
+      <b>delControls <i>(keys :string[]) :void</i></b>
+      <p class="desc">Empty the form control values.
+      <br><b>keys</b> - the values of the "name" HTML attributes (This is an JS Array!)
       </p>
     </li>
   </ul>

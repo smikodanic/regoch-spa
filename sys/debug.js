@@ -23,8 +23,9 @@ module.exports = (tip, text, color, background) => {
     rgIf: false,
     rgSwitch: false,
     rgElem: false,
-    rgPrint: false,
     rgEcho: false,
+    rgPrint: false,
+    rgValue: false,
     rgInterpolate: false,
     rgClass: false,
     rgStyle: false,
@@ -43,7 +44,9 @@ module.exports = (tip, text, color, background) => {
     setControl: false,
     setControls: false,
     getControl: false,
-    delControl: false
+    getControls: false,
+    delControl: false,
+    delControls: false
   };
 
   if (debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }

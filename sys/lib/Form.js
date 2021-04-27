@@ -54,9 +54,11 @@ class Form {
    */
   setControls(obj) {
     debug('setControls', '--------- setControls ------', 'green', '#88DBC0');
+    if (!obj) { return; }
     const keys = Object.keys(obj);
     for (const key of keys) {
       const elem = document.querySelector(`[data-rg-form="${this.formName}"] [name^="${key}"]`);
+      if (!elem) { continue; }
 
       let val, attrVal;
       if (!!elem) {
@@ -68,7 +70,7 @@ class Form {
         else if (key1 && key2) { val = obj[key1][key2]; }
       }
 
-      this.setControl(attrVal, val);
+      if (!!attrVal) { this.setControl(attrVal, val); }
 
       if(debug().setControl) { console.log(`setControls:: obj-key:: ${key} , attrVal:: ${attrVal} , elem::`, elem); }
     }
@@ -116,6 +118,22 @@ class Form {
 
 
   /**
+   * Get the form controll values and return corresponding object
+   * @param {string[]} keys - the value of the "name" HTML attribute
+   * @returns {object}
+   */
+  getControls(keys) {
+    debug('getControls', '--------- getControls ------', 'green', '#A1F8DC');
+    debug('getControls', keys, 'green');
+    const obj = {};
+    for (const key of keys) {
+      obj[key] = this.getControl(key);
+    }
+    return obj;
+  }
+
+
+  /**
    * Empty the form control value.
    * @param {string} key - the value of the "name" HTML attribute
    * @returns {void}
@@ -141,6 +159,20 @@ class Form {
       }
     }
 
+  }
+
+
+  /**
+   * Empty the form control values.
+   * @param {string[]} keys - the value of the "name" HTML attribute
+   * @returns {void}
+   */
+  delControls(keys) {
+    debug('delControls', '--------- delControls ------', 'green', '#A1F8DC');
+    debug('delControls', keys, 'green');
+    for (const key of keys) {
+      this.delControl(key);
+    }
   }
 
 
