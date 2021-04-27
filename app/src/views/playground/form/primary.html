@@ -1,7 +1,7 @@
 <h1>Form Test</h1>
 <p>A form example (add new user)</p>
 
-<form data-rg-form="userF">
+<form data-rg-form="testF">
 
 full name: <input type="text" name="fullName">
 <button data-rg-click="setFullName()">set full name</button>
@@ -59,6 +59,10 @@ full name: <input type="text" name="fullName">
   <option data-rg-for="$scope.autos" data-rg-value="$scope.autos.$i.id" data-rg-print="$scope.autos.$i.name"></option>
 </select>
 
+
+<br><br><br><button data-rg-click="setFruit()">set fruit</button> - use setControls() to set the INPUT with name="fruit.seller.name" i.e. with the subproperty
+<br>fruit.name: <input type="text" name="name">
+<br>fruit.seller.name: <input type="text" name="seller.name">
 
 <br><br><br>
 <hr>

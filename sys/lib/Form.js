@@ -40,7 +40,7 @@ class Form {
       } else { // INPUT, SELECT
         elem.value = val; // val is not array
       }
-      debug('setControl', `<${elem.type} name="${key}"> got value="${val}"`, 'green');
+      debug('setControl', `${elem.type}[name="${key}"] got value="${val}"`, 'green');
     }
 
   }
@@ -56,8 +56,21 @@ class Form {
     debug('setControls', '--------- setControls ------', 'green', '#88DBC0');
     const keys = Object.keys(obj);
     for (const key of keys) {
-      const val = obj[key];
-      this.setControl(key, val);
+      const elem = document.querySelector(`[data-rg-form="${this.formName}"] [name^="${key}"]`);
+
+      let val, attrVal;
+      if (!!elem) {
+        attrVal = elem.getAttribute('name'); // seller.name
+        const keys = attrVal.split('.'); // ['seller', 'name']
+        const key1 = keys[0]; // seller
+        const key2 = keys[1]; // name
+        if (key1 && !key2) { val = obj[key1]; }
+        else if (key1 && key2) { val = obj[key1][key2]; }
+      }
+
+      this.setControl(attrVal, val);
+
+      if(debug().setControl) { console.log(`setControls:: obj-key:: ${key} , attrVal:: ${attrVal} , elem::`, elem); }
     }
   }
 

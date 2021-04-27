@@ -5,7 +5,7 @@ class FormCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.userForm = new syslib.Form('userF');
+    this.testForm = new syslib.Form('testF');
   }
 
   async prerender(trx) {
@@ -17,79 +17,79 @@ class FormCtrl extends Controller {
 
 
   async setFullName() {
-    this.userForm.setControl('fullName', 'John');
+    this.testForm.setControl('fullName', 'John');
 
     await syslib.util.sleep(1300);
-    this.userForm.setControl('fullName', 'Johnny');
+    this.testForm.setControl('fullName', 'Johnny');
 
     await syslib.util.sleep(800);
-    const fullName = this.userForm.getControl('fullName');
+    const fullName = this.testForm.getControl('fullName');
     console.log('fullName::', fullName);
 
     await syslib.util.sleep(800);
-    this.userForm.delControl('fullName');
+    this.testForm.delControl('fullName');
   }
   async getFullName() {
-    const fullName = this.userForm.getControl('fullName');
+    const fullName = this.testForm.getControl('fullName');
     console.log('fullName::', fullName);
   }
 
 
   async setAge() {
-    this.userForm.setControl('age', 23);
+    this.testForm.setControl('age', 23);
   }
   async getAge() {
-    const age = this.userForm.getControl('age');
+    const age = this.testForm.getControl('age');
     console.log('age::', typeof age, age);
   }
 
 
   async setCountry() {
-    this.userForm.setControl('country', 'Croatia');
+    this.testForm.setControl('country', 'Croatia');
     await syslib.util.sleep(1300);
-    this.userForm.setControl('country', 'UK');
+    this.testForm.setControl('country', 'UK');
     await syslib.util.sleep(1300);
-    this.userForm.delControl('country');
+    this.testForm.delControl('country');
   }
   async getCountry() {
-    const country = this.userForm.getControl('country');
+    const country = this.testForm.getControl('country');
     console.log('country::', country);
   }
 
 
   async setFamily() {
-    this.userForm.setControl('family', ['Betty', 'Lara']);
+    this.testForm.setControl('family', ['Betty', 'Lara']);
   }
   async getFamily() {
-    const family = this.userForm.getControl('family');
+    const family = this.testForm.getControl('family');
     console.log('family::', family);
   }
   async emptyFamily() {
-    this.userForm.delControl('family');
+    this.testForm.delControl('family');
   }
 
 
   async setJobs() {
-    this.userForm.setControl('jobs', ['IT', 'Marketing']);
+    this.testForm.setControl('jobs', ['IT', 'Marketing']);
   }
   async getJobs() {
-    const jobs = this.userForm.getControl('jobs');
+    const jobs = this.testForm.getControl('jobs');
     console.log('selected jobs::', jobs);
   }
   async emptyJobs() {
-    this.userForm.delControl('jobs');
+    this.testForm.delControl('jobs');
   }
 
 
   async setPet() {
-    this.userForm.setControl('pet', 'cat');
+    this.testForm.setControl('pet', 'cat');
   }
   async getPet() {
-    const pet = this.userForm.getControl('pet');
+    const pet = this.testForm.getControl('pet');
     console.log('selected pet::', pet);
   }
   async emptyPet() {
-    this.userForm.delControl('pet');
+    this.testForm.delControl('pet');
   }
 
 
@@ -103,13 +103,29 @@ class FormCtrl extends Controller {
     ];
 
     await this.$scopeSet('autos', autos);
-    this.userForm.setControl('autos', 2);
+    this.testForm.setControl('autos', 2);
+  }
+
+
+
+  // set control with name="fruit.seller.name"
+  async setFruit() {
+    const fruit = {
+      name: 'apple',
+      price: 22,
+      seller: {
+        name: 'Drog Ltd',
+        city: 'London'
+      }
+    };
+
+    this.testForm.setControls(fruit);
   }
 
 
 
   async setAll() {
-    this.userForm.setControls({
+    this.testForm.setControls({
       fullName: 'John Doe',
       age: 48,
       country: 'Kenya',

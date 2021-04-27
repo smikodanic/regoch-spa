@@ -40,6 +40,9 @@
       <b>setControls <i>(obj :object): void</i></b>
       <p class="desc">Set multiple form controls with one object.
       <br><b>obj</b> - the object which represent the object values, or example: <small></small>{name:'John Doe', age:23, employed:true}
+      <br><i>NOTICE:</i> If the <b>obj</b> has subproperty it can be used in the name, for example:
+      <small>const fruit = {seller: {name: 'Drog Ltd'}; this.testForm.setControls(fruit);</small> then in the view can be
+      <small>&lt;input type="text" name="<b style="color:brown">seller.name</b>"&gt;&lt;/small&gt;
       </p>
     </li>
     <li>
