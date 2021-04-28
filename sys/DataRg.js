@@ -32,9 +32,11 @@ class DataRg extends DataRgListeners {
 
     const attrName = 'data-rg-for';
     let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    if (!!controllerProp) {
+      elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`);
+      if (elems.length > 1) { console.log(`%c rgForWarn:: There are ${elems.length} elements with the attribute ${attrName}^="${controllerProp}". Should be only one.`, `color:Maroon; background:LightYellow`); }
+    }
     debug('rgFor', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
-    if (!elems.length) { return; }
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // company.employers
@@ -56,7 +58,7 @@ class DataRg extends DataRgListeners {
       prop = prop.trim();
       const val = this._getControllerValue(prop);
       if(debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
-      if (!val) { return; }
+      if (!val) { continue; }
 
       const max = skip + limit < val.length ? skip + limit : val.length;
 
@@ -65,7 +67,7 @@ class DataRg extends DataRgListeners {
       let act = attrValSplited[1] || 'outer'; // outer|inner
       act = act.trim();
 
-      if (act === 'outer') {
+      if (act === 'outer') { // multiply the outerHTML of the data-rg-for element
         // hide the original (reference) element
         elem.style.visibility = 'hidden';
         elem.innerHTML = '';
@@ -86,9 +88,7 @@ class DataRg extends DataRgListeners {
           newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
         }
 
-      } else if (act === 'inner') {
-
-        // multiply the innerHTML in the data-rg-for-gen element
+      } else if (act === 'inner') { // multiply the innerHTML of the data-rg-for element
         elem.innerHTML = '';
         for (let i = skip; i < max; i++) {
           elem.innerHTML += this._parse$i(i, this._getTemp(attrName, attrVal)); // replace .$i or $i+1 , $i-1, $i^1, ...;
