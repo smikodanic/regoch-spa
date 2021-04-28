@@ -138,9 +138,10 @@
       <br><b>controllerProp</b> - controller property which defines the "style" attribute</p>
     </li>
     <li>
-      <b>rgLazyjs <i>() :void</i></b>
+      <i>async</i> <b>rgLazyjs <i>(waitMS :number) :Promise&lt;void&gt;</i></b>
       <p class="desc">Parse the <b>data-rg-lazyjs</b> elements. All SCRIPT tags with <i>data-rg-lazyjs</i> attribute will be removed
-      and again loaded on every controller execution after the DOM is loaded.</p>
+      and again loaded on every controller execution after the DOM is loaded.
+      <br><b>waitMS</b> - wait for miliseconds before the lazy load starts</p>
     </li>
   </ul>
 </section>

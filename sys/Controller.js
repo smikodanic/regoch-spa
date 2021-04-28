@@ -27,13 +27,21 @@ class Controller extends Page {
    */
   async render(trx) {
     if (debug().renderDelay) { console.log('renderDelay::', this.renderDelay); }
+    if (this.renderDelay > 2000) { console.log(`%c Warn:: Seems "${this.renderDelay} ms" is too big for renderDelay parameter.`, `color:Maroon; background:LightYellow`); }
+
     await util.sleep(this.renderDelay);
     await this.loadInc(true); // defined in Page.js
+
     await util.sleep(this.renderDelay);
-    await this.rgLazyjs();
+    await this.rgLazyjs(this.renderDelay);
+
     await util.sleep(this.renderDelay);
     await this.parseNonListeners();
-    if (!this.rgListeners.length) { this.parseListeners(); } // ensure that data-rg- element has only one listener
+
+    if (!this.rgListeners.length) { // ensure that data-rg- element has only one listener
+      await util.sleep(this.renderDelay);
+      this.parseListeners();
+    }
   }
 
 

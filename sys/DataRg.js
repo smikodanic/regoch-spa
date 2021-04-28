@@ -510,9 +510,10 @@ class DataRg extends DataRgListeners {
    * <script src="..." data-rg-lazyjs>
    * Parse the "data-rg-lazyjs" attribute. Reload all SCRIPT elements with data-rg-lazyjs attribute.
    * Remove all SCRIPT tags with the data-rg-lazyjs attributes and immediatelly after reload them.
-   * @returns {void}
+   * @param {number} waitMS - wait for miliseconds before loading process
+   * @returns {Promise<void>}
    */
-  async rgLazyjs() {
+  async rgLazyjs(waitMS = 0) {
     debug('rgLazyjs', '--------- rgLazyjs ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-lazyjs';
@@ -528,7 +529,7 @@ class DataRg extends DataRgListeners {
     }
 
     this.unlazyAllJS();
-    await this.lazyJS(urls, 100);
+    await this.lazyJS(urls, waitMS);
   }
 
 
