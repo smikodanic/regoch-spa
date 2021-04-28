@@ -512,7 +512,7 @@ class DataRg extends DataRgListeners {
    * Remove all SCRIPT tags with the data-rg-lazyjs attributes and immediatelly after reload them.
    * @returns {void}
    */
-  rgLazyjs() {
+  async rgLazyjs() {
     debug('rgLazyjs', '--------- rgLazyjs ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-lazyjs';
@@ -528,7 +528,7 @@ class DataRg extends DataRgListeners {
     }
 
     this.unlazyAllJS();
-    this.lazyJS(urls);
+    await this.lazyJS(urls, 100);
   }
 
 

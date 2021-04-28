@@ -30,6 +30,8 @@ class Controller extends Page {
     await util.sleep(this.renderDelay);
     await this.loadInc(true); // defined in Page.js
     await util.sleep(this.renderDelay);
+    await this.rgLazyjs();
+    await util.sleep(this.renderDelay);
     await this.parseNonListeners();
     if (!this.rgListeners.length) { this.parseListeners(); } // ensure that data-rg- element has only one listener
   }
@@ -78,8 +80,6 @@ class Controller extends Page {
     this.rgValue(controllerProp);
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
-    await util.sleep(this.renderDelay);
-    this.rgLazyjs();
     // this.rgInterpolate(controllerProp);
   }
 
