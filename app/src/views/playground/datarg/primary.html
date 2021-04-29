@@ -22,9 +22,22 @@
 <br><br>
 <h4>DATA-RG-IF</h4>
 <button data-rg-click="toggleIF()">toggle IF</button>
-<br>PREFIX1 <span data-rg-if="ifX" style="color:green">ifX1 (@@hide)</span> SUFIX1
-<br>PREFIX2 <p data-rg-if="ifX @@ hide" style="color:green;padding:0;">ifX2 (@@hide)</p> SUFIX2
-<br>PREFIX3 <p data-rg-if="ifX" style="color:green">ifX3 (@@remove)</p> SUFIX3
+<br>PREFIX1 <span data-rg-if="ifX" style="color:green">ifX1 (@@remove)</span> SUFIX1
+<br>PREFIX2 <p data-rg-if="ifX @@ remove" style="color:green">ifX2 (@@remove)</p> SUFIX2
+<br>PREFIX3 <p data-rg-if="ifX @@ hide" style="color:green;">ifX3 (@@hide)</p> SUFIX3
+<br>
+
+<br><br>
+<h4>DATA-RG-IF (with comparison functions: $not)</h4>
+<button data-rg-click="runIF()">run IF</button>
+<br>1. ifY.bool $not() <span data-rg-if="ifY.bool $not()" style="color:green">OK</span>
+<br>2. ifY.num $eq(5) <span data-rg-if="ifY.num $eq(5)" style="color:green">OK</span>
+<br>4. ifY.str $eq(this.myStr) <span data-rg-if="ifY.str $eq(this.myStr)" style="color:green">OK</span>
+<br>3. ifY.num $eq(this.myNum) <span data-rg-if="ifY.num $eq(this.myNum)" style="color:green">OK</span>
+<br>4. ifY.num $lt(5.5) <span data-rg-if="ifY.num $lt(5.5)" style="color:green">OK</span>
+<br>5. ifY.num $gte(this.myNum) <span data-rg-if="ifY.num $gte(this.myNum)" style="color:green">OK</span>
+<br>6. ifY.num $in(this.myArr) <span data-rg-if="ifY.num $in(this.myArr)" style="color:green">OK</span>
+<br>7. ifY.num $nin(this.myArr) <span data-rg-if="ifY.num $nin(this.myArr)" style="color:green">OK</span>
 
 <br><br>
 <h4>DATA-RG-SWITCH</h4>

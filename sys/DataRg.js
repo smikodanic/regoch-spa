@@ -174,22 +174,35 @@ class DataRg extends DataRgListeners {
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName); // ifAge @@ remove
+      const attrVal = elem.getAttribute(attrName).trim(); // ifAge @@ remove
       const attrValSplited = attrVal.split(this.separator);
 
-      const prop = attrValSplited[0].trim();
+      const propComp = attrValSplited[0].trim(); // controller property with comparison function, for example: ifAge $eq(22)
+      const propCompSplitted = propComp.split(/\s+/);
+
+      const prop = propCompSplitted[0].trim(); // ifAge
       const val = this._getControllerValue(prop);
+
+      const funcDef = propCompSplitted[1] ? propCompSplitted[1].trim() : false; // $eq(22)
+      let tf = false;
+      if (!!funcDef) {
+        // parse data-rg-if with the comparison operators: $not(), $eq(22), $ne(22), ...
+        const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef);
+        tf = this._calcComparison(val, funcName, funcArgs);
+        debug('rgIf', `  comparison:: data-rg-if="${prop}=${val} ${funcName}(${funcArgsStr})"  => tf: ${tf}`, 'navy');
+      } else {
+        // parse data-rg-if without the comparison operators
+        tf = val;
+      }
+
 
       // remove or hide element, remove is default
       let act = attrValSplited[1] || 'remove'; // 'remove'|'hide'
       act = act.trim();
 
       // hide/show elem
-      if (!!val) {
-        act === 'remove' ? elem.style.display = '' : elem.style.visibility = '';
-      } else {
-        act === 'remove' ?  elem.style.display = 'none' : elem.style.visibility = 'hidden';
-      }
+      if (tf) { act === 'remove' ? elem.style.display = '' : elem.style.visibility = ''; }
+      else { act === 'remove' ?  elem.style.display = 'none' : elem.style.visibility = 'hidden'; }
 
       debug('rgIf', `${prop} = ${val} | ${elem.outerHTML}`, 'navy');
     }
@@ -646,6 +659,59 @@ class DataRg extends DataRgListeners {
         }
       }
     }
+  }
+
+
+  /**
+   * Caclulate comparison operators.
+   * @param {any} val - the controller property value
+   * @param {string} funcName - the function name: $not, $eq, ...
+   * @param {any[]} funcArgs - function arguments (see _funcParse())
+   * @returns {boolean}
+   */
+  _calcComparison(val, funcName, funcArgs) {
+    let tf = false;
+    const arg = funcArgs[0] ? this._typeConvertor(funcArgs[0]) : '';
+
+    if (funcName === '$not') { tf = !val; }
+    else if (funcName === '$eq' && arg) { tf = val === arg; }
+    else if (funcName === '$gt' && arg) { tf = val > arg; }
+    else if (funcName === '$gte' && arg) { tf = val >= arg; }
+    else if (funcName === '$lt' && arg) { tf = val < arg; }
+    else if (funcName === '$lte' && arg) { tf = val <= arg; }
+    else if (funcName === '$ne' && arg) { tf = val !== arg; }
+    else if (funcName === '$in' && arg) { tf = arg.indexOf(val) !== -1; } // arg must be array
+    else if (funcName === '$nin' && arg) { tf = arg.indexOf(val) === -1; } // arg must be array
+
+    // console.log(`funcName:: ${funcName} -- val:.${val} -- arg:.${arg} -- tf:.${tf} --`);
+
+    return tf;
+  }
+
+
+  /**
+   * Convert string into integer, float or boolean.
+   * @param {string} value
+   * @returns {string | number | boolean | object}
+   */
+  _typeConvertor(value) {
+    function isJSON(str) {
+      try { JSON.parse(str); }
+      catch(err) { return false; }
+      return true;
+    }
+
+    if (!!value && !isNaN(value) && !/\./.test(value)) { // convert string into integer (12)
+      value = parseInt(value, 10);
+    } else if (!!value && !isNaN(value) && /\./.test(value)) { // convert string into float (12.35)
+      value = parseFloat(value);
+    } else if (value === 'true' || value === 'false') { // convert string into boolean (true)
+      value = JSON.parse(value);
+    } else if (isJSON(value)) {
+      value = JSON.parse(value);
+    }
+
+    return value;
   }
 
 

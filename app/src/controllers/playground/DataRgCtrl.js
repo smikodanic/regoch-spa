@@ -80,6 +80,20 @@ class DataRgCtrl extends Controller {
     this.rgIf('ifX');
   }
 
+  runIF() {
+    this.myNum = 5;
+    this.myStr = 'some str';
+    this.myArr = [5, 4, 'lorem'];
+
+    this.ifY = {
+      bool: true,
+      num: 5,
+      str: 'some str'
+    };
+    console.log('runIF::', this.ifY);
+    this.rgIf('ifY');
+  }
+
 
   // Here are two tests. First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.
   runSWITCH() {

@@ -312,7 +312,7 @@ class DataRgListeners {
    */
   _funcParse(funcDef, elem, event) {
     const matched = funcDef.match(/^(.+)\((.*)\)$/);
-    if (!matched) { console.error(`Error data-rg-keyup: "${funcDef}" has bad definition.`); return; }
+    if (!matched) { console.error(`_funcParseErr: Function "${funcDef}" has bad definition.`); return; }
     const funcName = matched[1] || ''; // function name: products.list
 
     const funcArgsStr = matched[2] || ''; // function arguments: 25, 'str', $event, $element, this.products

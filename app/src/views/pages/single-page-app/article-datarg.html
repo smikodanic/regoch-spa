@@ -70,14 +70,28 @@
     </li>
     <li>
       <b>rgIf <i>(controllerProp :string) :void</i></b>
-      <p class="desc">Parse the <b>data-rg-if="&lt;controllerProp&gt; [@@ remove|hide]"</b> elements. Hide or remove the HTML element if the <i>controllerProp</i> has falsy value.
+      <p class="desc">Parse the <b>data-rg-if="&lt;controllerProp&gt; [&lt;comparison&gt;] [@@ remove|hide]"</b> elements. Hide or remove the HTML element if the <i>controllerProp</i> has falsy value.
       <br>When @@remove option is used the style="display:none;" is added to the data-rg-if element.
       <br>When @@hide option is used the style="visibility:hidden;" is added to the data-rg-if element.
       <br><b>controllerProp</b> - controller property name
+      <br>
+      <br><i>comparison</i> - comparison operators can be used:
+        <br><strong>$not()</strong>
+        <strong style="margin-left:5px">$eq(arg :any)</strong>
+        <strong style="margin-left:5px">$gt(arg :numstronger)</strong>
+        <strong style="margin-left:5px">$gte(arg :numstronger)</strong>
+        <strong style="margin-left:5px">$lt(arg :numstronger)</strong>
+        <strong style="margin-left:5px">$lte(arg :numstronger)</strong>
+        <strong style="margin-left:5px">$ne(arg :any)</strong>
+        <strong style="margin-left:5px">$in(arg :any[])</strong>
+        <strong style="margin-left:5px">$nin(arg :any[])</strong>
+      <br>
       <br>Examples:
       <br>* data-rg-if="ifAge" - remove the element
-      <br>* data-rg-if="ifAge @@ remove" - remove the element (same as above)</p>
+      <br>* data-rg-if="ifAge @@ remove" - remove the element (same as above)
       <br>* data-rg-if="ifAge @@ hide" - hide the element
+      <br>* data-rg-if="employee.age $gt(55)"
+      </p>
     </li>
     <li>
       <b>rgSwitch <i>(controllerProp :string) :void</i></b>
