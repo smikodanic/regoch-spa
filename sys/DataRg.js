@@ -491,18 +491,57 @@ class DataRg extends DataRgListeners {
       const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
       const attrValSplited = attrVal.split(this.separator);
 
-      const ctrlProp = attrValSplited[0].trim();
-      const valObj = this[ctrlProp] || {}; // {fontSize: '21px', color: 'red'}
+      const prop = attrValSplited[0].trim();
+      const valObj = this._getControllerValue(prop); // {fontSize: '21px', color: 'red'}
 
       let act = attrValSplited[1] || '';
       act = act.trim() || 'add';
 
       if (act == 'replace') { elem.removeAttribute('style'); }
 
-      const styleProps = Object.keys(valObj);
-      for (const styleProp of styleProps) { elem.style[styleProp] = valObj[styleProp]; }
+      let styleProps = [];
+      if (!!valObj) {
+        styleProps = Object.keys(valObj);
+        for (const styleProp of styleProps) { elem.style[styleProp] = valObj[styleProp]; }
+      }
 
-      debug('rgStyle', `data-rg-style="${attrVal}" --- ctrlProp:: "${ctrlProp}" | styleProps:: "${styleProps}" | act:: "${act}"`, 'navy');
+      debug('rgStyle', `data-rg-style="${attrVal}" --- prop:: "${prop}" | styleProps:: "${styleProps}" | act:: "${act}"`, 'navy');
+    }
+
+  }
+
+
+  /**
+   * data-rg-src"<controllerProperty> [@@<defaultSrc>]"
+   * Parse the "data-rg-src" attribute. Set element src attribute.
+   * Examples:
+   * data-rg-src="imageURL" - define <img src="">
+   * @returns {void}
+   */
+  rgSrc(controllerProp) {
+    debug('rgSrc', '--------- rgSrc ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-src';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgSrc', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || '';
+      const attrValSplited = attrVal.split(this.separator);
+
+      const prop = attrValSplited[0].trim();
+      const val = this._getControllerValue(prop);
+
+      // when val is undefined load defaultSrc
+      let defaultSrc = attrValSplited[1] || '';
+      defaultSrc = defaultSrc.trim();
+
+      const src = val || defaultSrc;
+      elem.src = src;
+
+      debug('rgSrc', `data-rg-src="${attrVal}" --prop:: "${prop}" --src:: "${src}"`, 'navy');
     }
 
   }

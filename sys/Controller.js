@@ -88,6 +88,7 @@ class Controller extends Page {
     this.rgValue(controllerProp);
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
+    this.rgSrc(controllerProp);
     // this.rgInterpolate(controllerProp);
   }
 

@@ -161,6 +161,12 @@ class DataRgCtrl extends Controller {
     this.rgStyle('myStajl');
   }
 
+  // define image src attribute
+  runSRC() {
+    this.imageURL = 'http://cdn.dex8.com/img/turnkey_tasks/scraper_free.png';
+    this.rgSrc('imageURL');
+  }
+
 }
 
 

@@ -152,6 +152,12 @@
       <br><b>controllerProp</b> - controller property which defines the "style" attribute</p>
     </li>
     <li>
+      <b>rgSrc <i>(controllerProp :string) :void</i></b>
+      <p class="desc">Parse the <b>data-rg-src="&lt;controllerProperty&gt;  [@@ defaultSrc]"</b> elements. Set the element src attribute, for example in the image tag.
+      <br>The <i>@@defaultSrc</i> will be loaded in case when <i>controllerProp</i> is undefined, for example <small>data-rg-src="myImageURL @@ http://image.com/robot.jpg"</small>
+      <br><b>controllerProp</b> - controller property which defines the "src" attribute value</p>
+    </li>
+    <li>
       <i>async</i> <b>rgLazyjs <i>(waitMS :number) :Promise&lt;void&gt;</i></b>
       <p class="desc">Parse the <b>data-rg-lazyjs</b> elements. All SCRIPT tags with <i>data-rg-lazyjs</i> attribute will be removed
       and again loaded on every controller execution after the DOM is loaded.
