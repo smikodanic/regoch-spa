@@ -80,8 +80,8 @@ class Controller extends Page {
   async parseNonListeners(controllerProp = '') {
     await this.rgFor(controllerProp);
     await this.rgRepeat();
-    await this.rgIf(controllerProp);
-    await this.rgSwitch(controllerProp);
+    this.rgIf(controllerProp);
+    this.rgSwitch(controllerProp);
     this.rgElem();
     this.rgEcho();
     this.rgPrint(controllerProp);

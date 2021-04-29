@@ -164,7 +164,7 @@ class DataRg extends DataRgListeners {
    * @param {string} controllerProp - controller property name
    * @returns {void}
    */
-  async rgIf(controllerProp) {
+  rgIf(controllerProp) {
     debug('rgIf', '--------- rgIf ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-if';
@@ -186,7 +186,7 @@ class DataRg extends DataRgListeners {
 
       // hide/show elem
       if (!!val) {
-        act === 'remove' ? elem.style.display = '' : elem.style.visibility = 'visible';
+        act === 'remove' ? elem.style.display = '' : elem.style.visibility = '';
       } else {
         act === 'remove' ?  elem.style.display = 'none' : elem.style.visibility = 'hidden';
       }
@@ -205,9 +205,9 @@ class DataRg extends DataRgListeners {
    * data-rg-switch="ctrlprop @@ multiple" - ctrlprop is array of string, number or boolean
    * Notice @@ multiple can select multiple switchcases.
    * @param {string} controllerProp - controller property name
-   * @returns {Promise<void>}
+   * @returns {void}
    */
-  async rgSwitch(controllerProp) {
+  rgSwitch(controllerProp) {
     debug('rgSwitch', '--------- rgSwitch ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-switch';
@@ -226,28 +226,26 @@ class DataRg extends DataRgListeners {
       const val = this._getControllerValue(prop);
 
       // get data-rg-switchcase and data-rg-switchdefault attribute values
-      let switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');
-      let switchdefaultElem = elem.querySelector('[data-rg-switch] > [data-rg-switchdefault]');
+      const switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');
+      const switchdefaultElem = elem.querySelector('[data-rg-switch] > [data-rg-switchdefault]');
 
-      this._setTemp(attrName, attrVal, {switchcaseElems, switchdefaultElem}); // set this.temp
-      switchcaseElems = this._getTemp(attrName, attrVal).switchcaseElems;
-      switchdefaultElem = this._getTemp(attrName, attrVal).switchdefaultElem;
-
-      // empty the element with data-rg-switch attribute
-      elem.innerHTML = '';
-
-      // set or delete data-rg-switchcase element
+      // set data-rg-switchcase
       let isMatched = false; // is data-rg-switchcase value matched
       for (const switchcaseElem of switchcaseElems) {
         let switchcaseAttrVal = switchcaseElem.getAttribute('data-rg-switchcase');
         switchcaseAttrVal = switchcaseAttrVal.trim();
-        if (!isMultiple && switchcaseAttrVal === val) { elem.innerHTML = switchcaseElem.outerHTML; isMatched = true; }
-        else if (isMultiple && val && val.indexOf(switchcaseAttrVal) !== -1) { elem.append(switchcaseElem); isMatched = true; }
-        else { switchcaseElem.remove(); }
-        debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --- val:: "${val}"`, 'navy');
+
+        if (!isMultiple && switchcaseAttrVal === val) { switchcaseElem.style.display = ''; isMatched = true; }
+        else if (isMultiple && val && val.indexOf(switchcaseAttrVal) !== -1) { switchcaseElem.style.display = ''; isMatched = true; }
+        else { switchcaseElem.style.display = 'none'; }
+
+        debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --val:: "${val}" --isMatched: ${isMatched}`, 'navy');
       }
 
-      if (!isMatched && !!switchdefaultElem) { elem.innerHTML = switchdefaultElem.outerHTML; }
+      // set data-rg-switchdefault
+      if (!isMatched && !!switchdefaultElem) { switchdefaultElem.style.display = ''; }
+      else { switchdefaultElem.style.display = 'none'; }
+      debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchdefault --isMatched: ${isMatched}`, 'navy');
     }
   }
 

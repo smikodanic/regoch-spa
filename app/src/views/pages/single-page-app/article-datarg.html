@@ -69,21 +69,21 @@
       <br><b>id</b> - element's id, for example &lt;p id="myID" data-rg-repeat="5"&gt;</p>
     </li>
     <li>
-      <i>async</i> <b>rgIf <i>(controllerProp :string) :Promise&lt;void&gt;</i></b>
-      <p class="desc">Parse the <b>data-rg-if="&lt;controllerProp&gt; [@@ hide|remove]"</b> elements. Show, hide or remove the HTML element.
-      <br>When @@hide option is used the style="visibility:hidden;" or style="visibility:visible;" is added to the data-rg-if element.
-      <br>When @@remove option is used the data-rg-if element is completely commented. For example: <code class="language-markup">&lt;!--&lt;span data-rg-if="ifAge @@ remove"&gt;Lorem ipsum&lt;/span&gt;--&gt;</code>
+      <b>rgIf <i>(controllerProp :string) :void</i></b>
+      <p class="desc">Parse the <b>data-rg-if="&lt;controllerProp&gt; [@@ remove|hide]"</b> elements. Hide or remove the HTML element if the <i>controllerProp</i> has falsy value.
+      <br>When @@remove option is used the style="display:none;" is added to the data-rg-if element.
+      <br>When @@hide option is used the style="visibility:hidden;" is added to the data-rg-if element.
       <br><b>controllerProp</b> - controller property name
       <br>Examples:
-      <br>* data-rg-if="ifAge" - hide the element
+      <br>* data-rg-if="ifAge" - remove the element
+      <br>* data-rg-if="ifAge @@ remove" - remove the element (same as above)</p>
       <br>* data-rg-if="ifAge @@ hide" - hide the element
-      <br>* data-rg-if="ifAge @@ remove" - remove the element</p>
     </li>
     <li>
-      <i>async</i> <b>rgSwitch <i>(controllerProp :string) :Promise&lt;void&gt;</i></b>
+      <b>rgSwitch <i>(controllerProp :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-switch="&lt;controllerProp&gt; [@@ multiple]"</b> elements. Show or remove elements depending if "data-rg-switchcase" value matches controller property.
       <br>Notice1: The data-rg-if can hide elements while data-rg-switch will only remove them.
-      <br>Notice2: With @@multiple many switchcases can be shown.
+      <br>Notice2: When @@multiple is used the multiple switchcases can be shown. The controller property must be an array.
       <br><b>controllerProp</b> - controller property name
       <br>Example:
       <br>data-rg-switch="age"
