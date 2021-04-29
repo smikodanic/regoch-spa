@@ -69,7 +69,7 @@ class DataRg extends DataRgListeners {
 
       if (act === 'outer') { // multiply the outerHTML of the data-rg-for element
         // hide the original (reference) element
-        elem.style.visibility = 'hidden';
+        elem.style.display = 'none';
         elem.innerHTML = '';
 
         // remove generated data-rg-for elements, i.e. elements with the data-rg-for-gen attribute
@@ -81,7 +81,7 @@ class DataRg extends DataRgListeners {
           const j = max - 1 - i + skip;
           const newElem = elem.cloneNode();
           newElem.innerHTML = this._getTemp(attrName, attrVal);
-          newElem.style.visibility = '';
+          newElem.style.display = '';
           newElem.removeAttribute('data-rg-for');
           newElem.setAttribute('data-rg-for-gen', attrVal);
           elem.parentNode.insertBefore(newElem, elem.nextSibling);
@@ -108,7 +108,7 @@ class DataRg extends DataRgListeners {
    * data-rg-repeat="10"
    * @param {number} num - number of the repeats
    * @param {string} id - element's id, for example <p id="myID" data-rg-repeat="5">
-   * @returns {void}
+   * @returns {Promise<void>}
    */
   async rgRepeat(num, id) {
     debug('rgRepeat', '--------- rgRepeat ------', 'navy', '#B6ECFF');
@@ -126,7 +126,7 @@ class DataRg extends DataRgListeners {
       this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
 
       // hide the original (reference) element
-      elem.style.visibility = 'hidden';
+      elem.style.display = 'none';
       elem.innerHTML = '';
 
       // remove generated data-rg-repeat elements, i.e. elements with the data-rg-repeat-gen attribute
@@ -138,7 +138,7 @@ class DataRg extends DataRgListeners {
         const j = max - 1 - i;
         const newElem = elem.cloneNode();
         newElem.innerHTML = this._getTemp(attrName, attrVal);
-        newElem.style.visibility = '';
+        newElem.style.display = '';
         newElem.removeAttribute('id');
         newElem.removeAttribute('data-rg-repeat');
         newElem.setAttribute('data-rg-repeat-gen', attrVal);
