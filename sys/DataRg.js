@@ -173,8 +173,6 @@ class DataRg extends DataRgListeners {
     debug('rgIf', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
-    this._rgIf_uncommentAll(); // uncomment all data-rg-if elements
-
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // ifAge @@ remove
       const attrValSplited = attrVal.split(this.separator);
@@ -182,21 +180,15 @@ class DataRg extends DataRgListeners {
       const prop = attrValSplited[0].trim();
       const val = this._getControllerValue(prop);
 
-      // remove or hide element, hide is default
-      let act = attrValSplited[1] || 'hide'; // hide | remove
+      // remove or hide element, remove is default
+      let act = attrValSplited[1] || 'remove'; // 'remove'|'hide'
       act = act.trim();
 
-      // set data-rg-ifparent
-      const parent = elem.parentNode;
-      if (act == 'remove') {
-        parent.setAttribute('data-rg-ifparent', '');
-      }
-
       // hide/show elem
-      if (act === 'hide') {
-        !!val ? elem.style.visibility = 'visible' : elem.style.visibility = 'hidden'; // elem exists but not visible
-      } else if (act === 'remove') {
-        !!val ? '' : this._commentElement(elem);
+      if (!!val) {
+        act === 'remove' ? elem.style.display = '' : elem.style.visibility = 'visible';
+      } else {
+        act === 'remove' ?  elem.style.display = 'none' : elem.style.visibility = 'hidden';
       }
 
       debug('rgIf', `${prop} = ${val} | ${elem.outerHTML}`, 'navy');
@@ -635,10 +627,11 @@ class DataRg extends DataRgListeners {
   /**
    * Show data-rg-if elements by removing comment around data-rg-if elements. For example: <!--<span data-rg-if="ifX @@ remove">company name 1</span>-->
    * When @@ remove option is used the data-rg-if element is commented to remove it from the HTML page.
+   * @param {string} parentCSSsel - CSS selector of the parent data-rg-if element
    * @returns {void}
    */
-  _rgIf_uncommentAll() {
-    const ifParentElems = document.querySelectorAll(`[data-rg-ifparent]`);
+  _rgIf_uncommentAll(parentCSSsel) {
+    const ifParentElems = document.querySelectorAll(parentCSSsel);
     const parser = new DOMParser();
     for (const ifParentElem of ifParentElems) {
       // console.log('ifParentElem.childNodes::', ifParentElem.childNodes);

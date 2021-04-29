@@ -21,13 +21,10 @@
 
 <br><br>
 <h4>DATA-RG-IF</h4>
-<div>
- <button data-rg-click="toggleIF()">toggle IF</button>
-  <br>-- start <span data-rg-if="ifX @@ remove">company name 1</span>
-  <br><b>-- middle</b> <span data-rg-if="ifX @@ hide">company name 2</span>
-  <br>-- end
-</div>
-  <p data-rg-if="ifX @@ remove">company name 3</p>
+<button data-rg-click="toggleIF()">toggle IF</button>
+<br>PREFIX1 <span data-rg-if="ifX" style="color:green">ifX1 (@@hide)</span> SUFIX1
+<br>PREFIX2 <p data-rg-if="ifX @@ hide" style="color:green;padding:0;">ifX2 (@@hide)</p> SUFIX2
+<br>PREFIX3 <p data-rg-if="ifX" style="color:green">ifX3 (@@remove)</p> SUFIX3
 
 <br><br>
 <h4>DATA-RG-SWITCH</h4>

@@ -80,6 +80,7 @@ class DataRgCtrl extends Controller {
     this.rgIf('ifX');
   }
 
+
   // Here are two tests. First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.
   runSWITCH() {
     this.obj = {myColors: ['green2', 'blue2']};
