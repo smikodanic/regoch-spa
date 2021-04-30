@@ -256,8 +256,8 @@ class DataRg extends DataRgListeners {
       }
 
       // set data-rg-switchdefault
-      if (!isMatched && !!switchdefaultElem) { switchdefaultElem.style.display = ''; }
-      else { switchdefaultElem.style.display = 'none'; }
+      if (!!switchdefaultElem) { !isMatched ? switchdefaultElem.style.display = '' : switchdefaultElem.style.display = 'none'; }
+
       debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchdefault --isMatched: ${isMatched}`, 'navy');
     }
   }
