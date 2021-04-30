@@ -124,6 +124,7 @@ class Router {
    * @returns {void}
    */
   async _testRoutes(pevent) {
+    debug('router', `--------- _testRoutes (start) ------`, '#680C72', '#E59FED');
     navig.setPrevious(); // copy current to previous
 
     const uri = navig.getCurrentURI(); // get the current uri: /page/2?id=55 (no hash in the uri)
@@ -146,7 +147,6 @@ class Router {
           console.log('_testRoutes::previous.uri:::', navig.previous.uri);
         }
 
-
       } catch(err) {
         if (/AuthWarn::/.test(err.message)) { console.log(`%c${err.message}`, `color:#FF6500; background:#FFFEEE`); }
         else { console.error(err); }
@@ -155,6 +155,7 @@ class Router {
     } else {
       if (debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navig.previous.uri}". Controller is not executed !`);}
     }
+    debug('router', `--------- _testRoutes (end) ------`, '#680C72', '#E59FED');
   }
 
 

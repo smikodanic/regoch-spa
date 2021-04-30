@@ -26,15 +26,15 @@
     <br><span style="font-size:smaller">The lifecycle hooks are methods which are related to render HTML elements with <b>data-rg-</b> attribute. The regoch SPA framework will render all elements with
     data-rg- attributes. Here is the example of one data-rg- element: <small>&lt;span data-rg-print="product.name"&gt;&lt;/span&gt;</small>
     which will set SPAN innerHTML with product.name (controller property value).</span>
+
     <li><i>async</i> <b>init <i>(trx :object) :Promise&lt;void&gt;</i></b>
-      <p class="desc">Initialise the controller i.e. set the initial controller properties which will be rendered.
-      Usually here are API calls executed.
+      <p class="desc">Initialise the controller i.e. set controller properties with the initial values. Usually here are API calls used to fetch the initial values.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
       <i>async</i> <b>prerender <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code before the "data-rg-..." elements are rendered.
-      Here the <i>Page</i> methods <i>loadView, loadViews</i> should be used.
+      The <i>Page</i> methods <i>loadView, loadViews</i> should be used here to load the views.
       <br><b>trx</b> - regoch router transitional variable (carrier). See <a href="/router#item-2-2" data-rg-href>here</a>.</p>
     </li>
     <li>
@@ -45,11 +45,13 @@
     <li>
       <i>async</i> <b>postrender <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code after the "data-rg-..." elements are rendered.
+      In this hook the <b>$scope</b> should be set.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li><i>async</i> <b>destroy <i>(pevent :Event) :Promise&lt;void&gt;</i></b>
-      <p class="desc">Executes the controller code on destroying the controller, i.e. on navig.onUrlChange event.
-      <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element). This is very important to save browser's (app) memory space and to prevent memory leaks.
+      <p class="desc">Executes the controller code on destroying the controller, i.e. on <i>navig.onUrlChange</i> event.
+      <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element).
+      This is very important to save browser's (app) memory space and to prevent memory leaks.
       <br><b>pevent</b> - the 'popstate' (back/forward buttons) or 'pushstate' (data-rg-href element click) event</p>
     </li>
 

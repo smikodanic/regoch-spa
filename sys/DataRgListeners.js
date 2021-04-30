@@ -19,7 +19,7 @@ class DataRgListeners {
    * @returns {void}
    */
   async rgKILL() {
-    debug('rgKILL', '------- rgKILL -------', 'orange', '#FFD8B6');
+    debug('rgKILL', '------- rgKILL (start) -------', 'orange', '#FFD8B6');
 
     const promises = [];
     let i = 1;
@@ -32,6 +32,7 @@ class DataRgListeners {
 
     await Promise.all(promises);
     this.rgListeners = [];
+    debug('rgKILL', '------- rgKILL (end) -------', 'orange', '#FFD8B6');
   }
 
 

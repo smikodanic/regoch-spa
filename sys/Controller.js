@@ -13,7 +13,7 @@ class Controller extends Page {
 
   /************* CONTROLLER LIFECYCLE HOOKS ***********/
   /**
-   * Init the controller i.e. set the initial controller properties (API calls, etc...).(see Router.js)
+   * Init the controller i.e. set controller properties with the initial values.(see Router.js)
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
    * @returns {Promise<void>}
    */
@@ -34,7 +34,8 @@ class Controller extends Page {
    * @returns {Promise<void>}
    */
   async render(trx) {
-    if (debug().renderDelay) { console.log('renderDelay::', this.renderDelay); }
+    debug('render', `--------- render (start) -- renderDelay: ${this.renderDelay} ------`, '#05969E', '#D9FC9B');
+
     if (this.renderDelay > 2000) { console.log(`%c Warn:: Seems "${this.renderDelay} ms" is too big for renderDelay parameter.`, `color:Maroon; background:LightYellow`); }
 
     await util.sleep(this.renderDelay);
@@ -46,10 +47,10 @@ class Controller extends Page {
     await util.sleep(this.renderDelay);
     await this.parseNonListeners();
 
-    if (!this.rgListeners.length) { // ensure that data-rg- element has only one listener
-      await util.sleep(this.renderDelay);
-      this.parseListeners();
-    }
+    await util.sleep(this.renderDelay);
+    await this.parseListeners();
+
+    debug('render', `--------- render (end) ------`, '#05969E', '#D9FC9B');
   }
 
 
@@ -59,7 +60,6 @@ class Controller extends Page {
    * @returns {Promise<void>}
    */
   async postrender(trx) {}
-
 
 
   /**
@@ -97,7 +97,8 @@ class Controller extends Page {
    * Parse data-rg- elements with the listeners. The methods from DataRgListeners.
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
    */
-  parseListeners(controllerProp) {
+  async parseListeners(controllerProp) {
+    await this.rgKILL(); // remove all listeners first
     this.rgHref();
     this.rgClick();
     this.rgKeyup();
@@ -108,16 +109,20 @@ class Controller extends Page {
 
 
   /**
-   * Re-render the view i.e. the data-rg- elements with the controllerProp. For example: data-rg-print="first_name", where first_name is the controllerProp.
+   * Re-render the view i.e. the data-rg- elements with the controllerProp.
+   * For example: data-rg-print="first_name", where first_name is the controllerProp.
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
    */
   async rerender(controllerProp) {
-    debug('rerender', `--------- rerender (start) | controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
-    if (debug().renderDelay) { console.log('renderDelay::', this.renderDelay); }
-    await this.rgKILL();
+    debug('rerender', `--------- rerender (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} ------`, 'green', '#D9FC9B');
+
+    await util.sleep(this.renderDelay);
     await this.parseNonListeners(controllerProp);
-    if (!this.rgListeners.length) { this.parseListeners(controllerProp); } // ensure that data-rg- element has only one listener
-    debug('rerender', `--------- rerender (end) | controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
+
+    await util.sleep(this.renderDelay);
+    await this.parseListeners(controllerProp);
+
+    debug('rerender', `--------- rerender (end) ------`, 'green', '#D9FC9B');
   }
 
 
@@ -132,7 +137,7 @@ class Controller extends Page {
    * @param {any} val - the $scope value
    */
   set $scope(val) {
-    debug('scopeSetter', '--------- scopeSetter ------', 'green', '#D9FC9B');
+    debug('scope', '--------- scopeSetter ------', 'green', '#D9FC9B');
     this._$scope = val;
     if (debug().scopeSetter) { console.log('$scopeSetter::', this._$scope); }
     this.rerender('$scope');
@@ -144,7 +149,7 @@ class Controller extends Page {
    * It can be called as this.$scope.myVar in the controller or as data-rg-print="$scope.myVar"
    */
   get $scope() {
-    debug('scopeGetter', '--------- scopeGettter ------', 'green', '#D9FC9B');
+    debug('scope', '--------- scopeGettter ------', 'green', '#D9FC9B');
     if (debug().scopeGetter) { console.log('$scopeGetter::', this._$scope); }
     return this._$scope;
   }
@@ -157,7 +162,7 @@ class Controller extends Page {
    * @param {any} val - the $scope value
    */
   async $scopeSet(name, val) {
-    debug('scopeSet', '--------- scopeSet ------', 'green', '#D9FC9B');
+    debug('scope', '--------- scopeSet ------', 'green', '#D9FC9B');
     this._$scope[name] = val;
     if (debug().scopeSet) { console.log('$scopeSet::', this._$scope); }
     await this.rerender(`$scope.${name}`);
@@ -169,7 +174,7 @@ class Controller extends Page {
    * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
    */
   $scopeReset() {
-    debug('scopeReset', '--------- scopeReset ------', 'green', '#D9FC9B');
+    debug('scope', '--------- scopeReset ------', 'green', '#D9FC9B');
     this.$scope = {};
     if (debug().scopeReset) { console.log('$scopeReset::', this._$scope); }
   }
