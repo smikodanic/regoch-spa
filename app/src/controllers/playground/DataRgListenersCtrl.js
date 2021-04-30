@@ -24,6 +24,9 @@ class DataRgListenersCtrl extends Controller {
       {name: 'Toy', price: 22.34},
       {name: 'Flower', price: 88.56},
     ];
+
+    // test CLICK3
+    this.$scopeSet('river', 'Danube');
   }
 
 
@@ -60,6 +63,10 @@ class DataRgListenersCtrl extends Controller {
 
   runCLICK2(prods) {
     console.log('this.prods::', prods);
+  }
+
+  runCLICK3(scopeRiver) {
+    console.log('$scope.river::', scopeRiver);
   }
 
   async callAPI() {

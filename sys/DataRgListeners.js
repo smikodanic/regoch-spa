@@ -323,13 +323,17 @@ class DataRgListeners {
         arg = arg.trim().replace(/\'|\"/g, '');
         if (arg === '$element') { arg = elem; }
         if (arg === '$event') { arg = event; }
-        if (/^\/.+\/i?g?$/.test(arg)) { // if regular expression, for example in replcae(/Some/i, 'some')
+        if (/^\/.+\/i?g?$/.test(arg)) { // if regular expression, for example in replace(/Some/i, 'some')
           const mat = arg.match(/^\/(.+)\/(i?g?)$/);
           arg = new RegExp(mat[1], mat[2]);
         }
         if (/^this\./.test(arg)) { // if contain this. i.e. controller property
           const prop = arg.replace(/^this\./, ''); // remove this.
           const val = this._getControllerValue(prop);
+          arg = val;
+        }
+        if (/^\$scope\./.test(arg)) { // if contain $scope. i.e. $scope property
+          const val = this._getControllerValue(arg);
           arg = val;
         }
         return arg;
@@ -352,9 +356,7 @@ class DataRgListeners {
         // execute the function in the controller property, for example: this.print.inConsole = () => {...}
         const propSplitted = funcName.split('.'); // ['print', 'inConsole']
         let obj = this;
-        for (const prop of propSplitted) {
-          obj = obj[prop];
-        }
+        for (const prop of propSplitted) { obj = obj[prop]; }
         obj(...funcArgs);
       } else {
         // execute the controller method

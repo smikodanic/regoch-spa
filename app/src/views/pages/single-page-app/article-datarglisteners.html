@@ -78,7 +78,7 @@
 
 
 <section class="docs-section" id="item-6-3">
-  <h2 class="section-heading">$event &nbsp;&nbsp; $element</h2>
+  <h2 class="section-heading">$event &nbsp;&nbsp; $element &nbsp; arguments</h2>
   The arguments <b>$event</b> and <b>&element</b> can be used in the controller method.
   <br><b>$event</b> - event object applied on the data-rg- element
   <br><b>$element</b> - the data-rg- element DOM object
@@ -92,6 +92,23 @@
 runKEYUP(elem, evt) {
   console.log('runKEYUP elem::', elem);
   console.log('runKEYUP evt', evt);
+}
+  </code></pre>
+</section>
+
+
+<section class="docs-section" id="item-6-3">
+  <h2 class="section-heading">$scope &nbsp; argument</h2>
+  The argument <b>$scope</b> can be used in the controller method. It's the shortcut of the <i>this.$scope</i>.
+  <br>
+  <pre><code class="language-markup"><xmp>
+<br><input type="text" data-rg-click="runCLICK(this.$scope.river)">
+<br><input type="text" data-rg-click="runCLICK($scope.river)">  // shortcut
+  </xmp></code></pre>
+  <br>then use the arguments in the controller method:
+  <pre><code class="language-js">
+runCLICK(scopeRiver) {
+  console.log('$scope.river::', scopeRiver);
 }
   </code></pre>
 </section>
