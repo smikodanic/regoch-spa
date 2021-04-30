@@ -7,22 +7,7 @@ class DataRgCtrl extends Controller {
     super();
   }
 
-  async prerender(trx) {
-    this.setTitle('DataRg Test');
-    this.unloadCSS(['/assets/css/theme.css']);
-    this.addCSS(`
-      .my-italic {
-        font-style: italic;
-      }
-      .my-red {
-        color: red;
-      }
-      .my-font-size {
-        font-size: 21px;
-      }
-    `, '#myCSS');
-    await this.loadView('#primary', 'playground/datarg/primary.html', 'inner');
-
+  async init(trx) {
     // initial values for the runFOR example
     this.limit = 3;
     this.skip = 2;
@@ -42,6 +27,23 @@ class DataRgCtrl extends Controller {
 
     // initail value for data-rg-print with the pipe
     this.longText = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard.';
+  }
+
+  async prerender(trx) {
+    this.setTitle('DataRg Test');
+    this.unloadCSS(['/assets/css/theme.css']);
+    this.addCSS(`
+      .my-italic {
+        font-style: italic;
+      }
+      .my-red {
+        color: red;
+      }
+      .my-font-size {
+        font-size: 21px;
+      }
+    `, '#myCSS');
+    await this.loadView('#primary', 'playground/datarg/primary.html', 'inner');
   }
 
 

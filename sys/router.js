@@ -28,13 +28,13 @@ class Router {
     if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
     // navig functions
-    const setCurrent = navig.setCurrent.bind(navig, ctrl);
+    const setCurrent = navig.setCurrent.bind(navig, ctrl); // set navig.current = {uri, ctrl}
 
     // Controller functions
+    const init = ctrl.init.bind(ctrl);
     const prerender = ctrl.prerender.bind(ctrl);
     const render = ctrl.render.bind(ctrl);
     const postrender = ctrl.postrender.bind(ctrl);
-    const init = ctrl.init.bind(ctrl);
 
     if (authGuards.length && ctrl.auth) {
       // Auth guards
@@ -47,10 +47,10 @@ class Router {
       if (authGuards.indexOf('isLogged') !== -1) { guards.push(isLogged); }
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }
 
-      this.regochRouter.def(route, setCurrent, ...guards, prerender, render, postrender, init);
+      this.regochRouter.def(route, setCurrent, ...guards, init, prerender, render, postrender);
 
     } else {
-      this.regochRouter.def(route, setCurrent, prerender, render, postrender, init);
+      this.regochRouter.def(route, setCurrent, init, prerender, render, postrender);
     }
 
   }
@@ -67,12 +67,12 @@ class Router {
     const setCurrent = navig.setCurrent.bind(navig, ctrl);
 
     // controller methods
+    const init = ctrl.init.bind(ctrl);
     const prerender = ctrl.prerender.bind(ctrl);
     const render = ctrl.render.bind(ctrl);
     const postrender = ctrl.postrender.bind(ctrl);
-    const init = ctrl.init.bind(ctrl);
 
-    this.regochRouter.notfound(setCurrent, prerender, render, postrender, init);
+    this.regochRouter.notfound(setCurrent, init, prerender, render, postrender);
   }
 
 

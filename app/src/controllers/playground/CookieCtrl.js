@@ -20,13 +20,15 @@ class CookieCtrl extends Controller {
     this.cookie = new syslib.Cookie(cookieOpts, true);
   }
 
+
+
   async prerender(trx) {
     this.setTitle('DataRg Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/cookie/primary.html', 'inner');
   }
 
-  async init() {
+  async postrender(trx) {
     this.showFields();
   }
 

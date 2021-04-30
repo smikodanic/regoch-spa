@@ -13,6 +13,14 @@ class Controller extends Page {
 
   /************* CONTROLLER LIFECYCLE HOOKS ***********/
   /**
+   * Init the controller i.e. set the initial controller properties (API calls, etc...).(see Router.js)
+   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
+   * @returns {Promise<void>}
+   */
+  async init(trx) {}
+
+
+  /**
    * Run before render of the HTML elements with data-rg-... attribute. (see Router.js)
    * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
    * @returns {Promise<void>}
@@ -52,13 +60,6 @@ class Controller extends Page {
    */
   async postrender(trx) {}
 
-
-  /**
-   * Init the controller. This is where controller logic starts. (see Router.js)
-   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
-   * @returns {Promise<void>}
-   */
-  async init(trx) {}
 
 
   /**

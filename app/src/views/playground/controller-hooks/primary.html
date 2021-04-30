@@ -1,18 +1,15 @@
 <h1>Controller Hooks Test</h1>
 <p>Click <a href="/playground/controller-hooks" data-rg-href>here</a> to destroy the controller.</p>
 
-
-
-<br><br><br><br><br>
 <div class="play-desc">
   The example shows in which order will be executed controller constructor and the lifecycle hooks.
   Open the browser console to see the constructor and hook arguments.
   <ol>
-    <li>constructor(app) - <i>app</i> is the app instance</li>
-    <li>prerender(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data.</li>
-    <li>postrender(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data.</li>
-    <li>init(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data.</li>
-    <li>destroy(elem, event) - elem is the HTMLElement on which event is applied what caused URL change and controller destruction</li>
+    <li>constructor(app) - <i>app</i> is the app instance (initialised when app is started i.e. when page is loaded/reloaded)</li>
+    <li>init(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
+    <li>prerender(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
+    <li>postrender(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
+    <li>destroy(elem, event) - elem is the HTMLElement on which event is applied what caused URL change and controller destruction (initilialised when the route is changed)</li>
   </ol>
 </div>
 

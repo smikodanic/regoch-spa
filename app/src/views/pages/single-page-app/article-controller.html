@@ -22,13 +22,19 @@
   <p>Use this methods in the controller as lifecycle hooks, to rerender the view or to manipulate with the <b>$scope</b> object.</p>
 	<ul class="methods">
     <h4>LifeCycle Hook Methods</h4>
-    <b style="color:orange">PRERENDER &rarr; RENDER &rarr; POSTRENDER &rarr; INIT &rarr; DESTROY</b>
+    <b style="color:orange">INIT &rarr; PRERENDER &rarr; RENDER &rarr; POSTRENDER &rarr; DESTROY</b>
     <br><span style="font-size:smaller">The lifecycle hooks are methods which are related to render HTML elements with <b>data-rg-</b> attribute. The regoch SPA framework will render all elements with
     data-rg- attributes. Here is the example of one data-rg- element: <small>&lt;span data-rg-print="product.name"&gt;&lt;/span&gt;</small>
     which will set SPAN innerHTML with product.name (controller property value).</span>
+    <li><i>async</i> <b>init <i>(trx :object) :Promise&lt;void&gt;</i></b>
+      <p class="desc">Initialise the controller i.e. set the initial controller properties which will be rendered.
+      Usually here are API calls executed.
+      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
+    </li>
     <li>
       <i>async</i> <b>prerender <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code before the "data-rg-..." elements are rendered.
+      Here the <i>Page</i> methods <i>loadView, loadViews</i> should be used.
       <br><b>trx</b> - regoch router transitional variable (carrier). See <a href="/router#item-2-2" data-rg-href>here</a>.</p>
     </li>
     <li>
@@ -41,11 +47,6 @@
       <p class="desc">It's a controller lifecycle hook which executes the controller code after the "data-rg-..." elements are rendered.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
-    <li><i>async</i> <b>init <i>(trx :object) :Promise&lt;void&gt;</i></b>
-      <p class="desc">Executes the controller code after the postrender.
-      It should be used to call internal controller methods. Thus internal controller logic will be nicely separated from the data-rg render process.
-      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
-    </li>
     <li><i>async</i> <b>destroy <i>(pevent :Event) :Promise&lt;void&gt;</i></b>
       <p class="desc">Executes the controller code on destroying the controller, i.e. on navig.onUrlChange event.
       <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element). This is very important to save browser's (app) memory space and to prevent memory leaks.
@@ -56,7 +57,7 @@
     <h4>Auxilary Render Methods</h4>
     <li><b>rerender <i>(controllerProp :string) :void</i></b>
       <p class="desc"> Re-render the view i.e. the data-rg- elements with the controllerProp. For example: <i>data-rg-print="first_name"</i>, where first_name is the controllerProp.
-      <br>The <i>data-rg-inc</i> and <i>data-rg-view</i> will not be rerendered by this method.
+      <br>The <i>data-rg-inc</i>, <i>data-rg-view</i> and <i>DataRgListeners</i> will not be rerendered by this method.
       <br><b>controllerProp</b> - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."</p>
     </li>
 

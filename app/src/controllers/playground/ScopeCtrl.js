@@ -13,7 +13,7 @@ class ScopeCtrl extends Controller {
     await this.loadView('#primary', 'playground/scope/primary.html', 'inner');
   }
 
-  async init () {
+  async postrender(trx) {
     const products = await this.getProducts();
     this.$scopeSet('products', products);
   }

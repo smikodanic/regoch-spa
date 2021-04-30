@@ -9,6 +9,11 @@ class Controller_hooksCtrl extends Controller {
   }
 
 
+  async init(trx) {
+    console.log('Controller_hooks init::', trx);
+  }
+
+
   async prerender(trx) {
     console.log('Controller_hooks prerender::', trx);
     this.setTitle('Controller Hooks Test');
@@ -24,10 +29,6 @@ class Controller_hooksCtrl extends Controller {
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
-  }
-
-  async init(trx) {
-    console.log('Controller_hooks init::', trx);
   }
 
 

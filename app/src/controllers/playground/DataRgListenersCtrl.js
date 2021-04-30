@@ -5,7 +5,10 @@ class DataRgListenersCtrl extends Controller {
 
   constructor(app) {
     super();
+  }
 
+
+  async init(trx) {
     // test <button data-rg-click="print.inConsole.makeRed($element)">CLICK</button>
     this.print = {
       inConsole: {
@@ -22,6 +25,7 @@ class DataRgListenersCtrl extends Controller {
       {name: 'Flower', price: 88.56},
     ];
   }
+
 
   async prerender(trx) {
     this.setTitle('DataRgListeners Test');
