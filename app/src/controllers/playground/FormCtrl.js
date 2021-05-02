@@ -6,6 +6,14 @@ class FormCtrl extends Controller {
   constructor(app) {
     super();
     this.testForm = new syslib.Form('testF');
+    this.testForm.debugOpts = {
+      setControl: false,
+      setControls: false,
+      getControl: true,
+      getControls: false,
+      delControl: false,
+      delControls: false
+    };
   }
 
   async prerender(trx) {

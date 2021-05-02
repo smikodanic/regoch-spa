@@ -5,11 +5,18 @@
 const debug = require('../debug');
 
 
-
 class Form {
 
   constructor(formName) {
     this.formName = formName;
+    this.debugOpts = {
+      setControl: false,
+      setControls: false,
+      getControl: false,
+      getControls: false,
+      delControl: false,
+      delControls: false
+    };
   }
 
 
@@ -20,7 +27,7 @@ class Form {
    * @returns {void}
    */
   setControl(key, val) {
-    debug('setControl', `--------- setControl("${key}", "${val}") ------`, 'green', '#A1F8DC');
+    this._debug('setControl', `--------- setControl("${key}", "${val}") ------`, 'green', '#A1F8DC');
     const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { console.log(`%c FormWarn:: Form "${this.formName}" doesn't have control with name="${key}" attribute.`, `color:Maroon; background:LightYellow`); return; }
 
@@ -40,7 +47,7 @@ class Form {
       } else { // INPUT, SELECT
         elem.value = val; // val is not array
       }
-      debug('setControl', `${elem.type}[name="${key}"] got value="${val}"`, 'green');
+      this._debug('setControl', `${elem.type}[name="${key}"] got value="${val}"`, 'green');
     }
 
   }
@@ -53,13 +60,13 @@ class Form {
    * @returns {void}
    */
   setControls(obj) {
-    debug('setControls', '--------- setControls ------', 'green', '#88DBC0');
+    this._debug('setControls', '--------- setControls ------', 'green', '#88DBC0');
     if (!obj) { return; }
     const keys = Object.keys(obj);
     for (const key of keys) {
       const elem = document.querySelector(`[data-rg-form="${this.formName}"] [name^="${key}"]`);
       if (!elem) {
-        debug('setControls', `FormWarn::setControls -> Form "${this.formName}" doesn't have control with name^="${key}" attribute.`, 'green');
+        this._debug('setControls', `FormWarn::setControls -> Form "${this.formName}" doesn't have control with name^="${key}" attribute.`, 'green');
         continue;
       }
 
@@ -75,7 +82,7 @@ class Form {
 
       if (!!attrVal) { this.setControl(attrVal, val); }
 
-      if(debug().setControl) { console.log(`setControls:: obj-key:: ${key} , attrVal:: ${attrVal} , elem::`, elem); }
+      if(this._debug().setControl) { console.log(`setControls:: obj-key:: ${key} , attrVal:: ${attrVal} , elem::`, elem); }
     }
   }
 
@@ -87,7 +94,7 @@ class Form {
    * @returns {string|number}
    */
   getControl(key) {
-    debug('getControl', '--------- getControl ------', 'green', '#A1F8DC');
+    this._debug('getControl', '--------- getControl ------', 'green', '#A1F8DC');
     const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
@@ -115,7 +122,7 @@ class Form {
       i++;
     }
 
-    debug('getControl', `${val}`, 'green');
+    this._debug('getControl', `${val}`, 'green');
     return val;
   }
 
@@ -126,8 +133,8 @@ class Form {
    * @returns {object}
    */
   getControls(keys) {
-    debug('getControls', '--------- getControls ------', 'green', '#A1F8DC');
-    debug('getControls', keys, 'green');
+    this._debug('getControls', '--------- getControls ------', 'green', '#A1F8DC');
+    this._debug('getControls', keys, 'green');
     const obj = {};
     for (const key of keys) {
       obj[key] = this.getControl(key);
@@ -142,8 +149,8 @@ class Form {
    * @returns {void}
    */
   delControl(key) {
-    debug('delControl', '--------- delControl ------', 'green', '#A1F8DC');
-    debug('delControl', key, 'green');
+    this._debug('delControl', '--------- delControl ------', 'green', '#A1F8DC');
+    this._debug('delControl', key, 'green');
     const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
@@ -171,11 +178,16 @@ class Form {
    * @returns {void}
    */
   delControls(keys) {
-    debug('delControls', '--------- delControls ------', 'green', '#A1F8DC');
-    debug('delControls', keys, 'green');
+    this._debug('delControls', '--------- delControls ------', 'green', '#A1F8DC');
+    this._debug('delControls', keys, 'green');
     for (const key of keys) {
       this.delControl(key);
     }
+  }
+
+
+  _debug(tip, text, color, background) {
+    if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
   }
 
 
