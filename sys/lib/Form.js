@@ -58,7 +58,10 @@ class Form {
     const keys = Object.keys(obj);
     for (const key of keys) {
       const elem = document.querySelector(`[data-rg-form="${this.formName}"] [name^="${key}"]`);
-      if (!elem) { continue; }
+      if (!elem) {
+        debug('setControls', `FormWarn::setControls -> Form "${this.formName}" doesn't have control with name^="${key}" attribute.`, 'green');
+        continue;
+      }
 
       let val, attrVal;
       if (!!elem) {
