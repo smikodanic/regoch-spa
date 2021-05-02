@@ -166,11 +166,11 @@ class Controller extends Page {
    * @param {string} name - the $scope property name
    * @param {any} val - the $scope value
    */
-  async $scopeSet(name, val) {
+  $scopeSet(name, val) {
     debug('scope', '--------- scopeSet ------', 'green', '#D9FC9B');
     this._$scope[name] = val;
     if (debug().scopeSet) { console.log('$scopeSet::', this._$scope); }
-    await this.rerender(`$scope.${name}`);
+    this.rerender(`$scope.${name}`);
   }
 
 

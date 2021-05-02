@@ -102,7 +102,7 @@ class FormCtrl extends Controller {
       {id: 5, name: 'Audi', price: 5000}
     ];
 
-    await this.$scopeSet('autos', autos);
+    this.$scopeSet('autos', autos);
     this.testForm.setControl('autos', 2);
   }
 
