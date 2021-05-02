@@ -7,9 +7,9 @@ class FormCtrl extends Controller {
     super();
     this.testForm = new syslib.Form('testF');
     this.testForm.debugOpts = {
-      setControl: false,
+      setControl: true,
       setControls: false,
-      getControl: true,
+      getControl: false,
       getControls: false,
       delControl: false,
       delControls: false

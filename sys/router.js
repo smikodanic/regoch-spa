@@ -1,6 +1,5 @@
 const RegochRouter = require('regoch-router');
 const navig = require('./lib/navig');
-const debug = require('./debug');
 
 
 
@@ -8,6 +7,7 @@ class Router {
 
   constructor() {
     this.regochRouter = new RegochRouter({debug: false});
+    this.debugOpts = {router: false};
   }
 
 
@@ -124,7 +124,9 @@ class Router {
    * @returns {void}
    */
   async _testRoutes(pevent) {
-    debug('router', `--------- _testRoutes (start) ------`, '#680C72', '#E59FED');
+    this._debug('router', `--------- _testRoutes (start) ------`, '#680C72', '#E59FED');
+    const startTime = new Date();
+
     navig.setPrevious(); // copy current to previous
 
     const uri = navig.getCurrentURI(); // get the current uri: /page/2?id=55 (no hash in the uri)
@@ -140,7 +142,7 @@ class Router {
         this.regochRouter.trx = { uri };
         const trx = await this.regochRouter.exe();
 
-        if (debug().router) {
+        if (this._debug().router) {
           console.log('_testRoutes::pevent:::', pevent);
           console.log('_testRoutes::trx:::', trx);
           console.log('_testRoutes::current.uri:::', navig.current.uri); // current URI is set in the controller middleware (setCurrent() function)
@@ -153,9 +155,20 @@ class Router {
       }
 
     } else {
-      if (debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navig.previous.uri}". Controller is not executed !`);}
+      if (this._debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navig.previous.uri}". Controller is not executed !`);}
     }
-    debug('router', `--------- _testRoutes (end) ------`, '#680C72', '#E59FED');
+
+    // get elapsed time
+    const endTime = new Date();
+    const timeDiff = endTime - startTime;
+    this._debug('router', `--------- _testRoutes (end) -- ELAPSED: ${timeDiff} ms ------`, '#680C72', '#E59FED');
+  }
+
+
+  /******** DEBUG *******/
+  _debug(tip, text, color, background) {
+    if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
+    return this.debugOpts;
   }
 
 

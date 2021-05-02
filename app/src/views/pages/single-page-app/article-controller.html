@@ -14,7 +14,64 @@
 
 <section class="docs-section" id="item-3-1">
   <h2 class="section-heading">Properties</h2>
-  No properties. All properties are inherited from the Page class.
+  <table style="width:100%">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>debugOpts</td>
+      <td>the debug options (see below)</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>_$scope</td>
+      <td>the $scope object accumulator</td>
+      <td>object</td>
+      <td>{}</td>
+    </tr>
+  </table>
+
+  <br><br>
+  <pre><code class="language-js">
+/*** default Controller debug options ***/
+// Controller.js
+render: false,
+rerender: false,
+scope: false,
+
+// Page.js
+loadInc: false,
+loadView: false,
+emptyView: false,
+loadHead: false,
+
+// DataRg.js
+rgFor: false,
+rgRepeat: false,
+rgIf: false,
+rgSwitch: false,
+rgElem: false,
+rgEcho: false,
+rgPrint: false,
+rgValue: false,
+rgInterpolate: false,
+rgClass: false,
+rgStyle: false,
+rgLazyjs: false,
+
+// DataRgListeners.js
+rgKILL: false,
+rgHref: false,
+rgClick: false,
+rgKeyup: false,
+rgChange: false,
+rgEvt: false,
+rgSet: false
+  </code></pre>
 </section>
 
 <section class="docs-section" id="item-3-2">
@@ -142,6 +199,7 @@ module.exports = class HomeCtrl extends Controller {
   constructor(app) {
     super();
     this.util = syslib.util;
+    this.debugOpts = {render: true, rgIf: true}
   }
 
   async prerender(trx) {

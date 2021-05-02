@@ -25,6 +25,12 @@
     <td>object</td>
     <td></td>
   </tr>
+  <tr>
+    <td>debugOpts</td>
+    <td>{router:boolean}</td>
+    <td>object</td>
+    <td></td>
+  </tr>
   </table>
 </section>
 
@@ -79,6 +85,17 @@ const routesCnf = [
   ['when' '/login' 'LoginCtrl', {renderDelay: 300, authGuards: ['autoLogin']}],
   ['when' '/admin/product/:id' 'AdminProductCtrl', {authGuards: ['isLogged', 'hasRole']}]
 ];
+  </code></pre>
+</section>
+
+
+<section class="docs-section" id="item-7-3">
+  <h2 class="section-heading">Router Debug</h2>
+  To debug the router use <b>app.router.debugOpts = {router: true}</b> in the <i>app.js</i>.
+  <br>For example:
+  <pre><code class="language-js">
+const app = new App();
+app.router.debugOpts = {router: true};
   </code></pre>
 </section>
 

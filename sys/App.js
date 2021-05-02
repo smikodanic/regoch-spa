@@ -8,6 +8,7 @@ class App {
     this.lib = {};
     this.controllers = {};
     window.regochSPA = {}; // define global variable
+    this.router = router;
   }
 
 
@@ -150,19 +151,19 @@ class App {
         const routeOpts = routeCnf[3]; // {renderDelay, authGuards: ['autoLogin', 'isLogged', 'hasRole']}
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
-        router.when(route, ctrl, routeOpts);
+        this.router.when(route, ctrl, routeOpts);
       } else if (cmd === 'notfound') {
         const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
-        router.notfound(ctrl);
+        this.router.notfound(ctrl);
       } else if (cmd === 'do') {
         const funcs = routeCnf.filter((routeCnfElem, key) => { if (key !== 0) {return routeCnfElem;} });
-        router.do(...funcs);
+        this.router.do(...funcs);
       } else if (cmd === 'redirect') {
         const fromRoute = routeCnf[1];
         const toRoute = routeCnf[2];
-        router.redirect(fromRoute, toRoute);
+        this.router.redirect(fromRoute, toRoute);
       }
     }
 
@@ -175,7 +176,7 @@ class App {
    * @returns {void}
    */
   run() {
-    router.use();
+    this.router.use();
   }
 
 

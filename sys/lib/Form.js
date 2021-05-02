@@ -2,9 +2,6 @@
  * HTML Form Library
  * According to W3C Standard https://html.spec.whatwg.org/multipage/forms.html
  */
-const debug = require('../debug');
-
-
 class Form {
 
   constructor(formName) {
@@ -188,6 +185,7 @@ class Form {
 
   _debug(tip, text, color, background) {
     if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
+    return this.debugOpts;
   }
 
 

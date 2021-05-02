@@ -1,5 +1,4 @@
 const navig = require('./lib/navig');
-const debug = require('./debug');
 
 
 /**
@@ -19,20 +18,20 @@ class DataRgListeners {
    * @returns {void}
    */
   async rgKILL() {
-    debug('rgKILL', '------- rgKILL (start) -------', 'orange', '#FFD8B6');
+    this._debug('rgKILL', '------- rgKILL (start) -------', 'orange', '#FFD8B6');
 
     const promises = [];
     let i = 1;
     for (const rgListener of this.rgListeners) {
       rgListener.elem.removeEventListener(rgListener.eventName, rgListener.handler);
-      debug('rgKILL', `${i}. killed:: ${rgListener.attrName} --- ${rgListener.eventName} --- ${rgListener.elem.innerHTML}`, 'orange');
+      this._debug('rgKILL', `${i}. killed:: ${rgListener.attrName} --- ${rgListener.eventName} --- ${rgListener.elem.innerHTML}`, 'orange');
       promises.push(Promise.resolve(true));
       i++;
     }
 
     await Promise.all(promises);
     this.rgListeners = [];
-    debug('rgKILL', '------- rgKILL (end) -------', 'orange', '#FFD8B6');
+    this._debug('rgKILL', '------- rgKILL (end) -------', 'orange', '#FFD8B6');
   }
 
 
@@ -45,7 +44,7 @@ class DataRgListeners {
    * @returns {void}
    */
   rgHref() {
-    debug('rgHref', '--------- rgHref ------', 'orange', '#FFD8B6');
+    this._debug('rgHref', '--------- rgHref ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-href';
     const elems = document.querySelectorAll(`[${attrName}]`);
     if (!elems.length) { return; }
@@ -60,12 +59,12 @@ class DataRgListeners {
         const state = { href };
         const title = elem.getAttribute(attrName).trim();
         if (!!href) { navig.goto(href.trim(), state, title); }
-        debug('rgHref', `Clicked data-rg-href element. href: ${href}`, 'orange');
+        this._debug('rgHref', `Clicked data-rg-href element. href: ${href}`, 'orange');
       };
 
       elem.addEventListener('click', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'click'});
-      debug('rgHref', `pushed::  tag: ${elem.localName} | href="${elem.pathname}" | total: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgHref', `pushed::  tag: ${elem.localName} | href="${elem.pathname}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
 
@@ -79,12 +78,12 @@ class DataRgListeners {
    * @returns {void}
    */
   rgClick(controllerMeth) {
-    debug('rgClick', '--------- rgClick ------', 'orange', '#FFD8B6');
+    this._debug('rgClick', '--------- rgClick ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-click';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
-    debug('rgClick', `found elements:: ${elems.length}`, 'orange');
+    this._debug('rgClick', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -96,12 +95,12 @@ class DataRgListeners {
         event.preventDefault();
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
         this._funcExe(funcName, funcArgs);
-        debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
+        this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
       };
 
       elem.addEventListener('click', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'click'});
-      debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
 
@@ -115,12 +114,12 @@ class DataRgListeners {
    * @returns {void}
    */
   rgKeyup(controllerMeth) {
-    debug('rgKeyup', '--------- rgKeyup ------', 'orange', '#FFD8B6');
+    this._debug('rgKeyup', '--------- rgKeyup ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-keyup';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
-    debug('rgKeyup', `found elements:: ${elems.length}`, 'orange');
+    this._debug('rgKeyup', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -141,12 +140,12 @@ class DataRgListeners {
 
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
         this._funcExe(funcName, funcArgs);
-        debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
+        this._debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
       };
 
       elem.addEventListener('keyup', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'keyup'});
-      debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
 
@@ -159,12 +158,12 @@ class DataRgListeners {
    * @returns {void}
    */
   rgChange(controllerMeth) {
-    debug('rgChange', '--------- rgChange ------', 'orange', '#FFD8B6');
+    this._debug('rgChange', '--------- rgChange ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-change';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
-    debug('rgChange', `found elements:: ${elems.length}`, 'orange');
+    this._debug('rgChange', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -176,12 +175,12 @@ class DataRgListeners {
         event.preventDefault();
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
         this._funcExe(funcName, funcArgs);
-        debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
+        this._debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
       };
 
       elem.addEventListener('change', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'change'});
-      debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
 
@@ -194,10 +193,10 @@ class DataRgListeners {
    * @returns {void}
    */
   rgEvt() {
-    debug('rgEvt', '--------- rgEvt ------', 'orange', '#FFD8B6');
+    this._debug('rgEvt', '--------- rgEvt ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-evt';
     const elems = document.querySelectorAll(`[${attrName}]`);
-    debug('rgEvt', `found elements:: ${elems.length}`, 'orange');
+    this._debug('rgEvt', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -215,12 +214,12 @@ class DataRgListeners {
           event.preventDefault();
           const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
           this._funcExe(funcName, funcArgs);
-          debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
+          this._debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
         };
 
         elem.addEventListener(eventName, handler);
         this.rgListeners.push({eventName, attrName, elem, handler, eventName});
-        debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-evt | event: ${eventName} | total: ${this.rgListeners.length}`, 'orange');
+        this._debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-evt | event: ${eventName} | total: ${this.rgListeners.length}`, 'orange');
       }
     }
   }
@@ -239,12 +238,12 @@ class DataRgListeners {
    * @returns {void}
    */
   rgSet(controllerProp) {
-    debug('rgSet', '--------- rgSet ------', 'orange', '#FFD8B6');
+    this._debug('rgSet', '--------- rgSet ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-set';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgSet', `found elements:: ${elems.length} , controllerProp:: ${controllerProp}`, 'orange');
+    this._debug('rgSet', `found elements:: ${elems.length} , controllerProp:: ${controllerProp}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -263,14 +262,14 @@ class DataRgListeners {
           const doAfter2 = doAfter.trim();
           this[doAfter2](prop);
         }
-        debug('rgSet', `controller property:: ${prop} = ${elem.value}`, 'orange');
+        this._debug('rgSet', `controller property:: ${prop} = ${elem.value}`, 'orange');
       };
 
       handler(); // Execute the handler when controller is executed. This will set controller property defined in constructor() in the view.
 
       elem.addEventListener('input', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'input'});
-      debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
     }
   }
 

@@ -1,6 +1,5 @@
 const DataRg = require('./DataRg');
 const HTTPClient = require('./lib/HTTPClient');
-const debug = require('./debug');
 
 
 class Page extends DataRg {
@@ -49,14 +48,14 @@ class Page extends DataRg {
    */
   async loadInc(delIncgens = true) {
     const elems = document.querySelectorAll('[data-rg-inc]:not([data-rg-cin])');
-    debug('loadInc', '--------- loadInc ------', '#8B0892', '#EDA1F1');
-    debug('loadInc', `elems found: ${elems.length}`, '#8B0892');
+    this._debug('loadInc', '--------- loadInc ------', '#8B0892', '#EDA1F1');
+    this._debug('loadInc', `elems found: ${elems.length}`, '#8B0892');
     if (!elems.length) { return; }
 
     // remove all data-rg-incgen elements (just first iteration)
     if (delIncgens) {
       const elems2 = document.querySelectorAll('[data-rg-incgen]');
-      debug('loadInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
+      this._debug('loadInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
       for (const elem2 of elems2) { elem2.remove(); }
     }
 
@@ -67,7 +66,7 @@ class Page extends DataRg {
       const viewPath = !!path_dest_cssSel && !!path_dest_cssSel.length ? 'inc/' + path_dest_cssSel[0] : '';
       const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
       const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
-      if(debug().loadInc) { console.log('\n******** path_dest_cssSel:: ', viewPath, dest, cssSel, '********'); }
+      if(this._debug().loadInc) { console.log('\n******** path_dest_cssSel:: ', viewPath, dest, cssSel, '********'); }
       if (!viewPath) { console.error('viewPath is not defined'); return; }
 
       // Get HTML content. First try from the cached JSON and if it doesn't exist then request from the server.
@@ -76,15 +75,15 @@ class Page extends DataRg {
         const cnt = this.fetchCachedView(viewPath, cssSel);
         nodes = cnt.nodes;
         str = cnt.str;
-        debug('loadInc', '--from cached JSON', '#8B0892');
+        this._debug('loadInc', '--from cached JSON', '#8B0892');
       } else { // HTML content by requesting the server
         const cnt = await this.fetchRemoteView(viewPath, cssSel);
         nodes = cnt.nodes;
         str = cnt.str;
-        debug('loadInc', '--from server', '#8B0892');
+        this._debug('loadInc', '--from server', '#8B0892');
       }
 
-      if(debug().loadInc) {
+      if(this._debug().loadInc) {
         console.log('elem::', elem);
         console.log('nodes loaded::', nodes);
         // console.log('str loaded::', str);
@@ -163,8 +162,8 @@ class Page extends DataRg {
 
     // get a HTML element with data-rg-view attribute
     const elem = document.querySelector(attrSel);
-    debug('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
-    if(debug().loadView) { console.log('elem::', elem); }
+    this._debug('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
+    if(this._debug().loadView) { console.log('elem::', elem); }
     if (!elem) { throw new Error(`Element ${attrSel} not found.`); }
     if (!viewPath){ throw new Error(`View path is not defined.`); }
 
@@ -174,15 +173,15 @@ class Page extends DataRg {
       const cnt = this.fetchCachedView(viewPath, cssSel);
       nodes = cnt.nodes;
       str = cnt.str;
-      debug('loadView', '--from cached JSON', '#8B0892');
+      this._debug('loadView', '--from cached JSON', '#8B0892');
     } else { // HTML content by requesting the server
       const cnt = await this.fetchRemoteView(viewPath, cssSel);
       nodes = cnt.nodes;
       str = cnt.str;
-      debug('loadView', '--from server', '#8B0892');
+      this._debug('loadView', '--from server', '#8B0892');
     }
 
-    if(debug().loadView) {
+    if(this._debug().loadView) {
       console.log('nodes loaded::', nodes);
       // console.log('str loaded::', str);
     }
@@ -264,8 +263,8 @@ class Page extends DataRg {
   emptyView(viewName, dest = 'inner') {
     const attrSel = `[data-rg-view="${viewName}"]`;
     const elem = document.querySelector(attrSel);
-    debug('emptyView', `--------- emptyView ${attrSel} | ${dest} ---------`, '#8B0892', '#EDA1F1');
-    if(debug().emptyView) { console.log('elem::', elem); }
+    this._debug('emptyView', `--------- emptyView ${attrSel} | ${dest} ---------`, '#8B0892', '#EDA1F1');
+    if(this._debug().emptyView) { console.log('elem::', elem); }
     if (!elem) { return; }
 
     // empty the interpolated content
@@ -522,8 +521,8 @@ class Page extends DataRg {
   async loadHead(viewPath, dest = 'inner') {
     // get the <head> HTML element
     const elem = document.querySelector('head');
-    debug('loadHead', `--------- loadHead -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
-    if(debug().loadView) { console.log('elem::', elem); }
+    this._debug('loadHead', `--------- loadHead -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
+    if(this._debug().loadView) { console.log('elem::', elem); }
     if (!elem) { throw new Error(`Element HEAD not found.`); }
     if (!viewPath){ throw new Error(`View path is not defined.`); }
 
@@ -533,16 +532,16 @@ class Page extends DataRg {
       const cnt = this.fetchCachedView(viewPath);
       nodes = cnt.nodes;
       str = cnt.str;
-      debug('loadHead', '--from cached JSON', '#8B0892');
+      this._debug('loadHead', '--from cached JSON', '#8B0892');
     } else { // HTML content by requesting the server
       const cnt = await this.fetchRemoteView(viewPath);
       nodes = cnt.nodes;
       str = cnt.str;
-      debug('loadHead', '--from server', '#8B0892');
+      this._debug('loadHead', '--from server', '#8B0892');
     }
 
-    if(debug().loadHead) { console.log('nodes::', nodes); }
-    if(debug().loadHead) { console.log('str::', str); }
+    if(this._debug().loadHead) { console.log('nodes::', nodes); }
+    if(this._debug().loadHead) { console.log('str::', str); }
 
 
     // remove previously generated elements, i.e. elements with the data-rg-headgen attribute

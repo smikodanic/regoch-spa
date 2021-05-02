@@ -1,6 +1,5 @@
 const Page = require('./Page');
 const util = require('./lib/util');
-const debug = require('./debug');
 
 
 class Controller extends Page {
@@ -8,6 +7,42 @@ class Controller extends Page {
   constructor() {
     super();
     this._$scope = {};
+
+    this.debugOpts = {
+      // Controller.js
+      render: false,
+      rerender: false,
+      scope: false,
+
+      // Page.js
+      loadInc: false,
+      loadView: false,
+      emptyView: false,
+      loadHead: false,
+
+      // DataRg.js
+      rgFor: false,
+      rgRepeat: false,
+      rgIf: false,
+      rgSwitch: false,
+      rgElem: false,
+      rgEcho: false,
+      rgPrint: false,
+      rgValue: false,
+      rgInterpolate: false,
+      rgClass: false,
+      rgStyle: false,
+      rgLazyjs: false,
+
+      // DataRgListeners.js
+      rgKILL: false,
+      rgHref: false,
+      rgClick: false,
+      rgKeyup: false,
+      rgChange: false,
+      rgEvt: false,
+      rgSet: false
+    };
   }
 
 
@@ -34,7 +69,7 @@ class Controller extends Page {
    * @returns {Promise<void>}
    */
   async render(trx) {
-    debug('render', `--------- render (start) -- renderDelay: ${this.renderDelay} ------`, 'maroon', '#D9FC9B');
+    this._debug('render', `--------- render (start) -- renderDelay: ${this.renderDelay} ------`, 'maroon', '#D9FC9B');
 
     if (this.renderDelay > 2000) { console.log(`%c Warn:: Seems "${this.renderDelay} ms" is too big for renderDelay parameter.`, `color:Maroon; background:LightYellow`); }
 
@@ -50,7 +85,7 @@ class Controller extends Page {
     await util.sleep(this.renderDelay);
     await this.parseListeners();
 
-    debug('render', `--------- render (end) ------`, 'maroon', '#D9FC9B');
+    this._debug('render', `--------- render (end) ------`, 'maroon', '#D9FC9B');
   }
 
 
@@ -119,7 +154,7 @@ class Controller extends Page {
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
    */
   async rerender(controllerProp) {
-    debug('rerender', `--------- rerender (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} ------`, 'green', '#D9FC9B');
+    this._debug('rerender', `--------- rerender (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} ------`, 'green', '#D9FC9B');
 
     await util.sleep(this.renderDelay);
     await this.parseNonListeners(controllerProp);
@@ -127,7 +162,7 @@ class Controller extends Page {
     await util.sleep(this.renderDelay);
     await this.parseListeners(controllerProp);
 
-    debug('rerender', `--------- rerender (end) ------`, 'green', '#D9FC9B');
+    this._debug('rerender', `--------- rerender (end) ------`, 'green', '#D9FC9B');
   }
 
 
@@ -142,9 +177,9 @@ class Controller extends Page {
    * @param {any} val - the $scope value
    */
   set $scope(val) {
-    debug('scope', '--------- scopeSetter ------', 'green', '#D9FC9B');
+    this._debug('scope', '--------- scopeSetter ------', 'green', '#D9FC9B');
     this._$scope = val;
-    if (debug().scopeSetter) { console.log('$scopeSetter::', this._$scope); }
+    if (this._debug().scopeSetter) { console.log('$scopeSetter::', this._$scope); }
     this.rerender('$scope');
   }
 
@@ -154,8 +189,8 @@ class Controller extends Page {
    * It can be called as this.$scope.myVar in the controller or as data-rg-print="$scope.myVar"
    */
   get $scope() {
-    debug('scope', '--------- scopeGettter ------', 'green', '#D9FC9B');
-    if (debug().scopeGetter) { console.log('$scopeGetter::', this._$scope); }
+    this._debug('scope', '--------- scopeGettter ------', 'green', '#D9FC9B');
+    if (this._debug().scopeGetter) { console.log('$scopeGetter::', this._$scope); }
     return this._$scope;
   }
 
@@ -167,9 +202,9 @@ class Controller extends Page {
    * @param {any} val - the $scope value
    */
   $scopeSet(name, val) {
-    debug('scope', '--------- scopeSet ------', 'green', '#D9FC9B');
+    this._debug('scope', '--------- scopeSet ------', 'green', '#D9FC9B');
     this._$scope[name] = val;
-    if (debug().scopeSet) { console.log('$scopeSet::', this._$scope); }
+    if (this._debug().scopeSet) { console.log('$scopeSet::', this._$scope); }
     this.rerender(`$scope.${name}`);
   }
 
@@ -179,9 +214,18 @@ class Controller extends Page {
    * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
    */
   $scopeReset() {
-    debug('scope', '--------- scopeReset ------', 'green', '#D9FC9B');
+    this._debug('scope', '--------- scopeReset ------', 'green', '#D9FC9B');
     this.$scope = {};
-    if (debug().scopeReset) { console.log('$scopeReset::', this._$scope); }
+    if (this._debug().scopeReset) { console.log('$scopeReset::', this._$scope); }
+  }
+
+
+
+
+  /******** DEBUG *******/
+  _debug(tip, text, color, background) {
+    if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
+    return this.debugOpts;
   }
 
 

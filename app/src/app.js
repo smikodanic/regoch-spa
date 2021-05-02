@@ -44,6 +44,7 @@ const auth = new syslib.Auth(authOpts, cookie, httpClient);
 
 
 const app = new App();
+app.router.debugOpts = {router: false};
 
 app
   .const('apiConst', apiConst)

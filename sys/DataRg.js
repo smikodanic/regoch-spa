@@ -1,6 +1,4 @@
 const DataRgListeners = require('./DataRgListeners');
-const debug = require('./debug');
-
 
 
 /**
@@ -28,7 +26,7 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgFor(controllerProp) {
-    debug('rgFor', `--------- rgFor (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
+    this._debug('rgFor', `--------- rgFor (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-for';
     let elems = document.querySelectorAll(`[${attrName}]`);
@@ -36,7 +34,7 @@ class DataRg extends DataRgListeners {
       elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`);
       if (elems.length > 1) { console.log(`%c rgForWarn:: There are ${elems.length} elements with the attribute ${attrName}^="${controllerProp}". Should be only one.`, `color:Maroon; background:LightYellow`); }
     }
-    debug('rgFor', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._debug('rgFor', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if(!elems.length) { return; }
 
     for (const elem of elems) {
@@ -58,7 +56,7 @@ class DataRg extends DataRgListeners {
       let prop = propLimSkpSplited[0];
       prop = prop.trim();
       const val = this._getControllerValue(prop);
-      if(debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
+      if(this._debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
       if (!val) { continue; }
 
       const max = skip + limit < val.length ? skip + limit : val.length;
@@ -99,7 +97,7 @@ class DataRg extends DataRgListeners {
 
     }
 
-    debug('rgFor', '--------- rgFor (end) ------', 'navy', '#B6ECFF');
+    this._debug('rgFor', '--------- rgFor (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -114,12 +112,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgRepeat(num, id) {
-    debug('rgRepeat', `--------- rgRepeat (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
+    this._debug('rgRepeat', `--------- rgRepeat (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-repeat';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!id) { elems = document.querySelectorAll(`#${id}[${attrName}]`); }
-    debug('rgRepeat', `found elements:: ${elems.length}`, 'navy');
+    this._debug('rgRepeat', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -149,10 +147,10 @@ class DataRg extends DataRgListeners {
         newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
       }
 
-      debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
+      this._debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
     }
 
-    debug('rgRepeat', '--------- rgRepeat (end) ------', 'navy', '#B6ECFF');
+    this._debug('rgRepeat', '--------- rgRepeat (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -170,12 +168,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgPrint(controllerProp) {
-    debug('rgPrint', `--------- rgPrint (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
+    this._debug('rgPrint', `--------- rgPrint (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-print';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgPrint', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._debug('rgPrint', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -230,10 +228,10 @@ class DataRg extends DataRgListeners {
         elem.innerHTML = val;
       }
 
-      debug('rgPrint', `rgPrint:: ${propPipe} = ${val} -- act::"${act}" -- toKeep::${toKeep}`, 'navy');
+      this._debug('rgPrint', `rgPrint:: ${propPipe} = ${val} -- act::"${act}" -- toKeep::${toKeep}`, 'navy');
     }
 
-    debug('rgPrint', '--------- rgPrint (end) ------', 'navy', '#B6ECFF');
+    this._debug('rgPrint', '--------- rgPrint (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -254,12 +252,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgIf(controllerProp) {
-    debug('rgIf', '--------- rgIf (start) ------', 'navy', '#B6ECFF');
+    this._debug('rgIf', '--------- rgIf (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-if';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgIf', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._debug('rgIf', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -292,11 +290,11 @@ class DataRg extends DataRgListeners {
       if (tf) { act === 'remove' ? elem.style.display = '' : elem.style.visibility = ''; }
       else { act === 'remove' ?  elem.style.display = 'none' : elem.style.visibility = 'hidden'; }
 
-      debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
+      this._debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
     }
 
 
-    debug('rgIf', '--------- rgIf (end) ------', 'navy', '#B6ECFF');
+    this._debug('rgIf', '--------- rgIf (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -312,12 +310,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgSwitch(controllerProp) {
-    debug('rgSwitch', '--------- rgSwitch (start) ------', 'navy', '#B6ECFF');
+    this._debug('rgSwitch', '--------- rgSwitch (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-switch';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgSwitch', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._debug('rgSwitch', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -343,16 +341,16 @@ class DataRg extends DataRgListeners {
         else if (isMultiple && val && val.indexOf(switchcaseAttrVal) !== -1) { switchcaseElem.style.display = ''; isMatched = true; }
         else { switchcaseElem.style.display = 'none'; }
 
-        debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --val:: "${val}" --isMatched: ${isMatched}`, 'navy');
+        this._debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchcase="${switchcaseAttrVal}" --val:: "${val}" --isMatched: ${isMatched}`, 'navy');
       }
 
       // set data-rg-switchdefault
       if (!!switchdefaultElem) { !isMatched ? switchdefaultElem.style.display = '' : switchdefaultElem.style.display = 'none'; }
 
-      debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchdefault --isMatched: ${isMatched}`, 'navy');
+      this._debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchdefault --isMatched: ${isMatched}`, 'navy');
     }
 
-    debug('rgSwitch', '--------- rgSwitch (end) ------', 'navy', '#B6ECFF');
+    this._debug('rgSwitch', '--------- rgSwitch (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -365,11 +363,11 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgElem() {
-    debug('rgElem', '--------- rgElem ------', 'navy', '#B6ECFF');
+    this._debug('rgElem', '--------- rgElem ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-elem';
     const elems = document.querySelectorAll(`[${attrName}]`);
-    debug('rgElem', `found elements:: ${elems.length}`, 'navy');
+    this._debug('rgElem', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     // associate values
@@ -390,12 +388,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgEcho(text) {
-    debug('rgEcho', '--------- rgEcho ------', 'navy', '#B6ECFF');
+    this._debug('rgEcho', '--------- rgEcho ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-echo';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!text) { elems = document.querySelectorAll(`[${attrName}^="${text}"]`); }
-    debug('rgEcho', `found elements:: ${elems.length}`, 'navy');
+    this._debug('rgEcho', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     // associate values
@@ -422,12 +420,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgValue (controllerProp) {
-    debug('rgValue', '--------- rgValue ------', 'navy', '#B6ECFF');
+    this._debug('rgValue', '--------- rgValue ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-value';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgValue', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._debug('rgValue', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -437,7 +435,7 @@ class DataRg extends DataRgListeners {
       const prop = attrVal.trim();
       const val = this._getControllerValue(prop);
       elem.setAttribute('value', val);
-      debug('rgValue', `${prop}:: ${val}`, 'navy');
+      this._debug('rgValue', `${prop}:: ${val}`, 'navy');
     }
   }
 
@@ -454,12 +452,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgClass(controllerProp) {
-    debug('rgClass', '--------- rgClass ------', 'navy', '#B6ECFF');
+    this._debug('rgClass', '--------- rgClass ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-class';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgClass', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._debug('rgClass', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -475,7 +473,7 @@ class DataRg extends DataRgListeners {
       if (act == 'replace' && !!valArr.length) { elem.removeAttribute('class'); }
       for (const val of valArr) { elem.classList.add(val); }
 
-      debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${prop} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
+      this._debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${prop} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
     }
 
   }
@@ -493,12 +491,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgStyle(controllerProp) {
-    debug('rgStyle', '--------- rgStyle ------', 'navy', '#B6ECFF');
+    this._debug('rgStyle', '--------- rgStyle ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-style';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgStyle', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._debug('rgStyle', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -519,7 +517,7 @@ class DataRg extends DataRgListeners {
         for (const styleProp of styleProps) { elem.style[styleProp] = valObj[styleProp]; }
       }
 
-      debug('rgStyle', `data-rg-style="${attrVal}" --- prop:: "${prop}" | styleProps:: "${styleProps}" | act:: "${act}"`, 'navy');
+      this._debug('rgStyle', `data-rg-style="${attrVal}" --- prop:: "${prop}" | styleProps:: "${styleProps}" | act:: "${act}"`, 'navy');
     }
 
   }
@@ -533,12 +531,12 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgSrc(controllerProp) {
-    debug('rgSrc', '--------- rgSrc ------', 'navy', '#B6ECFF');
+    this._debug('rgSrc', '--------- rgSrc ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-src';
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgSrc', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._debug('rgSrc', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -555,7 +553,7 @@ class DataRg extends DataRgListeners {
       const src = val || defaultSrc;
       elem.src = src;
 
-      debug('rgSrc', `data-rg-src="${attrVal}" --prop:: "${prop}" --src:: "${src}"`, 'navy');
+      this._debug('rgSrc', `data-rg-src="${attrVal}" --prop:: "${prop}" --src:: "${src}"`, 'navy');
     }
 
   }
@@ -570,17 +568,17 @@ class DataRg extends DataRgListeners {
    * @returns {Promise<void>}
    */
   async rgLazyjs(waitMS = 0) {
-    debug('rgLazyjs', '--------- rgLazyjs ------', 'navy', '#B6ECFF');
+    this._debug('rgLazyjs', '--------- rgLazyjs ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-lazyjs';
     const elems = document.querySelectorAll(`[${attrName}]`);
-    debug('rgLazyjs', `found elements:: ${elems.length}`, 'navy');
+    this._debug('rgLazyjs', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     const urls = []; // url in the src attribute
     for (const elem of elems) {
       const url = elem.getAttribute('src');
-      debug('rgLazyjs', `  src="${url}"`, 'navy');
+      this._debug('rgLazyjs', `  src="${url}"`, 'navy');
       urls.push(url);
     }
 
@@ -602,7 +600,7 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgInterpolate(controllerProp) {
-    debug('rgInterpolate', '--------- rgInterpolate ------', 'navy', '#B6ECFF');
+    this._debug('rgInterpolate', '--------- rgInterpolate ------', 'navy', '#B6ECFF');
 
     // put the whole body in the temp var
     if (!this.temp.body) { this.temp.body = document.body.innerHTML; }
@@ -621,7 +619,7 @@ class DataRg extends DataRgListeners {
       if (!val) { val = ''; console.log(`%c  DatRgWarn:: rgInterpolate: Controller property ${inset} is undefined.`, `color:Maroon; background:LightYellow`); }
       document.body.innerHTML = document.body.innerHTML.replace(inset, val);
 
-      debug('rgInterpolate', `${inset} -> ${val}`, 'navy');
+      this._debug('rgInterpolate', `${inset} -> ${val}`, 'navy');
     }
 
   }

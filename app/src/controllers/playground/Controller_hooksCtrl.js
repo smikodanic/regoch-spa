@@ -6,6 +6,7 @@ class Controller_hooksCtrl extends Controller {
   constructor(app) {
     console.log('This is playground test. Example: Controller Lifecycle Hooks. Controller_hooksCtrl::constructor(app)  --> param app:', app);
     super();
+    this.debugOpts = {render: true};
   }
 
 
