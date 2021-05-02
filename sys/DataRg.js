@@ -16,7 +16,7 @@ class DataRg extends DataRgListeners {
   }
 
 
-  /************** GENERATORS (generate or remove HTML elements) *************/
+  /************** GENERATORS (create or remove HTML elements) *************/
 
   /**
    * data-rg-for="<controllerProp>[:<limit>][:<skip>] [@@ outer|inner]"
@@ -25,10 +25,10 @@ class DataRg extends DataRgListeners {
    * data-rg-for="companies"
    * data-rg-for="company.employers"
    * @param {string} controllerProp - controller property name
-   * @returns {Promise<void>}
+   * @returns {void}
    */
-  async rgFor(controllerProp) {
-    debug('rgFor', '--------- rgFor ------', 'navy', '#B6ECFF');
+  rgFor(controllerProp) {
+    debug('rgFor', `--------- rgFor (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-for';
     let elems = document.querySelectorAll(`[${attrName}]`);
@@ -37,6 +37,7 @@ class DataRg extends DataRgListeners {
       if (elems.length > 1) { console.log(`%c rgForWarn:: There are ${elems.length} elements with the attribute ${attrName}^="${controllerProp}". Should be only one.`, `color:Maroon; background:LightYellow`); }
     }
     debug('rgFor', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    if(!elems.length) { return; }
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // company.employers
@@ -97,6 +98,8 @@ class DataRg extends DataRgListeners {
       }
 
     }
+
+    debug('rgFor', '--------- rgFor (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -108,10 +111,10 @@ class DataRg extends DataRgListeners {
    * data-rg-repeat="10"
    * @param {number} num - number of the repeats
    * @param {string} id - element's id, for example <p id="myID" data-rg-repeat="5">
-   * @returns {Promise<void>}
+   * @returns {void}
    */
-  async rgRepeat(num, id) {
-    debug('rgRepeat', '--------- rgRepeat ------', 'navy', '#B6ECFF');
+  rgRepeat(num, id) {
+    debug('rgRepeat', `--------- rgRepeat (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-repeat';
     let elems = document.querySelectorAll(`[${attrName}]`);
@@ -148,9 +151,95 @@ class DataRg extends DataRgListeners {
 
       debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
     }
+
+    debug('rgRepeat', '--------- rgRepeat (end) ------', 'navy', '#B6ECFF');
   }
 
 
+  /**
+   * data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"
+   * data-rg-print="company.name @@ inner"
+   * data-rg-print="company.name @@ inner @@ keep"   - keep the innerHTML when value is undefined
+   * Parse the "data-rg-print" attribute. Print the controller's property to view.
+   * Examples:
+   * data-rg-print="product" - product is the controller property
+   * data-rg-print="product.name @@ outer"
+   * data-rg-print="product.name @@ sibling"
+   * @param {string} controllerProp - part of the attribute value which relates to the controller property,
+   * for example product.name in the data-rg-print="product.name @@ inner". This speed up parsing because it's limited only to one element.
+   * @returns {void}
+   */
+  rgPrint(controllerProp) {
+    debug('rgPrint', `--------- rgPrint (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-print';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    debug('rgPrint', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      const attrValSplited = attrVal.split(this.separator);
+      if (!attrValSplited.length) { console.error(`Attribute "data-rg-print" has bad definition (data-rg-print="${attrVal}").`); continue; }
+
+      // get val and apply pipe to the val
+      const propPipe = attrValSplited[0].trim(); // controller property name with pipe:  company.name | slice(0,21)
+      const propPipeSplitted = propPipe.split('|');
+      const prop = propPipeSplitted[0].trim();
+      let val = this._getControllerValue(prop);
+
+
+      let pipe_funcDef = propPipeSplitted[1];
+      if (!!pipe_funcDef && !!val) {
+        pipe_funcDef = pipe_funcDef.trim();
+        const {funcName, funcArgs} = this._funcParse(pipe_funcDef);
+        val = val[funcName](...funcArgs);
+      }
+
+
+      // correct val
+      const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false; // to keep the innerHTML as value when val is undefined
+      if (val === undefined) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
+      else if (typeof val === 'object') { val = JSON.stringify(val); }
+      else if (typeof val === 'number') { val = +val; }
+      else if (typeof val === 'string') { val = val || ''; }
+      else if (typeof val === 'boolean') { val = val.toString(); }
+      else { val = val; }
+
+      // define action
+      let act = attrValSplited[1] || 'inner';
+      act = act.trim();
+
+      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
+
+      // load content in the element
+      if (act === 'inner') {
+        elem.innerHTML = val;
+      } else if (act === 'outer') {
+        elem.outerHTML = val;
+      } else if (act === 'sibling') {
+        const textNode = document.createTextNode(val);
+        elem.nextSibling.remove();
+        elem.parentNode.insertBefore(textNode, elem.nextSibling);
+      } else if (act === 'prepend') {
+        elem.innerHTML = val + ' ' + this._getTemp(attrName, attrVal);
+      } else if (act === 'append') {
+        elem.innerHTML = this._getTemp(attrName, attrVal) + ' ' + val;
+      } else {
+        elem.innerHTML = val;
+      }
+
+      debug('rgPrint', `rgPrint:: ${propPipe} = ${val} -- act::"${act}" -- toKeep::${toKeep}`, 'navy');
+    }
+
+    debug('rgPrint', '--------- rgPrint (end) ------', 'navy', '#B6ECFF');
+  }
+
+
+
+
+  /************ NON-GENERATORS (will not generate new HTML elements or remove existing - will not change the DOM structure) ***********/
 
   /**
    * data-rg-if="<controllerProperty> [@@ hide|remove]"
@@ -165,7 +254,7 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgIf(controllerProp) {
-    debug('rgIf', '--------- rgIf ------', 'navy', '#B6ECFF');
+    debug('rgIf', '--------- rgIf (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-if';
     let elems = document.querySelectorAll(`[${attrName}]`);
@@ -189,7 +278,6 @@ class DataRg extends DataRgListeners {
         // parse data-rg-if with the comparison operators: $not(), $eq(22), $ne(22), ...
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef);
         tf = this._calcComparison(val, funcName, funcArgs);
-        debug('rgIf', `  comparison:: data-rg-if="${prop}=${val} ${funcName}(${funcArgsStr})"  => tf: ${tf}`, 'navy');
       } else {
         // parse data-rg-if without the comparison operators
         tf = val;
@@ -204,8 +292,11 @@ class DataRg extends DataRgListeners {
       if (tf) { act === 'remove' ? elem.style.display = '' : elem.style.visibility = ''; }
       else { act === 'remove' ?  elem.style.display = 'none' : elem.style.visibility = 'hidden'; }
 
-      debug('rgIf', `${prop} = ${val} | ${elem.outerHTML}`, 'navy');
+      debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
     }
+
+
+    debug('rgIf', '--------- rgIf (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -221,7 +312,7 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgSwitch(controllerProp) {
-    debug('rgSwitch', '--------- rgSwitch ------', 'navy', '#B6ECFF');
+    debug('rgSwitch', '--------- rgSwitch (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-switch';
     let elems = document.querySelectorAll(`[${attrName}]`);
@@ -260,12 +351,11 @@ class DataRg extends DataRgListeners {
 
       debug('rgSwitch', `data-rg-switch="${attrVal}" data-rg-switchdefault --isMatched: ${isMatched}`, 'navy');
     }
+
+    debug('rgSwitch', '--------- rgSwitch (end) ------', 'navy', '#B6ECFF');
   }
 
 
-
-
-  /************ NON-GENERATORS (affect to one element, will not generate new HTML elements) ***********/
 
   /**
    * data-rg-elem="<rgelemsProp>"     --> rgelemsProp is the property of the this.rgelems, for example data-rg-elem="myElement" => this.rgelems.myElement
@@ -311,91 +401,15 @@ class DataRg extends DataRgListeners {
     // associate values
     for (const elem of elems) {
       const txt = elem.getAttribute('data-rg-echo');
-      if (!/\$i/.test(txt)) { elem.textContent = txt; } // if doesn't contain $i iteration variable
+      // checks html tags
+      if (/<[^>]*>/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain HTML tags.`, `color:Maroon; background:LightYellow`); }
+      if (/\$i/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain $i iteration parameter.`, `color:Maroon; background:LightYellow`); }
+
+      elem.textContent = txt;
     }
 
   }
 
-
-
-  /**
-   * data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"
-   * data-rg-print="company.name @@ inner"
-   * data-rg-print="company.name @@ inner @@ keep"   - keep the innerHTML when value is undefined
-   * Parse the "data-rg-print" attribute. Print the controller's property to view.
-   * Examples:
-   * data-rg-print="product" - product is the controller property
-   * data-rg-print="product.name @@ outer"
-   * data-rg-print="product.name @@ sibling"
-   * @param {string} controllerProp - part of the attribute value which relates to the controller property,
-   * for example product.name in the data-rg-print="product.name @@ inner". This speed up parsing because it's limited only to one element.
-   * @returns {void}
-   */
-  rgPrint(controllerProp) {
-    debug('rgPrint', '--------- rgPrint ------', 'navy', '#B6ECFF');
-
-    const attrName = 'data-rg-print';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    debug('rgPrint', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.separator);
-      if (!attrValSplited.length) { console.error(`Attribute "data-rg-print" has bad definition (data-rg-print="${attrVal}").`); continue; }
-
-
-      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
-
-      // get val and apply pipe to the val
-      const propPipe = attrValSplited[0].trim(); // controller property name with pipe:  company.name | slice(0,21)
-      const propPipeSplitted = propPipe.split('|');
-      const prop = propPipeSplitted[0].trim();
-      let val = this._getControllerValue(prop);
-
-
-      let pipe_funcDef = propPipeSplitted[1];
-      if (!!pipe_funcDef && !!val) {
-        pipe_funcDef = pipe_funcDef.trim();
-        const {funcName, funcArgs} = this._funcParse(pipe_funcDef);
-        val = val[funcName](...funcArgs);
-      }
-
-
-      // correct val
-      const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false; // to keep the innerHTML as value when val is undefined
-      if (val === undefined) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
-      else if (typeof val === 'object') { val = JSON.stringify(val); }
-      else if (typeof val === 'number') { val = +val; }
-      else if (typeof val === 'string') { val = val || ''; }
-      else if (typeof val === 'boolean') { val = val.toString(); }
-      else { val = val; }
-
-      // define action
-      let act = attrValSplited[1] || 'inner';
-      act = act.trim();
-
-      // load content in the element
-      if (act === 'inner') {
-        elem.innerHTML = val;
-      } else if (act === 'outer') {
-        elem.outerHTML = val;
-      } else if (act === 'sibling') {
-        const textNode = document.createTextNode(val);
-        elem.nextSibling.remove();
-        elem.parentNode.insertBefore(textNode, elem.nextSibling);
-      } else if (act === 'prepend') {
-        elem.innerHTML = val + ' ' + this._getTemp(attrName, attrVal);
-      } else if (act === 'append') {
-        elem.innerHTML = this._getTemp(attrName, attrVal) + ' ' + val;
-      } else {
-        elem.innerHTML = val;
-      }
-
-      debug('rgPrint', `${propPipe}:: ${val} | act::"${act}" | toKeep::"${toKeep}`, 'navy');
-    }
-  }
 
 
   /**

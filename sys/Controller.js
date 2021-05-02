@@ -34,7 +34,7 @@ class Controller extends Page {
    * @returns {Promise<void>}
    */
   async render(trx) {
-    debug('render', `--------- render (start) -- renderDelay: ${this.renderDelay} ------`, '#05969E', '#D9FC9B');
+    debug('render', `--------- render (start) -- renderDelay: ${this.renderDelay} ------`, 'maroon', '#D9FC9B');
 
     if (this.renderDelay > 2000) { console.log(`%c Warn:: Seems "${this.renderDelay} ms" is too big for renderDelay parameter.`, `color:Maroon; background:LightYellow`); }
 
@@ -50,7 +50,7 @@ class Controller extends Page {
     await util.sleep(this.renderDelay);
     await this.parseListeners();
 
-    debug('render', `--------- render (end) ------`, '#05969E', '#D9FC9B');
+    debug('render', `--------- render (end) ------`, 'maroon', '#D9FC9B');
   }
 
 
@@ -79,13 +79,18 @@ class Controller extends Page {
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
    */
   async parseNonListeners(controllerProp = '') {
-    await this.rgFor(controllerProp);
-    await this.rgRepeat();
+    // generators
+    this.rgFor(controllerProp);
+    this.rgRepeat();
+    this.rgPrint(controllerProp);
+
+    await util.sleep(this.renderDelay);
+
+    // non-generators
+    this.rgEcho();
     this.rgIf(controllerProp);
     this.rgSwitch(controllerProp);
     this.rgElem();
-    this.rgEcho();
-    this.rgPrint(controllerProp);
     this.rgValue(controllerProp);
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);

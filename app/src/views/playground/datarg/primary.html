@@ -20,56 +20,6 @@
 <p id="petID" data-rg-repeat="3" class="$i+1">The pet #$i+1: <input data-rg-set="pets.$i @@ rgPrint"> <span data-rg-print="pets.$i"></span></p>
 
 <br><br>
-<h4>DATA-RG-IF</h4>
-<button data-rg-click="toggleIF()">toggle IF</button>
-<br>PREFIX1 <span data-rg-if="ifX" style="color:green">ifX1 (@@remove)</span> SUFIX1
-<br>PREFIX2 <p data-rg-if="ifX @@ remove" style="color:green">ifX2 (@@remove)</p> SUFIX2
-<br>PREFIX3 <p data-rg-if="ifX @@ hide" style="color:green;">ifX3 (@@hide)</p> SUFIX3
-<br>
-
-<br><br>
-<h4>DATA-RG-IF (with comparison functions: $not)</h4>
-<button data-rg-click="runIF()">run IF</button>
-<br>1. ifY.bool $not() <span data-rg-if="ifY.bool $not()" style="color:green">OK</span>
-<br>2. ifY.num $eq(5) <span data-rg-if="ifY.num $eq(5)" style="color:green">OK</span>
-<br>4. ifY.str $eq(this.myStr) <span data-rg-if="ifY.str $eq(this.myStr)" style="color:green">OK</span>
-<br>3. ifY.num $eq(this.myNum) <span data-rg-if="ifY.num $eq(this.myNum)" style="color:green">OK</span>
-<br>4. ifY.num $lt(5.5) <span data-rg-if="ifY.num $lt(5.5)" style="color:green">OK</span>
-<br>5. ifY.num $gte(this.myNum) <span data-rg-if="ifY.num $gte(this.myNum)" style="color:green">OK</span>
-<br>6. ifY.num $in(this.myArr) <span data-rg-if="ifY.num $in(this.myArr)" style="color:green">OK</span>
-<br>7. ifY.num $nin(this.myArr) <span data-rg-if="ifY.num $nin(this.myArr)" style="color:green">OK</span>
-
-<br><br>
-<h4>DATA-RG-SWITCH</h4>
-<p>Here are two tests. <br>First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.</p>
-<i>-- switch one example</i>
-<br><input type="text" data-rg-set="myColor @@ rgPrint" placeholder="type red, green or blue">
-<button data-rg-click="runSWITCH()">run SWITCH "<span data-rg-print="myColor"></span>"</button>
-<ul data-rg-switch="myColor">
-  <li data-rg-switchcase="red">red</li>
-  <li data-rg-switchcase="green">green</li>
-  <li data-rg-switchcase="blue">blue</li>
-  <li data-rg-switchdefault>silver (default)</li>
-</ul>
-<br>
-<br><i>--switch multiple example</i>
-<div data-rg-switch="obj.myColors @@ multiple">
-  <p data-rg-switchcase="red2">red2</p>
-  <p data-rg-switchcase="green2">green2</p>
-  <p data-rg-switchcase="blue2">blue2</p>
-  <p data-rg-switchdefault>silver2 (default)</p>
-</div>
-
-
-<br><br>
-<h3>--NON-GENERATORS--</h3>
-
-<h4>DATA-RG-ELEM</h4>
-<button data-rg-click="runELEM()">run ELEM</button> <small>Click button multiple times to toggle the text color.</small>
-<p style="font-weight:bold" data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
-
-
-<br><br>
 <h4>DATA-RG-PRINT &amp; DATA-RG-SET</h4>
 <button data-rg-click="runPRINT()">run PRINT</button> <small>Click on the button to change the print values</small>
 <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
@@ -97,11 +47,77 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 <br><b>data-rg-print="longText | slice(0, 10)" &rarr;</b> <span data-rg-print="longText | slice(0, 10)"></span>
 <br><b>data-rg-print="longText | replace(/Lorem/ig, 'LOREM')" &rarr;</b> <span data-rg-print="longText | replace(/Lorem/ig, 'LOREM')"></span>
 
+<br><br>
+<h4>DATA-RG-PRINT with the HTML tags</h4>
+<button data-rg-click="printHTML()">print HTML</button>
+<p data-rg-print="htmlText"></p>
+
+<br><br><br>
+<h3>--NON-GENERATORS--</h3>
+
+<h4>DATA-RG-IF</h4>
+<button data-rg-click="toggleIF()">toggle IF</button>
+<br>PREFIX1 <span data-rg-if="ifX" style="color:green">ifX1 (@@remove)</span> SUFIX1
+<br>PREFIX2 <p data-rg-if="ifX @@ remove" style="color:green">ifX2 (@@remove)</p> SUFIX2
+<br>PREFIX3 <p data-rg-if="ifX @@ hide" style="color:green;">ifX3 (@@hide)</p> SUFIX3
+<br>
+
+<br><br>
+<h4>DATA-RG-IF (with comparison functions: $not)</h4>
+<button data-rg-click="runIF()">run IF</button>
+<br>1. ifY.bool $not() <span data-rg-if="ifY.bool $not()" style="color:green">OK</span>
+<br>2. ifY.num $eq(5) <span data-rg-if="ifY.num $eq(5)" style="color:green">OK</span>
+<br>4. ifY.str $eq(this.myStr) <span data-rg-if="ifY.str $eq(this.myStr)" style="color:green">OK</span>
+<br>3. ifY.num $eq(this.myNum) <span data-rg-if="ifY.num $eq(this.myNum)" style="color:green">OK</span>
+<br>4. ifY.num $lt(5.5) <span data-rg-if="ifY.num $lt(5.5)" style="color:green">OK</span>
+<br>5. ifY.num $gte(this.myNum) <span data-rg-if="ifY.num $gte(this.myNum)" style="color:green">OK</span>
+<br>6. ifY.num $in(this.myArr) <span data-rg-if="ifY.num $in(this.myArr)" style="color:green">OK</span>
+<br>7. ifY.num $nin(this.myArr) <span data-rg-if="ifY.num $nin(this.myArr)" style="color:green">OK</span>
+
+<br><br>
+<h4>DATA-RG-IF (child of the data-rg-print)</h4>
+<button data-rg-click="toggleIF2()">toggle IF2</button>
+<p data-rg-print="continent @@ append">
+  <i data-rg-if="continent">CONTINENT:</i>
+  <i data-rg-if="continent $not()">NO CONTINENT</i>
+</p>
+<br>or do this with the data-rg-switch:
+<p data-rg-print="continent @@ append" data-rg-switch="continent">
+  <i data-rg-switchcase="Europe">CONTINENT:</i>
+  <i data-rg-switchdefault>NO CONTINENT</i>
+</p>
+
+
+<br><br>
+<h4>DATA-RG-SWITCH</h4>
+<p>Here are two tests. <br>First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.</p>
+<i>-- switch one example</i>
+<br><input type="text" data-rg-set="myColor @@ rgPrint" placeholder="type red, green or blue">
+<button data-rg-click="runSWITCH()">run SWITCH "<span data-rg-print="myColor"></span>"</button>
+<ul data-rg-switch="myColor">
+  <li data-rg-switchcase="red">red</li>
+  <li data-rg-switchcase="green">green</li>
+  <li data-rg-switchcase="blue">blue</li>
+  <li data-rg-switchdefault>silver (default)</li>
+</ul>
+<br>
+<br><i>--switch multiple example</i>
+<div data-rg-switch="obj.myColors @@ multiple">
+  <p data-rg-switchcase="red2">red2</p>
+  <p data-rg-switchcase="green2">green2</p>
+  <p data-rg-switchcase="blue2">blue2</p>
+  <p data-rg-switchdefault>silver2 (default)</p>
+</div>
+
+
+<h4>DATA-RG-ELEM</h4>
+<button data-rg-click="runELEM()">run ELEM</button> <small>Click button multiple times to toggle the text color.</small>
+<p style="font-weight:bold" data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
 
 
 <br><br><br>
 <h4>DATA-RG-ECHO</h4>
-<span data-rg-echo="This is the echoed text!"></span>
+<span data-rg-echo="This is the echoed!"></span>
 
 
 <br><br>

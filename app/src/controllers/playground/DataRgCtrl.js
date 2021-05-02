@@ -27,6 +27,9 @@ class DataRgCtrl extends Controller {
 
     // initail value for data-rg-print with the pipe
     this.longText = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard.';
+
+    // text with the HTML
+    this.htmlText = 'The best <b style="color:red">man</b> friend is: <i data-rg-if="bestFriend $not()">NOBODY</i> <i data-rg-if="bestFriend $eq(Dog)">DOG</i>';
   }
 
   async prerender(trx) {
@@ -75,6 +78,47 @@ class DataRgCtrl extends Controller {
     this.rgPrint('pets');
   }
 
+
+  // print initial value and after 1300ms the modified value
+  async runPRINT() {
+    this.product = {
+      name: 'Toyota',
+      address: {
+        city: 'London'
+      },
+      colors: ['red', 'green']
+    };
+    this.rgPrint('product'); // affect data-rg-print with the product
+
+    await syslib.util.sleep(1300);
+    console.log('Product properties changed!');
+    this.product.address.city = 'Zagreb';
+    this.product.colors = ['blue', 'orange'];
+    this.rgPrint('product.address.city');  // affect only data-rg-print with the product.address.city
+  }
+
+
+  printHTML() {
+    this.bestFriend = 'Dog';
+    this.rgIf('bestFriend');
+  }
+
+
+
+
+
+  /*********** NON-GENERATORS **********/
+
+  // toggle text color by using data-rg-elem
+  runELEM() {
+    this.toggle = !this.toggle;
+    if (this.toggle) {
+      this.rgelems.myElem.style.color = 'blue';
+    } else {
+      this.rgelems.myElem.style.color = 'silver';
+    }
+  }
+
   // toggle if and show hide elements
   toggleIF() {
     this.ifX = !this.ifX;
@@ -96,59 +140,17 @@ class DataRgCtrl extends Controller {
     this.rgIf('ifY');
   }
 
+  async toggleIF2() {
+    this.continent = !!this.continent ? '' : 'Europe';
+    this.rerender('continent');
+  }
+
 
   // Here are two tests. First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.
   runSWITCH() {
     this.obj = {myColors: ['green2', 'blue2']};
     this.rgSwitch('myColor'); // this.myColor
     this.rgSwitch('obj.myColors @@ multiple'); // this.obj.myColors
-  }
-
-
-
-  /*********** NON-GENERATORS **********/
-
-  // toggle text color by using data-rg-elem
-  runELEM() {
-    this.toggle = !this.toggle;
-    if (this.toggle) {
-      this.rgelems.myElem.style.color = 'blue';
-    } else {
-      this.rgelems.myElem.style.color = 'silver';
-    }
-  }
-
-  // print initial value and after 1300ms the modified value
-  async runPRINT() {
-    this.product = {
-      name: 'Toyota',
-      address: {
-        city: 'London'
-      },
-      colors: ['red', 'green']
-    };
-    this.rgPrint('product'); // affect data-rg-print with the product
-
-    await syslib.util.sleep(1300);
-    console.log('Product properties changed!');
-    this.product.address.city = 'Zagreb';
-    this.product.colors = ['blue', 'orange'];
-    this.rgPrint('product.address.city');  // affect only data-rg-print with the product.address.city
-  }
-
-
-  // set variables to test interpolation ${ctrlProp}
-  runINTERPOLATE() {
-    this.bankOwner = 'Petar Pan';
-    this.bank = {
-      name: 'Beneficiary Bank LTD',
-      address: { city: 'NY'},
-      employees: [
-        {name: 'John Doe'},
-        {name: 'Melinda Doe'},
-      ]
-    };
-    this.rgInterpolate();
   }
 
   // add CSS classes 'my-red' and 'my-font-size' to the element data-rg-class="myKlases"
@@ -167,6 +169,21 @@ class DataRgCtrl extends Controller {
   runSRC() {
     this.imageURL = 'http://cdn.dex8.com/img/turnkey_tasks/scraper_free.png';
     this.rgSrc('imageURL');
+  }
+
+
+  // set variables to test interpolation ${ctrlProp}
+  runINTERPOLATE() {
+    this.bankOwner = 'Petar Pan';
+    this.bank = {
+      name: 'Beneficiary Bank LTD',
+      address: { city: 'NY'},
+      employees: [
+        {name: 'John Doe'},
+        {name: 'Melinda Doe'},
+      ]
+    };
+    this.rgInterpolate();
   }
 
 }
