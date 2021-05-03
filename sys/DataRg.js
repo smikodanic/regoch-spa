@@ -9,7 +9,6 @@ class DataRg extends DataRgListeners {
   constructor() {
     super();
     this.separator = '@@';
-    this.temp = {}; // controller temporary variable (exists untill controller exists)
     this.rgelems = {}; // set by rgElem()
   }
 
@@ -17,7 +16,7 @@ class DataRg extends DataRgListeners {
   /************** GENERATORS (create or remove HTML elements) *************/
 
   /**
-   * data-rg-for="<controllerProp>[:<limit>][:<skip>] [@@ outer|inner]"
+   * data-rg-for="<controllerProp>[:<limit>][:<skip>]"
    * Parse the "data-rg-for" attribute. Multiply element.
    * Examples:
    * data-rg-for="companies"
@@ -39,9 +38,12 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // company.employers
-      const attrValSplited = attrVal.split(this.separator);
 
-      const propLimSkp = attrValSplited[0].trim(); // company.employers:limit:skip
+      // remove previously generated data-rg-for-gen elements
+      const genElems = document.querySelectorAll(`[data-rg-for-gen="${attrVal}"]`);
+      for (const genElem of genElems) { genElem.remove(); }
+
+      const propLimSkp = attrVal.trim(); // company.employers:limit:skip
       const propLimSkpSplited = propLimSkp.split(':');
 
       let limitName = propLimSkpSplited[1]; // limit variable name
@@ -52,47 +54,27 @@ class DataRg extends DataRgListeners {
       skipName = !!skipName ? skipName.trim() : '';
       const skip = +this[skipName] || 0;
 
-
       let prop = propLimSkpSplited[0];
       prop = prop.trim();
       const val = this._getControllerValue(prop);
       if(this._debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
       if (!val) { continue; }
 
-      const max = skip + limit < val.length ? skip + limit : val.length;
+      // clone the data-rg-for element
+      const newElem = elem.cloneNode(true);
+      newElem.removeAttribute('data-rg-for');
+      newElem.setAttribute('data-rg-for-gen', attrVal);
+      newElem.style.display = '';
 
-      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
+      // hide the original data-rg-for (reference) element
+      elem.style.display = 'none';
 
-      let act = attrValSplited[1] || 'outer'; // outer|inner
-      act = act.trim();
-
-      if (act === 'outer') { // multiply the outerHTML of the data-rg-for element
-        // hide the original (reference) element
-        elem.style.display = 'none';
-        elem.innerHTML = '';
-
-        // remove generated data-rg-for elements, i.e. elements with the data-rg-for-gen attribute
-        const genElems = document.querySelectorAll(`[data-rg-for-gen="${attrVal}"]`);
-        for (const genElem of genElems) { genElem.remove(); }
-
-        // multiply element by cloning and adding sibling elements
-        for (let i = skip; i < max; i++) {
-          const j = max - 1 - i + skip;
-          const newElem = elem.cloneNode();
-          newElem.innerHTML = this._getTemp(attrName, attrVal);
-          newElem.style.display = '';
-          newElem.removeAttribute('data-rg-for');
-          newElem.setAttribute('data-rg-for-gen', attrVal);
-          elem.parentNode.insertBefore(newElem, elem.nextSibling);
-          newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
-        }
-
-      } else if (act === 'inner') { // multiply the innerHTML of the data-rg-for element
-        elem.innerHTML = '';
-        for (let i = skip; i < max; i++) {
-          elem.innerHTML += this._parse$i(i, this._getTemp(attrName, attrVal)); // replace .$i or $i+1 , $i-1, $i^1, ...;
-        }
-
+      // multiply element by cloning and adding sibling elements
+      const limit2 = skip + limit < val.length ? skip + limit : val.length;
+      for (let i = skip; i < limit2; i++) {
+        const j = limit2 - 1 - i + skip;
+        elem.parentNode.insertBefore(newElem, elem.nextSibling);
+        newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
       }
 
     }
@@ -103,51 +85,51 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * data-rg-repeat="<num>"
-   * Parse the "data-rg-repeat" attribute. Repeat the element n times.
+   * data-rg-repeat="controllerProp"
+   * Parse the "data-rg-repeat" attribute. Repeat the element n times wher n is defined in the controller property.
+   * It's same as rgFor() except the controller property is not array but number.
    * Examples:
-   * data-rg-repeat="10"
-   * @param {number} num - number of the repeats
-   * @param {string} id - element's id, for example <p id="myID" data-rg-repeat="5">
+   * data-rg-repeat="totalRows"
+   * @param {string} controllerProp - controller property name
    * @returns {void}
    */
-  rgRepeat(num, id) {
+  rgRepeat(controllerProp) {
     this._debug('rgRepeat', `--------- rgRepeat (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-repeat';
     let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!id) { elems = document.querySelectorAll(`#${id}[${attrName}]`); }
-    this._debug('rgRepeat', `found elements:: ${elems.length}`, 'navy');
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    this._debug('rgRepeat', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
+
     for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName); // '10 @@ #comp'
-      const max = +num || +attrVal.trim();
+      const attrVal = elem.getAttribute(attrName);
 
-      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
-
-      // hide the original (reference) element
-      elem.style.display = 'none';
-      elem.innerHTML = '';
-
-      // remove generated data-rg-repeat elements, i.e. elements with the data-rg-repeat-gen attribute
+      // remove generated data-rg-repeat-gen elements
       const genElems = document.querySelectorAll(`[data-rg-repeat-gen="${attrVal}"]`);
       for (const genElem of genElems) { genElem.remove(); }
 
+      const prop = attrVal.trim();
+      const val = +this._getControllerValue(prop);
+      this._debug('rgRepeat', `Element will be repeated ${val} times.`, 'navy');
+
+      // clone the data-rg-repeat element
+      const newElem = elem.cloneNode(true);
+      newElem.removeAttribute('data-rg-repeat');
+      newElem.setAttribute('data-rg-repeat-gen', attrVal);
+      newElem.style.display = '';
+
+      // hide the original data-rg-repeat (reference) element
+      elem.style.display = 'none';
+
       // multiply element by cloning and adding sibling elements
-      for (let i = 0; i < max; i++) {
-        const j = max - 1 - i;
-        const newElem = elem.cloneNode();
-        newElem.innerHTML = this._getTemp(attrName, attrVal);
-        newElem.style.display = '';
-        newElem.removeAttribute('id');
-        newElem.removeAttribute('data-rg-repeat');
-        newElem.setAttribute('data-rg-repeat-gen', attrVal);
+      for (let i = 0; i < val; i++) {
+        const j = val - 1 - i;
         elem.parentNode.insertBefore(newElem, elem.nextSibling);
         newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
       }
 
-      this._debug('rgRepeat', `max:: ${max}, id: ${id}`, 'navy');
     }
 
     this._debug('rgRepeat', '--------- rgRepeat (end) ------', 'navy', '#B6ECFF');
@@ -179,14 +161,12 @@ class DataRg extends DataRgListeners {
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split(this.separator);
-      if (!attrValSplited.length) { console.error(`Attribute "data-rg-print" has bad definition (data-rg-print="${attrVal}").`); continue; }
 
       // get val and apply pipe to the val
       const propPipe = attrValSplited[0].trim(); // controller property name with pipe:  company.name | slice(0,21)
       const propPipeSplitted = propPipe.split('|');
       const prop = propPipeSplitted[0].trim();
       let val = this._getControllerValue(prop);
-
 
       let pipe_funcDef = propPipeSplitted[1];
       if (!!pipe_funcDef && !!val) {
@@ -198,10 +178,10 @@ class DataRg extends DataRgListeners {
 
       // correct val
       const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false; // to keep the innerHTML as value when val is undefined
-      if (val === undefined) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
+      if (!val) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
       else if (typeof val === 'object') { val = JSON.stringify(val); }
       else if (typeof val === 'number') { val = +val; }
-      else if (typeof val === 'string') { val = val || ''; }
+      else if (typeof val === 'string') { val = val; }
       else if (typeof val === 'boolean') { val = val.toString(); }
       else { val = val; }
 
@@ -209,23 +189,38 @@ class DataRg extends DataRgListeners {
       let act = attrValSplited[1] || 'inner';
       act = act.trim();
 
-      this._setTemp(attrName, attrVal, elem.innerHTML); // set this.temp
+      // remove generated data-rg-print-gen elements
+      const genElems = document.querySelectorAll(`[data-rg-print-gen="${attrVal}"]`);
+      for (const genElem of genElems) { genElem.remove(); }
+
+      // clone the data-rg-print element
+      const newElem = elem.cloneNode(true);
+      newElem.removeAttribute('data-rg-print');
+      newElem.setAttribute('data-rg-print-gen', attrVal);
+      newElem.style.display = '';
+
+      // hide the original data-rg-repeat (reference) element
+      elem.style.display = 'none';
+
+      // place newElem as sibling of the elem
+      elem.parentNode.insertBefore(newElem, elem.nextSibling);
 
       // load content in the element
       if (act === 'inner') {
-        elem.innerHTML = val;
+        newElem.innerHTML = val;
       } else if (act === 'outer') {
-        elem.outerHTML = val;
+        newElem.outerHTML = `<span data-rg-print-gen="${attrVal}">${val}</span>`;
       } else if (act === 'sibling') {
-        const textNode = document.createTextNode(val);
-        elem.nextSibling.remove();
-        elem.parentNode.insertBefore(textNode, elem.nextSibling);
+        elem.style.display = '';
+        newElem.outerHTML = `<span data-rg-print-gen="${attrVal}">${val}</span>`;
       } else if (act === 'prepend') {
-        elem.innerHTML = val + ' ' + this._getTemp(attrName, attrVal);
+        newElem.innerHTML = val + ' ' + elem.innerHTML;
       } else if (act === 'append') {
-        elem.innerHTML = this._getTemp(attrName, attrVal) + ' ' + val;
-      } else {
-        elem.innerHTML = val;
+        newElem.innerHTML = elem.innerHTML + ' ' + val;
+      } else if (act === 'inset') {
+        newElem.innerHTML = elem.innerHTML.replace('${}', val);
+      } else  {
+        newElem.innerHTML = val;
       }
 
       this._debug('rgPrint', `rgPrint:: ${propPipe} = ${val} -- act::"${act}" -- toKeep::${toKeep}`, 'navy');
@@ -240,14 +235,11 @@ class DataRg extends DataRgListeners {
   /************ NON-GENERATORS (will not generate new HTML elements or remove existing - will not change the DOM structure) ***********/
 
   /**
-   * data-rg-if="<controllerProperty> [@@ hide|remove]"
-   * Parse the "data-rg-if" attribute. Show or hide the HTML element.
-   * When @@ hide option is used the style="visibility:hidden;" or style="visibility:visible;" is added to the data-rg-if element.
-   * When @@ remove option is used the data-rg-if element is completely commented. For example: <!--<span data-rg-if="ifAge @@ remove">Lorem ipsum</span>-->
+   * data-rg-if="<controllerProperty>"
+   * Parse the "data-rg-if" attribute. Show or hide the HTML element by setting display:none.
    * Examples:
-   * data-rg-if="ifAge" - hide the element
-   * data-rg-if="ifAge @@ hide" - hide the element
-   * data-rg-if="ifAge @@ remove" - remove the element
+   * data-rg-if="ifAge"
+   * data-rg-if="ifAge $eq(22)"
    * @param {string} controllerProp - controller property name
    * @returns {void}
    */
@@ -261,10 +253,10 @@ class DataRg extends DataRgListeners {
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName).trim(); // ifAge @@ remove
-      const attrValSplited = attrVal.split(this.separator);
+      const attrVal = elem.getAttribute(attrName).trim(); // ifAge
+      if (!attrVal) { console.error(`Attribute "data-rg-if" has bad definition (data-rg-if="${attrVal}").`); continue; }
 
-      const propComp = attrValSplited[0].trim(); // controller property with comparison function, for example: ifAge $eq(22)
+      const propComp = attrVal.trim(); // controller property with comparison function, for example: ifAge $eq(22)
       const propCompSplitted = propComp.split(/\s+/);
 
       const prop = propCompSplitted[0].trim(); // ifAge
@@ -281,14 +273,8 @@ class DataRg extends DataRgListeners {
         tf = val;
       }
 
-
-      // remove or hide element, remove is default
-      let act = attrValSplited[1] || 'remove'; // 'remove'|'hide'
-      act = act.trim();
-
       // hide/show elem
-      if (tf) { act === 'remove' ? elem.style.display = '' : elem.style.visibility = ''; }
-      else { act === 'remove' ?  elem.style.display = 'none' : elem.style.visibility = 'hidden'; }
+      tf ? elem.style.display = '' : elem.style.display = 'none';
 
       this._debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
     }
@@ -590,45 +576,6 @@ class DataRg extends DataRgListeners {
 
 
 
-  /************ EXPERIMENTAL **********/
-  /**
-   * ${controllerProp}
-   * Parse and interpolate the ${controllerProperty} in the HTML text.
-   * Example: <p data-rg-if="tf">The selected value is <b>${company.name}</b>.</p>
-   * ISSUE: When applied breaks dataRgListeners because document.body.innerHTML is modified.
-   * @param {string} controllerProp - controller property which will be interpolated
-   * @returns {void}
-   */
-  rgInterpolate(controllerProp) {
-    this._debug('rgInterpolate', '--------- rgInterpolate ------', 'navy', '#B6ECFF');
-
-    // put the whole body in the temp var
-    if (!this.temp.body) { this.temp.body = document.body.innerHTML; }
-
-    // find insets i.e. ${ctrlProp} string
-    let reg = new RegExp('\\$\\{\\s*[a-zA-Z0-9_\.]+\\s*\\}', 'g');
-    if (controllerProp) { reg = new RegExp(`\\$\\{\\s*${controllerProp}\\s*\\}`, 'g'); } // reduce the number of inset elements and speed up the interpoaltion
-    const insets = this.temp.body.match(reg); // ['${bankOwner}, '${   bank.employess.1.name }']
-    if (!insets) { return; }
-
-    // replace ${ctrProp} with the value
-    document.body.innerHTML = this.temp.body;
-    for (const inset of insets) {
-      const prop = inset.replace('${', '').replace('}', '').trim();
-      let val = this._getControllerValue(prop);
-      if (!val) { val = ''; console.log(`%c  DatRgWarn:: rgInterpolate: Controller property ${inset} is undefined.`, `color:Maroon; background:LightYellow`); }
-      document.body.innerHTML = document.body.innerHTML.replace(inset, val);
-
-      this._debug('rgInterpolate', `${inset} -> ${val}`, 'navy');
-    }
-
-  }
-
-
-
-
-
-
   /************ PRIVATES **********/
   /**
    * Get the controller property's value.
@@ -640,11 +587,9 @@ class DataRg extends DataRgListeners {
     const propSplitted = prop.split('.'); // ['company', 'name']
     const prop1 = propSplitted[0]; // company
     let val = this[prop1]; // controller property value
-    let i = 0;
-    for (const prop of propSplitted) {
-      if (i !== 0 && !!val) { val = val[prop]; }
-      i++;
-    }
+    propSplitted.forEach((prop, key) => {
+      if (key !== 0 && !!val) { val = val[prop]; }
+    });
     return val;
   }
 
@@ -675,45 +620,6 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * Wrap element in the comment.
-   * @param {Element} elem - HTML element DOM object
-   * @returns {void}
-   */
-  _commentElement(elem) {
-    const comment = document.createComment(elem.outerHTML); // define comment
-    elem.parentNode.insertBefore(comment, elem); // insert comment above elem
-    elem.remove();
-  }
-
-
-  /**
-   * Show data-rg-if elements by removing comment around data-rg-if elements. For example: <!--<span data-rg-if="ifX @@ remove">company name 1</span>-->
-   * When @@ remove option is used the data-rg-if element is commented to remove it from the HTML page.
-   * @param {string} parentCSSsel - CSS selector of the parent data-rg-if element
-   * @returns {void}
-   */
-  _rgIf_uncommentAll(parentCSSsel) {
-    const ifParentElems = document.querySelectorAll(parentCSSsel);
-    const parser = new DOMParser();
-    for (const ifParentElem of ifParentElems) {
-      // console.log('ifParentElem.childNodes::', ifParentElem.childNodes);
-      for (const child of ifParentElem.childNodes) {
-        const elemStr = child.nodeValue; // <p data-rg-if="ifX @@ remove">company name</p>
-        if (child.nodeType === 8 && /data-rg-if/.test(elemStr)) { // 8 is comment https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-          const doc = parser.parseFromString(elemStr, 'text/html');
-          const elem = doc.querySelector('[data-rg-if');
-          // console.log(ifParentElem, child, elem);
-          if (!!elem) {
-            ifParentElem.insertBefore(elem, child);
-            child.remove();
-          }
-        }
-      }
-    }
-  }
-
-
-  /**
    * Caclulate comparison operators.
    * @param {any} val - the controller property value
    * @param {string} funcName - the function name: $not, $eq, ...
@@ -735,7 +641,6 @@ class DataRg extends DataRgListeners {
     else if (funcName === '$nin' && arg) { tf = arg.indexOf(val) === -1; } // arg must be array
 
     // console.log(`funcName:: ${funcName} -- val:.${val} -- arg:.${arg} -- tf:.${tf} --`);
-
     return tf;
   }
 
@@ -765,29 +670,6 @@ class DataRg extends DataRgListeners {
     return value;
   }
 
-
-  /**
-   * Set the temporary variable this.tmp.
-   * @param {string} attrName - attribute name, for example: 'data-rg-for'
-   * @param {string} attrVal - attribute value, for example: 'myFunc()'
-   * @param {any} tempVal - value set in the temporary variable
-   */
-  _setTemp(attrName, attrVal, tempVal) {
-    const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-    if (!this.temp[tempVarName]) {
-      this.temp[tempVarName] = tempVal;
-    }
-  }
-
-  /**
-   * Set the temporary variable this.tmp.
-   * @param {string} attrName - attribute name, for example: 'data-rg-for'
-   * @param {string} attrVal - attribute value, for example: 'myFunc()'
-   */
-  _getTemp(attrName, attrVal) {
-    const tempVarName = `${attrName} ${attrVal}`.replace(/\s/g, '_');
-    return this.temp[tempVarName];
-  }
 
 
 }

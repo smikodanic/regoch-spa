@@ -116,13 +116,12 @@ class Controller extends Page {
   async parseNonListeners(controllerProp = '') {
     // generators
     this.rgFor(controllerProp);
-    this.rgRepeat();
+    this.rgRepeat(controllerProp);
     this.rgPrint(controllerProp);
 
     await util.sleep(this.renderDelay);
 
     // non-generators
-    this.rgEcho();
     this.rgIf(controllerProp);
     this.rgSwitch(controllerProp);
     this.rgElem();
@@ -130,6 +129,7 @@ class Controller extends Page {
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
     this.rgSrc(controllerProp);
+    this.rgEcho();
     // this.rgInterpolate(controllerProp);
   }
 
@@ -163,6 +163,38 @@ class Controller extends Page {
     await this.parseListeners(controllerProp);
 
     this._debug('rerender', `--------- rerender (end) ------`, 'green', '#D9FC9B');
+  }
+
+
+
+  /**
+   * Prevent flickers by hiding data-rg- elements before prerender and show them after render.
+   * @param {boolean} tf
+   */
+  visibleAll(tf) {
+    if (!tf) {
+      const cssSel = `
+        [data-rg-for], [data-rg-for-gen],
+        [data-rg-repeat], [data-rg-repeat-gen],
+        [data-rg-print], [data-rg-print-gen],
+        [data-rg-echo], [data-rg-if], [data-rg-switch], [data-rg-elem], [data-rg-value], [data-rg-class], [data-rg-style], [data-rg-css]
+      `;
+      const elems = document.querySelectorAll(cssSel);
+      console.log('visibility::hide', elems.length);
+      for (const elem of elems) {
+        elem.style.visibility = 'hidden';
+        elem.setAttribute('data-rg-prehide', '');
+      }
+    } else {
+      const cssSel = '[data-rg-prehide]';
+      const elems = document.querySelectorAll(cssSel);
+      console.log('visibility::show', elems.length);
+      for (const elem of elems) {
+        elem.style.visibility = '';
+        elem.removeAttribute('data-rg-prehide');
+      }
+    }
+
   }
 
 

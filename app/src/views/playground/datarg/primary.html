@@ -7,31 +7,36 @@
 
 <h4>DATA-RG-FOR</h4>
 <button data-rg-click="runFOR()">run FOR</button>
-<br><br><b>@@outer</b>
 <p data-rg-for="companies:limit:skip" style="color:green" class="$i+1"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
-<br><b>@@inner</b>
-<p data-rg-for="companies:limit:skip @@ inner" style="color:orangered" class="$i+1"><span data-rg-print="companies.$i.name @@ append">$i name:</span><br></p>
 
 <br><br>
 <h4>DATA-RG-REPEAT</h4>
 <p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>
 <p>Initially the P element will be repeated 3 times due to <b>data-rg-repeat="3"</b> attribute. When the button "run REPEAT" is clicked the element will be repeated 5 times.</p>
 <button data-rg-click="runREPEAT(5)">run REPEAT</button>
-<p id="petID" data-rg-repeat="3" class="$i+1">The pet #$i+1: <input data-rg-set="pets.$i @@ rgPrint"> <span data-rg-print="pets.$i"></span></p>
+<p id="petID" data-rg-repeat="multiplikator" class="$i+1">The pet #$i+1: <input data-rg-set="pets.$i @@ rgPrint"> <span data-rg-print="pets.$i"></span></p>
 
 <br><br>
 <h4>DATA-RG-PRINT &amp; DATA-RG-SET</h4>
 <button data-rg-click="runPRINT()">run PRINT</button> <small>Click on the button to change the print values</small>
 <!-- <input type="text" name="x" data-rg-set="product" data-rg-print="product @@ sibling"> -->
 <br>
-<br><span data-rg-print="product.name @@ append">product.name: </span> &nbsp;<input type="text" name="x" data-rg-set="product.name @@ rgPrint" placeholder="change product.name">
-<p data-rg-print="product.address.city @@ append">The product.address.city is</p>
-<p data-rg-print="product @@ append" style="color:Gray">JSON: </p>
-<br><small>array test</small>
+<br>a) @@inner -- <b data-rg-print="product.name @@ inner">product.name:</b>
+<br>b) @@outer -- <b data-rg-print="product.name @@ outer">product.name:</b>
+<br>c) @@sibling -- <b data-rg-print="product.name @@ sibling">product.name:</b>
+<br>d) @@append -- <b data-rg-print="product.name @@ append">product.name:</b>
+<br>e) @@prepend -- <b data-rg-print="product.name @@ prepend">is the product.name</b>
+<br>f) @@inset -- <b data-rg-print="product.name @@ inset">The product name is <i>${}</i> !</b>
+<br> <input type="text" name="x" data-rg-set="product.name @@ rgPrint" placeholder="change product.name">
+<br>
+<br>g) <span data-rg-print="product.address.city @@ append">The product.address.city is</span>
+<br>h) <span data-rg-print="product @@ append" style="color:Gray">JSON: </span>
+<br>
+<br>i) array test
 <br>product.colors: <span data-rg-print="product.colors"></span>
-<br>product.colors.0: <span data-rg-print="product.colors.0"></span> <input type="text" data-rg-set="product.colors.0 @@ rgPrint" placeholder="change product.colors.0">
-<br>product.colors.1: <span data-rg-print="product.colors.1"></span>
-<br>product.colors.2: <span data-rg-print="product.colors.2"></span> <input type="text" data-rg-set="product.colors.2 @@ rgPrint" placeholder="change product.colors.2">
+<br>product.colors.0: <span data-rg-print="product.colors.0">A</span> <input type="text" data-rg-set="product.colors.0 @@ rgPrint" placeholder="change product.colors.0">
+<br>product.colors.1: <span data-rg-print="product.colors.1">AA</span>
+<br>product.colors.2: <span data-rg-print="product.colors.2 @@ inner @@ keep">AAA</span> <input type="text" data-rg-set="product.colors.2 @@ rgPrint" placeholder="change product.colors.2">
 
 
 <br><br>
@@ -57,9 +62,7 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 
 <h4>DATA-RG-IF</h4>
 <button data-rg-click="toggleIF()">toggle IF</button>
-<br>PREFIX1 <span data-rg-if="ifX" style="color:green">ifX1 (@@remove)</span> SUFIX1
-<br>PREFIX2 <p data-rg-if="ifX @@ remove" style="color:green">ifX2 (@@remove)</p> SUFIX2
-<br>PREFIX3 <p data-rg-if="ifX @@ hide" style="color:green;">ifX3 (@@hide)</p> SUFIX3
+<br>PREFIX1 <span data-rg-if="ifX" style="color:green">ifX1</span> SUFIX1
 <br>
 
 <br><br>
@@ -140,20 +143,3 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 <button data-rg-click="runSRC()">run SRC</button>
 <br><img data-rg-src="imageURL" style="width:130px;height:130px;"> -hasn't defaultSrc
 <br><img data-rg-src="imageURL @@ https://via.placeholder.com/130" style="width:130px;height:130px;"> -has defaultSrc
-
-
-
-<br><br><br>
-<h3 style="color:plum">-- EXPERIMENTAL METHODS --</h3>
-
-<h4>RG-INTERPOLATE</h4>
-The method is experimental. Use data-rg-print instead.
-<br>ISSUE: When applied breaks DataRgListeners.
-<br>
-<br><button data-rg-click="runINTERPOLATE()">runINTERPOLATE</button>
-<br>Bank owner: <b>${bankOwner}</b>
-<br>Bank name: <b>${  bank.name}</b>
-<br>Bank city: <b>${ bank.address.city }</b>
-<br>Second employee: <b>${  bank.employees.1.name  }</b>
-<br>Non exisitng controller property: <b>${bad_Property3}</b>
-

@@ -36,6 +36,9 @@ class Router {
     const render = ctrl.render.bind(ctrl);
     const postrender = ctrl.postrender.bind(ctrl);
 
+    const visibleAllFalse = ctrl.visibleAll.bind(ctrl, false);
+    const visibleAllTrue = ctrl.visibleAll.bind(ctrl, true);
+
     if (authGuards.length && ctrl.auth) {
       // Auth guards
       const autoLogin = ctrl.auth.autoLogin.bind(ctrl.auth);
@@ -47,10 +50,12 @@ class Router {
       if (authGuards.indexOf('isLogged') !== -1) { guards.push(isLogged); }
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }
 
-      this.regochRouter.def(route, setCurrent, ...guards, init, prerender, render, postrender);
+      // this.regochRouter.def(route, setCurrent, ...guards, init, prerender, render, postrender);
+      this.regochRouter.def(route, setCurrent, ...guards, init, prerender, visibleAllFalse, render, postrender, visibleAllTrue);
 
     } else {
-      this.regochRouter.def(route, setCurrent, init, prerender, render, postrender);
+      // this.regochRouter.def(route, setCurrent, init, prerender, render, postrender);
+      this.regochRouter.def(route, setCurrent, init, prerender, visibleAllFalse, render, postrender, visibleAllTrue);
     }
 
   }

@@ -5,6 +5,11 @@ class DataRgCtrl extends Controller {
 
   constructor(app) {
     super();
+    this.debugOpts = {
+      render:true,
+      rerender: true,
+      rgPrint: true
+    };
   }
 
   async init(trx) {
@@ -21,6 +26,9 @@ class DataRgCtrl extends Controller {
       {name: 'Gen Ltd', size: 82},
       {name: 'Ren Ltd', size: 83}
     ];
+
+    // initial value for runREPEAT
+    this.multiplikator = 3;
 
     // initial values for the runSWITCH example
     this.myColor = 'green';
@@ -66,16 +74,15 @@ class DataRgCtrl extends Controller {
       {name: 'Gen2 Ltd', size: 84},
       {name: 'Ren2 Ltd', size: 855}
     ];
-    await this.rgFor('companies');
-    await this.rgPrint('companies');
+    this.rgFor('companies');
+    this.rgPrint('companies');
   }
 
   // repeat the data-rg-repeat num times
   async runREPEAT(num) {
-    this.pets = ['cat', 'dog', 'horse', 'mouse', 'deva'];
-    await this.rgRepeat(num, 'petID');
+    this.multiplikator = 5;
+    this.rgRepeat('multiplikator');
     this.rgSet('pets');
-    this.rgPrint('pets');
   }
 
 
@@ -92,9 +99,12 @@ class DataRgCtrl extends Controller {
 
     await syslib.util.sleep(1300);
     console.log('Product properties changed!');
+
     this.product.address.city = 'Zagreb';
-    this.product.colors = ['blue', 'orange'];
     this.rgPrint('product.address.city');  // affect only data-rg-print with the product.address.city
+
+    this.product.colors = ['blue', 'orange'];
+    this.rgPrint('product.colors');  // affect only data-rg-print with the product.colors
   }
 
 
@@ -169,21 +179,6 @@ class DataRgCtrl extends Controller {
   runSRC() {
     this.imageURL = 'http://cdn.dex8.com/img/turnkey_tasks/scraper_free.png';
     this.rgSrc('imageURL');
-  }
-
-
-  // set variables to test interpolation ${ctrlProp}
-  runINTERPOLATE() {
-    this.bankOwner = 'Petar Pan';
-    this.bank = {
-      name: 'Beneficiary Bank LTD',
-      address: { city: 'NY'},
-      employees: [
-        {name: 'John Doe'},
-        {name: 'Melinda Doe'},
-      ]
-    };
-    this.rgInterpolate();
   }
 
 }
