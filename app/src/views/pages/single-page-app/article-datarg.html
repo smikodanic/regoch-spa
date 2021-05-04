@@ -56,10 +56,11 @@
     </li>
     <li>
       <b>rgPrint <i>(controllerProp :string) :void</i></b>
-      <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [| pipeFunc()] [@@ inner|outer|sibling|prepend|append] [@@ keep]"</b> elements. Print the controller's property in the view.
+      <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [| pipeFunc()] [@@ inner|outer|sibling|prepend|append|inset] [@@ keep]"</b> elements. Print the controller's property in the view.
       <br>TIP1: If the controller property has <i>falsy</i> value and <i>@@keep</i> is used then innerHTML value is printed.
       <br>TIP2: If the value is the JS object or array it is automatically recognised and converted to the JSON string.
-      <br>TIP3: The <b>pipeFunc</b> can be used to format the output, for example:
+      <br>TIP3: With inset the printed value can by at any position. For example: <small>&lt;span data-rg-print="age @@ inset"&gt;John is ${} years old.&lt;/span&gt;</small>
+      <br>TIP4: The <b>pipeFunc</b> can be used to format the output, for example:
       <br><small>data-rg-print="longText | slice(0, 10)"</small> or
       <br><small>data-rg-print="longText | replace(/Lorem/ig, 'LOREM')"</small>
       <br><b>controllerProp</b> - controller property name. The part of the attribute value which relates to the controller property, for example

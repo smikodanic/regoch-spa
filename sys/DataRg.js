@@ -189,38 +189,48 @@ class DataRg extends DataRgListeners {
       let act = attrValSplited[1] || 'inner';
       act = act.trim();
 
-      // remove generated data-rg-print-gen elements
-      const genElems = document.querySelectorAll(`[data-rg-print-gen="${attrVal}"]`);
-      for (const genElem of genElems) { genElem.remove(); }
 
-      // clone the data-rg-print element
-      const newElem = elem.cloneNode(true);
-      newElem.removeAttribute('data-rg-print');
-      newElem.setAttribute('data-rg-print-gen', attrVal);
-      newElem.style.display = '';
+      const createNewElem = () => {
+        // remove generated data-rg-print-gen elements
+        const genElems = document.querySelectorAll(`[data-rg-print-gen="${attrVal}"]`);
+        for (const genElem of genElems) { genElem.remove(); }
 
-      // hide the original data-rg-repeat (reference) element
-      elem.style.display = 'none';
+        // clone the data-rg-print element
+        const newElem = elem.cloneNode(true);
+        newElem.removeAttribute('data-rg-print');
+        newElem.setAttribute('data-rg-print-gen', attrVal);
+        newElem.style.display = '';
 
-      // place newElem as sibling of the elem
-      elem.parentNode.insertBefore(newElem, elem.nextSibling);
+        // hide the original data-rg-repeat (reference) element
+        elem.style.display = 'none';
+
+        // place newElem as sibling of the elem
+        elem.parentNode.insertBefore(newElem, elem.nextSibling);
+
+        return newElem;
+      };
 
       // load content in the element
       if (act === 'inner') {
-        newElem.innerHTML = val;
+        elem.innerHTML = val;
       } else if (act === 'outer') {
+        const newElem = createNewElem();
         newElem.outerHTML = `<span data-rg-print-gen="${attrVal}">${val}</span>`;
       } else if (act === 'sibling') {
         elem.style.display = '';
+        const newElem = createNewElem();
         newElem.outerHTML = `<span data-rg-print-gen="${attrVal}">${val}</span>`;
       } else if (act === 'prepend') {
+        const newElem = createNewElem();
         newElem.innerHTML = val + ' ' + elem.innerHTML;
       } else if (act === 'append') {
+        const newElem = createNewElem();
         newElem.innerHTML = elem.innerHTML + ' ' + val;
       } else if (act === 'inset') {
+        const newElem = createNewElem();
         newElem.innerHTML = elem.innerHTML.replace('${}', val);
       } else  {
-        newElem.innerHTML = val;
+        elem.innerHTML = val;
       }
 
       this._debug('rgPrint', `rgPrint:: ${propPipe} = ${val} -- act::"${act}" -- toKeep::${toKeep}`, 'navy');
@@ -588,6 +598,16 @@ class DataRg extends DataRgListeners {
         return result;
       });
     return txt2;
+  }
+
+
+  /**
+   * Find {{ctrlProp}} occurrences in the txt and replace it with the controller property value.
+   * @param {string} txt - text which needs to be replaced
+   */
+  _parseInterpolated(txt) {
+    const matched = txt.match(/\{\{(.+)\}\}/g);
+    console.log('matched{{}}', matched);
   }
 
 
