@@ -1,15 +1,16 @@
 <h1>Controller Hooks Test</h1>
-<p>Click <a href="/playground/controller-hooks" data-rg-href>here</a> to destroy the controller.</p>
+<p>Click <a href="/playground/controller-hooks-same" data-rg-href>/playground/controller-hooks-same</a> to destroy the controller.</p>
 
 <div class="play-desc">
   The example shows in which order will be executed controller constructor and the lifecycle hooks.
   Open the browser console to see the constructor and hook arguments.
   <ol>
-    <li>constructor(app) - <i>app</i> is the app instance (initialised when app is started i.e. when page is loaded/reloaded)</li>
+    <li>constructor(app) - <i>app</i> is the app instance (initialised when app is started i.e. when browser reload the page)</li>
     <li>init(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
     <li>prerender(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
+    <li>render(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
     <li>postrender(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
-    <li>destroy(elem, event) - elem is the HTMLElement on which event is applied what caused URL change and controller destruction (initilialised when the route is changed)</li>
+    <li>destroy(pevent) - <i>pevent</i> popstate or pushstate event which caused URL change (initilialised when the route is changed)</li>
   </ol>
 </div>
 

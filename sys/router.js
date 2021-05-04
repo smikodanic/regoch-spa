@@ -31,13 +31,10 @@ class Router {
     const setCurrent = navig.setCurrent.bind(navig, ctrl); // set navig.current = {uri, ctrl}
 
     // Controller functions
-    const init = ctrl.init.bind(ctrl);
-    const prerender = ctrl.prerender.bind(ctrl);
-    const render = ctrl.render.bind(ctrl);
-    const postrender = ctrl.postrender.bind(ctrl);
-
-    const visibleAllFalse = ctrl.visibleAll.bind(ctrl, false);
-    const visibleAllTrue = ctrl.visibleAll.bind(ctrl, true);
+    const initHook = ctrl.initHook.bind(ctrl);
+    const prerenderHook = ctrl.prerenderHook.bind(ctrl);
+    const renderHook = ctrl.renderHook.bind(ctrl);
+    const postrenderHook = ctrl.postrenderHook.bind(ctrl);
 
     if (authGuards.length && ctrl.auth) {
       // Auth guards
@@ -50,12 +47,10 @@ class Router {
       if (authGuards.indexOf('isLogged') !== -1) { guards.push(isLogged); }
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }
 
-      // this.regochRouter.def(route, setCurrent, ...guards, init, prerender, render, postrender);
-      this.regochRouter.def(route, setCurrent, ...guards, init, prerender, visibleAllFalse, render, postrender, visibleAllTrue);
+      this.regochRouter.def(route, ...guards, setCurrent, initHook, prerenderHook, renderHook, postrenderHook);
 
     } else {
-      // this.regochRouter.def(route, setCurrent, init, prerender, render, postrender);
-      this.regochRouter.def(route, setCurrent, init, prerender, visibleAllFalse, render, postrender, visibleAllTrue);
+      this.regochRouter.def(route, setCurrent, initHook, prerenderHook,  renderHook, postrenderHook);
     }
 
   }
@@ -72,12 +67,12 @@ class Router {
     const setCurrent = navig.setCurrent.bind(navig, ctrl);
 
     // controller methods
-    const init = ctrl.init.bind(ctrl);
-    const prerender = ctrl.prerender.bind(ctrl);
-    const render = ctrl.render.bind(ctrl);
-    const postrender = ctrl.postrender.bind(ctrl);
+    const initHook = ctrl.initHook.bind(ctrl);
+    const prerenderHook = ctrl.prerenderHook.bind(ctrl);
+    const renderHook = ctrl.renderHook.bind(ctrl);
+    const postrenderHook = ctrl.postrenderHook.bind(ctrl);
 
-    this.regochRouter.notfound(setCurrent, init, prerender, render, postrender);
+    this.regochRouter.notfound(setCurrent, initHook, prerenderHook, renderHook, postrenderHook);
   }
 
 
@@ -141,7 +136,7 @@ class Router {
       try {
         if(navig && navig.previous && navig.previous.ctrl) {
           navig.previous.ctrl.rgKILL(); // kill controller's event listeners
-          navig.previous.ctrl.destroy(pevent); // execute destroy() hook defined in the controller
+          navig.previous.ctrl.destroyHook(pevent); // execute destroyHook() defined in the Controller.js
         }
 
         this.regochRouter.trx = { uri };

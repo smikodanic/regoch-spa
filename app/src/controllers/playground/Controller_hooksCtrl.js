@@ -6,7 +6,10 @@ class Controller_hooksCtrl extends Controller {
   constructor(app) {
     console.log('This is playground test. Example: Controller Lifecycle Hooks. Controller_hooksCtrl::constructor(app)  --> param app:', app);
     super();
-    this.debugOpts = {render: true};
+    this.debugOpts = {
+      prerenderHook: true,
+      renderHook: true
+    };
   }
 
 
@@ -24,6 +27,10 @@ class Controller_hooksCtrl extends Controller {
     await this.loadView('#primary', 'playground/controller-hooks/primary.html', 'sibling');
   }
 
+
+  async render(trx) {
+    console.log('Controller_hooks render::', trx);
+  }
 
   async postrender(trx) {
     console.log('Controller_hooks postrender::', trx);

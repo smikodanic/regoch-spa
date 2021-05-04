@@ -39,7 +39,9 @@
   <pre><code class="language-js">
 /*** default Controller debug options ***/
 // Controller.js
-render: false,
+renderHook: false,
+prerenderHook: false,
+visibleAll: false,
 rerender: false,
 scope: false,
 
@@ -48,6 +50,7 @@ loadInc: false,
 loadView: false,
 emptyView: false,
 loadHead: false,
+rgLazyjs: false,
 
 // DataRg.js
 rgFor: false,
@@ -61,7 +64,6 @@ rgValue: false,
 rgInterpolate: false,
 rgClass: false,
 rgStyle: false,
-rgLazyjs: false,
 
 // DataRgListeners.js
 rgKILL: false,
@@ -95,8 +97,8 @@ rgSet: false
       <br><b>trx</b> - regoch router transitional variable (carrier). See <a href="/router#item-2-2" data-rg-href>here</a>.</p>
     </li>
     <li>
-      <i>async</i> <strong>render <i>(trx :object) :Promise&lt;void&gt;</i></strong>
-      <p class="desc">Render all elements with the "data-rg-..." attribute. <span style="color:orangered">Don't use it in the controller.</span>
+      <i>async</i> <b>render <i>(trx :object) :Promise&lt;void&gt;</i></b>
+      <p class="desc">Render all elements with the "data-rg-..." attribute.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
@@ -114,9 +116,11 @@ rgSet: false
 
     <br><br>
     <h4>Auxilary Render Methods</h4>
-    <li><b>rerender <i>(controllerProp :string) :void</i></b>
-      <p class="desc"> Re-render the view i.e. the data-rg- elements with the controllerProp. For example: <i>data-rg-print="first_name"</i>, where first_name is the controllerProp.
-      <br>The <i>data-rg-inc</i>, <i>data-rg-view</i> and <i>DataRgListeners</i> will not be rerendered by this method.
+    <li><i>async</i>  <b>rerender <i>(controllerProp :string) :Promise&lt;void&gt;</i></b>
+      <p class="desc"> Re-render the view i.e. the data-rg- elements with the controllerProp.
+      For example: <i>data-rg-print="first_name"</i>, where first_name is the controllerProp.
+      It will execute all DataRg methods (generators and non-generators)
+      The <i>data-rg-inc</i>, <i>data-rg-view</i> and <i>DataRgListeners</i> will not be rerendered by this method.
       <br><b>controllerProp</b> - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."</p>
     </li>
 
@@ -126,7 +130,7 @@ rgSet: false
       <p class="desc"> The <i>$scope</i> object setter. The view will be re-rendered by rerender() method.
       <br><b>val</b> - new $scope value</p>
     </li>
-    <li><b>$scopeSet <i>(name :string, val :any) :void</i></b>
+    <li><i>async</i>  <b>$scopeSet <i>(name :string, val :any) :void</i></b>
       <p class="desc"> Add/update the <i>$scope</i> property.  The view will be re-rendered by rerender() method.
       <br><b>name</b> - $scope property name
       <br><b>val</b> - value of the $scope property</p>

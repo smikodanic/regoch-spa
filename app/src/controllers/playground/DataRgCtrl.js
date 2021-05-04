@@ -6,7 +6,8 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      render:true,
+      renderHook: true,
+      visibleAll: true,
       rerender: true,
       rgPrint: true
     };
