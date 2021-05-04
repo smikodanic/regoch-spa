@@ -394,13 +394,18 @@ class DataRg extends DataRgListeners {
 
     // associate values
     for (const elem of elems) {
-      const txt = elem.getAttribute('data-rg-echo');
+      let txt = elem.getAttribute('data-rg-echo');
+      this._debug('rgEcho', `rgEcho txt before: ${txt}`, 'navy', '#B6ECFF');
+
       // checks html tags
       if (/<[^>]*>/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain HTML tags.`, `color:Maroon; background:LightYellow`); }
-      if (/\$i/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain $i iteration parameter.`, `color:Maroon; background:LightYellow`); }
+
+      txt = this._parseInterpolated(txt); // parse {{ctrlProp}}
+      this._debug('rgEcho', `rgEcho txt after: ${txt}\n`, 'navy', '#B6ECFF');
 
       elem.textContent = txt;
     }
+
 
   }
 
@@ -606,8 +611,21 @@ class DataRg extends DataRgListeners {
    * @param {string} txt - text which needs to be replaced
    */
   _parseInterpolated(txt) {
-    const matched = txt.match(/\{\{(.+)\}\}/g);
-    console.log('matched{{}}', matched);
+    const interpolations = txt.match(/\{\{[0-9a-zA-Z\$\_\.]+\}\}/g); // ["age", "user.name", "$scope.cars.0.name"]
+    if (!interpolations || !interpolations.length) { // if there's no interpolated controller properties in the text
+      return txt;
+    } {
+      let hasFalsyValue = false; // if one of the interpolations has falsy value return empty string
+      for (const interpolation of interpolations) {
+        const prop = interpolation.replace('{{', '').replace('}}', '');
+        const val = this._getControllerValue(prop);
+        if (!val) { hasFalsyValue = true; }
+        console.log('interpolation::', interpolation, val);
+        txt = txt.replace(interpolation, val);
+      }
+      if (hasFalsyValue) { txt = ''; }
+    }
+    return txt;
   }
 
 

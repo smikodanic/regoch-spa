@@ -26,7 +26,7 @@ class DataRgListenersCtrl extends Controller {
     ];
 
     // test CLICK3
-    this.$scopeSet('river', 'Danube');
+    await this.$scopeSet('river', 'Danube');
   }
 
 

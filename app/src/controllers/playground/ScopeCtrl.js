@@ -15,7 +15,7 @@ class ScopeCtrl extends Controller {
 
   async postrender(trx) {
     const products = await this.getProducts();
-    this.$scopeSet('products', products);
+    await this.$scopeSet('products', products);
   }
 
 
@@ -43,12 +43,12 @@ class ScopeCtrl extends Controller {
   }
 
   // set the $scope property
-  runSET () {
+  async runSET () {
     const products = [
       {name: 'Orange', price: 22.11},
       {name: 'Apple', price: 22.12},
     ];
-    this.$scopeSet('products', products);
+    await this.$scopeSet('products', products);
   }
 
 

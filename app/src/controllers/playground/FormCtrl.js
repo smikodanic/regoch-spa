@@ -14,6 +14,11 @@ class FormCtrl extends Controller {
       delControl: false,
       delControls: false
     };
+    this.debugOpts = {
+      rgFor: true,
+      rgPrint: true,
+      rgEcho: true
+    };
   }
 
   async prerender(trx) {
@@ -101,6 +106,7 @@ class FormCtrl extends Controller {
   }
 
 
+  // used data-rg-print
   async generateAutos() {
     const autos = [
       {id: 1, name: 'Toyota', price: 8000},
@@ -110,8 +116,23 @@ class FormCtrl extends Controller {
       {id: 5, name: 'Audi', price: 5000}
     ];
 
-    this.$scopeSet('autos', autos);
+    await this.$scopeSet('autos', autos);
+    await syslib.util.sleep(700);
     this.testForm.setControl('autos', 2);
+  }
+
+  // used data-rg-echo
+  async generatePlants() {
+    const plants = [
+      {id: 1, name: 'Corn', price: 8000},
+      {id: 2, name: 'Ananas', price: 4000},
+      {id: 3, name: 'Banana', price: 6000},
+      {id: 4, name: 'Potato', price: 1000},
+      {id: 5, name: 'Apple', price: 5000}
+    ];
+
+    await this.$scopeSet('plants', plants);
+    this.testForm.setControl('plants', 3);
   }
 
 

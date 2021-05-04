@@ -132,13 +132,13 @@ class Controller extends Page {
   async rerender(controllerProp) {
     this._debug('rerender', `--------- rerender (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} ------`, 'green', '#D9FC9B');
 
-    await this._parseDataRg_generators();
+    await this._parseDataRg_generators(controllerProp);
 
     await util.sleep(this.renderDelay);
-    await this._parseDataRg_nongenerators();
+    await this._parseDataRg_nongenerators(controllerProp);
 
     await util.sleep(this.renderDelay);
-    await this._parseDataRgListeners();
+    await this._parseDataRgListeners(controllerProp);
 
     this._debug('rerender', `--------- rerender (end) ------`, 'green', '#D9FC9B');
   }
@@ -228,7 +228,7 @@ class Controller extends Page {
     this._debug('scope', '--------- scopeSetter ------', 'green', '#D9FC9B');
     this._$scope = val;
     if (this._debug().scopeSetter) { console.log('$scopeSetter::', this._$scope); }
-    this.rerender(`$scope.${name}`);
+    this.rerender('$scope');
   }
 
 
