@@ -235,16 +235,14 @@ class DataRgListeners extends Aux  {
    * data-rg-set="product.name"
    * data-rg-set="product.name @@ rgPrint" -> after set do rgPrint() which will update the view as the user type
    * data-rg-set="product.name @@ rgSwich" -> after set do rgSwitch() which will render data-rg-switch elements
-   * @param {string} controllerProp - controller property name
    * @returns {void}
    */
-  rgSet(controllerProp) {
+  rgSet() {
     this._debug('rgSet', '--------- rgSet ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-set';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgSet', `found elements:: ${elems.length} , controllerProp:: ${controllerProp}`, 'orange');
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    this._debug('rgSet', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {

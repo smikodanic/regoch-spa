@@ -6,10 +6,7 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      renderHook: true,
-      visibleAll: true,
-      rerender: true,
-      rgPrint: true
+      rgPrint: false
     };
   }
 
@@ -82,8 +79,10 @@ class DataRgCtrl extends Controller {
   // repeat the data-rg-repeat num times
   async runREPEAT(num) {
     this.multiplikator = 5;
-    this.rgRepeat('multiplikator');
-    this.rgSet('pets');
+    // this.rgRepeat('multiplikator');
+    // this.rgSet('pets');
+    // this.rgEcho('company name:'); // due to <p data-rg-repeat="multiplikator" data-rg-echo="company name: {{companies.$i.name}} -- company size: {{companies.$i.size}}"></p>
+    this.rerender();
   }
 
 

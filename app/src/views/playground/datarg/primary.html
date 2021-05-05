@@ -14,7 +14,7 @@
 <p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>
 <p>Initially the P element will be repeated 3 times due to <b>data-rg-repeat="3"</b> attribute. When the button "run REPEAT" is clicked the element will be repeated 5 times.</p>
 <button data-rg-click="runREPEAT(5)">run REPEAT</button>
-<p id="petID" data-rg-repeat="multiplikator" class="$i+1">The pet #$i+1: <input data-rg-set="pets.$i @@ rgPrint"> <span data-rg-print="pets.$i"></span></p>
+<p data-rg-repeat="multiplikator" class="$i+1">The pet #$i+1: <input data-rg-set="pets.$i @@ rgPrint"> <span data-rg-print="pets.$i"></span></p>
 
 <br><br>
 <h4>DATA-RG-PRINT &amp; DATA-RG-SET</h4>
@@ -113,6 +113,7 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 </div>
 
 
+<br><br><br>
 <h4>DATA-RG-ELEM</h4>
 <button data-rg-click="runELEM()">run ELEM</button> <small>Click button multiple times to toggle the text color.</small>
 <p style="font-weight:bold" data-rg-elem="myElem">catch this element and store in the controller object (this.rgelems)</p>
@@ -121,7 +122,7 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 <br><br><br>
 <h4>DATA-RG-ECHO</h4>
 <span data-rg-echo="This is the echoed pure text!"></span>
-<br><p data-rg-repeat="multiplikator" data-rg-echo="company name: {{companies.$i.name}} -- company size: {{companies.$i.size}}"></p>
+<p data-rg-repeat="multiplikator" data-rg-echo="company name: {{companies.$i.name}} -- company size: {{companies.$i.size}}"></p>
 
 
 <br><br>

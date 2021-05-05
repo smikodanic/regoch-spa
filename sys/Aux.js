@@ -83,7 +83,6 @@ class Aux {
         const prop = interpolation.replace('{{', '').replace('}}', '');
         const val = this._getControllerValue(prop);
         if (!val) { hasFalsyValue = true; }
-        console.log('interpolation::', interpolation, val);
         txt = txt.replace(interpolation, val);
       }
       if (hasFalsyValue) { txt = ''; }
@@ -209,6 +208,62 @@ class Aux {
       console.error(err);
     }
   }
+
+
+  /**
+   * Clone the original element and place new element in the element sibling position.
+   * The original element gets data-rg-xyz-id , unique ID to distinguish the element from other data-rg-xyz elements on the page.
+   * The original element is removed by CSS display:none.
+   * The cloned element gets data-rg-xyz-gen and data-rg-xyz-id attributes.
+   * @param {Element} elem - original element
+   * @param {string} attrName - attribute name: data-rg-for, data-rg-repeat, data-rg-print
+   * @param {string} attrVal - attribute value: 'continent @@ append'
+   * @returns
+   */
+  _generateNewElem(elem, attrName, attrVal) {
+    // hide the original data-rg-repeat (reference) element
+    elem.style.display = 'none';
+
+    let uid = this._uid();
+
+    const dataRgId = elem.getAttribute(`${attrName}-id`);
+    if (!dataRgId) {
+      elem.setAttribute(`${attrName}-id`, uid); // add data-rg-xyz-id , unique ID (because the page can have multiple elements with [data-rg-xyz-gen="${attrVal}"] and we need to distinguish them)
+    }
+    else {
+      uid = dataRgId; // if the uid is already assigned
+    }
+
+    // remove generated data-rg-xyz-gen elements
+    const genElems = document.querySelectorAll(`[${attrName}-gen="${attrVal}"][${attrName}-id="${uid}"]`);
+    for (const genElem of genElems) { genElem.remove(); }
+
+    // clone the data-rg-xyz element
+    const newElem = elem.cloneNode(true);
+    newElem.removeAttribute(attrName);
+    newElem.setAttribute(`${attrName}-gen`, attrVal);
+    newElem.setAttribute(`${attrName}-id`, uid);
+    newElem.style.display = '';
+
+    // place newElem as sibling of the elem
+    elem.parentNode.insertBefore(newElem, elem.nextSibling);
+
+    return newElem;
+  }
+
+
+  /**
+   * Create unique id.
+   */
+  _uid() {
+    const date = Date.now() / 1000;
+    const ms = (date + '').split('.')[1];
+    const rnd = Math.round(Math.random() * 1000);
+    const uid = ms + '-' + rnd;
+    return uid;
+  }
+
+
 
 }
 

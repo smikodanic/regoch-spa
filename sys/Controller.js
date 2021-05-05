@@ -138,7 +138,7 @@ class Controller extends Page {
     await this._parseDataRg_nongenerators(controllerProp);
 
     await util.sleep(this.renderDelay);
-    await this._parseDataRgListeners(controllerProp);
+    await this._parseDataRgListeners();
 
     this._debug('rerender', `--------- rerender (end) ------`, 'green', '#D9FC9B');
   }
@@ -174,16 +174,15 @@ class Controller extends Page {
 
   /**
    * Parse data-rg- elements with the listeners. The methods from DataRgListeners.
-   * @param {string} controllerProp - controller property name
    */
-  async _parseDataRgListeners(controllerProp) {
+  async _parseDataRgListeners() {
     await this.rgKILL(); // remove all listeners first
     this.rgHref();
     this.rgClick();
     this.rgKeyup();
     this.rgChange();
     this.rgEvt();
-    this.rgSet(controllerProp);
+    this.rgSet();
   }
 
   /**

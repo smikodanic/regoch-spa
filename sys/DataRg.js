@@ -29,19 +29,13 @@ class DataRg extends DataRgListeners {
 
     const attrName = 'data-rg-for';
     let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) {
-      elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`);
-      if (elems.length > 1) { console.log(`%c rgForWarn:: There are ${elems.length} elements with the attribute ${attrName}^="${controllerProp}". Should be only one.`, `color:Maroon; background:LightYellow`); }
-    }
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
     this._debug('rgFor', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if(!elems.length) { return; }
 
+
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // company.employers
-
-      // remove previously generated data-rg-for-gen elements
-      const genElems = document.querySelectorAll(`[data-rg-for-gen="${attrVal}"]`);
-      for (const genElem of genElems) { genElem.remove(); }
 
       const propLimSkp = attrVal.trim(); // company.employers:limit:skip
       const propLimSkpSplited = propLimSkp.split(':');
@@ -60,14 +54,8 @@ class DataRg extends DataRgListeners {
       if(this._debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
       if (!val) { continue; }
 
-      // clone the data-rg-for element
-      const newElem = elem.cloneNode(true);
-      newElem.removeAttribute('data-rg-for');
-      newElem.setAttribute('data-rg-for-gen', attrVal);
-      newElem.style.display = '';
-
-      // hide the original data-rg-for (reference) element
-      elem.style.display = 'none';
+      // generate new element and place it in the sibling position
+      const newElem = this._generateNewElem(elem, attrName, attrVal);
 
       // multiply element by cloning and adding sibling elements
       const limit2 = skip + limit < val.length ? skip + limit : val.length;
@@ -106,22 +94,12 @@ class DataRg extends DataRgListeners {
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
 
-      // remove generated data-rg-repeat-gen elements
-      const genElems = document.querySelectorAll(`[data-rg-repeat-gen="${attrVal}"]`);
-      for (const genElem of genElems) { genElem.remove(); }
-
       const prop = attrVal.trim();
       const val = +this._getControllerValue(prop);
       this._debug('rgRepeat', `Element will be repeated ${val} times.`, 'navy');
 
-      // clone the data-rg-repeat element
-      const newElem = elem.cloneNode(true);
-      newElem.removeAttribute('data-rg-repeat');
-      newElem.setAttribute('data-rg-repeat-gen', attrVal);
-      newElem.style.display = '';
-
-      // hide the original data-rg-repeat (reference) element
-      elem.style.display = 'none';
+      // generate new element and place it in the sibling position
+      const newElem = this._generateNewElem(elem, attrName, attrVal);
 
       // multiply element by cloning and adding sibling elements
       for (let i = 0; i < val; i++) {
@@ -158,6 +136,7 @@ class DataRg extends DataRgListeners {
     this._debug('rgPrint', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
     if (!elems.length) { return; }
 
+
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split(this.separator);
@@ -175,7 +154,6 @@ class DataRg extends DataRgListeners {
         val = val[funcName](...funcArgs);
       }
 
-
       // correct val
       const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false; // to keep the innerHTML as value when val is undefined
       if (!val) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
@@ -189,45 +167,26 @@ class DataRg extends DataRgListeners {
       let act = attrValSplited[1] || 'inner';
       act = act.trim();
 
+      // generate new element and place it in the sibling position
+      let newElem;
+      if (act !== 'inner') { newElem = this._generateNewElem(elem, attrName, attrVal); }
 
-      const createNewElem = () => {
-        // remove generated data-rg-print-gen elements
-        const genElems = document.querySelectorAll(`[data-rg-print-gen="${attrVal}"]`);
-        for (const genElem of genElems) { genElem.remove(); }
-
-        // clone the data-rg-print element
-        const newElem = elem.cloneNode(true);
-        newElem.removeAttribute('data-rg-print');
-        newElem.setAttribute('data-rg-print-gen', attrVal);
-        newElem.style.display = '';
-
-        // hide the original data-rg-repeat (reference) element
-        elem.style.display = 'none';
-
-        // place newElem as sibling of the elem
-        elem.parentNode.insertBefore(newElem, elem.nextSibling);
-
-        return newElem;
-      };
 
       // load content in the element
       if (act === 'inner') {
         elem.innerHTML = val;
       } else if (act === 'outer') {
-        const newElem = createNewElem();
-        newElem.outerHTML = `<span data-rg-print-gen="${attrVal}">${val}</span>`;
+        const id2 = newElem.getAttribute('data-rg-print-id');
+        newElem.outerHTML = `<span data-rg-print-gen="${attrVal}" data-rg-print-id="${id2}">${val}</span>`;
       } else if (act === 'sibling') {
         elem.style.display = '';
-        const newElem = createNewElem();
-        newElem.outerHTML = `<span data-rg-print-gen="${attrVal}">${val}</span>`;
+        const id2 = newElem.getAttribute('data-rg-print-id');
+        newElem.outerHTML = `<span data-rg-print-gen="${attrVal}" data-rg-print-id="${id2}">${val}</span>`;
       } else if (act === 'prepend') {
-        const newElem = createNewElem();
         newElem.innerHTML = val + ' ' + elem.innerHTML;
       } else if (act === 'append') {
-        const newElem = createNewElem();
         newElem.innerHTML = elem.innerHTML + ' ' + val;
       } else if (act === 'inset') {
-        const newElem = createNewElem();
         newElem.innerHTML = elem.innerHTML.replace('${}', val);
       } else  {
         elem.innerHTML = val;
