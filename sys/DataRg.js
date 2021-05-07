@@ -14,7 +14,6 @@ class DataRg extends DataRgListeners {
 
 
   /************** GENERATORS (create or remove HTML elements) *************/
-
   /**
    * data-rg-for="<controllerProp>[:<limit>][:<skip>]"
    * Parse the "data-rg-for" attribute. Multiply element.
@@ -156,7 +155,7 @@ class DataRg extends DataRgListeners {
 
       // correct val
       const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false; // to keep the innerHTML as value when val is undefined
-      if (!val) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
+      if (val === undefined) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
       else if (typeof val === 'object') { val = JSON.stringify(val); }
       else if (typeof val === 'number') { val = +val; }
       else if (typeof val === 'string') { val = val; }
@@ -202,7 +201,6 @@ class DataRg extends DataRgListeners {
 
 
   /************ NON-GENERATORS (will not generate new HTML elements or remove existing - will not change the DOM structure) ***********/
-
   /**
    * data-rg-if="<controllerProperty>"
    * Parse the "data-rg-if" attribute. Show or hide the HTML element by setting display:none.
@@ -311,66 +309,6 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * data-rg-elem="<rgelemsProp>"     --> rgelemsProp is the property of the this.rgelems, for example data-rg-elem="myElement" => this.rgelems.myElement
-   * Parse the "data-rg-elem" attribute. Transfer the DOM element to the controller property "this.rgelems".
-   * Examples:
-   * data-rg-elem="paragraf" -> fetch it with this.rgelems['paragraf']
-   * @returns {void}
-   */
-  rgElem() {
-    this._debug('rgElem', '--------- rgElem ------', 'navy', '#B6ECFF');
-
-    const attrName = 'data-rg-elem';
-    const elems = document.querySelectorAll(`[${attrName}]`);
-    this._debug('rgElem', `found elements:: ${elems.length}`, 'navy');
-    if (!elems.length) { return; }
-
-    // associate values
-    for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName) || ''; // 'paragraf'
-      this.rgelems[attrVal] = elem;
-    }
-
-  }
-
-
-
-  /**
-   * data-rg-echo="<text>"
-   * Parse the "data-rg-echo" attribute. Prints the "text" in the HTML element as innerHTML.
-   * Examples:
-   * data-rg-echo="$i+1"  --> prints the iteration number
-   * @returns {void}
-   */
-  rgEcho(text) {
-    this._debug('rgEcho', '--------- rgEcho ------', 'navy', '#B6ECFF');
-
-    const attrName = 'data-rg-echo';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!text) { elems = document.querySelectorAll(`[${attrName}^="${text}"]`); }
-    this._debug('rgEcho', `found elements:: ${elems.length}`, 'navy');
-    if (!elems.length) { return; }
-
-    // associate values
-    for (const elem of elems) {
-      let txt = elem.getAttribute('data-rg-echo');
-      this._debug('rgEcho', `rgEcho txt before: ${txt}`, 'navy', '#B6ECFF');
-
-      // checks html tags
-      if (/<[^>]*>/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain HTML tags.`, `color:Maroon; background:LightYellow`); }
-
-      txt = this._parseInterpolated(txt); // parse {{ctrlProp}}
-      this._debug('rgEcho', `rgEcho txt after: ${txt}\n`, 'navy', '#B6ECFF');
-
-      elem.textContent = txt;
-    }
-
-
-  }
-
-
-
-  /**
    * data-rg-value="<controllerProperty>"
    * Parse the "data-rg-value" attribute. Sets the "value" attribute with the controller property value.
    * Examples:
@@ -426,6 +364,7 @@ class DataRg extends DataRgListeners {
 
       const prop = attrValSplited[0].trim(); // controller property name company.name
       const valArr = this._getControllerValue(prop) || []; // ['my-bold', 'my-italic']
+      if (!Array.isArray(valArr)) { console.log(`%c rgClassWarn:: The controller property "${prop}" is not an array.`, `color:Maroon; background:LightYellow`); continue; }
 
       let act = attrValSplited[1] || '';
       act = act.trim() || 'add';
@@ -435,7 +374,6 @@ class DataRg extends DataRgListeners {
 
       this._debug('rgClass', `data-rg-class="${attrVal}" --- ctrlProp:: ${prop} | ctrlVal:: ${valArr} | act:: ${act}`, 'navy');
     }
-
   }
 
 
@@ -479,8 +417,8 @@ class DataRg extends DataRgListeners {
 
       this._debug('rgStyle', `data-rg-style="${attrVal}" --- prop:: "${prop}" | styleProps:: "${styleProps}" | act:: "${act}"`, 'navy');
     }
-
   }
+
 
 
   /**
@@ -515,7 +453,63 @@ class DataRg extends DataRgListeners {
 
       this._debug('rgSrc', `data-rg-src="${attrVal}" --prop:: "${prop}" --src:: "${src}"`, 'navy');
     }
+  }
 
+
+
+  /**
+   * data-rg-elem="<rgelemsProp>"     --> rgelemsProp is the property of the this.rgelems, for example data-rg-elem="myElement" => this.rgelems.myElement
+   * Parse the "data-rg-elem" attribute. Transfer the DOM element to the controller property "this.rgelems".
+   * Examples:
+   * data-rg-elem="paragraf" -> fetch it with this.rgelems['paragraf']
+   * @returns {void}
+   */
+  rgElem() {
+    this._debug('rgElem', '--------- rgElem ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-elem';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    this._debug('rgElem', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    // associate values
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || ''; // 'paragraf'
+      this.rgelems[attrVal] = elem;
+    }
+  }
+
+
+
+  /**
+   * data-rg-echo="<text>"
+   * Parse the "data-rg-echo" attribute. Prints the "text" in the HTML element as innerHTML.
+   * Examples:
+   * data-rg-echo="$i+1"  --> prints the iteration number
+   * @returns {void}
+   */
+  rgEcho(text) {
+    this._debug('rgEcho', '--------- rgEcho ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-echo';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!text) { elems = document.querySelectorAll(`[${attrName}^="${text}"]`); }
+    this._debug('rgEcho', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    // associate values
+    for (const elem of elems) {
+      let txt = elem.getAttribute('data-rg-echo');
+      this._debug('rgEcho', `rgEcho txt before: ${txt}`, 'navy', '#B6ECFF');
+
+      // checks html tags
+      if (/<[^>]*>/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain HTML tags.`, `color:Maroon; background:LightYellow`); }
+
+      txt = this._parseInterpolated(txt); // parse {{ctrlProp}}
+      this._debug('rgEcho', `rgEcho txt after: ${txt}\n`, 'navy', '#B6ECFF');
+
+      elem.textContent = txt;
+    }
   }
 
 

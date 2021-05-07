@@ -15,13 +15,13 @@ class FormCtrl extends Controller {
       delControls: false
     };
     this.debugOpts = {
-      rgFor: true,
-      rgPrint: true,
-      rgEcho: true
+      rgFor: false,
+      rgPrint: false,
+      rgEcho: false
     };
   }
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('DataRg Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/form/primary.html', 'inner');

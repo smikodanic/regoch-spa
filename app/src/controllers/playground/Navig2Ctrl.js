@@ -7,8 +7,8 @@ class Navig2Ctrl extends Controller {
     super();
   }
 
-  async prerender(trx) {
-    console.log('Navig2 prerender::', trx);
+  async init(trx) {
+    console.log('Navig2 init::', trx);
     this.setTitle('Navig Test - Page 2');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/navig/primary2.html', 'inner');

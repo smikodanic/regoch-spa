@@ -27,14 +27,8 @@ class Router {
     if (!!route && !ctrl) { throw new Error(`Controller is not defined for route "${route}".`); }
     if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
-    // navig functions
-    const setCurrent = navig.setCurrent.bind(navig, ctrl); // set navig.current = {uri, ctrl}
-
-    // Controller functions
-    const initHook = ctrl.initHook.bind(ctrl);
-    const prerenderHook = ctrl.prerenderHook.bind(ctrl);
-    const renderHook = ctrl.renderHook.bind(ctrl);
-    const postrenderHook = ctrl.postrenderHook.bind(ctrl);
+    const setNavigCurrent = navig.setCurrent.bind(navig, ctrl); // set navig.current = {uri, ctrl}
+    const processing = ctrl.processing.bind(ctrl);
 
     if (authGuards.length && ctrl.auth) {
       // Auth guards
@@ -47,10 +41,10 @@ class Router {
       if (authGuards.indexOf('isLogged') !== -1) { guards.push(isLogged); }
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }
 
-      this.regochRouter.def(route, ...guards, setCurrent, initHook, prerenderHook, renderHook, postrenderHook);
+      this.regochRouter.def(route, ...guards, setNavigCurrent, processing);
 
     } else {
-      this.regochRouter.def(route, setCurrent, initHook, prerenderHook,  renderHook, postrenderHook);
+      this.regochRouter.def(route, setNavigCurrent, processing);
     }
 
   }
@@ -63,16 +57,9 @@ class Router {
    * @returns {void}
    */
   notfound(ctrl) {
-    // navig functions
-    const setCurrent = navig.setCurrent.bind(navig, ctrl);
-
-    // controller methods
-    const initHook = ctrl.initHook.bind(ctrl);
-    const prerenderHook = ctrl.prerenderHook.bind(ctrl);
-    const renderHook = ctrl.renderHook.bind(ctrl);
-    const postrenderHook = ctrl.postrenderHook.bind(ctrl);
-
-    this.regochRouter.notfound(setCurrent, initHook, prerenderHook, renderHook, postrenderHook);
+    const setNavigCurrent = navig.setCurrent.bind(navig, ctrl);
+    const processing = ctrl.processing.bind(ctrl);
+    this.regochRouter.notfound(setNavigCurrent, processing);
   }
 
 
@@ -136,7 +123,7 @@ class Router {
       try {
         if(navig && navig.previous && navig.previous.ctrl) {
           navig.previous.ctrl.rgKILL(); // kill controller's event listeners
-          navig.previous.ctrl.destroyHook(pevent); // execute destroyHook() defined in the Controller.js
+          navig.previous.ctrl.destroy(pevent); // execute destroy() defined in the Controller.js
         }
 
         this.regochRouter.trx = { uri };

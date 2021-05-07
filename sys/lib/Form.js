@@ -93,7 +93,7 @@ class Form {
   getControl(key) {
     this._debug('getControl', '--------- getControl ------', 'green', '#A1F8DC');
     const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
-    if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
+    if (!elems.length) { console.error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
     let val;
     const valArr = [];
@@ -130,6 +130,7 @@ class Form {
    * @returns {object}
    */
   getControls(keys) {
+    if (!keys) { console.error('getControlsErr: Argument "keys" is not defined. It should be an array.'); }
     this._debug('getControls', '--------- getControls ------', 'green', '#A1F8DC');
     this._debug('getControls', keys, 'green');
     const obj = {};
@@ -149,7 +150,7 @@ class Form {
     this._debug('delControl', '--------- delControl ------', 'green', '#A1F8DC');
     this._debug('delControl', key, 'green');
     const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
-    if (!elems.length) { throw new Error(`Form "${this.formName}" doesn't have "${key}" control.`); }
+    if (!elems.length) { console.error(`Form "${this.formName}" doesn't have "${key}" control.`); }
 
     for (const elem of elems) {
       if (elem.type === 'checkbox') {
@@ -175,6 +176,7 @@ class Form {
    * @returns {void}
    */
   delControls(keys) {
+    if (!keys) { console.error('delControlsErr: Argument "keys" is not defined. It should be an array.'); }
     this._debug('delControls', '--------- delControls ------', 'green', '#A1F8DC');
     this._debug('delControls', keys, 'green');
     for (const key of keys) {

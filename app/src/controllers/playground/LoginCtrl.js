@@ -8,7 +8,7 @@ class LoginCtrl extends Controller {
     this.formLogin = new syslib.Form('loginForm');
   }
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('Auth Login Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/login/primary.html', 'inner');

@@ -10,10 +10,8 @@ class Controller extends Page {
 
     this.debugOpts = {
       // Controller.js
-      renderHook: false,
-      prerenderHook: false,
+      render: false,
       visibleAll: false,
-      rerender: false,
       scope: false,
 
       // Page.js
@@ -50,67 +48,32 @@ class Controller extends Page {
 
   /************* CONTROLLER LIFECYCLE HOOKS ***********/
   /**
-   * Init the controller i.e. set controller properties with the initial values.
+   * Main router middleware.
    * @param {object} trx - regoch router transitional variable (defined in router.js -> _testRoutes())
    * @returns {Promise<void>}
    */
-  async initHook(trx) {
+  async processing(trx) {
     if (this.renderDelay > 2000) { console.log(`%c Warn:: Seems "${this.renderDelay} ms" is too big for renderDelay parameter.`, `color:Maroon; background:LightYellow`); }
-    if(!!this.init) { await this.init(trx); }
-  }
 
+    // INIT HOOK
+    if(!!this.init) { await this.init(trx); this._visibleAll(false); }
 
-  /**
-   * Load views, includes and lazy load the JS files.
-   * @param {object} trx - regoch router transitional variable
-   * @returns {Promise<void>}
-   */
-  async prerenderHook(trx) {
-    this._debug('prerenderHook', `--------- prerenderHook (start) -- renderDelay: ${this.renderDelay} ------`, 'maroon', '#D9FC9B');
-    if(!!this.prerender) { await this.prerender(trx); } // use this.loadView() here!
-
+    // Page LOADERS
     await this.loadInc(true); // defined in Page.js
-    this._visibleAll(false);
-
-    await util.sleep(this.renderDelay);
     await this.rgLazyjs(this.renderDelay); // defined in the Page.js
-    this._debug('prerenderHook', `--------- prerenderHook (end) ------`, 'maroon', '#D9FC9B');
-  }
 
+    // PRERENDER HOOK
+    if(!!this.prerender) { await this.prerender(trx); this._visibleAll(false); }
 
-  /**
-   * Render all HTML elements with data-rg-... attribute except the data-rg-view, data-rg-inc and data-rg-lazyjs.
-   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
-   * @returns {Promise<void>}
-   */
-  async renderHook(trx) {
-    this._debug('renderHook', `--------- renderHook (start) -- renderDelay: ${this.renderDelay} ------`, 'maroon', '#D9FC9B');
+    // RENDER
+    await this.render();
 
-    if(!!this.render) { await this.render(trx); }
-
-    await util.sleep(this.renderDelay);
-    await this._parseDataRg_generators();
-
-    await util.sleep(this.renderDelay);
-    await this._parseDataRg_nongenerators();
+    // POSTRENDER HOOK
+    if(!!this.postrender) { await this.postrender(trx); }
 
     this._visibleAll(true);
-
-    await util.sleep(this.renderDelay);
-    await this._parseDataRgListeners();
-
-    this._debug('renderHook', `--------- renderHook (end) ------`, 'maroon', '#D9FC9B');
   }
 
-
-  /**
-   * Run after the renderHook i.e. when the view is completely rendered.
-   * @param {object} trx - regoch router transitional variable (defined in Router.js::testRoutes())
-   * @returns {Promise<void>}
-   */
-  async postrenderHook(trx) {
-    if(!!this.postrender) { await this.postrender(trx); }
-  }
 
 
   /**
@@ -119,63 +82,40 @@ class Controller extends Page {
    * * @param {Event} pevent - popstate or pushstate event which caused URL change
    * @returns {Promise<void>}
    */
-  async destroyHook(pevent) {
-    if(!!this.destroy) { await this.destroy(pevent); }
-  }
+  async destroy(pevent) {}
+
 
 
   /**
-   * Re-render the view i.e. the data-rg- elements with the controllerProp.
+   * Render the view i.e. the data-rg- elements with the controllerProp.
    * For example: data-rg-print="first_name", where first_name is the controllerProp.
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
    */
-  async rerender(controllerProp) {
-    this._debug('rerender', `--------- rerender (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} ------`, 'green', '#D9FC9B');
-
-    await this._parseDataRg_generators(controllerProp);
+  async render(controllerProp) {
+    this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} ------`, 'green', '#D9FC9B');
 
     await util.sleep(this.renderDelay);
-    await this._parseDataRg_nongenerators(controllerProp);
 
-    await util.sleep(this.renderDelay);
-    await this._parseDataRgListeners();
-
-    this._debug('rerender', `--------- rerender (end) ------`, 'green', '#D9FC9B');
-  }
-
-
-
-
-  /************ AUXILARY RENDER METHODS ************/
-  /**
-   * Parse data-rg- elements with no listeners. The methods from DataRg.
-   * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...^="controllerProp ..."
-   */
-  async _parseDataRg_generators(controllerProp = '') {
+    // DataRg - generators
     this.rgFor(controllerProp);
     this.rgRepeat(controllerProp);
     this.rgPrint(controllerProp);
-  }
 
-  /**
-   * Parse data-rg- elements with no listeners. The methods from DataRg.
-   * @param {string} controllerProp - controller property name
-   */
-  async _parseDataRg_nongenerators(controllerProp = '') {
+    await util.sleep(this.renderDelay);
+
+    // DataRg - non-generators
     this.rgIf(controllerProp);
     this.rgSwitch(controllerProp);
-    this.rgElem();
     this.rgValue(controllerProp);
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
     this.rgSrc(controllerProp);
     this.rgEcho();
-  }
+    this.rgElem();
 
-  /**
-   * Parse data-rg- elements with the listeners. The methods from DataRgListeners.
-   */
-  async _parseDataRgListeners() {
+    await util.sleep(this.renderDelay);
+
+    // DataRgListeners
     await this.rgKILL(); // remove all listeners first
     this.rgHref();
     this.rgClick();
@@ -183,10 +123,16 @@ class Controller extends Page {
     this.rgChange();
     this.rgEvt();
     this.rgSet();
+
+    this._debug('render', `--------- render (end) ------`, 'green', '#D9FC9B');
   }
 
+
+
+
+  /************ AUXILARY RENDER METHODS ************/
   /**
-   * Reduce flickering by hiding data-rg- elements and showing it again after render/rerender process.
+   * Reduce flickering by hiding data-rg- elements before render() and showing it again after render() process.
    * @param {boolean} tf
    */
   _visibleAll(tf) {
@@ -217,7 +163,6 @@ class Controller extends Page {
 
 
   /********* $scope  *********/
-
   /**
    * Set the controller's $scope object.
    * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
@@ -227,7 +172,7 @@ class Controller extends Page {
     this._debug('scope', '--------- scopeSetter ------', 'green', '#D9FC9B');
     this._$scope = val;
     if (this._debug().scopeSetter) { console.log('$scopeSetter::', this._$scope); }
-    this.rerender('$scope');
+    this.render('$scope');
   }
 
 
@@ -252,7 +197,7 @@ class Controller extends Page {
     this._debug('scope', '--------- scopeSet ------', 'green', '#D9FC9B');
     this._$scope[name] = val;
     if (this._debug().scopeSet) { console.log('$scopeSet::', this._$scope); }
-    await this.rerender(`$scope.${name}`);
+    await this.render(`$scope.${name}`);
   }
 
 

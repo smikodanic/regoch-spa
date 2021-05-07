@@ -27,14 +27,13 @@ class DataRgListenersCtrl extends Controller {
 
     // test CLICK3
     await this.$scopeSet('river', 'Danube');
-  }
 
-
-  async prerender(trx) {
     this.setTitle('DataRgListeners Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/datarglisteners/primary.html', 'inner');
   }
+
+
 
 
   // this is needed so that LINK2 work correctly

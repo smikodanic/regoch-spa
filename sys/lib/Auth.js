@@ -116,7 +116,7 @@ class Auth {
     if (!!loggedUser && !!loggedUser.username) {
       const afterGoodLoginURL = this.authOpts.afterGoodLogin.replace('{loggedUserRole}', loggedUser.role);
       navig.goto(afterGoodLoginURL);
-      throw new Error(`AuthWarn:: Autologin to ${afterGoodLoginURL} is triggered.`);
+      console.log(`%c AuthWarn:: Autologin to ${afterGoodLoginURL} is triggered.`, `color:Maroon; background:LightYellow`);
     }
   }
 

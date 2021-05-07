@@ -22,7 +22,7 @@ class CookieCtrl extends Controller {
 
 
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('DataRg Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/cookie/primary.html', 'inner');

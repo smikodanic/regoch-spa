@@ -6,7 +6,7 @@
   <br><br>
   <p>The controller defines what logic will be applied when route is changed.
   Every controller should be injected in the app by usin App:controller() method.
-  <br>The controller class is extended with the Page, DataRg and DataRgListeners
+  The controller class is extended with the Page, DataRg, DataRgListeners and Aux classes.
   <br><b style="color:olive">MyController &rarr; Controller &rarr; Page &rarr; DataRg &rarr; DataRgListeners &rarr; Aux</b>
 
   </p>
@@ -39,10 +39,8 @@
   <pre><code class="language-js">
 /*** default Controller debug options ***/
 // Controller.js
-renderHook: false,
-prerenderHook: false,
 visibleAll: false,
-rerender: false,
+render: false,
 scope: false,
 
 // Page.js
@@ -78,33 +76,34 @@ rgSet: false
 
 <section class="docs-section" id="item-3-2">
   <h2 class="section-heading">Methods</h2>
-  <p>Use this methods in the controller as lifecycle hooks, to rerender the view or to manipulate with the <b>$scope</b> object.</p>
+  <p>In the controller processing the developer can use 3 lifecycle hooks: init(), prerender() and postrender().
+  Also the <b>$scope</b> object can be managed with other controller methods.</p>
 	<ul class="methods">
     <h4>LifeCycle Hook Methods</h4>
-    <b style="color:orange">INIT &rarr; PRERENDER &rarr; RENDER &rarr; POSTRENDER &rarr; DESTROY</b>
-    <br><span style="font-size:smaller">The lifecycle hooks are methods which are related to render HTML elements with <b>data-rg-</b> attribute. The regoch SPA framework will render all elements with
+    <b style="color:orange">INIT &rarr; <small>loadInc, rgLazyJS</small> &rarr; PRERENDER &rarr; <small>RENDER</small> &rarr; POSTRENDER &rarr; DESTROY</b>
+    <br><span style="font-size:smaller">The processing methods are related to render HTML elements with <b>data-rg-</b> attribute. The regoch SPA framework will render all elements with
     data-rg- attributes. Here is the example of one data-rg- element: <small>&lt;span data-rg-print="product.name"&gt;&lt;/span&gt;</small>
     which will set SPAN innerHTML with product.name (controller property value).</span>
 
     <li><i>async</i> <b>init <i>(trx :object) :Promise&lt;void&gt;</i></b>
-      <p class="desc">Initialise the controller i.e. set controller properties with the initial values. Usually here are API calls used to fetch the initial values.
-      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
+      <p class="desc">A hook to initialise the controller. Set the controller properties with the initial values and load views.
+      Usually here are API calls used to fetch the initial values.
+      <br><b>trx</b> - regoch router transitional variable (carrier), see <a href="/router#item-2-2" data-rg-href>here</a></p>
     </li>
     <li>
       <i>async</i> <b>prerender <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code before the "data-rg-..." elements are rendered.
-      The <i>Page</i> methods <i>loadView, loadViews</i> should be used here to load the views.
-      <br><b>trx</b> - regoch router transitional variable (carrier). See <a href="/router#item-2-2" data-rg-href>here</a>.</p>
+      <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
-      <i>async</i> <b>render <i>(trx :object) :Promise&lt;void&gt;</i></b>
-      <p class="desc">Render all elements with the "data-rg-..." attribute.
+      <i>async</i> <strong>render <i>(trx :object) :Promise&lt;void&gt;</i></strong>
+      <p class="desc">Render all elements with the "data-rg-..." attribute i.e. DataRg and DataRgListeners. <i>Do NOT use it as the lifecycle hook!</i>
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
       <i>async</i> <b>postrender <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code after the "data-rg-..." elements are rendered.
-      In this hook the <b>$scope</b> should be set.
+      In this hook the <b>$scope</b> should be set to rerender the DOM.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li><i>async</i> <b>destroy <i>(pevent :Event) :Promise&lt;void&gt;</i></b>
@@ -112,16 +111,6 @@ rgSet: false
       <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element).
       This is very important to save browser's (app) memory space and to prevent memory leaks.
       <br><b>pevent</b> - the 'popstate' (back/forward buttons) or 'pushstate' (data-rg-href element click) event</p>
-    </li>
-
-    <br><br>
-    <h4>Auxilary Render Methods</h4>
-    <li><i>async</i>  <b>rerender <i>(controllerProp :string) :Promise&lt;void&gt;</i></b>
-      <p class="desc"> Re-render the view i.e. the data-rg- elements with the controllerProp.
-      For example: <i>data-rg-print="first_name"</i>, where first_name is the controllerProp.
-      It will execute all DataRg methods (generators and non-generators)
-      The <i>data-rg-inc</i>, <i>data-rg-view</i> and <i>DataRgListeners</i> will not be rerendered by this method.
-      <br><b>controllerProp</b> - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."</p>
     </li>
 
     <br><br>
@@ -206,8 +195,8 @@ module.exports = class HomeCtrl extends Controller {
     this.debugOpts = {render: true, rgIf: true}
   }
 
-  async prerender(trx) {
-    console.log('HOME prerender', trx);
+  async init(trx) {
+    console.log('INIT', trx);
 
     this.setTitle('The Regoch Project');
     this.setDescription('The Regoch Project is bundle of developer tools and frameworks for realtime, web and mobile applications: regoch websocket server and client, single page app, database.');
@@ -219,26 +208,25 @@ module.exports = class HomeCtrl extends Controller {
     ]);
 
     await this.loadView('#primary', 'pages/home/primary.html', 'sibling');
-    this.loadViews([
+    await this.loadViews([
       ['#top', 'pages/shared/top.html'],
       ['#main', 'pages/home/main.html'],
       ['#bottom', 'pages/home/bottom.html']
     ], true);
   }
 
-
-  async postrender(trx) {
-    console.log('HOME postrender', trx, this.rgListeners);
-
-    this.lazyJS([
-      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js'
-    ]);
+  async prerender(trx) {
+    console.log('PRERENDER', trx);
+    this.myTest();
   }
 
 
-  async init(trx) {
-    // MAIN CONTROLLER LOGIC GOES HERE
-    this.myTest();
+  async postrender(trx) {
+    console.log('POSTRENDER', trx, this.rgListeners);
+
+    await this.lazyJS([
+      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js'
+    ], 400);
   }
 
 

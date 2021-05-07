@@ -10,10 +10,7 @@ class Page_LoadIncCtrl extends Controller {
 
   async init() {
     this.title = 'loadInc() Test';
-  }
 
-
-  async prerender(trx) {
     this.setTitle(this.title);
     this.setDescription('Page Test description');
     this.setKeywords('regoch, playground, test, page');

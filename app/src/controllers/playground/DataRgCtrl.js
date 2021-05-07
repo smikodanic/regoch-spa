@@ -82,7 +82,7 @@ class DataRgCtrl extends Controller {
     // this.rgRepeat('multiplikator');
     // this.rgSet('pets');
     // this.rgEcho('company name:'); // due to <p data-rg-repeat="multiplikator" data-rg-echo="company name: {{companies.$i.name}} -- company size: {{companies.$i.size}}"></p>
-    this.rerender();
+    this.render();
   }
 
 
@@ -152,7 +152,7 @@ class DataRgCtrl extends Controller {
 
   async toggleIF2() {
     this.continent = !!this.continent ? '' : 'Europe';
-    this.rerender('continent');
+    this.render('continent');
   }
 
 

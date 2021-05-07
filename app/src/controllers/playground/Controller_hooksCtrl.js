@@ -7,8 +7,7 @@ class Controller_hooksCtrl extends Controller {
     console.log('This is playground test. Example: Controller Lifecycle Hooks. Controller_hooksCtrl::constructor(app)  --> param app:', app);
     super();
     this.debugOpts = {
-      prerenderHook: true,
-      renderHook: true
+      render: true
     };
   }
 
@@ -28,10 +27,6 @@ class Controller_hooksCtrl extends Controller {
   }
 
 
-  async render(trx) {
-    console.log('Controller_hooks render::', trx);
-  }
-
   async postrender(trx) {
     console.log('Controller_hooks postrender::', trx);
     this.lazyJS([
@@ -40,7 +35,7 @@ class Controller_hooksCtrl extends Controller {
   }
 
 
-  destroy(elem, event) {
+  async destroy(elem, event) {
     console.log('Controller_hooks destroy::', elem, event);
     this.unloadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
     this.unlazyJS();

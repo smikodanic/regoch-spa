@@ -7,7 +7,7 @@ class ScopeCtrl extends Controller {
     super();
   }
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('$scope Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/scope/primary.html', 'inner');
