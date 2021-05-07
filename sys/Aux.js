@@ -189,7 +189,7 @@ class Aux {
    * @param {any[]} funcArgs - function argumants
    * @return {void}
    */
-  _funcExe(funcName, funcArgs) {
+  async _funcExe(funcName, funcArgs) {
     try {
 
       if (/\./.test(funcName)) {
@@ -201,7 +201,7 @@ class Aux {
       } else {
         // execute the controller method
         if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }
-        this[funcName](...funcArgs);
+        await this[funcName](...funcArgs);
       }
 
     } catch (err) {
@@ -261,6 +261,20 @@ class Aux {
     const rnd = Math.round(Math.random() * 1000);
     const uid = ms + '-' + rnd;
     return uid;
+  }
+
+
+  /**
+   * Debug the controller methods.
+   * @param {string} tip - debug type: rgprint, render, ...
+   * @param {string} text - the printed text
+   * @param {string} color - text color
+   * @param {string} background - background color
+   * @returns {object}
+   */
+  _debug(tip, text, color, background) {
+    if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
+    return this.debugOpts;
   }
 
 

@@ -1,8 +1,8 @@
-const Page = require('./Page');
+const Model = require('./Model');
 const util = require('./lib/util');
 
 
-class Controller extends Page {
+class Controller extends Model {
 
   constructor() {
     super();
@@ -13,6 +13,10 @@ class Controller extends Page {
       render: false,
       visibleAll: false,
       scope: false,
+
+      // Model.js
+      modelSave: false,
+      modelWatch: false,
 
       // Page.js
       loadInc: false,
@@ -59,8 +63,8 @@ class Controller extends Page {
     if(!!this.init) { await this.init(trx); this._visibleAll(false); }
 
     // Page LOADERS
-    await this.loadInc(true); // defined in Page.js
-    await this.rgLazyjs(this.renderDelay); // defined in the Page.js
+    await this.loadInc(true);
+    await this.rgLazyjs(this.renderDelay);
 
     // PRERENDER HOOK
     if(!!this.prerender) { await this.prerender(trx); this._visibleAll(false); }
@@ -72,6 +76,9 @@ class Controller extends Page {
     if(!!this.postrender) { await this.postrender(trx); }
 
     this._visibleAll(true);
+
+    // MODEL
+    this.modelSave();
   }
 
 
@@ -209,15 +216,6 @@ class Controller extends Page {
     this._debug('scope', '--------- scopeReset ------', 'green', '#D9FC9B');
     this.$scope = {};
     if (this._debug().scopeReset) { console.log('$scopeReset::', this._$scope); }
-  }
-
-
-
-
-  /******** DEBUG *******/
-  _debug(tip, text, color, background) {
-    if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
-    return this.debugOpts;
   }
 
 

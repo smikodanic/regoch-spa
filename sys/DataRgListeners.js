@@ -1,5 +1,5 @@
-const navig = require('./lib/navig');
 const Aux = require('./Aux');
+const navig = require('./lib/navig');
 
 
 /**
@@ -92,10 +92,11 @@ class DataRgListeners extends Aux  {
       if (!attrVal) { console.error(`Attribute "data-rg-click" has bad definition (data-rg-click="${attrVal}").`); continue; }
       const funcDef = attrVal.trim();
 
-      const handler = event => {
+      const handler = async event => {
         event.preventDefault();
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
-        this._funcExe(funcName, funcArgs);
+        await this._funcExe(funcName, funcArgs);
+        this.modelWatch(); // render if the model is changed
         this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
       };
 
@@ -133,14 +134,15 @@ class DataRgListeners extends Aux  {
       let keyCode = attrValSplited[1] || '';
       keyCode = keyCode.trim().toLowerCase();
 
-      const handler = event => {
+      const handler = async event => {
         event.preventDefault();
 
         const eventCode = event.code.toLowerCase();
         if (!!keyCode && keyCode !== eventCode) { return; }
 
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
-        this._funcExe(funcName, funcArgs);
+        await this._funcExe(funcName, funcArgs);
+        this.modelWatch();
         this._debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
       };
 
@@ -173,10 +175,11 @@ class DataRgListeners extends Aux  {
       if (!attrVal) { console.error(`Attribute "data-rg-change" has bad definition (data-rg-change="${attrVal}").`); continue; }
       const funcDef = attrVal.trim();
 
-      const handler = event => {
+      const handler = async event => {
         event.preventDefault();
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
-        this._funcExe(funcName, funcArgs);
+        await this._funcExe(funcName, funcArgs);
+        this.modelWatch();
         this._debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
       };
 
@@ -213,10 +216,11 @@ class DataRgListeners extends Aux  {
         const eventName = attrValSplited[0].trim();
         const funcDef = attrValSplited[1].trim();
 
-        const handler = event => {
+        const handler = async event => {
           event.preventDefault();
           const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
-          this._funcExe(funcName, funcArgs);
+          await this._funcExe(funcName, funcArgs);
+          this.modelWatch();
           this._debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
         };
 

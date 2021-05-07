@@ -34,6 +34,7 @@ const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
 const Navig1Ctrl = require('./controllers/playground/Navig1Ctrl');
 const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
 const ScopeCtrl = require('./controllers/playground/ScopeCtrl');
+const ModelCtrl = require('./controllers/playground/ModelCtrl');
 
 
 // auth
@@ -81,6 +82,7 @@ app
     Navig1Ctrl,
     Navig2Ctrl,
     ScopeCtrl,
+    ModelCtrl,
 
     // not found page
     NotfoundCtrl
