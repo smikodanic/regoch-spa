@@ -8,7 +8,7 @@ class WebsocketClientsCtrl extends Controller {
   }
 
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('Regoch Websocket Clients');
     this.setDescription('Websocket clients for different environments: browser, nodejs, angular etc. The clients works best with the Regoch Websocket Server.');
     this.setKeywords('websocket, client, browser, nodejs, angular, regoch');

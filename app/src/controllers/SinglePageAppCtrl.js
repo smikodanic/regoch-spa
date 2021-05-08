@@ -8,7 +8,7 @@ class SinglePageAppCtrl extends Controller {
   }
 
 
-  async prerender(trx) {
+  async init(trx) {
     // await this.loadHead('pages/single-page-app/head.html', 'inner'); // will cause flicker
 
     this.setTitle('Regoch Single Page Application Framework');

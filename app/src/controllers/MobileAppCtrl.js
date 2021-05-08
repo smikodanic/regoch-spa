@@ -8,7 +8,7 @@ class MobileAppCtrl extends Controller {
   }
 
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('Regoch Mobile App');
     this.setDescription('Regoch Mobile App is the framework for building complex but extremly fast mobile applications. It is based on regoch SPA and Cordova.');
     this.setKeywords('regoch, mobile, application, app, android, iOS');

@@ -8,7 +8,7 @@ class WebsocketServerCtrl extends Controller {
   }
 
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('Regoch Websocket Server');
     this.setDescription('Ultra fast Websocket Server with builtin JS framework for creating real-time, complex apps.');
     this.setKeywords(' websocket, server, socket, ws, RFC 6455, real-time, realtime, tcp, websocket server, regoch');

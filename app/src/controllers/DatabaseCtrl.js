@@ -8,7 +8,7 @@ class DatabaseCtrl extends Controller {
   }
 
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('Regoch Database');
     this.setDescription('Regoch database based on the linux file system and grep command. Big scalability.');
     this.setKeywords('regoch, database, linux, filesystem, grep');

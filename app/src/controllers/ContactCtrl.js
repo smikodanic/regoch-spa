@@ -8,7 +8,7 @@ class ContactCtrl extends Controller {
   }
 
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('Regoch Contact');
     this.setDescription('Regoch contact.');
     this.setKeywords('regoch, contact');

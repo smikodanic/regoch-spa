@@ -8,7 +8,7 @@ module.exports = class HomeCtrl extends Controller {
     // console.log(app.CONST);
   }
 
-  async prerender(trx) {
+  async init(trx) {
     this.setTitle('The Regoch Project');
     this.setDescription('The Regoch Project is bundle of developer tools and frameworks for realtime, web and mobile applications: regoch websocket server and client, single page app, database.');
     this.setKeywords('regoch, websocket, realtime, mobile applications, single page app, database');
