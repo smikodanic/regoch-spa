@@ -34,10 +34,9 @@ class Model extends Page {
 
     let changeType = '';
     label1: for (const prop of props) {
-      const dataType = this.$schema[prop]; // 'array', 'string', 'number', 'boolean'
+      const dataType = this.$schema[prop]; // 'string', 'number', 'boolean', 'array', 'object'
       const valCtrl = this._getControllerValue(prop);
-      const valMdl = this._getModelValue(prop);
-
+      let valMdl = this._getModelValue(prop);
 
       /* A) check the controller property type (if the controller property data type is modified then render that property) */
       if (/array/i.test(dataType) && !Array.isArray(valCtrl)) {  }
@@ -46,17 +45,21 @@ class Model extends Page {
       else if (/boolean/i.test(dataType) && typeof valCtrl !== 'boolean') { changeType = 'dataType-boolean'; }
       else if (/bigint/i.test(dataType) && typeof valCtrl !== 'bigint') { changeType = 'dataType-bigint'; }
       else if (/symbol/i.test(dataType) && typeof valCtrl !== 'symbol') { changeType = 'dataType-symbol'; }
+      else if (/object/i.test(dataType)) { changeType = 'dataType-object'; }
 
       /* B) check the controller property value (if the controller property value is modified then render that property) */
       if (!changeType) {
         if (Array.isArray(valCtrl)) { // ARRAY
+
+          if (!valMdl) { valMdl = []; } // correct if valMdl is not defined
 
           if (valCtrl && valMdl && valCtrl.length !== valMdl.length) { // first compare the array lengths
             changeType = 'array-length';
           } else { // if the array lengths are same then compare array elements
             let key = 0;
             label2: for (const elem of valCtrl) {
-              if (elem !== valMdl[key]) { changeType = 'array-element'; break label2; }
+              if (typeof elem === 'object') { changeType = 'array-elementObject'; break label2; }
+              else if (elem !== valMdl[key]) { changeType = 'array-elementPrimitive'; break label2; }
               key++;
             }
           }
@@ -72,10 +75,11 @@ class Model extends Page {
       const val = this._getControllerValue(prop);
       this._setModelValue(prop, val);
 
-      this._debug('modelWatch', `prop: ${prop} -- dataType: ${dataType} --  valCtrl: ${valCtrl} vs. valMdl: ${valMdl} => changeType: ${changeType}`, '#760D94');
-    }
+      if (this._debug().modelWatch) { console.log('modelWatch:: prop', prop, ' -- valCtrl', valCtrl, ' vs. valMdl:', valMdl, ' => changeType:', changeType); }
+      if (changeType) { this.render(prop); }
+      changeType = '';
 
-    if (changeType) { this.render(); }
+    }
 
   }
 
@@ -106,7 +110,7 @@ class Model extends Page {
     this._setModelValue(prop, val);
     this._setControllerValue(prop, val);
     if (this._debug().modelSet) { console.log('modelSet:: $model=', this.$model); }
-    await this.render();
+    await this.render(prop);
   }
 
 

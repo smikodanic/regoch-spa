@@ -12,10 +12,12 @@ class ModelCtrl extends Controller {
       modelReset: true
     };
     this.modelSchema({
+      'company': 'object',
       'company.name': 'string',
       'company.year': 'number',
       'company.isActive': 'boolean',
-      'company.cities': 'array'
+      'company.cities': 'array',
+      'company.employees': 'array'
     });
     this.i = 0;
   }
@@ -32,7 +34,11 @@ class ModelCtrl extends Controller {
       name: 'Cloud Ltd',
       year: 1987,
       isActive: false,
-      cities: ['London', 'Tokyo', 'Paris']
+      cities: ['London', 'Tokyo', 'Paris'],
+      employees: [
+        {name: 'John Doe', age: 22},
+        {name: 'Melinda Doe', age: 21},
+      ]
     };
   }
 
