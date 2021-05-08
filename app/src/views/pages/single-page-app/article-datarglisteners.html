@@ -98,17 +98,17 @@ runKEYUP(elem, evt) {
 
 
 <section class="docs-section" id="item-6-3">
-  <h2 class="section-heading">$scope &nbsp; argument</h2>
-  The argument <b>$scope</b> can be used in the controller method. It's the shortcut of the <i>this.$scope</i>.
+  <h2 class="section-heading">$model &nbsp; argument</h2>
+  The argument <b>$model</b> can be used in the controller method. It's the shortcut of the <i>this.$model</i>.
   <br>
   <pre><code class="language-markup"><xmp>
-<br><input type="text" data-rg-click="runCLICK(this.$scope.river)">
-<br><input type="text" data-rg-click="runCLICK($scope.river)">  // shortcut
+<br><input type="text" data-rg-click="runCLICK(this.$model.river)">
+<br><input type="text" data-rg-click="runCLICK($model.river)">  // shortcut
   </xmp></code></pre>
   <br>then use the arguments in the controller method:
   <pre><code class="language-js">
-runCLICK(scopeRiver) {
-  console.log('$scope.river::', scopeRiver);
+runCLICK(modelRiver) {
+  console.log('$model.river::', modelRiver);
 }
   </code></pre>
 </section>

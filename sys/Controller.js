@@ -6,7 +6,6 @@ class Controller extends Model {
 
   constructor() {
     super();
-    this._$scope = {};
 
     this.debugOpts = {
       // Controller.js
@@ -15,8 +14,10 @@ class Controller extends Model {
       scope: false,
 
       // Model.js
-      modelSave: false,
+      modelFill: false,
       modelWatch: false,
+      modelSet: false,
+      modelReset: false,
 
       // Page.js
       loadInc: false,
@@ -78,7 +79,7 @@ class Controller extends Model {
     this._visibleAll(true);
 
     // MODEL
-    this.modelSave();
+    this.modelFill();
   }
 
 
@@ -165,57 +166,6 @@ class Controller extends Model {
         elem.removeAttribute('data-rg-prehide');
       }
     }
-  }
-
-
-
-  /********* $scope  *********/
-  /**
-   * Set the controller's $scope object.
-   * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
-   * @param {any} val - the $scope value
-   */
-  set $scope(val) {
-    this._debug('scope', '--------- scopeSetter ------', 'green', '#D9FC9B');
-    this._$scope = val;
-    if (this._debug().scopeSetter) { console.log('$scopeSetter::', this._$scope); }
-    this.render('$scope');
-  }
-
-
-  /**
-   * Get the $scope value.
-   * It can be called as this.$scope.myVar in the controller or as data-rg-print="$scope.myVar"
-   */
-  get $scope() {
-    this._debug('scope', '--------- scopeGettter ------', 'green', '#D9FC9B');
-    if (this._debug().scopeGetter) { console.log('$scopeGetter::', this._$scope); }
-    return this._$scope;
-  }
-
-
-  /**
-   * Add/update the $scope proerty.
-   * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
-   * @param {string} name - the $scope property name
-   * @param {any} val - the $scope value
-   */
-  async $scopeSet(name, val) {
-    this._debug('scope', '--------- scopeSet ------', 'green', '#D9FC9B');
-    this._$scope[name] = val;
-    if (this._debug().scopeSet) { console.log('$scopeSet::', this._$scope); }
-    await this.render(`$scope.${name}`);
-  }
-
-
-  /**
-   * Set the $scope to empty object {}.
-   * On every modification of the $scope property all the data-rg elements are rendered except data-rg-inc and data-rg-view
-   */
-  $scopeReset() {
-    this._debug('scope', '--------- scopeReset ------', 'green', '#D9FC9B');
-    this.$scope = {};
-    if (this._debug().scopeReset) { console.log('$scopeReset::', this._$scope); }
   }
 
 

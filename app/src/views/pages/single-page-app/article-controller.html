@@ -1,7 +1,7 @@
 <header class="docs-header">
   <h1 class="docs-heading">Controller</h1>
   <section class="docs-intro">
-    <i>class Controller extends Page</i>
+    <i>class Controller extends Model</i>
   </section>
   <br><br>
   <p>The controller defines what logic will be applied when route is changed.
@@ -27,57 +27,56 @@
       <td>object</td>
       <td></td>
     </tr>
-    <tr>
-      <td>_$scope</td>
-      <td>the $scope object accumulator</td>
-      <td>object</td>
-      <td>{}</td>
-    </tr>
   </table>
 
   <br><br>
   <pre><code class="language-js">
 /*** default Controller debug options ***/
-// Controller.js
-visibleAll: false,
-render: false,
-scope: false,
+      // Controller.js
+      render: false,
+      visibleAll: false,
+      scope: false,
 
-// Page.js
-loadInc: false,
-loadView: false,
-emptyView: false,
-loadHead: false,
-rgLazyjs: false,
+      // Model.js
+      modelFill: false,
+      modelWatch: false,
+      modelSet: false,
+      modelReset: false,
 
-// DataRg.js
-rgFor: false,
-rgRepeat: false,
-rgIf: false,
-rgSwitch: false,
-rgElem: false,
-rgEcho: false,
-rgPrint: false,
-rgValue: false,
-rgInterpolate: false,
-rgClass: false,
-rgStyle: false,
+      // Page.js
+      loadInc: false,
+      loadView: false,
+      emptyView: false,
+      loadHead: false,
+      rgLazyjs: false,
 
-// DataRgListeners.js
-rgKILL: false,
-rgHref: false,
-rgClick: false,
-rgKeyup: false,
-rgChange: false,
-rgEvt: false,
-rgSet: false
+      // DataRg.js
+      rgFor: false,
+      rgRepeat: false,
+      rgIf: false,
+      rgSwitch: false,
+      rgElem: false,
+      rgEcho: false,
+      rgPrint: false,
+      rgValue: false,
+      rgInterpolate: false,
+      rgClass: false,
+      rgStyle: false,
+
+      // DataRgListeners.js
+      rgKILL: false,
+      rgHref: false,
+      rgClick: false,
+      rgKeyup: false,
+      rgChange: false,
+      rgEvt: false,
+      rgSet: false
   </code></pre>
 </section>
 
 <section class="docs-section" id="item-3-2">
   <h2 class="section-heading">Methods</h2>
-  <p>In the controller processing the developer can use 3 lifecycle hooks: init(), prerender() and postrender().
-  Also the <b>$scope</b> object can be managed with other controller methods.</p>
+  <p>In the controller processing the developer can use 3 lifecycle hooks: init(), prerender() and postrender().</p>
 	<ul class="methods">
     <h4>LifeCycle Hook Methods</h4>
     <b style="color:orange">INIT &rarr; <small>loadInc, rgLazyJS</small> &rarr; PRERENDER &rarr; <small>RENDER</small> &rarr; POSTRENDER &rarr; DESTROY</b>
@@ -103,7 +102,6 @@ rgSet: false
     <li>
       <i>async</i> <b>postrender <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">It's a controller lifecycle hook which executes the controller code after the "data-rg-..." elements are rendered.
-      In this hook the <b>$scope</b> should be set to rerender the DOM.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li><i>async</i> <b>destroy <i>(pevent :Event) :Promise&lt;void&gt;</i></b>
@@ -111,24 +109,6 @@ rgSet: false
       <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element).
       This is very important to save browser's (app) memory space and to prevent memory leaks.
       <br><b>pevent</b> - the 'popstate' (back/forward buttons) or 'pushstate' (data-rg-href element click) event</p>
-    </li>
-
-    <br><br>
-    <h4>$scope Methods</h4>
-    <li><i>set</i> <b>$scope <i>(val :any) :void</i></b>
-      <p class="desc"> The <i>$scope</i> object setter. The view will be re-rendered by rerender() method.
-      <br><b>val</b> - new $scope value</p>
-    </li>
-    <li><i>async</i>  <b>$scopeSet <i>(name :string, val :any) :void</i></b>
-      <p class="desc"> Add/update the <i>$scope</i> property.  The view will be re-rendered by rerender() method.
-      <br><b>name</b> - $scope property name
-      <br><b>val</b> - value of the $scope property</p>
-    </li>
-    <li><i>get</i> <b>$scope <i>() :any</i></b>
-      <p class="desc"> Get the <i>$scope</i> value. It's getter. The view will NOT be re-rendered.</p>
-    </li>
-    <li><b>$scopeReset <i>() :void</i></b>
-      <p class="desc"> Set the <i>$scope</i> to empty object <b>{}</b>.  The view will be re-rendered by rerender() method.</p>
     </li>
   </ul>
 </section>
@@ -147,42 +127,8 @@ rgSet: false
 </section>
 
 
+
 <section class="docs-section" id="item-3-4">
-  <h2 class="section-heading">$scope</h2>
-  The scope is the object which binds the HTML (view) and the JavaScript (controller). It is available for both the view and the controller.
-  Every time the <b>this.$scope</b> is changed all DataRg and DataRgListeners methods are executed so the view is completely updated.
-  This is similar to Angular 1 <i>$scope</i> parameter.
-  <br>
-  <br>Example with the $scope:
-  <pre><code>
-// controller
-const products = await this.httpClient.askJSON('http://api.example.com/products/list');
-await this.$scopeSet('products', products); // this will re-render the view explicitly, without calling rgFor() and rgPrint()
-
-
-// view
-&lt;tr data-rg-for="$scope.products"&gt;
-  &lt;td data-rg-print="$scope.products.$i.name"&gt;&lt;/td&gt;
-&lt;/tr&gt;
-  </code></pre>
-
-  <br>
-  <br>Another way to do this is to call rgFor() and rgPrint() methods:
-  <pre><code>
-// controller
-this.products = aawait this.httpClient.askJSON('http://api.example.com/products/list');
-await this.rgFor('products');
-this.rgPrint('products');
-
-// view
-&lt;tr data-rg-for="products"&gt;
-  &lt;td data-rg-print="products.$i.name"&gt;&lt;/td&gt;
-&lt;/tr&gt;
-  </code></pre>
-</section>
-
-
-<section class="docs-section" id="item-3-5">
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-javascript">
 const { Controller, syslib } = require('regoch-spa');

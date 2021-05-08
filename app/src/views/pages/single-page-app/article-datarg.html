@@ -113,7 +113,7 @@
       <b>rgValue <i>(controllerProp :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-value="&lt;controllerProperty&gt;</b> elements. Set the element value attribute.
       <br>It's specially useful when using in combination with <i>data-rg-for</i>:
-      <br><small>&lt;option data-rg-for="$scope.autos" data-rg-value="$scope.autos.$i.id" data-rg-print="$scope.autos.$i.name"&gt;&lt;/option&gt;</small>
+      <br><small>&lt;option data-rg-for="autos" data-rg-value="autos.$i.id" data-rg-print="autos.$i.name"&gt;&lt;/option&gt;</small>
       <br><b>controllerProp</b> - controller property which defines the "value" attribute</p>
     </li>
     <li>
@@ -141,7 +141,7 @@
         <br>
         <br>Examples:
         <br><small>&lt;span data-rg-echo="$i+1"&gt;&lt;/span&gt;</small>
-        <br><small>&lt;span data-rg-echo="name: {{$scope.cars.0.name}} -- price: $ {{$scope.cars.0.price}}"&gt;&lt;/span&gt;</small>
+        <br><small>&lt;span data-rg-echo="name: {{cars.0.name}} -- price: $ {{cars.0.price}}"&gt;&lt;/span&gt;</small>
       </p>
     </li>
   </ul>

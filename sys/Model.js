@@ -4,15 +4,87 @@ class Model extends Page {
 
   constructor() {
     super();
-    this.$schema = {};
-    this.$model = {};
-    this.stopModelWatch = false;
+    this.$schema = {}; // this.$schema = {'companies': 'array', 'user.name': 'string'}
+    this.$model = {}; // this.$model = {companies: ['Cloud Ltd', 'ABC Ltd], user: {name: 'John Doe'}}
+  }
+
+
+  /****** INTERNAL METHODS *******/
+  /**
+   * Get the controller values ('this.company.name') and set the $model values ('this.$model.company.name).
+   * The this.$model is the previous model value and it's compared with the current controller value. For example: this.company.name vs. this.$model.company.name .
+   */
+  modelFill() {
+    this._debug('modeFill', '--------- modeFill ------', '#760D94', '#EAC4F5');
+    const props = Object.keys(this.$schema); // ['companies', 'user.name']
+    for (const prop of props) {
+      const val = this._getControllerValue(prop);
+      this._setModelValue(prop, val);
+      this._debug('modelFill', `model filled:: ${prop}=${val}`, '#760D94');
+    }
   }
 
 
   /**
+   * Compare current controller value and stored $model values. If they are different then render the data-rg elements for the corresponding controller property.
+   */
+  modelWatch() {
+    this._debug('modelWatch', '--------- modelWatch ------', '#760D94', '#EAC4F5');
+    const props = Object.keys(this.$schema); // ['companies', 'user.name']
+
+    let changeType = '';
+    label1: for (const prop of props) {
+      const dataType = this.$schema[prop]; // 'array', 'string', 'number', 'boolean'
+      const valCtrl = this._getControllerValue(prop);
+      const valMdl = this._getModelValue(prop);
+
+
+      /* A) check the controller property type (if the controller property data type is modified then render that property) */
+      if (/array/i.test(dataType) && !Array.isArray(valCtrl)) {  }
+      else if (/string/i.test(dataType) && typeof valCtrl !== 'string') { changeType = 'dataType-string'; }
+      else if (/number/i.test(dataType) && typeof valCtrl !== 'number') { changeType = 'dataType-number'; }
+      else if (/boolean/i.test(dataType) && typeof valCtrl !== 'boolean') { changeType = 'dataType-boolean'; }
+      else if (/bigint/i.test(dataType) && typeof valCtrl !== 'bigint') { changeType = 'dataType-bigint'; }
+      else if (/symbol/i.test(dataType) && typeof valCtrl !== 'symbol') { changeType = 'dataType-symbol'; }
+
+      /* B) check the controller property value (if the controller property value is modified then render that property) */
+      if (!changeType) {
+        if (Array.isArray(valCtrl)) { // ARRAY
+
+          if (valCtrl && valMdl && valCtrl.length !== valMdl.length) { // first compare the array lengths
+            changeType = 'array-length';
+          } else { // if the array lengths are same then compare array elements
+            let key = 0;
+            label2: for (const elem of valCtrl) {
+              if (elem !== valMdl[key]) { changeType = 'array-element'; break label2; }
+              key++;
+            }
+          }
+
+        } else { // PRIMITIVE DATA TYPES
+          if (valCtrl !== valMdl) {
+            changeType = 'primitive-value';
+          }
+        }
+      }
+
+      // set the $model property value
+      const val = this._getControllerValue(prop);
+      this._setModelValue(prop, val);
+
+      this._debug('modelWatch', `prop: ${prop} -- dataType: ${dataType} --  valCtrl: ${valCtrl} vs. valMdl: ${valMdl} => changeType: ${changeType}`, '#760D94');
+    }
+
+    if (changeType) { this.render(); }
+
+  }
+
+
+
+  /******** EXTERNAL METHODS *******/
+  /**
    * Set the model schema.
-   * @param {object} sch - model schema object: {'companies': 'array', 'user.name': string}
+   * @param {object} sch - model schema object: {'companies': 'array', 'user.name': 'string'}
    */
   modelSchema(sch) {
     this.$schema = sch;
@@ -20,70 +92,44 @@ class Model extends Page {
 
 
   /**
-   * Get the controller value ('this.company.name') and set the $model value ('this.$model.company.name).
-   * The this.$model is the previous model value and it's comared with the current controller value. For example: this.company.name vs. this.$model.company.name .
+   * Update the $model property and re-render the corresponding data-rg elements. This is used to render data-rg- elemsnts on the stream of data.
+   * @param {string} prop - the $model and controller property name: 'company.name'
+   * @param {any} val - the $model property value
    */
-  modelSave() {
-    this._debug('modelSave', '--------- modelSave ------', '#760D94', '#EAC4F5');
+  async modelSet(prop, val) {
+    this._debug('modelSet', '--------- modelSet ------', '#760D94', '#EAC4F5');
+
+    // check if the property name is in the schema
     const props = Object.keys(this.$schema); // ['companies', 'user.name']
-    for (const prop of props) {
-      const val = this._getControllerValue(prop);
-      this._setModelValue(prop, val);
-      this._debug('modelWatch', `saved:: ${prop}=${val}`, '#760D94');
-    }
+    if (props.indexOf(prop) === -1) { console.error(`modelSetErr:: The controller property ${prop} is not in the model $schema.`); return;}
+
+    this._setModelValue(prop, val);
+    this._setControllerValue(prop, val);
+    if (this._debug().modelSet) { console.log('modelSet:: $model=', this.$model); }
+    await this.render();
   }
 
 
   /**
-   * Compare current controller value and stored $model values. If they are different then render the controller property.
+   * Set the $model to empty object {} or undefine one $model property and re-render the data-rg elements.
+   * @param {string} prop - the $model and controller property name: 'company.name'
    */
-  modelWatch() {
-    this._debug('modelWatch', '--------- modelWatch ------', '#760D94', '#EAC4F5');
-    const props = Object.keys(this.$schema); // ['companies', 'user.name']
+  modelReset(prop) {
+    this._debug('modelReset', '--------- modelReset ------', '#760D94', '#EAC4F5');
 
-    label1: for (const prop of props) {
-      const dataType = this.$schema[prop]; // 'array', 'string', 'number', 'boolean'
-      const valCtrl = this._getControllerValue(prop);
-      const valMdl = this._getModelValue(prop);
+    const props = !!prop ? [prop] : Object.keys(this.$schema); // ['companies', 'user.name']
 
+    // check if the property name is in the schema
+    if (!!prop && props.indexOf(prop) === -1) { console.error(`modelResetErr:: The controller property ${prop} is not in the model $schema.`); return;}
 
-      let toRender = false;
-      /* A) check the controller property type (if the controller property data type is modified then render that property) */
-      if (/array/i.test(dataType) && !Array.isArray(valCtrl)) {  }
-      else if (/string/i.test(dataType) && typeof valCtrl !== 'string') { toRender = true; }
-      else if (/number/i.test(dataType) && typeof valCtrl !== 'number') { toRender = true; }
-      else if (/boolean/i.test(dataType) && typeof valCtrl !== 'boolean') { toRender = true; }
-      else if (/bigint/i.test(dataType) && typeof valCtrl !== 'bigint') { toRender = true; }
-      else if (/symbol/i.test(dataType) && typeof valCtrl !== 'symbol') { toRender = true; }
-
-      /* B) check the controller property value (if the controller property value is modified then render that property) */
-      if (Array.isArray(valCtrl)) { // ARRAY
-
-        if (valCtrl && valMdl && valCtrl.length !== valMdl.length) { // first check the length
-          toRender = true;
-        } else { // if the array lengths are same then compare array elements
-          let key = 0;
-          label2: for (const elem of valCtrl) {
-            if (elem !== valMdl[key]) { this.render(prop); break label2; }
-            key++;
-          }
-        }
-
-      } else { // PRIMITIVE DATA TYPES
-        if (valCtrl !== valMdl) {
-          toRender = true;
-        }
-      }
-
-
-      this._debug('modelWatch', `prop: ${prop} -- dataType: ${dataType} --  valCtrl: ${valCtrl} vs. valMdl: ${valMdl} => toRender: ${toRender}`, '#760D94');
-      if (toRender) { this.render(prop); continue label1; }
-
+    for (const prop of props) {
+      const val = undefined;
+      this._setModelValue(prop, val);
+      this._setControllerValue(prop, val);
+      this._debug('modelReset', `modelReset:: ${prop}=${val}`, '#760D94');
     }
+    this.render();
   }
-
-
-
 
 
 
@@ -100,7 +146,6 @@ class Model extends Page {
     let val = this.$model[prop1]; // model property value
     propSplitted.forEach((prop, key) => {
       if (key !== 0 && !!val) { val = val[prop]; }
-      console.log(prop, '--', val);
     });
     return val;
   }
@@ -128,5 +173,6 @@ class Model extends Page {
 
 
 }
+
 
 module.exports = Model;
