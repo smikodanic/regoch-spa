@@ -23,7 +23,7 @@ class HTTPClient {
           'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
           'content-type': 'text/html; charset=UTF-8'
         },
-        responseType: '' // 'blob' for file download
+        responseType: '' // 'blob' for file download (https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType)
       };
     } else {
       this.opts = opts;
@@ -205,7 +205,7 @@ class HTTPClient {
     // set the options
     this.xhr.timeout = this.opts.timeout;
     Object.keys(this.headers).forEach(prop => this.xhr.setRequestHeader(prop.toLowerCase(), this.headers[prop]));
-    if (!!this.opts.responseType) { this.xhr.responseType = this.opts.responseType; }
+    if (!!this.opts.responseType) { this.xhr.responseType = this.opts.responseType || ''; } else { this.xhr.responseType = ''; }
 
 
     /*** 2) add body to HTTP request ***/
