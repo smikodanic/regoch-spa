@@ -213,7 +213,6 @@ class Aux {
   /**
    * Clone the original element and place new element in the element sibling position.
    * The original element gets data-rg-xyz-id , unique ID to distinguish the element from other data-rg-xyz elements on the page.
-   * The original element is removed by CSS display:none.
    * The cloned element gets data-rg-xyz-gen and data-rg-xyz-id attributes.
    * @param {Element} elem - original element
    * @param {string} attrName - attribute name: data-rg-for, data-rg-repeat, data-rg-print
@@ -221,7 +220,7 @@ class Aux {
    * @returns
    */
   _generateNewElem(elem, attrName, attrVal) {
-    // hide the original data-rg-repeat (reference) element
+    // hide the original data-rg-xyz (reference) element
     elem.style.display = 'none';
 
     let uid = this._uid();

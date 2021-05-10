@@ -27,7 +27,7 @@ class Navig {
    * Set previous uri and controller.
    */
   setPrevious() {
-    this.previous = this.current;
+    this.previous = { ...this.current };
   }
 
 

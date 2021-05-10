@@ -61,14 +61,18 @@ class Controller extends Model {
     if (this.renderDelay > 2000) { console.log(`%c Warn:: Seems "${this.renderDelay} ms" is too big for renderDelay parameter.`, `color:Maroon; background:LightYellow`); }
 
     // INIT HOOK
-    if(!!this.init) { await this.init(trx); this._visibleAll(false); }
+    if(!!this.init) { await this.init(trx); }
+
+    this._visibleAll(false);
 
     // Page LOADERS
     await this.loadInc(true);
     await this.rgLazyjs(this.renderDelay);
 
+    this._visibleAll(false);
+
     // PRERENDER HOOK
-    if(!!this.prerender) { await this.prerender(trx); this._visibleAll(false); }
+    if(!!this.prerender) { await this.prerender(trx); }
 
     // RENDER
     await this.render();
@@ -100,7 +104,7 @@ class Controller extends Model {
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
    */
   async render(controllerProp) {
-    this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} ------`, 'green', '#D9FC9B');
+    this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
 
     await util.sleep(this.renderDelay);
 
@@ -149,10 +153,11 @@ class Controller extends Model {
         [data-rg-for], [data-rg-for-gen],
         [data-rg-repeat], [data-rg-repeat-gen],
         [data-rg-print], [data-rg-print-gen],
-        [data-rg-echo], [data-rg-if], [data-rg-switch], [data-rg-elem], [data-rg-value], [data-rg-class], [data-rg-style], [data-rg-css]
+        [data-rg-if], [data-rg-switch], [data-rg-value], [data-rg-class], [data-rg-style], [data-rg-src], [data-rg-elem], [data-rg-echo]
       `;
       const elems = document.querySelectorAll(cssSel);
       this._debug('visibleAll', `--------- visibleAll -- hidden elems: ${elems.length} ------`, '#B73FDC', '#D9FC9B');
+      if (this._debug().visibleAll) { console.log('visibleAll: hidden elems:', elems); }
       for (const elem of elems) {
         elem.style.visibility = 'hidden';
         elem.setAttribute('data-rg-prehide', '');
@@ -161,6 +166,7 @@ class Controller extends Model {
       const cssSel = '[data-rg-prehide]';
       const elems = document.querySelectorAll(cssSel);
       this._debug('visibleAll', `--------- visibleAll -- shown elems: ${elems.length} ------`, '#B73FDC', '#D9FC9B');
+      if (this._debug().visibleAll) { console.log('visibleAll: shown elems:', elems); }
       for (const elem of elems) {
         elem.style.visibility = '';
         elem.removeAttribute('data-rg-prehide');

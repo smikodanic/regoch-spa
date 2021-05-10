@@ -29,7 +29,7 @@ class Model extends Page {
    * Compare current controller value and stored $model values. If they are different then render the data-rg elements for the corresponding controller property.
    */
   modelWatch() {
-    this._debug('modelWatch', '--------- modelWatch ------', '#760D94', '#EAC4F5');
+    this._debug('modelWatch', `--------- modelWatch (ctrl: ${this.constructor.name})------`, '#760D94', '#EAC4F5');
     const props = Object.keys(this.$schema); // ['companies', 'user.name']
 
     let changeType = '';
@@ -75,7 +75,7 @@ class Model extends Page {
       const val = this._getControllerValue(prop);
       this._setModelValue(prop, val);
 
-      if (this._debug().modelWatch) { console.log('modelWatch:: prop', prop, ' -- valCtrl', valCtrl, ' vs. valMdl:', valMdl, ' => changeType:', changeType); }
+      if (this._debug().modelWatch) { console.log('modelWatch:: prop:', prop, ' -- valCtrl:', valCtrl, ' vs. valMdl:', valMdl, ' => changeType:', changeType); }
       if (changeType) { this.render(prop); }
       changeType = '';
 

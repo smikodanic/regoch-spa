@@ -233,7 +233,7 @@ class DataRg extends DataRgListeners {
       let tf = false;
       if (!!funcDef) {
         // parse data-rg-if with the comparison operators: $not(), $eq(22), $ne(22), ...
-        const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef);
+        const { funcName, funcArgs } = this._funcParse(funcDef);
         tf = this._calcComparison(val, funcName, funcArgs);
       } else {
         // parse data-rg-if without the comparison operators
@@ -241,7 +241,13 @@ class DataRg extends DataRgListeners {
       }
 
       // hide/show elem
-      tf ? elem.style.display = '' : elem.style.display = 'none';
+      if (tf) {
+        const dataRgPrint_attrVal = elem.getAttribute('data-rg-print');
+        if (!!dataRgPrint_attrVal && /outer|sibling|prepend|append|inset/) { elem.style.display = 'none'; } // element with data-rg-print should stay hidden because of _generateNewElem()
+        else { elem.style.display = ''; }
+      } else {
+        elem.style.display = 'none';
+      }
 
       this._debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
     }

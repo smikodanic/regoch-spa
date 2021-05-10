@@ -19,13 +19,13 @@ class DataRgListeners extends Aux  {
    * @returns {void}
    */
   async rgKILL() {
-    this._debug('rgKILL', '------- rgKILL (start) -------', 'orange', '#FFD8B6');
+    this._debug('rgKILL', `------- rgKILL (start) ctrl: ${this.constructor.name} -------`, 'orange', '#FFD8B6');
 
     const promises = [];
     let i = 1;
     for (const rgListener of this.rgListeners) {
       rgListener.elem.removeEventListener(rgListener.eventName, rgListener.handler);
-      this._debug('rgKILL', `${i}. killed:: ${rgListener.attrName} --- ${rgListener.eventName} --- ${rgListener.elem.innerHTML}`, 'orange');
+      this._debug('rgKILL', `${i}. killed:: ${rgListener.attrName} --- ${rgListener.eventName} --- ${rgListener.elem.localName} -- ${rgListener.elem.innerHTML}`, 'orange');
       promises.push(Promise.resolve(true));
       i++;
     }
@@ -148,7 +148,7 @@ class DataRgListeners extends Aux  {
 
       elem.addEventListener('keyup', handler);
       this.rgListeners.push({attrName, elem, handler, eventName: 'keyup'});
-      this._debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | ctrl="${this.constructor.name}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
 
@@ -235,7 +235,7 @@ class DataRgListeners extends Aux  {
 
   /**
    * data-rg-set="<controllerProp> [@@ <doAfter>]"
-   * Parse the "data-rg-set" attribute. Sets the controller property in HTML form field like INPUT, SELECT, TEXTAREA, ....
+   * Parse the "data-rg-set" attribute. Get the value from elements like INPUT, SELECT, TEXTAREA, .... and set the controller property.
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"

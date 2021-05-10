@@ -36,20 +36,12 @@
   <h2 class="section-heading">Methods</h2>
 	<ul class="methods">
     <li>
-      <strong>modelFill <i>() :void</i></strong>
-      <p class="desc">Get the controller values ('this.company.name') and set the $model values ('this.$model.company.name).
-      The this.$model is the previous model value and it's compared with the current controller value.
-      For example: this.company.name vs. this.$model.company.name .
-      <br><i>The method is used internally and in the most cases the developer will not need it.</i>
-    </li>
-    <li>
-      <strong>modelWatch <i>() :void</i></strong>
+      <b>modelWatch <i>() :void</i></b>
       <p class="desc">Compare current controller value and previously set $model values.
       If they are different then re-render the data-rg elements.
       <br>This method is triggered every time when DatRgListeners are used.
       For example on data-rg-click="func()" first func() will be completely executed and after that modelWatch() will compare current controller property
       value with the previous value which is stored in the $model.
-      <br><i>The method is used internally in DataRgListeners and developer will not need it.</i>
     </li>
     <li>
       <b>modelSchema <i>(sch :object) :void</i></b>
@@ -73,6 +65,13 @@
       <br><b>prop</b> - controller / $model property name: <i>'company.name'</i>
       <br><i>TIP: When modelReset() is used (without argument) then all $model properties and controller properties which are in the $schema are set to <i>undefined</i></i>
       </p>
+    </li>
+    <li>
+      <strong>modelFill <i>() :void</i></strong>
+      <p class="desc">Get the controller values ('this.company.name') and set the $model values ('this.$model.company.name).
+      The this.$model is the previous model value and it's compared with the current controller value.
+      For example: this.company.name vs. this.$model.company.name .
+      <br><i>The method is used internally and in the most cases the developer will not need it.</i>
     </li>
   </ul>
 </section>
