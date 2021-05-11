@@ -5,31 +5,28 @@ class ModelCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.debugOpts = {
-      modelFill: false,
-      modelWatch: true,
-      modelSet: false,
-      modelReset: true
+
+    this.model = new syslib.Model([
+      'company.name',
+      'company.year',
+      'company.isActive',
+      'company.cities',
+      // 'company', // will always render
+      // 'company.employees' // will always render
+    ], this);
+
+    this.model.debugOpts = {
+      fill: true,
+      watch: true,
+      watchStart: true,
+      watchStop: true,
+      set: false,
+      reset: false
     };
-    this.modelSchema({
-      'company': 'object',
-      'company.name': 'string',
-      'company.year': 'number',
-      'company.isActive': 'boolean',
-      'company.cities': 'array',
-      'company.employees': 'array'
-    });
-    this.i = 0;
+    this.debugOpts = {render: true};
   }
 
   async init(trx) {
-    this.setTitle('Model Test');
-    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
-    this.unloadCSS(['/assets/css/theme.css']);
-    await this.loadView('#primary', 'playground/model/primary.html');
-  }
-
-  async prerender() {
     this.company = {
       name: 'Cloud Ltd',
       year: 1987,
@@ -37,29 +34,37 @@ class ModelCtrl extends Controller {
       cities: ['London', 'Tokyo', 'Paris'],
       employees: [
         {name: 'John Doe', age: 22},
-        {name: 'Melinda Doe', age: 21},
+        {name: 'Melinda Doe', age: 21}
       ]
     };
+
+    this.i = 0;
+
+    this.setTitle('Model Test');
+    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
+    this.unloadCSS(['/assets/css/theme.css']);
+    await this.loadView('#primary', 'playground/model/primary.html');
   }
 
 
-  async testDataType() {
-    console.log('testDataType - start');
-    await syslib.util.sleep(1300);
-    this.company.name = 555; // dataType-number
-    this.company.year = '1988 year'; // dataType-number
-    this.company.isActive = 'yes'; // dataType-boolean
-    console.log('testDataType - end, company:', this.company);
+  destroy() {
+    this.model.watchStop();
   }
 
-  async testArray() {
+
+  runWatch(action) {
+    action == 'start' ? this.model.watchStart(4000) : this.model.watchStop();
+  }
+
+
+  testArray() {
     console.log('testArray - start');
-    // this.company.cities = ['London', 'Tokyo']; // array-length
-    this.company.cities = ['London', 'Tokyo', 'Zagreb']; // array-element
+    this.company.cities = ['London', 'Tokyo']; // array-length
+    // this.company.cities = ['London', 'Tokyo', 'Zagreb']; // array-element
     console.log('testArray - end, company:', this.company);
   }
 
-  async testPrimitives() {
+  testPrimitives() {
     console.log('testPrimitives - start');
     this.company = {
       name: 'ABC Ltd',
@@ -73,7 +78,7 @@ class ModelCtrl extends Controller {
   async test_modelSet() {
     const rnd = Math.floor(Math.random() * 1000);
     // this.company.year = rnd; // will update the model value only first time
-    this.modelSet('company.year', rnd);
+    this.model.set('company.year', rnd);
     await syslib.util.sleep(1000);
     if (this.i < 5) { this.test_modelSet(); }
     this.i++;
@@ -81,15 +86,13 @@ class ModelCtrl extends Controller {
 
 
   // reset company.name and re-render the view
-  async test_modelReset() {
-    await syslib.util.sleep(1000);
-    this.modelReset('company.name');
+  test_modelReset() {
+    this.model.reset('company.name');
   }
 
   // reset the whole $model and re-render
-  async test_modelReset_all() {
-    await syslib.util.sleep(1000);
-    this.modelReset();
+  test_modelReset_all() {
+    this.model.reset();
   }
 
 

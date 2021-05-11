@@ -319,7 +319,7 @@ class DataRg extends DataRgListeners {
    * Parse the "data-rg-value" attribute. Sets the "value" attribute with the controller property value.
    * Examples:
    * data-rg-value="product"
-   * data-rg-value="$model.employee.name"
+   * data-rg-value="employee.name"
    * @param {string} controllerProp - the attribute value which relates to the controller property
    * @returns {void}
    */

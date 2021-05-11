@@ -3,8 +3,8 @@
   <section class="docs-intro">
     <i>class Model extends Page</i>
     <br><br>
-    <p>Define the model $schema and re-render the data-rg- elements as the controller properties change.
-    This class makes reactive view responses on the dynamic controller properties.</p>
+    <p>Define the model i.e. controller properties which will be permanently monitored and when modification occurs the render of the data-rg- elements will be triggered.
+    This makes the controller reactive and view will respond on the controller property changes.</p>
   </section>
 </header>
 
@@ -18,16 +18,41 @@
       <th>Default</th>
     </tr>
     <tr>
-      <td>$schema</td>
-      <td>model schema <small>this.$schema = {'companies': 'array', 'user.name': 'string'}</small></td>
-      <td>object</td>
-      <td>{}</td>
+      <td>ctrl</td>
+      <td>the current controller instance</td>
+      <td>Controller</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>controllerProps</td>
+      <td>the current properties which will be monitored (watched)</td>
+      <td>string[]</td>
+      <td>[]</td>
+    </tr>
+    <tr>
+      <td>watchInterval</td>
+      <td>time interval in miliseconds in which controllerProps will be monitored</td>
+      <td>number</td>
+      <td>400</td>
     </tr>
     <tr>
       <td>$model</td>
       <td>accumulator of the controller properties (only properties defined in the schema)</td>
       <td>object</td>
       <td>{}</td>
+    </tr>
+    <tr>
+      <td>debugOpts</td>
+      <td>model debugging options</td>
+      <td>object</td>
+      <td><small>{
+      fill: false,
+      watch: false,
+      watchStart: false,
+      watchStop: false,
+      set: false,
+      reset: false,
+    }</small></td>
     </tr>
   </table>
 </section>
@@ -36,42 +61,46 @@
   <h2 class="section-heading">Methods</h2>
 	<ul class="methods">
     <li>
-      <b>modelWatch <i>() :void</i></b>
-      <p class="desc">Compare current controller value and previously set $model values.
-      If they are different then re-render the data-rg elements.
-      <br>This method is triggered every time when DatRgListeners are used.
-      For example on data-rg-click="func()" first func() will be completely executed and after that modelWatch() will compare current controller property
-      value with the previous value which is stored in the $model.
+      <b>constructor <i>(controllerProps :string[], ctrl :Controller) :void</i></b>
+      <p class="desc">Creates the Model instance which can be used in the controller.
+      <br><b>controllerProps</b> - controller properties which will be monitored (watched). For example: <small>['company.name','company.year','company.isActive']</small>
+      <br><b>ctrl</b> - the current controller instance
     </li>
     <li>
-      <b>modelSchema <i>(sch :object) :void</i></b>
-      <p class="desc">Set the model schema.
-      <br><b>sch</b> - schema object: <i>{'companies': 'array', 'user.name': 'string'}</i>
-      <br>Data Types: 'string', 'number', 'boolean', 'bigint', 'symbol', 'array', 'object'
-      <br><i>Notice: Re-rendering is always applied when 'object' data type is used.</i>
-      </p>
+      <strong>fill <i>() :void</i></strong>
+      <p class="desc">Copy the controller values ('this.company.name') and set the $model values ('this.$model.company.name).
+      The this.$model is the previous controller property value value and it's compared with the current controller value.
+      For example: this.company.name vs. this.$model.company.name .
+      <br><i>The method is used internally and in the most cases the developer will not need it.</i>
     </li>
     <li>
-      <i>async</i> <b>modelSet <i>(prop :string, val :any) :Promise&lt;void&gt;</i></b>
-      <p class="desc">Update the $model and controller property which is in the schema and re-render the data-rg elements.
-      <br>This is useful for the stream of data when data is permanently coming and the data-rg elements should be re-rendered.
+      <strong>watch <i>() :void</i></strong>
+      <p class="desc">Compare current controller value and previously set $model values. If they are different then render the data-rg elements.
+      <br><i>The method is used internally and in the most cases the developer will not need it.</i></p>
+    </li>
+    <li>
+      <b>watchStart <i>(msInt :number) :void</i></b>
+      <p class="desc">Start the watch process, the monitoring loop.
+      <br><b>msInt</b> - the monitoring period in miliseconds</p>
+    </li>
+    <li>
+      <b>watchStop <i>() :void</i></b>
+      <p class="desc">Stop the monitoring process.</p>
+    </li>
+    <li>
+      <b>set <i>(prop :string, val :any) :Promise&lt;void&gt;</i></b>
+      <p class="desc">Update the $model and controller property which is in the schema and render the data-rg elements.
+      <br>This is useful for the <b>stream of data</b> when data is permanently coming and the data-rg elements should be re-rendered.
       <br><b>prop</b> - controller / $model property name: <i>'company.name'</i>
       <br><b>val</b> - controller / $model property value
       </p>
     </li>
     <li>
-      <b>modelReset <i>(prop :string) :void</i></b>
-      <p class="desc">Update the $model property with the <i>undefined</i> and re-render the data-rg elements.
+      <b>reset <i>(prop :string) :void</i></b>
+      <p class="desc">Update the $model and controller property with the <i>undefined</i> and re-render the data-rg elements.
       <br><b>prop</b> - controller / $model property name: <i>'company.name'</i>
-      <br><i>TIP: When modelReset() is used (without argument) then all $model properties and controller properties which are in the $schema are set to <i>undefined</i></i>
+      <br><i>TIP: When modelReset() is used (without argument) then all $model properties and controller properties which are in the controllerProps are set to <i>undefined</i></i>
       </p>
-    </li>
-    <li>
-      <strong>modelFill <i>() :void</i></strong>
-      <p class="desc">Get the controller values ('this.company.name') and set the $model values ('this.$model.company.name).
-      The this.$model is the previous model value and it's compared with the current controller value.
-      For example: this.company.name vs. this.$model.company.name .
-      <br><i>The method is used internally and in the most cases the developer will not need it.</i>
     </li>
   </ul>
 </section>
@@ -84,26 +113,26 @@ class ModelCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.debugOpts = {
-      modelFill: false,
-      modelWatch: true,
-      modelSet: false,
-      modelReset: true
-    };
-    this.modelSchema({
-      'company.name': 'string',
-      'company.year': 'number',
-      'company.isActive': 'boolean',
-      'company.cities': 'array'
-    });
-    this.i = 0;
-  }
 
-  async init(trx) {
-    this.setTitle('Model Test');
-    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
-    this.unloadCSS(['/assets/css/theme.css']);
-    await this.loadView('#primary', 'playground/model/primary.html');
+    this.model = new syslib.Model([
+      'company.name',
+      'company.year',
+      'company.isActive',
+      'company.cities',
+      // 'company', // will always render
+      // 'company.employees' // will always render
+    ], this);
+
+    this.model.debugOpts = {
+      fill: true,
+      watch: true,
+      watchStart: true,
+      watchStop: true,
+      set: false,
+      reset: false
+    };
+    this.debugOpts = {render: true};
+
   }
 
   async prerender() {
@@ -116,16 +145,26 @@ class ModelCtrl extends Controller {
   }
 
 
-  // when button is clicked the data-rg-elements are re-rendered
-  async testDataType() {
-    console.log('testDataType - start');
-    await syslib.util.sleep(1300);
-    this.company.name = 555; // dataType-number
-    this.company.year = '1988 year'; // dataType-number
-    this.company.isActive = 'yes'; // dataType-boolean
-    console.log('testDataType - end, company:', this.company);
+  runWatch(action) {
+    action == 'start' ? this.model.watchStart() : this.model.watchStop();
   }
 
+
+  testArray() {
+    console.log('testArray - start');
+    this.company.cities = ['London', 'Tokyo']; // array-length
+    // this.company.cities = ['London', 'Tokyo', 'Zagreb']; // array-element
+    console.log('testArray - end, company:', this.company);
+  }
+
+  testPrimitives() {
+    console.log('testPrimitives - start');
+    this.company = {
+      name: 'ABC Ltd',
+      year: 2001
+    };
+    console.log('testPrimitives - end, company:', this.company);
+  }
 
 }
   </code></pre>

@@ -96,7 +96,6 @@ class DataRgListeners extends Aux  {
         event.preventDefault();
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
-        this.modelWatch(); // render if the model is changed
         this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
       };
 
@@ -142,7 +141,6 @@ class DataRgListeners extends Aux  {
 
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
-        this.modelWatch();
         this._debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
       };
 
@@ -179,7 +177,6 @@ class DataRgListeners extends Aux  {
         event.preventDefault();
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
-        this.modelWatch();
         this._debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
       };
 
@@ -220,7 +217,6 @@ class DataRgListeners extends Aux  {
           event.preventDefault();
           const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
           await this._funcExe(funcName, funcArgs);
-          this.modelWatch();
           this._debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
         };
 

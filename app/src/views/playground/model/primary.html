@@ -9,14 +9,18 @@
 <br>cities: <b data-rg-print="company.cities"></b>
 
 
-
 <br><br>
-<h3>Tests</h3>
-<button data-rg-click="testDataType()">testDataType</button> - test modelWatch() when data types are not as defined in the model schema
+<h3>Permanent Monitoring</h3>
+<p>Permanent watch() is started and just controller properties are changed.</p>
+<button data-rg-click="runWatch('start')">start watch</button>
+<br><button data-rg-click="runWatch('stop')">stop watch</button>
+<br>
 <br><button data-rg-click="testArray()">testArray</button> - test modelWatch() when the array is changed (array length and array elements changed)
 <br><button data-rg-click="testPrimitives()">testPrimitives</button> - test modelWatch() when values are changed
-<br>
-<br><button data-rg-click="test_modelSet()">test_modelSet</button> - test modelSet() method (emulate the stream of data)
-<br>
 <br><button data-rg-click="test_modelReset()">test_modelReset</button> - test modelReset() method (undefine company.name)
 <br><button data-rg-click="test_modelReset_all()">test_modelReset_all</button> - test modelReset() method (undefine all $model properties)
+
+<br><br>
+<h3>Stream of Data Monitoring</h3>
+<p>Stop permanent watch and click the button.</p>
+<button data-rg-click="test_modelSet()">test_modelSet</button> - test modelSet() method (emulate the stream of data)

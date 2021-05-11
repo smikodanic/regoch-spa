@@ -8,6 +8,7 @@ const Form = require('./Form');
 const HTTPClient = require('./HTTPClient');
 const navig = require('./navig');
 const util = require('./util');
+const Model = require('./Model');
 
 
 module.exports = {
@@ -17,5 +18,6 @@ module.exports = {
   Form,
   HTTPClient,
   navig,
-  util
+  util,
+  Model
 };

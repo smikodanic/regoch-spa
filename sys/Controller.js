@@ -1,8 +1,8 @@
-const Model = require('./Model');
+const Page = require('./Page');
 const util = require('./lib/util');
 
 
-class Controller extends Model {
+class Controller extends Page {
 
   constructor() {
     super();
@@ -12,12 +12,6 @@ class Controller extends Model {
       render: false,
       visibleAll: false,
       scope: false,
-
-      // Model.js
-      modelFill: false,
-      modelWatch: false,
-      modelSet: false,
-      modelReset: false,
 
       // Page.js
       loadInc: false,
@@ -81,9 +75,6 @@ class Controller extends Model {
     if(!!this.postrender) { await this.postrender(trx); }
 
     this._visibleAll(true);
-
-    // MODEL
-    this.modelFill();
   }
 
 

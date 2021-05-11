@@ -74,7 +74,7 @@ class Aux {
    * @param {string} txt - text which needs to be replaced
    */
   _parseInterpolated(txt) {
-    const interpolations = txt.match(/\{\{[0-9a-zA-Z\$\_\.]+\}\}/g); // ["age", "user.name", "$model.cars.0.name"]
+    const interpolations = txt.match(/\{\{[0-9a-zA-Z\$\_\.]+\}\}/g); // ["age", "user.name"]
     if (!interpolations || !interpolations.length) { // if there's no interpolated controller properties in the text
       return txt;
     } {
@@ -170,10 +170,6 @@ class Aux {
         if (/^this\./.test(arg)) { // if contain this. i.e. controller property
           const prop = arg.replace(/^this\./, ''); // remove this.
           const val = this._getControllerValue(prop);
-          arg = val;
-        }
-        if (/^\$model\./.test(arg)) { // if contain $model. i.e. $model property
-          const val = this._getControllerValue(arg);
           arg = val;
         }
         return arg;

@@ -124,7 +124,8 @@ class Router {
         this.regochRouter.trx = { uri };
         const trx = await this.regochRouter.exe();
 
-        if(navig && navig.previous && navig.previous.ctrl) {
+        // navig.previous.ctrl !== navig.current.ctrl in case when two routes share same controller
+        if (navig && navig.previous && navig.previous.ctrl && navig.previous.ctrl !== navig.current.ctrl) {
           this._debug('router', `_testRoutes - rgKILL() & destroy() of previous controller`, '#680C72');
           navig.previous.ctrl.rgKILL(); // kill controller's event listeners
           navig.previous.ctrl.destroy(pevent); // execute destroy() defined in the Controller.js
