@@ -592,7 +592,7 @@ class DataRg extends DataRgListeners {
     for (const elem of elems) {
       if (bool) { elem.style.visibility = ''; }
       else { elem.style.visibility = 'hidden'; }
-      this._debug('rgFlicker', `  ${bool} --> elem:: ${elem.localName}${elem.className}`, 'navy');
+      this._debug('rgFlicker', `  ${bool} --> elem:: ${elem.localName}.${elem.className}`, 'navy');
     }
 
   }

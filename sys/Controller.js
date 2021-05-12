@@ -10,8 +10,6 @@ class Controller extends Page {
     this.debugOpts = {
       // Controller.js
       render: false,
-      visibleAll: false,
-      scope: false,
 
       // Page.js
       loadInc: false,
@@ -59,20 +57,22 @@ class Controller extends Page {
     if (this.renderDelay > 2000) { console.log(`%c Warn:: Seems "${this.renderDelay} ms" is too big for renderDelay parameter.`, `color:Maroon; background:LightYellow`); }
 
     // INIT HOOK
-    if(!!this.init) { await this.init(trx); }
+    if(!!this.init) { await this.init(trx); this.rgFlicker(false); }
 
     // Page LOADERS
     await this.loadInc(true);
     await this.rgLazyjs(this.renderDelay);
 
     // PRERENDER HOOK
-    if(!!this.prerender) { await this.prerender(trx); }
+    if(!!this.prerender) { await this.prerender(trx); this.rgFlicker(false); }
 
     // RENDER
     await this.render();
 
     // POSTRENDER HOOK
     if(!!this.postrender) { await this.postrender(trx); }
+
+    this.rgFlicker(true);
   }
 
 
@@ -95,7 +95,6 @@ class Controller extends Page {
   async render(controllerProp) {
     this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
 
-    this.rgFlicker(false);
     await util.sleep(this.renderDelay);
 
     // DataRg - generators
@@ -117,7 +116,6 @@ class Controller extends Page {
     this.rgEcho();
 
     await util.sleep(this.renderDelay);
-    this.rgFlicker(true);
 
     // DataRgListeners
     await this.rgKILL(); // remove all listeners first
@@ -133,47 +131,13 @@ class Controller extends Page {
   }
 
 
+
   /**
    * Use multiple render() method in one method.
    * @param {string[]} controllerProps - array of the controller property names: ['company.name', 'company.year']
    */
   async renders(controllerProps = []) {
     for (const controllerProp of controllerProps) { await this.render(controllerProp); }
-  }
-
-
-
-
-  /************ AUXILARY RENDER METHODS ************/
-  /**
-   * Reduce flickering by hiding data-rg- elements before render() and showing it again after render() process.
-   * @param {boolean} tf
-   */
-  _visibleAll(tf) {
-    if (!tf) {
-      const cssSel = `
-        [data-rg-for], [data-rg-for-gen],
-        [data-rg-repeat], [data-rg-repeat-gen],
-        [data-rg-print], [data-rg-print-gen],
-        [data-rg-if], [data-rg-switch], [data-rg-value], [data-rg-class], [data-rg-style], [data-rg-src], [data-rg-elem], [data-rg-echo]
-      `;
-      const elems = document.querySelectorAll(cssSel);
-      this._debug('visibleAll', `--------- visibleAll -- hidden elems: ${elems.length} ------`, '#B73FDC', '#D9FC9B');
-      if (this._debug().visibleAll) { console.log('visibleAll: hidden elems:', elems); }
-      for (const elem of elems) {
-        elem.style.visibility = 'hidden';
-        elem.setAttribute('data-rg-prehide', '');
-      }
-    } else {
-      const cssSel = '[data-rg-prehide]';
-      const elems = document.querySelectorAll(cssSel);
-      this._debug('visibleAll', `--------- visibleAll -- shown elems: ${elems.length} ------`, '#B73FDC', '#D9FC9B');
-      if (this._debug().visibleAll) { console.log('visibleAll: shown elems:', elems); }
-      for (const elem of elems) {
-        elem.style.visibility = '';
-        elem.removeAttribute('data-rg-prehide');
-      }
-    }
   }
 
 
