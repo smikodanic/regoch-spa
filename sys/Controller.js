@@ -110,6 +110,7 @@ class Controller extends Page {
     this.rgIf(controllerProp);
     this.rgSwitch(controllerProp);
     this.rgValue(controllerProp);
+    this.rgDisabled(controllerProp);
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
     this.rgSrc(controllerProp);

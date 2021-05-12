@@ -6,7 +6,7 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      rgBind: true
+      rgDisabled: true
     };
   }
 
@@ -188,6 +188,12 @@ class DataRgCtrl extends Controller {
   runRERENDER() {
     console.log('runRERENDER::', this.bander);
     this.render('bander');
+  }
+
+
+  toggleDISABLED() {
+    this.isDisabled = !this.isDisabled;
+    this.render('isDisabled');
   }
 
 }

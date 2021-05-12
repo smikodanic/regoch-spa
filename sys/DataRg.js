@@ -254,7 +254,6 @@ class DataRg extends DataRgListeners {
       this._debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
     }
 
-
     this._debug('rgIf', '--------- rgIf (end) ------', 'navy', '#B6ECFF');
   }
 
@@ -312,6 +311,57 @@ class DataRg extends DataRgListeners {
     }
 
     this._debug('rgSwitch', '--------- rgSwitch (end) ------', 'navy', '#B6ECFF');
+  }
+
+
+
+  /**
+   * data-rg-disabled="<controllerProperty>"
+   * Parse the "data-rg-disabled" attribute. set the element to disabled state.
+   * Examples:
+   * data-rg-disabled="ifAge"
+   * data-rg-disabled="ifAge $eq(22)"
+   * @param {string} controllerProp - controller property name
+   * @returns {void}
+   */
+  rgDisabled(controllerProp) {
+    this._debug('rgDisabled', '--------- rgDisabled (start) ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-disabled';
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    this._debug('rgDisabled', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName).trim(); // ifAge
+      if (!attrVal) { console.error(`Attribute "data-rg-disabled" has bad definition (data-rg-disabled="${attrVal}").`); continue; }
+
+      const propComp = attrVal.trim(); // controller property with comparison function, for example: ifAge $eq(22)
+      const propCompSplitted = propComp.split(/\s+/);
+
+      const prop = propCompSplitted[0].trim(); // ifAge
+      const val = this._getControllerValue(prop);
+
+      const funcDef = propCompSplitted[1] ? propCompSplitted[1].trim() : false; // $eq(22)
+      let tf = false;
+      if (!!funcDef) {
+        // parse data-rg-disabled with the comparison operators: $not(), $eq(22), $ne(22), ...
+        const { funcName, funcArgs } = this._funcParse(funcDef);
+        tf = this._calcComparison(val, funcName, funcArgs);
+      } else {
+        // parse data-rg-disabled without the comparison operators
+        tf = !!val;
+      }
+
+      // disable/enable the element
+      if (tf) { elem.disabled = true; }
+      else { elem.disabled = false; }
+
+      this._debug('rgDisabled', `rgDisabled:: data-rg-disabled="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
+    }
+
+    this._debug('rgDisabled', '--------- rgDisabled (end) ------', 'navy', '#B6ECFF');
   }
 
 

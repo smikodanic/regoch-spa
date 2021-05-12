@@ -106,6 +106,19 @@
       <br>data-rg-switchdefault
     </li>
     <li>
+      <b>rgDisabled <i>(controllerProp :string) :void</i></b>
+      <p class="desc">Parse the <b>data-rg-disabled="&lt;controllerProp&gt; [&lt;$comparison&gt;]"</b> elements.
+      Disable the HTML element if the <i>controllerProp</i> gets true value.
+      <br><b>controllerProp</b> - controller property name
+      <br>
+      <br><i>comparison</i> - comparison operators can be used just like in the data-rg-if elements.
+      <br>
+      <br>Examples:
+      <br>data-rg-disabled="ifAge"
+      <br>data-rg-disabled="employee.age $gt(55)"
+      </p>
+    </li>
+    <li>
       <b>rgElem <i>() :void</i></b>
       <p class="desc">Parse the <b>data-rg-elem="&lt;rgelemsProp&gt;"</b> elements. Transfer the DOM element to the controller property "this.rgelems".</p>
     </li>
