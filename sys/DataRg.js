@@ -545,6 +545,7 @@ class DataRg extends DataRgListeners {
    * Parse the "data-rg-echo" attribute. Prints the "text" in the HTML element as innerHTML.
    * Examples:
    * data-rg-echo="$i+1"  --> prints the iteration number
+   * @param {string} text - the text which will be echoed in the element as textContent
    * @returns {void}
    */
   rgEcho(text) {
@@ -569,6 +570,31 @@ class DataRg extends DataRgListeners {
 
       elem.textContent = txt;
     }
+  }
+
+
+
+  /**
+   * data-rg-flicker="<boolean>"
+   * Parse the "data-rg-flicker" attribute. Initially when controller start hide elements with data-rg-flicker and show it when render is finished.
+   * It will prevent element flickering during render process.
+   * @param {string} bool - to show or hide the element
+   * @returns {void}
+   */
+  rgFlicker(bool) {
+    this._debug('rgFlicker', '--------- rgFlicker ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-flicker';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    this._debug('rgFlicker', `found elements:: ${elems.length}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      if (bool) { elem.style.visibility = ''; }
+      else { elem.style.visibility = 'hidden'; }
+      this._debug('rgFlicker', `  ${bool} --> elem:: ${elem.localName}${elem.className}`, 'navy');
+    }
+
   }
 
 

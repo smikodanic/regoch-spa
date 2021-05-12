@@ -23,15 +23,18 @@ class Controller extends Page {
       // DataRg.js
       rgFor: false,
       rgRepeat: false,
+      rgPrint: false,
+
       rgIf: false,
       rgSwitch: false,
-      rgElem: false,
-      rgEcho: false,
-      rgPrint: false,
+      rgDisabled: false,
       rgValue: false,
-      rgInterpolate: false,
       rgClass: false,
       rgStyle: false,
+      rgSrc: false,
+      rgElem: false,
+      rgEcho: false,
+      rgFlicker: false,
 
       // DataRgListeners.js
       rgKILL: false,
@@ -40,7 +43,8 @@ class Controller extends Page {
       rgKeyup: false,
       rgChange: false,
       rgEvt: false,
-      rgSet: false
+      rgSet: false,
+      rgBind: false
     };
   }
 
@@ -57,13 +61,9 @@ class Controller extends Page {
     // INIT HOOK
     if(!!this.init) { await this.init(trx); }
 
-    this._visibleAll(false);
-
     // Page LOADERS
     await this.loadInc(true);
     await this.rgLazyjs(this.renderDelay);
-
-    this._visibleAll(false);
 
     // PRERENDER HOOK
     if(!!this.prerender) { await this.prerender(trx); }
@@ -73,8 +73,6 @@ class Controller extends Page {
 
     // POSTRENDER HOOK
     if(!!this.postrender) { await this.postrender(trx); }
-
-    this._visibleAll(true);
   }
 
 
@@ -97,6 +95,7 @@ class Controller extends Page {
   async render(controllerProp) {
     this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
 
+    this.rgFlicker(false);
     await util.sleep(this.renderDelay);
 
     // DataRg - generators
@@ -109,15 +108,16 @@ class Controller extends Page {
     // DataRg - non-generators
     this.rgIf(controllerProp);
     this.rgSwitch(controllerProp);
-    this.rgValue(controllerProp);
     this.rgDisabled(controllerProp);
+    this.rgValue(controllerProp);
     this.rgClass(controllerProp);
     this.rgStyle(controllerProp);
     this.rgSrc(controllerProp);
-    this.rgEcho();
     this.rgElem();
+    this.rgEcho();
 
     await util.sleep(this.renderDelay);
+    this.rgFlicker(true);
 
     // DataRgListeners
     await this.rgKILL(); // remove all listeners first

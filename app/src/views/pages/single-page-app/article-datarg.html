@@ -157,6 +157,16 @@
         <br><small>&lt;span data-rg-echo="name: {{cars.0.name}} -- price: $ {{cars.0.price}}"&gt;&lt;/span&gt;</small>
       </p>
     </li>
+    <li>
+      <b>rgFlicker <i>(bool :boolean) :void</i></b>
+      <p class="desc">Parse the "data-rg-flicker" attribute. Initially when controller start hide elements with data-rg-flicker and show it when render is finished.
+        <br>It will prevent element flickering during render process.
+        <br><b>bool</b> - to show or hide the element
+        <br>
+        <br>Example:
+        <br><small>&lt;span data-rg-flicker data-rg-print="name"&gt;ma name: &lt;/span&gt;</small>
+      </p>
+    </li>
   </ul>
 </section>
 

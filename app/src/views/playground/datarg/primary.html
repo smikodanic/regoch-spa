@@ -7,14 +7,14 @@
 
 <h4>DATA-RG-FOR</h4>
 <button data-rg-click="runFOR()">run FOR</button>
-<p data-rg-for="companies:limit:skip" style="color:green" class="$i+1"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
-
+<p data-rg-flicker data-rg-for="companies:limit:skip" style="color:green" class="$i+1"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
+<i>NOTICE: Here is the data-rg-flicker is used to prevent showing "$i+1 name:"</i>
 <br><br>
 <h4>DATA-RG-REPEAT</h4>
 <p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>
 <p>Initially the P element will be repeated 3 times due to <b>data-rg-repeat="3"</b> attribute. When the button "run REPEAT" is clicked the element will be repeated 5 times.</p>
 <button data-rg-click="runREPEAT(5)">run REPEAT</button>
-<p data-rg-repeat="multiplikator" class="$i+1">The pet #$i+1: <input data-rg-set="pets.$i @@ rgPrint"> <span data-rg-print="pets.$i"></span></p>
+<p data-rg-flicker data-rg-repeat="multiplikator" class="$i+1">The pet #$i+1: <input data-rg-set="pets.$i @@ rgPrint"> <span data-rg-print="pets.$i"></span></p>
 
 <br><br>
 <h4>DATA-RG-PRINT &amp; DATA-RG-SET</h4>
