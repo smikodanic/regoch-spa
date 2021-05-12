@@ -59,8 +59,16 @@
     <h4>NAVIGATION</h4>
     <li>
       <b>goto <i>(url :string, state :string, title :string) :void</i></b>
-      <p class="desc">Navigates to a view using an absolute URL path.
+      <p class="desc">Navigates to a view using an absolute URL path. The controller will be executed.
         More at <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/History/pushState</a>
+        <br><b>url</b> - absolute URL path, for example: '/customer/product/25'
+        <br><b>state</b> - The state data. Fetch it with event.detail.
+        <br><b>title</b> - Not used in major browsers.
+      </p>
+    </li>
+    <li>
+      <b>goblind <i>(url :string, state :string, title :string) :void</i></b>
+      <p class="desc">This method will only change the URL in browser address bar without executing the controller.
         <br><b>url</b> - absolute URL path, for example: '/customer/product/25'
         <br><b>state</b> - The state data. Fetch it with event.detail.
         <br><b>title</b> - Not used in major browsers.

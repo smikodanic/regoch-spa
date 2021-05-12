@@ -44,7 +44,7 @@ class Navig {
 
   /************ NAVIGATION ************/
   /**
-   * Navigates to a view using an absolute URL path.
+   * Navigates to a view using an absolute URL path. The controller middlewares will be executed.
    * https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
    * @param {string} url - absolute URL path, /customer/product/25?limit=25
    * @param {any} state - the state data. Fetch it with event.detail
@@ -54,11 +54,24 @@ class Navig {
     if (!url) { throw new Error('The argument "url" is not defined'); }
     if (!state) { state = {}; }
     if (!title) { title = ''; }
-
     state = {...state, url};
-
     window.history.pushState(state, title, url); // change URL in the browser address bar
     eventEmitter.emit('pushstate', state); // pushstate event to activate controller in the router.js
+  }
+
+
+  /**
+   * Just change the browser URL and do not execute controller middlewares.
+   * @param {string} url - absolute URL path, /customer/product/25?limit=25
+   * @param {any} state - the state data. Fetch it with event.detail
+   * @param {string} title
+   */
+  goblind(url, state, title) {
+    if (!url) { throw new Error('The argument "url" is not defined'); }
+    if (!state) { state = {}; }
+    if (!title) { title = ''; }
+    state = {...state, url};
+    window.history.pushState(state, title, url); // change URL in the browser address bar
   }
 
 

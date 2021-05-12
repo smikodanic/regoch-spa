@@ -145,3 +145,19 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 <button data-rg-click="runSRC()">run SRC</button>
 <br><img data-rg-src="imageURL" style="width:130px;height:130px;"> -hasn't defaultSrc
 <br><img data-rg-src="imageURL @@ https://via.placeholder.com/130" style="width:130px;height:130px;"> -has defaultSrc
+
+
+<br><br><br>
+<h4>DATA-RG-BIND</h4>
+<input type="text" data-rg-bind="bander.name" data-rg-change="runRERENDER()">
+&nbsp; <span data-rg-print="bander.name"></span>
+<br>
+<br><select data-rg-bind="bander.animal" data-rg-change="runRERENDER()">
+  <option value="cat">cat</option>
+  <option value="dog">dog</option>
+  <option value="horse">horse</option>
+</select>
+&nbsp; <span data-rg-print="bander.animal" data-rg-change="runRERENDER()"></span>
+<br>
+<br><textarea data-rg-bind="bander.article" cols="30" rows="10" data-rg-change="runRERENDER()"></textarea>
+&nbsp; <span data-rg-print="bander.article"></span>

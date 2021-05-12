@@ -146,13 +146,6 @@ class DataRg extends DataRgListeners {
       const prop = propPipeSplitted[0].trim();
       let val = this._getControllerValue(prop);
 
-      let pipe_funcDef = propPipeSplitted[1];
-      if (!!pipe_funcDef && !!val) {
-        pipe_funcDef = pipe_funcDef.trim();
-        const {funcName, funcArgs} = this._funcParse(pipe_funcDef);
-        val = val[funcName](...funcArgs);
-      }
-
       // correct val
       const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false; // to keep the innerHTML as value when val is undefined
       if (val === undefined) { val = toKeep ? elem.innerHTML : ''; } // the default value is defined in the HTML tag
@@ -161,6 +154,15 @@ class DataRg extends DataRgListeners {
       else if (typeof val === 'string') { val = val; }
       else if (typeof val === 'boolean') { val = val.toString(); }
       else { val = val; }
+
+      // apply pipe, for example: data-rg-print="val | slice(0,130)"
+      let pipe_funcDef = propPipeSplitted[1];
+      if (!!pipe_funcDef && !!val) {
+        pipe_funcDef = pipe_funcDef.trim();
+        const {funcName, funcArgs} = this._funcParse(pipe_funcDef);
+        if (typeof val[funcName] !== 'function') { console.error(`The "${propPipe}" has type ${typeof val} and can't' be piped.`); continue; }
+        val = val[funcName](...funcArgs);
+      }
 
       // define action
       let act = attrValSplited[1] || 'inner';
@@ -338,7 +340,8 @@ class DataRg extends DataRgListeners {
 
       const prop = attrVal.trim();
       const val = this._getControllerValue(prop);
-      elem.setAttribute('value', val);
+      // elem.setAttribute('value', val);
+      elem.value = val;
       this._debug('rgValue', `${prop}:: ${val}`, 'navy');
     }
   }

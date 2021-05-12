@@ -6,7 +6,7 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      rgPrint: false
+      rgBind: true
     };
   }
 
@@ -36,6 +36,9 @@ class DataRgCtrl extends Controller {
 
     // text with the HTML
     this.htmlText = 'The best <b style="color:red">man</b> friend is: <i data-rg-if="bestFriend $not()">NOBODY</i> <i data-rg-if="bestFriend $eq(Dog)">DOG</i>';
+
+    // initial value for the data-rg-bind
+    this.bander = { name: 'Smokie', animal: 'horse', article: 'Lorem ipsumus ...' };
   }
 
   async prerender(trx) {
@@ -179,6 +182,12 @@ class DataRgCtrl extends Controller {
   runSRC() {
     this.imageURL = 'http://cdn.dex8.com/img/turnkey_tasks/scraper_free.png';
     this.rgSrc('imageURL');
+  }
+
+
+  runRERENDER() {
+    console.log('runRERENDER::', this.bander);
+    this.render('bander');
   }
 
 }

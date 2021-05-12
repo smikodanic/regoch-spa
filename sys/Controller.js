@@ -126,8 +126,18 @@ class Controller extends Page {
     this.rgChange();
     this.rgEvt();
     this.rgSet();
+    this.rgBind();
 
     this._debug('render', `--------- render (end) ------`, 'green', '#D9FC9B');
+  }
+
+
+  /**
+   * Use multiple render() method in one method.
+   * @param {string[]} controllerProps - array of the controller property names: ['company.name', 'company.year']
+   */
+  async renders(controllerProps = []) {
+    for (const controllerProp of controllerProps) { await this.render(controllerProp); }
   }
 
 

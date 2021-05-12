@@ -65,12 +65,20 @@
       <br>Example: &lt;input data-rg-evt="showData()"&gt;</p>
     </li>
     <li>
-      <b>rgSet <i>(controllerProp :string) :void</i></b>
+      <b>rgSet <i>() :void</i></b>
       <p class="desc">Parser for the <b>data-rg-set="&lt;controllerProperty&gt; [@@ &lt;doAfter&gt;]"</b>, where <i>doAfter</i> define
       what render processes will be done after the controller property is set. For example: <small>&lt;input data-rg-set="product.name @@ rgPrint,rgSwitch"&gt;</small>
       <br>Get the value from elements like INPUT, SELECT, TEXTAREA, .... and set the controller property.
       <br>Example1: &lt;input data-rg-set="first_name"&gt;
       <br>Example2: &lt;input data-rg-set="product.name @@ rgPrint,rgFor,rgRepeat"&gt;
+      </p>
+    </li>
+    <li>
+      <b>rgBind <i>() :void</i></b>
+      <p class="desc">Parser for the <b>data-rg-bind="&lt;controllerProperty&gt;"</b>
+        Bind controller property and view INPUT, SELECT, TEXTAREA, ...etc in both directions.
+        When the view is updated the controller property will be updated and when controller property is updated the view will be updated.
+        This is a shortcut of rgSet and rgValue.
       </p>
     </li>
   </ul>

@@ -276,6 +276,57 @@ class DataRgListeners extends Aux  {
 
 
 
+  /**
+   * data-rg-bind="<controllerProp>"
+   * Bind controller property and view INPUT, SELECT, TEXTAREA, ...etc in both directions.
+   * When the view is updated the controller property will be updated and when controller property is updated the view will be updated.
+   * This is a shortcut of rgSet and rgValue.
+   * Example:
+   * data-rg-bind="product.name"
+   * @returns {void}
+   */
+  rgBind() {
+    this._debug('rgBind', '--------- rgBind ------', 'orange', '#FFD8B6');
+
+    const attrName = 'data-rg-bind';
+    const elems = document.querySelectorAll(`[${attrName}]`);
+    this._debug('rgBind', `found elements:: ${elems.length}`, 'orange');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      const attrValSplited = attrVal.split(this.separator);
+      if (!attrValSplited[0]) { console.error(`Attribute "data-rg-set" has bad definition (data-rg-set="${attrVal}").`); continue; }
+
+      const prop = attrValSplited[0].trim(); // controller property name
+      const doAfter_str = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // what to do after the controller property is set: 'rgPrint', 'rgSwitch'
+      const doAfter_arr = !!doAfter_str ? doAfter_str.split(',') : [];
+
+      /** SETTER **/
+      const val = this._getControllerValue(prop);
+      elem.value = val;
+      this._debug('rgBind', `rgBind setter -- ${prop}:: ${val}`, 'orangered');
+
+      /** LISTENER **/
+      const handler = event => {
+        this._setControllerValue(prop, elem.value);
+
+        for (const doAfter of doAfter_arr) {
+          const doAfter2 = doAfter.trim();
+          this[doAfter2](prop);
+        }
+        this._debug('rgBind', `rgBind listener -- controller property:: ${prop} = ${elem.value}`, 'orange');
+      };
+
+      elem.addEventListener('input', handler);
+      this.rgListeners.push({attrName, elem, handler, eventName: 'input'});
+      this._debug('rgBind', `rgBind listener -- pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
+    }
+
+  }
+
+
+
 }
 
 

@@ -90,7 +90,7 @@
     </li>
     <li>
       <i>async</i> <strong>render <i>(trx :object) :Promise&lt;void&gt;</i></strong>
-      <p class="desc">Render all elements with the "data-rg-..." attribute i.e. DataRg and DataRgListeners. <i>Do NOT use it as the lifecycle hook!</i>
+      <p class="desc">Render all elements with the "data-rg-..." attribute i.e. DataRg and DataRgListeners. <i>Do NOT use it as the lifecycle hook! For view re-rendering only.</i>
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
@@ -103,6 +103,11 @@
       <br>This method will terminate all data-rg listeners activated by current controller (for example data-rg-click which listens for clicks on the element).
       This is very important to save browser's (app) memory space and to prevent memory leaks.
       <br><b>pevent</b> - the 'popstate' (back/forward buttons) or 'pushstate' (data-rg-href element click) event</p>
+    </li>
+    <li>
+      <i>async</i> <strong>renders <i>(controllerProps :string[]) :Promise&lt;void&gt;</i></strong>
+      <p class="desc">Use multiple render() method in one method.
+      <br><b>controllerProps</b> - array of the controller property names: ['company.name', 'company.year']</p>
     </li>
   </ul>
 </section>
