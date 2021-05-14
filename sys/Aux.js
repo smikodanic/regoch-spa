@@ -162,12 +162,14 @@ class Aux {
       .map(arg => {
         arg = arg.trim().replace(/\'|\"/g, '');
         if (arg === '$element') { arg = elem; }
-        if (arg === '$event') { arg = event; }
-        if (/^\/.+\/i?g?$/.test(arg)) { // if regular expression, for example in replace(/Some/i, 'some')
+        else if (arg === '$event') { arg = event; }
+        else if (/true|false/.test(arg)) { arg = JSON.parse(arg); } // boolean
+        else if (/^-?\d+\.?\d*$/.test(arg)) { arg = +arg; } // number
+        else if (/^\/.+\/i?g?$/.test(arg)) { // if regular expression, for example in replace(/Some/i, 'some')
           const mat = arg.match(/^\/(.+)\/(i?g?)$/);
           arg = new RegExp(mat[1], mat[2]);
         }
-        if (/^this\./.test(arg)) { // if contain this. i.e. controller property
+        else if (/^this\./.test(arg)) { // if contain this. i.e. controller property
           const prop = arg.replace(/^this\./, ''); // remove this.
           const val = this._getControllerValue(prop);
           arg = val;
