@@ -22,12 +22,10 @@ class RouterCtrl extends Controller {
       ['#article-introduction', 'pages/router/article-introduction.html'],
       ['#article-router', 'pages/router/article-router.html'],
     ], true);
-
+    this.loadInc();
   }
 
-
-  async postrender(trx) {
-
+  async postrend(trx) {
     await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',
@@ -37,7 +35,6 @@ class RouterCtrl extends Controller {
       '/assets/js/docs.js',
       'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
-
   }
 
 

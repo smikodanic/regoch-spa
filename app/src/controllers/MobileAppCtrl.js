@@ -7,8 +7,7 @@ class MobileAppCtrl extends Controller {
     super();
   }
 
-
-  async init(trx) {
+  async loader(trx) {
     this.setTitle('Regoch Mobile App');
     this.setDescription('Regoch Mobile App is the framework for building complex but extremly fast mobile applications. It is based on regoch SPA and Cordova.');
     this.setKeywords('regoch, mobile, application, app, android, iOS');
@@ -21,12 +20,11 @@ class MobileAppCtrl extends Controller {
       ['#sidebar', 'pages/mobile-app/sidebar.html'],
       ['#article-introduction', 'pages/mobile-app/article-introduction.html']
     ], true);
-
+    this.loadInc();
   }
 
 
-  async postrender(trx) {
-
+  async postrend(trx) {
     await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',
@@ -36,13 +34,13 @@ class MobileAppCtrl extends Controller {
       '/assets/js/docs.js',
       'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
-
   }
 
 
   destroy(elem, event) {
     this.unlazyJS();
   }
+
 
 
 }

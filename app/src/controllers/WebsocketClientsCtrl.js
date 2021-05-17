@@ -8,7 +8,7 @@ class WebsocketClientsCtrl extends Controller {
   }
 
 
-  async init(trx) {
+  async loader(trx) {
     this.setTitle('Regoch Websocket Clients');
     this.setDescription('Websocket clients for different environments: browser, nodejs, angular etc. The clients works best with the Regoch Websocket Server.');
     this.setKeywords('websocket, client, browser, nodejs, angular, regoch');
@@ -25,12 +25,11 @@ class WebsocketClientsCtrl extends Controller {
       ['#article-helper', 'pages/websocket-clients/article-helper.html'],
       ['#article-stringext', 'pages/websocket-clients/article-stringext.html'],
     ], true);
+    this.loadInc();
 
   }
 
-
-  async postrender(trx) {
-
+  async postrend(trx) {
     await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',
@@ -40,9 +39,7 @@ class WebsocketClientsCtrl extends Controller {
       '/assets/js/docs.js',
       'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
-
   }
-
 
   destroy(elem, event) {
     this.unlazyJS();

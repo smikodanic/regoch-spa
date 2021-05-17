@@ -7,7 +7,7 @@ class LoginokCtrl extends Controller {
     super();
   }
 
-  async init(trx) {
+  async loader(trx) {
     this.setTitle('Auth Login OK');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/loginok/primary.html', 'inner');

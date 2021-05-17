@@ -26,6 +26,15 @@ class ModelCtrl extends Controller {
     this.debugOpts = {render: true};
   }
 
+
+  async loader(trx) {
+    this.setTitle('Model Test');
+    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
+    this.unloadCSS(['/assets/css/theme.css']);
+    await this.loadView('#primary', 'playground/model/primary.html');
+  }
+
+
   async init(trx) {
     this.company = {
       name: 'Cloud Ltd',
@@ -39,11 +48,6 @@ class ModelCtrl extends Controller {
     };
 
     this.i = 0;
-
-    this.setTitle('Model Test');
-    this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
-    this.unloadCSS(['/assets/css/theme.css']);
-    await this.loadView('#primary', 'playground/model/primary.html');
   }
 
 

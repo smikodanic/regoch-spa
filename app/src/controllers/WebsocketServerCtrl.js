@@ -31,12 +31,11 @@ class WebsocketServerCtrl extends Controller {
       ['#article-storage', 'pages/websocket-server/article-storage.html'],
       ['#article-subprotocol', 'pages/websocket-server/article-subprotocol.html'],
     ], true);
-
+    this.loadInc();
   }
 
 
-  async postrender(trx) {
-
+  async postrend(trx) {
     await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',
@@ -46,7 +45,6 @@ class WebsocketServerCtrl extends Controller {
       '/assets/js/docs.js',
       'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
-
   }
 
 

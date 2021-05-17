@@ -7,8 +7,7 @@ class SinglePageAppCtrl extends Controller {
     super();
   }
 
-
-  async init(trx) {
+  async loader(trx) {
     // await this.loadHead('pages/single-page-app/head.html', 'inner'); // will cause flicker
 
     this.setTitle('Regoch Single Page Application Framework');
@@ -39,12 +38,10 @@ class SinglePageAppCtrl extends Controller {
       ['#article-util', 'pages/single-page-app/article-util.html'],
       // ['#footer', 'pages/single-page-app/footer.html']
     ], true);
-
+    this.loadInc();
   }
 
-
-  async postrender(trx) {
-
+  async postrend(trx) {
     await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',
@@ -54,11 +51,9 @@ class SinglePageAppCtrl extends Controller {
       '/assets/js/docs.js',
       'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
-
   }
 
-
-  destroy(elem, event) {
+  async destroy(elem, event) {
     this.unlazyJS();
   }
 

@@ -7,8 +7,7 @@ class DatabaseCtrl extends Controller {
     super();
   }
 
-
-  async init(trx) {
+  async loader(trx) {
     this.setTitle('Regoch Database');
     this.setDescription('Regoch database based on the linux file system and grep command. Big scalability.');
     this.setKeywords('regoch, database, linux, filesystem, grep');
@@ -21,12 +20,11 @@ class DatabaseCtrl extends Controller {
       ['#sidebar', 'pages/database/sidebar.html'],
       ['#article-introduction', 'pages/database/article-introduction.html']
     ], true);
-
+    this.loadInc();
   }
 
 
-  async postrender(trx) {
-
+  async postrend(trx) {
     await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',
@@ -36,7 +34,6 @@ class DatabaseCtrl extends Controller {
       '/assets/js/docs.js',
       'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js'
     ]);
-
   }
 
 

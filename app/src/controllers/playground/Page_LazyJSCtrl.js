@@ -7,7 +7,7 @@ class Page_LazyJSCtrl extends Controller {
     super();
   }
 
-  async init(trx) {
+  async loader(trx) {
     this.setTitle('lazyJS() Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/page-lazyjs/primary.html');

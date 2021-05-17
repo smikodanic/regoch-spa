@@ -7,6 +7,12 @@ class DataRgListenersCtrl extends Controller {
     super();
   }
 
+  async loader(trx) {
+    this.setTitle('DataRgListeners Test');
+    this.unloadCSS(['/assets/css/theme.css']);
+    await this.loadView('#primary', 'playground/datarglisteners/primary.html', 'inner');
+  }
+
 
   async init(trx) {
     // test <button data-rg-click="print.inConsole.makeRed($element)">CLICK</button>
@@ -24,13 +30,6 @@ class DataRgListenersCtrl extends Controller {
       {name: 'Toy', price: 22.34},
       {name: 'Flower', price: 88.56},
     ];
-
-    // test CLICK3
-    await this.$scopeSet('river', 'Danube');
-
-    this.setTitle('DataRgListeners Test');
-    this.unloadCSS(['/assets/css/theme.css']);
-    await this.loadView('#primary', 'playground/datarglisteners/primary.html', 'inner');
   }
 
 
@@ -64,9 +63,6 @@ class DataRgListenersCtrl extends Controller {
     console.log('this.prods::', prods);
   }
 
-  runCLICK3(scopeRiver) {
-    console.log('$scope.river::', scopeRiver);
-  }
 
   async callAPI() {
     const answer = await this.httpClient.askJSON('api.dex8.com');

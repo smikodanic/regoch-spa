@@ -10,6 +10,23 @@ class DataRgCtrl extends Controller {
     };
   }
 
+  async loader(trx) {
+    this.setTitle('DataRg Test');
+    this.unloadCSS(['/assets/css/theme.css']);
+    this.addCSS(`
+      .my-italic {
+        font-style: italic;
+      }
+      .my-red {
+        color: red;
+      }
+      .my-font-size {
+        font-size: 21px;
+      }
+    `, '#myCSS');
+    await this.loadView('#primary', 'playground/datarg/primary.html', 'inner');
+  }
+
   async init(trx) {
     // initial values for the runFOR example
     this.limit = 3;
@@ -41,22 +58,17 @@ class DataRgCtrl extends Controller {
     this.bander = { name: 'Smokie', animal: 'horse', article: 'Lorem ipsumus ...' };
   }
 
-  async prerender(trx) {
-    this.setTitle('DataRg Test');
-    this.unloadCSS(['/assets/css/theme.css']);
-    this.addCSS(`
-      .my-italic {
-        font-style: italic;
-      }
-      .my-red {
-        color: red;
-      }
-      .my-font-size {
-        font-size: 21px;
-      }
-    `, '#myCSS');
-    await this.loadView('#primary', 'playground/datarg/primary.html', 'inner');
+
+  // if rend() is not used then default render() is executed
+  async rend() {
+    this.renderGens();
+    await syslib.util.sleep(10);
+    this.renderNonGens();
+    await syslib.util.sleep(10);
+    await this.renderLsns();
   }
+
+
 
 
 

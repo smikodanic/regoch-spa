@@ -7,8 +7,7 @@ class ContactCtrl extends Controller {
     super();
   }
 
-
-  async init(trx) {
+  async loader(trx) {
     this.setTitle('Regoch Contact');
     this.setDescription('Regoch contact.');
     this.setKeywords('regoch, contact');
@@ -18,7 +17,8 @@ class ContactCtrl extends Controller {
     this.loadViews([
       ['#top', 'pages/home/top.html'],
       ['#main', 'pages/contact/main.html']
-    ]);
+    ], false);
+    this.loadInc();
   }
 
 

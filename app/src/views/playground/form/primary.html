@@ -56,13 +56,13 @@ full name: <input type="text" name="fullName">
 
 <br><br><br><button data-rg-click="generateAutos()">generate Autos</button> - generate SELECT/OPTION by data-rg-for and <i>data-rg-print</i> and set the default value
 <br><br>autos: <select name="autos" id="autos">
-  <option data-rg-for="$scope.autos" data-rg-value="$scope.autos.$i.id" data-rg-print="$scope.autos.$i.name"></option>
+  <option data-rg-for="autos" data-rg-value="autos.$i.id" data-rg-print="autos.$i.name"></option>
 </select>
 
 
 <br><br><br><button data-rg-click="generatePlants()">generate Plants</button> - generate SELECT/OPTION by data-rg-for and <i>data-rg-echo</i> and set the default value
 <br><br>plants: <select name="plants" id="plants">
-  <option data-rg-for="$scope.plants" data-rg-value="$scope.plants.$i.id" data-rg-echo="{{$scope.plants.$i.name}} -- price: ${{$scope.plants.$i.price}}"></option>
+  <option data-rg-for="plants" data-rg-value="plants.$i.id" data-rg-echo="{{plants.$i.name}} -- price: ${{plants.$i.price}}"></option>
 </select>
 
 

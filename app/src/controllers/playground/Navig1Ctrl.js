@@ -7,8 +7,8 @@ class Navig1Ctrl extends Controller {
     super();
   }
 
-  async init(trx) {
-    console.log('Navig1 init::', trx);
+  async loader(trx) {
+    console.log('Navig1 loader::', trx);
     this.setTitle('Navig Test - Page 1');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/navig/primary1.html', 'inner');

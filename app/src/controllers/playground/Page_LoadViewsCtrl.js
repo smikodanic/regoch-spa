@@ -8,7 +8,7 @@ class Page_LoadViewsCtrl extends Controller {
   }
 
 
-  async init(trx) {
+  async loader(trx) {
     this.setTitle('loadViews() Test');
     this.unloadCSS(['/assets/css/theme.css']);
 
