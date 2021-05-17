@@ -15,11 +15,10 @@ class Router {
    * Define route
    * @param {string} route - route, for example: '/page1.html'
    * @param {object} ctrl - route controller instance
-   * @param {{renderDelay:number, authGuards:string[]}} routeOpts - route options: {renderDelay: 10, authGuards: ['autoLogin', 'isLogged', 'hasRole']}
+   * @param {{authGuards:string[]}} routeOpts - route options: {authGuards: ['autoLogin', 'isLogged', 'hasRole']}
    * @returns {void}
    */
   when(route, ctrl, routeOpts = {}) {
-    ctrl.renderDelay = routeOpts.renderDelay || ctrl.renderDelay || 0; // default is 0 ms
     const authGuards = routeOpts.authGuards || [];
 
     // prechecks

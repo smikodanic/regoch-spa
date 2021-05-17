@@ -122,17 +122,6 @@ class App {
   }
 
 
-  /**
-   * Define controller's renderDelay property.
-   * @param {object} renderDelay - the content of the /app/cache/views.json file
-   * @returns {App}
-   */
-  controllerRenderDelay(renderDelay) {
-    this.controllerProp('renderDelay', renderDelay);
-    return this;
-  }
-
-
 
 
   /*============================== ROUTES ==============================*/
@@ -148,7 +137,7 @@ class App {
       if (cmd === 'when') {
         const route = routeCnf[1]; // '/page1'
         const ctrlName = routeCnf[2]; // 'Page1Ctrl'
-        const routeOpts = routeCnf[3]; // {renderDelay, authGuards: ['autoLogin', 'isLogged', 'hasRole']}
+        const routeOpts = routeCnf[3]; // {authGuards: ['autoLogin', 'isLogged', 'hasRole']}
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
         this.router.when(route, ctrl, routeOpts);

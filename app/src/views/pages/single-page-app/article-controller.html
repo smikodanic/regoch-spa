@@ -128,34 +128,25 @@
       <br><b>controllerProp</b> - controller property</p>
     </li>
     <li>
-      <i>async</i> <strong>render <i>(controllerProp :string) :Promise&lt;void&gt;</i></strong>
+      <i>async</i> <strong>render <i>(controllerProp :string, renderDelay :number) :Promise&lt;void&gt;</i></strong>
       <p class="desc">Render all data-rg- elements.
-      <br><b>controllerProp</b> - controller property (when used the number of render data-rg- elements is reduced &rarr; speed up render process)</p>
+        <br><b>controllerProp</b> - controller property (when used the number of render data-rg- elements is reduced &rarr; speed up render process)
+        <br><b>renderDelay</b> - delay in miliseconds between each render phase
+      </p>
     </li>
     <li>
-      <i>async</i> <strong>renders <i>(controllerProps :string[]) :Promise&lt;void&gt;</i></strong>
+      <i>async</i> <strong>renders <i>(controllerProps :string[], renderDelay :number) :Promise&lt;void&gt;</i></strong>
       <p class="desc">Use multiple render() method in one method.
-      <br><b>controllerProps</b> - array of the controller property names: ['company.name', 'company.year']</p>
+        <br><b>controllerProps</b> - array of the controller property names: ['company.name', 'company.year']
+        <br><b>renderDelay</b> - delay in miliseconds between each render phase
+      </p>
     </li>
   </ul>
 </section>
 
 
+
 <section class="docs-section" id="item-3-3">
-  <h2 class="section-heading">renderDelay</h2>
-  To ensure that all <i>data-rg-</i> elements are rendered on time there is the <b>renderDelay</b> parameter.
-  It's used in the controller's <i>render()</i> hook.
-  The developer can set it up when:
-  <ol>
-    <li>defining the route: <small>['when', '/playground/scope', 'ScopeCtrl', {renderDelay: 1300}]</small> . It's only valid for that specific route.</li>
-    <li>by using APP::controllerRenderDelay() method. It's valid for all routes.</li>
-  </ol>
-  If none of 1) or 2) is used then default renderDelay <b>0</b> miliseconds is applied.
-</section>
-
-
-
-<section class="docs-section" id="item-3-4">
   <h2 class="section-heading">Example</h2>
   <pre><code class="language-javascript">
 const { Controller, syslib } = require('regoch-spa');

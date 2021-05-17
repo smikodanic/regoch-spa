@@ -1,5 +1,4 @@
 const Page = require('./Page');
-const util = require('./lib/util');
 
 
 class Controller extends Page {
@@ -149,14 +148,15 @@ class Controller extends Page {
    * Render the view i.e. the data-rg- elements with the controllerProp.
    * For example: data-rg-print="first_name", where first_name is the controllerProp.
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
+   * @param {number} renderDelay - delay in miliseconds
    */
-  async render(controllerProp) {
-    this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${this.renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
-    await util.sleep(this.renderDelay);
+  async render(controllerProp, renderDelay = 0) {
+    this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
+    await new Promise(r => setTimeout(r, renderDelay));
     this.renderGens();
-    await util.sleep(this.renderDelay);
+    await new Promise(r => setTimeout(r, renderDelay));
     this.renderNonGens();
-    await util.sleep(this.renderDelay);
+    await new Promise(r => setTimeout(r, renderDelay));
     await this.renderLsns();
     this._debug('render', `--------- render (end) ------`, 'green', '#D9FC9B');
   }
@@ -165,9 +165,10 @@ class Controller extends Page {
   /**
    * Use render() method multiple times.
    * @param {string[]} controllerProps - array of the controller property names: ['company.name', 'company.year']
+   * @param {number} renderDelay - delay in miliseconds
    */
-  async renders(controllerProps = []) {
-    for (const controllerProp of controllerProps) { await this.render(controllerProp); }
+  async renders(controllerProps = [], renderDelay) {
+    for (const controllerProp of controllerProps) { await this.render(controllerProp, renderDelay); }
   }
 
 

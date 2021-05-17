@@ -85,7 +85,6 @@ app
     // not found page
     NotfoundCtrl
   ])
-  .controllerRenderDelay(100)
   .controllerAuth(auth) // needed for route authGuards
   .controllerViewsCached(viewsCached);
 

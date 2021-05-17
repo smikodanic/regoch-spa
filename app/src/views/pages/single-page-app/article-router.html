@@ -65,10 +65,6 @@
 <section class="docs-section" id="item-7-3">
   <h2 class="section-heading">Route Options</h2>
   <ul>
-    <li><b>renderDelay :number</b> - delay in <b>miliseconds</b> between stages in the controller render hook.
-    With this option the developer can tune up the rendering speed. It's specially useful when nested <i>data-rg-inc</i> elements are used
-    or in case when Page::lazyJS() method is used. The default is <b>0</b> miliseconds.
-    <br>Those stages are: <i>DELAY &rarr; loadInc &rarr; DELAY &rarr; parseNonListeners &rarr; DELAY &rarr; parseListeners &rarr; DELAY</i></li>
     <li><b>authGuards :string[]</b> - route guards to do auto login and to protect the route from unauthorised access
     <br>for example: <small>{authGuards: ['autoLogin']}</small></li>
   </ul>
@@ -82,7 +78,7 @@
   <br>The example:
   <pre><code class="language-js">
 const routesCnf = [
-  ['when' '/login' 'LoginCtrl', {renderDelay: 300, authGuards: ['autoLogin']}],
+  ['when' '/login' 'LoginCtrl', {authGuards: ['autoLogin']}],
   ['when' '/admin/product/:id' 'AdminProductCtrl', {authGuards: ['isLogged', 'hasRole']}]
 ];
   </code></pre>

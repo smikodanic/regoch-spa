@@ -24,7 +24,7 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgFor(controllerProp) {
-    this._debug('rgFor', `--------- rgFor (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
+    this._debug('rgFor', `--------- rgFor (start) ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-for';
     let elems = document.querySelectorAll(`[${attrName}]`);
@@ -81,7 +81,7 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgRepeat(controllerProp) {
-    this._debug('rgRepeat', `--------- rgRepeat (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
+    this._debug('rgRepeat', `--------- rgRepeat (start) ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-repeat';
     let elems = document.querySelectorAll(`[${attrName}]`);
@@ -127,7 +127,7 @@ class DataRg extends DataRgListeners {
    * @returns {void}
    */
   rgPrint(controllerProp) {
-    this._debug('rgPrint', `--------- rgPrint (start) -- renderDelay: ${this.renderDelay} ------`, 'navy', '#B6ECFF');
+    this._debug('rgPrint', `--------- rgPrint (start) ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-print';
     let elems = document.querySelectorAll(`[${attrName}]`);
