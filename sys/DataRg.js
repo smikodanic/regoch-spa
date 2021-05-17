@@ -239,7 +239,7 @@ class DataRg extends DataRgListeners {
         tf = this._calcComparison(val, funcName, funcArgs);
       } else {
         // parse data-rg-if without the comparison operators
-        tf = val;
+        tf = !!val;
       }
 
       // hide/show elem
@@ -251,7 +251,7 @@ class DataRg extends DataRgListeners {
         elem.style.display = 'none';
       }
 
-      this._debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
+      this._debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=(${typeof val}) ${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
     }
 
     this._debug('rgIf', '--------- rgIf (end) ------', 'navy', '#B6ECFF');

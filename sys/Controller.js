@@ -91,9 +91,11 @@ class Controller extends Page {
    */
   async processing(trx) {
     await this.loader(trx);
+    this.rgFlicker(false);
     await this.init(trx);
     await this.rend(trx);
     await this.postrend(trx);
+    this.rgFlicker(true);
   }
 
 
@@ -153,9 +155,9 @@ class Controller extends Page {
   async render(controllerProp, renderDelay = 0) {
     this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
     await new Promise(r => setTimeout(r, renderDelay));
-    this.renderGens();
+    this.renderGens(controllerProp);
     await new Promise(r => setTimeout(r, renderDelay));
-    this.renderNonGens();
+    this.renderNonGens(controllerProp);
     await new Promise(r => setTimeout(r, renderDelay));
     await this.renderLsns();
     this._debug('render', `--------- render (end) ------`, 'green', '#D9FC9B');
