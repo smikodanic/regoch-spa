@@ -45,7 +45,7 @@ class Aux {
 
 
   /**
-   * Parse iteration variable $i in the text.
+   * Parse iteration variable $i or $j or $k in the text. Vars $i, $j, $k makes possible three level nesting, for example for(){ for(){ for(){} } }.
    * - replace .$i with the number i
    * - replace $i, $i+1 , $i-1, $i^1, ...
    * @param {number} i - number to replace $i with
@@ -78,14 +78,17 @@ class Aux {
     if (!interpolations || !interpolations.length) { // if there's no interpolated controller properties in the text
       return txt;
     } {
-      let hasFalsyValue = false; // if one of the interpolations has falsy value return empty string
+      let hasUndefined = false;
       for (const interpolation of interpolations) {
         const prop = interpolation.replace('{{', '').replace('}}', '');
         const val = this._getControllerValue(prop);
-        if (!val) { hasFalsyValue = true; }
+        if (val === undefined) {
+          hasUndefined = true;
+          if (this._debug().rgEcho) { console.log(`%c _parseInterpolatedWarn:: Controller property ${prop} is undefined.`, `color:Maroon; background:LightYellow`); }
+        }
         txt = txt.replace(interpolation, val);
       }
-      if (hasFalsyValue) { txt = ''; }
+      if (hasUndefined) { txt = ''; } // if one of the interpolations has undefined value return empty string
     }
     return txt;
   }
