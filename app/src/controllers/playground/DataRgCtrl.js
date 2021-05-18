@@ -6,7 +6,7 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      rgDisabled: true
+      rgFor: true
     };
   }
 
@@ -41,6 +41,9 @@ class DataRgCtrl extends Controller {
       {name: 'Gen Ltd', size: 82},
       {name: 'Ren Ltd', size: 83}
     ];
+
+    // initial values for runFOR2
+    this.herbals = [];
 
     // initial value for runREPEAT
     this.multiplikator = 3;
@@ -89,6 +92,12 @@ class DataRgCtrl extends Controller {
     ];
     this.rgFor('companies');
     this.rgPrint('companies');
+  }
+
+  // show array elements by using data-rg-for
+  async runFOR2() {
+    this.herbals = ['corn', 'banana', 'plum', 'straw'];
+    this.render('herbals');
   }
 
   // repeat the data-rg-repeat num times

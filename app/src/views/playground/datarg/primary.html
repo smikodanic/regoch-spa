@@ -6,9 +6,16 @@
 <h3>--GENERATORS--</h3>
 
 <h4>DATA-RG-FOR</h4>
-<button data-rg-click="runFOR()">run FOR</button>
+<button data-rg-click="runFOR()">run FOR</button>  <i>NOTICE: The data-rg-flicker is used to prevent showing "$i+1 name:"</i>
 <p data-rg-flicker data-rg-for="companies:limit:skip" style="color:green" class="$i+1"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
-<i>NOTICE: Here is the data-rg-flicker is used to prevent showing "$i+1 name:"</i>
+
+<br><br>
+<button data-rg-click="runFOR2()">run FOR2</button> - initial array has no elements
+<ol>
+  <li data-rg-for="herbals" data-rg-print="herbals.$i">herb: </li>
+</ol>
+
+
 <br><br>
 <h4>DATA-RG-REPEAT</h4>
 <p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>

@@ -51,10 +51,12 @@ class DataRg extends DataRgListeners {
       prop = prop.trim();
       const val = this._getControllerValue(prop);
       if(this._debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
-      if (!val) { continue; }
+      if (!val) { elem.style.display = 'none'; continue; }
 
       // generate new element and place it in the sibling position
       const newElem = this._generateNewElem(elem, attrName, attrVal);
+
+      if (!val.length) { newElem.style.display = 'none'; continue; } // hide element if val is empty array
 
       // multiply element by cloning and adding sibling elements
       const limit2 = skip + limit < val.length ? skip + limit : val.length;
@@ -99,6 +101,8 @@ class DataRg extends DataRgListeners {
 
       // generate new element and place it in the sibling position
       const newElem = this._generateNewElem(elem, attrName, attrVal);
+
+      if (val === 0) { newElem.style.display = 'none'; continue; } // hide element if val is zero
 
       // multiply element by cloning and adding sibling elements
       for (let i = 0; i < val; i++) {
@@ -245,7 +249,7 @@ class DataRg extends DataRgListeners {
       // hide/show elem
       if (tf) {
         const dataRgPrint_attrVal = elem.getAttribute('data-rg-print');
-        if (!!dataRgPrint_attrVal && /outer|sibling|prepend|append|inset/) { elem.style.display = 'none'; } // element with data-rg-print should stay hidden because of _generateNewElem()
+        if (!!dataRgPrint_attrVal && /outer|sibling|prepend|append|inset/.test(dataRgPrint_attrVal)) { elem.style.display = 'none'; } // element with data-rg-print should stay hidden because of _generateNewElem()
         else { elem.style.display = ''; }
       } else {
         elem.style.display = 'none';
