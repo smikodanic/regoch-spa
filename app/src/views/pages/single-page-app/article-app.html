@@ -84,6 +84,10 @@ Beside these properties the global <b style="color:orangered">window.regochSPA =
       <br><i>[['when', '/login', 'LoginCtrl'], {autoLogin:true}], ['when', '/customer/product/:id', 'CustomerProductCtrl'], {isLogged:true, hasRole:true}]]</i></p>
     </li>
     <li><b>run <i>(): void</i></b> - run the app, i.e. execute the router </li>
+    <li>
+      <b>preflight <i>(funcs :Function[]): App</i></b> - execute functions in the preflight, i.e. on every route before controller's loader().
+      <p><b>funcs</b> - array of the preflight functions. Argument of the function is <b>trx</b> (regoch router transitional variable), for example: <i>async (trx) => {...}</i></p>
+    </li>
 
     <br><br>
     <h4>EVENT LISTENERS</h4>

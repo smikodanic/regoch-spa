@@ -122,6 +122,17 @@ class App {
   }
 
 
+  /**
+   * Define preflight function which will be executed on every route and before controller loader().
+   * @param {Function[]} funcs - array of preflight functions (app, trx) => { ... }
+   * @returns {App}
+   */
+  preflight(...funcs) {
+    this.controllerProp('preflight', funcs);
+    return this;
+  }
+
+
 
 
   /*============================== ROUTES ==============================*/

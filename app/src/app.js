@@ -41,7 +41,9 @@ const cookie = new syslib.Cookie(cookieOpts);
 const httpClient = new syslib.HTTPClient(httpClientOpts);
 const auth = new syslib.Auth(authOpts, cookie, httpClient);
 
-
+// preflight
+const pf1 = async (trx) => {console.log('PREFLIGHT 1 trx::', trx);};
+const pf2 = async (trx) => {console.log('PREFLIGHT 2 trx::', trx);};
 
 const app = new App();
 app.router.debugOpts = {router: false};
@@ -88,5 +90,6 @@ app
   .controllerAuth(auth) // needed for route authGuards
   .controllerViewsCached(viewsCached);
 
-app
-  .routes(routes).run();
+app.preflight(pf1, pf2);
+
+app.routes(routes).run();

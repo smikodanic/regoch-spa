@@ -33,5 +33,5 @@ module.exports = [
   ['when', '/playground/model', 'ModelCtrl'],
 
   ['notfound', 'NotfoundCtrl'],
-  ['do', func1, func2]
+  // ['do', func1, func2]
 ];
