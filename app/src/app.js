@@ -56,7 +56,7 @@ app
 app.libInject({StringExt, Rand});
 
 app
-  .controller([
+  .controllersInject([
     // docs
     HomeCtrl,
     WebsocketServerCtrl,

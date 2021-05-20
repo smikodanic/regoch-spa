@@ -1,5 +1,5 @@
-const log1 = () => { console.log(`1 Host is ${window.location.host}.`); };
-const log2 = () => { console.log(`2 Current URI is ${window.location.pathname}${window.location.search}.`); };
+const func1 = (trx) => { console.log(`DO func1 Host is ${window.location.host}.`); console.log('trx::', trx); };
+const func2 = (trx) => { console.log(`DO func2 Current URI is ${window.location.pathname}${window.location.search} or ${trx.uri}.`); };
 
 
 
@@ -33,5 +33,5 @@ module.exports = [
   ['when', '/playground/model', 'ModelCtrl'],
 
   ['notfound', 'NotfoundCtrl'],
-  // ['do', log1, log2]
+  ['do', func1, func2]
 ];

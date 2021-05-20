@@ -113,6 +113,7 @@ class Router {
     this._debug('router', `--------- _testRoutes (start) ------`, '#680C72', '#E59FED');
     const startTime = new Date();
 
+    console.log('set preious', navig.current);
     navig.setPrevious(); // copy current to previous
 
     const uri = navig.getCurrentURI(); // get the current uri: /page/2?id=55 (no hash in the uri)
@@ -120,7 +121,7 @@ class Router {
     // execute route middlewares, i.e. controller only if the URL is changed
     if (uri !== navig.previous.uri) {
       try {
-        this.regochRouter.trx = { uri };
+        this.regochRouter.trx = { uri, navig };
         const trx = await this.regochRouter.exe();
 
         // navig.previous.ctrl !== navig.current.ctrl in case when two routes share same controller

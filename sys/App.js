@@ -73,7 +73,7 @@ class App {
    * @param  {Class[]} Ctrls - array of controller classes
    * @returns {App}
    */
-  controller(Ctrls) {
+  controllersInject(Ctrls) {
     for(const Ctrl of Ctrls) {
       const ctrl = new Ctrl(this);
       this.controllers[Ctrl.name] = ctrl;
