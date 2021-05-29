@@ -173,26 +173,26 @@ const wsocket = await client.connect();
       </p>
     </li>
     <li>
-      <i>async</i> <b>infoSocketId <i>() :Promise&lt;number&gt;</i></b>
+      <b><i>async</i> infoSocketId <i>() :Promise&lt;number&gt;</i></b>
       <p class="desc"> Send a question about the client's socket ID.</p>
     </li>
     <li>
-      <i>async</i> <b>infoSocketList <i>() :Promise&lt;number[]&gt;</i></b>
+      <b><i>async</i> infoSocketList <i>() :Promise&lt;number[]&gt;</i></b>
       <p class="desc"> Send a question about all socket IDs connected to the server.</p>
     </li>
     <li>
-      <i>async</i> <b>infoRoomList <i>() :Promise&lt;{name:string, socketIds:number[]}[]&gt;</i></b>
+      <b><i>async</i> infoRoomList <i>() :Promise&lt;{name:string, socketIds:number[]}[]&gt;</i></b>
       <p class="desc"> Send a question about all rooms in the server.</p>
     </li>
     <li>
-      <i>async</i> <b>infoRoomListmy <i>() :Promise&lt;{name:string, socketIds:number[]}[]&gt;</i></b>
+      <b><i>async</i> infoRoomListmy <i>() :Promise&lt;{name:string, socketIds:number[]}[]&gt;</i></b>
       <p class="desc"> Send question about all rooms where the client was entered.</p>
     </li>
 
     <br><br>
     <h4>Senders</h4>
     <li>
-      <b style="color:Gray">carryOut <i>(to :number, cmd :string, payload :any) :void</i></b>
+      <b style="color:Gray">async carryOut <i>(to :number, cmd :string, payload :any) :Promise&lt;void&gt;</i></b>
       <p class="desc"> Send message to the websocket server.
         <br><i>This method is used internally and it's not recommended to use in your app.</i>
         <br><b>to</b> the receiver socket id
@@ -201,27 +201,27 @@ const wsocket = await client.connect();
       </p>
     </li>
     <li>
-      <b>sendOne <i>(to :number, msg :any) :void</i></b>
+      <b><i>async</i> sendOne <i>(to :number, msg :any) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message (payload) to one client.
         <br><b>to</b> the receiver socket id: 210205081923171300
         <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
       </p>
     </li>
     <li>
-      <b>send <i>(to :number[], msg :any) :void</i></b>
+      <b><i>async</i> send <i>(to :number[], msg :any) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message (payload) to one or more clients.
         <br><b>to</b> array of the receiver socket ids: [210205081923171300, 210205082042463230]
         <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
       </p>
     </li>
     <li>
-      <b>broadcast <i>(msg :any) :void</i></b>
+      <b><i>async</i> broadcast <i>(msg :any) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message (payload) to all clients except the sender.
         <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
       </p>
     </li>
     <li>
-      <b>sendAll <i>(msg :any) :void</i></b>
+      <b><i>async</i> sendAll <i>(msg :any) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message (payload) to all clients and the sender.
         <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
       </p>
@@ -230,23 +230,23 @@ const wsocket = await client.connect();
     <br><br>
     <h4>Rooms</h4>
     <li>
-      <b>roomEnter <i>(roomName :string) :void</i></b>
+      <b><i>async</i> roomEnter <i>(roomName :string) :Promise&lt;void&gt;</i></b>
       <p class="desc">Subscribe in the room.
         <br><b>roomName</b> the room name: 'tech-chat'
       </p>
     </li>
     <li>
-      <b>roomExit <i>(roomName :string) :void</i></b>
+      <b><i>async</i> roomExit <i>(roomName :string) :Promise&lt;void&gt;</i></b>
       <p class="desc">Unsubscribe in the room.
         <br><b>roomName</b> the room name: 'tech-chat'
       </p>
     </li>
     <li>
-      <b>roomExitAll <i>() :void</i></b>
+      <b><i>async</i> roomExitAll <i>() :Promise&lt;void&gt;</i></b>
       <p class="desc">Unsubscribe from the all rooms.</p>
     </li>
     <li>
-      <b>roomSend <i>(roomName :string, msg :any) :void</i></b>
+      <b><i>async</i> roomSend <i>(roomName :string, msg :any) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send a message to the room. The sender doesn't need to be subscribed in the room.
         <br><b>roomName</b> the room name: 'tech-chat'
         <br><b>msg</b> the payload in the message object <small>{id, from, to, cmd, payload}</small>
@@ -257,13 +257,13 @@ const wsocket = await client.connect();
     <br><br>
     <h4>Other API Commands</h4>
     <li>
-      <b>setNick <i>(nickname :string) :void</i></b>
+      <b><i>async</i> setNick <i>(nickname :string) :Promise&lt;void&gt;</i></b>
       <p class="desc">Setup a client's nick name.
         <br><b>nickname</b> nick name
       </p>
     </li>
     <li>
-      <b>route <i>(uri :string, body :any) :void</i></b>
+      <b><i>async</i> route <i>(uri :string, body :any) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send route command to the server's router.
         <br><b>uri</b> route URI, for example /shop/product/55?x=3 (the payload part in the message object <small>{id, from, to, cmd, payload}</small>)
         <br><b>body</b> body data (the payload part in the message object <small>{id, from, to, cmd, payload}</small>)
@@ -282,6 +282,14 @@ const wsocket = await client.connect();
     <li>
       <b>once <i>(eventName :string, listener :Function) :void</i></b>
       <p class="desc">Listen eventName and execute the listener only once.
+        <br><b>eventName</b> event name: 'connected', 'message', 'route'
+        <br><b>listener</b> the callback function
+      </p>
+    </li>
+    <li>
+      <b>off <i>(eventName :string, listener :Function) :void</i></b>
+      <p class="desc">Remove the event listener.
+        <br><i>Notice: The listener must be same function as used in the on().</i>
         <br><b>eventName</b> event name: 'connected', 'message', 'route'
         <br><b>listener</b> the callback function
       </p>
