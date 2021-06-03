@@ -31,16 +31,20 @@ class Form {
     for (const elem of elems) {
       if (elem.type === 'checkbox') { // CHECKBOX
         elem.checked = false;
-        if (val.indexOf(elem.value) !== -1) { elem.checked = true; } // val is array
+        if (typeof val !== 'boolean' && val.indexOf(elem.value) !== -1) { elem.checked = true; } // val is array
+        else if (typeof val === 'boolean') { elem.checked = val; }
+
+      } else if (elem.type === 'radio') { // RADIO
+        elem.checked = false;
+        if (val === elem.value) { elem.checked = true; }
+
       } else if (elem.type === 'select-multiple') { // on SELECT with multiple, for example <select name="family" size="4" multiple>
         const options = elem; // all options
         for (const option of options) {
           option.selected = false;
           if (val.indexOf(option.value) !== -1) { option.selected = true; }  // val is array
         }
-      } else if (elem.type === 'radio') { // RADIO
-        elem.checked = false;
-        if (val === elem.value) { elem.checked = true; }
+
       } else { // INPUT, SELECT
         elem.value = val; // val is not array
       }
@@ -102,6 +106,10 @@ class Form {
       if (elem.type === 'checkbox') {
         if (elem.checked) { valArr.push(elem.value); val = valArr; }
         if (i === elems.length && !val) { val = []; }
+
+      } else if (elem.type === 'radio') {
+        if (elem.checked) { val = elem.value; }
+
       } else if (elem.type === 'select-multiple') {
         const opts = elem.selectedOptions; // selected options
         for (const opt of opts) {
@@ -109,10 +117,10 @@ class Form {
           val = valArr;
         }
         if (i === elems.length && !val) { val = []; }
-      } else if (elem.type === 'radio') {
-        if (elem.checked) { val = elem.value; }
+
       } else if (elem.type === 'number') {
         val = elem.valueAsNumber;
+
       } else {
         val = elem.value;
       }

@@ -78,17 +78,16 @@ class Aux {
     if (!interpolations || !interpolations.length) { // if there's no interpolated controller properties in the text
       return txt;
     } {
-      let hasUndefined = false;
       for (const interpolation of interpolations) {
         const prop = interpolation.replace('{{', '').replace('}}', '');
-        const val = this._getControllerValue(prop);
+        if (/\$i/.test(prop)) { continue; } // jump over properies with $i, for example: users.$i.name
+        let val = this._getControllerValue(prop);
         if (val === undefined) {
-          hasUndefined = true;
-          if (this._debug().rgEcho) { console.log(`%c _parseInterpolatedWarn:: Controller property ${prop} is undefined.`, `color:Maroon; background:LightYellow`); }
+          console.log(`%c _parseInterpolatedWarn:: Controller property ${prop} is undefined.`, `color:Maroon; background:LightYellow`);
+          val = '';
         }
         txt = txt.replace(interpolation, val);
       }
-      if (hasUndefined) { txt = ''; } // if one of the interpolations has undefined value return empty string
     }
     return txt;
   }
