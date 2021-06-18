@@ -136,7 +136,8 @@ class DataRgListeners extends Aux  {
       const handler = async event => {
         event.preventDefault();
 
-        const eventCode = event.code.toLowerCase();
+        let eventCode;
+        if (event.code) { eventCode = event.code.toLowerCase(); }
         if (!!keyCode && keyCode !== eventCode) { return; }
 
         const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
