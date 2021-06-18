@@ -121,14 +121,20 @@ class Router {
     // execute route middlewares, i.e. controller only if the URL is changed
     if (uri !== navig.previous.uri) {
       try {
+        // destroy previous controller
+        if (!!navig && !!navig.previous && !!navig.previous.ctrl) {
+          this._debug('router', `_testRoutes - destroy() of previous controller`, '#680C72');
+          navig.previous.ctrl.destroy(pevent); // execute destroy() defined in the Controller.js
+        }
+
+        // execute route middlewares
         this.regochRouter.trx = { uri, navig };
         const trx = await this.regochRouter.exe();
 
         // navig.previous.ctrl !== navig.current.ctrl in case when two routes share same controller
-        if (navig && navig.previous && navig.previous.ctrl && navig.previous.ctrl !== navig.current.ctrl) {
-          this._debug('router', `_testRoutes - rgKILL() & destroy() of previous controller`, '#680C72');
+        if (!!navig && !!navig.previous && !!navig.previous.ctrl && navig.previous.ctrl !== navig.current.ctrl) {
+          this._debug('router', `_testRoutes - rgKILL() of previous controller`, '#680C72');
           navig.previous.ctrl.rgKILL(); // kill controller's event listeners
-          navig.previous.ctrl.destroy(pevent); // execute destroy() defined in the Controller.js
         }
 
         if (this._debug().router) {

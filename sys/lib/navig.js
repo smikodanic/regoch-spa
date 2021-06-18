@@ -17,7 +17,7 @@ class Navig {
    * @param {Controller} ctrl - instance of the current controller
    * @param {{uri:string, body:any, params:object, query:object, routeParsed:object, uriParsed:object}} trx - regoch-router transitional variable for matched route
    */
-  setCurrent(ctrl, trx) {
+  setCurrent(ctrl) {
     const uri = this.getCurrentURI();
     this.current = {uri, ctrl};
   }
