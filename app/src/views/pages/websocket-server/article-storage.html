@@ -84,6 +84,12 @@
       <i>async</i> <b>setNick <i>(socket :Socket, nickname: string) :boolean</i></b>
       <p class="desc">Set an unique nick name to the socket (client). If the nickname already exists the error will be thrown.</p>
     </li>
+    <li>
+      <i>async</i> <b>purge <i>(sec :number) :void</i></b>
+      <p class="desc">Purge disconnected sockets periodically every sec seconds. If sec=0 then purge once.
+      <br>Check the readyState for every socket periodically. If the socket is readOnly or writeOnly remove it.
+      <br>readyState: opening, open, readOnly, writeOnly -- <a href="https://nodejs.org/api/net.html#net_socket_readystate" target="_blank">https://nodejs.org/api/net.html#net_socket_readystate</a></p>
+    </li>
 
     <br><br>
     <h4>ROOM METHODS</h4>
