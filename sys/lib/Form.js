@@ -65,25 +65,29 @@ class Form {
     if (!obj) { return; }
     const keys = Object.keys(obj);
     for (const key of keys) {
-      const elem = document.querySelector(`[data-rg-form="${this.formName}"] [name^="${key}"]`);
-      if (!elem) {
+      const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name^="${key}"]`);
+      this._debug('setControls', `\nElems found: ${elems.length} in the form for name^="${key}".`, 'green');
+      if (!elems.length) {
         this._debug('setControls', `FormWarn::setControls -> Form "${this.formName}" doesn't have control with name^="${key}" attribute.`, 'green');
         continue;
       }
 
-      let val, attrVal;
-      if (!!elem) {
-        attrVal = elem.getAttribute('name'); // seller.name
-        const keys = attrVal.split('.'); // ['seller', 'name']
-        const key1 = keys[0]; // seller
-        const key2 = keys[1]; // name
-        if (key1 && !key2) { val = obj[key1]; }
-        else if (key1 && key2) { val = obj[key1][key2]; }
+      for (const elem of elems) {
+        let val, attrVal;
+        if (!!elem) {
+          attrVal = elem.getAttribute('name'); // seller.name
+          const keys = attrVal.split('.'); // ['seller', 'name']
+          const key1 = keys[0]; // seller
+          const key2 = keys[1]; // name
+          if (key1 && !key2) { val = obj[key1]; }
+          else if (key1 && key2) { val = obj[key1][key2]; }
+        }
+
+        if (!!attrVal) { this.setControl(attrVal, val); }
+
+        if(this._debug().setControls) { console.log(`setControls:: obj-key:: ${key} , attrVal:: ${attrVal} , elem::`, elem); }
       }
 
-      if (!!attrVal) { this.setControl(attrVal, val); }
-
-      if(this._debug().setControl) { console.log(`setControls:: obj-key:: ${key} , attrVal:: ${attrVal} , elem::`, elem); }
     }
   }
 
