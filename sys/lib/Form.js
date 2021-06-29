@@ -101,7 +101,7 @@ class Form {
   getControl(key) {
     this._debug('getControl', '--------- getControl ------', 'green', '#A1F8DC');
     const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
-    if (!elems.length) { console.error(`Form "${this.formName}" doesn't have "${key}" control.`); }
+    if (!elems.length) { console.error(`Form "${this.formName}" doesn't have name="${key} control.`); }
 
     let val;
     const valArr = [];
@@ -161,8 +161,8 @@ class Form {
   delControl(key) {
     this._debug('delControl', '--------- delControl ------', 'green', '#A1F8DC');
     this._debug('delControl', key, 'green');
-    const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
-    if (!elems.length) { console.error(`Form "${this.formName}" doesn't have "${key}" control.`); }
+    const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name^="${key}"]`);
+    if (!elems.length) { console.error(`Form "${this.formName}" doesn't have name^="${key}" control.`); }
 
     for (const elem of elems) {
       if (elem.type === 'checkbox') {
