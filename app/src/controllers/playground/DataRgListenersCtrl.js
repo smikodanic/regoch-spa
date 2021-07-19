@@ -63,6 +63,13 @@ class DataRgListenersCtrl extends Controller {
     console.log('this.prods::', prods);
   }
 
+  runCLICK3 (str, num, bool, reg) {
+    console.log('str::', typeof str, str);
+    console.log('num::', typeof num, num);
+    console.log('bool::', typeof bool, bool);
+    console.log('reg::', typeof reg, reg, '--- reg.test("oglas")::', reg.test('oglas'));
+  }
+
 
   async callAPI() {
     const answer = await this.httpClient.askJSON('api.dex8.com');

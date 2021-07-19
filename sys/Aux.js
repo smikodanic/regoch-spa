@@ -165,7 +165,7 @@ class Aux {
         arg = arg.trim().replace(/\'|\"/g, '');
         if (arg === '$element') { arg = elem; }
         else if (arg === '$event') { arg = event; }
-        else if (/true|false/.test(arg)) { arg = JSON.parse(arg); } // boolean
+        else if (arg === 'true' || arg === 'false') { arg = JSON.parse(arg); } // boolean
         else if (/^-?\d+\.?\d*$/.test(arg)) { arg = +arg; } // number
         else if (/^\/.+\/i?g?$/.test(arg)) { // if regular expression, for example in replace(/Some/i, 'some')
           const mat = arg.match(/^\/(.+)\/(i?g?)$/);
