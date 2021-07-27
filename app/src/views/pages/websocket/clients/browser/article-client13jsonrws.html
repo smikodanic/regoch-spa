@@ -322,6 +322,24 @@ const wsocket = await client.connect();
         <br><b style="color:silver">msgBUF</b> - the message in buffer format (only in regoch-websocket-nodejs)
       </p>
     </li>
+    <li>
+      <b>on <i>('pong', msgSTR :string => { ... }) :void</i></b>
+      <p class="desc">When client received the oing message from the websocket server.
+        <br><b>msgSTR</b> - OPCODE 0xA PONG
+      </p>
+    </li>
+    <li>
+      <b>on <i>('ping', msgSTR :string => { ... }) :void</i></b>
+      <p class="desc">When client received the ping message from the websocket server.
+        <br><b>msgSTR</b> - OPCODE 0x9 PING
+      </p>
+    </li>
+    <li>
+      <b>on <i>('closed-by-server', msgSTR :string => { ... }) :void</i></b>
+      <p class="desc">When client is closed by the websocket server.
+        <br><b>msgSTR</b> - OPCODE 0x8 CLOSE
+      </p>
+    </li>
   </ul>
 </section>
 

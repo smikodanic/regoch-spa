@@ -8,7 +8,7 @@ class RouterCtrl extends Controller {
   }
 
 
-  async init(trx) {
+  async loader(trx) {
     this.setTitle('Regoch Router');
     this.setDescription('Regoch Router is fast router with no dependencies for NodeJS and browser environment. Minimalistic but very powerful library.');
     this.setKeywords('router, server side, client side, nodejs, browser, regoch');

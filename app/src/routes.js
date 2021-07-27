@@ -8,8 +8,10 @@ module.exports = [
   // docs
   ['when', '/', 'HomeCtrl'],
   ['when', '/single-page-app', 'SinglePageAppCtrl'],
-  ['when', '/websocket-server', 'WebsocketServerCtrl'],
-  ['when', '/websocket-clients', 'WebsocketClientsCtrl'],
+  ['when', '/websocket/server', 'WebsocketServerCtrl'],
+  ['when', '/websocket/clients', 'WebsocketClientsCtrl'],
+  ['when', '/websocket/clients/nodejs', 'WebsocketClientsNodejsCtrl'],
+  ['when', '/websocket/clients/browser', 'WebsocketClientsBrowserCtrl'],
   ['when', '/mobile-app', 'MobileAppCtrl'],
   ['when', '/database', 'DatabaseCtrl'],
   ['when', '/router', 'RouterCtrl'],

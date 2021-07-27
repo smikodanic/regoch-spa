@@ -13,6 +13,8 @@ const Rand = require('./lib/Rand');
 const HomeCtrl = require('./controllers/HomeCtrl');
 const WebsocketServerCtrl = require('./controllers/WebsocketServerCtrl');
 const WebsocketClientsCtrl = require('./controllers/WebsocketClientsCtrl');
+const WebsocketClientsNodejsCtrl = require('./controllers/WebsocketClientsNodejsCtrl');
+const WebsocketClientsBrowserCtrl = require('./controllers/WebsocketClientsBrowserCtrl');
 const SinglePageAppCtrl = require('./controllers/SinglePageAppCtrl');
 const MobileAppCtrl = require('./controllers/MobileAppCtrl');
 const DatabaseCtrl = require('./controllers/DatabaseCtrl');
@@ -63,6 +65,8 @@ app
     HomeCtrl,
     WebsocketServerCtrl,
     WebsocketClientsCtrl,
+    WebsocketClientsNodejsCtrl,
+    WebsocketClientsBrowserCtrl,
     SinglePageAppCtrl,
     MobileAppCtrl,
     DatabaseCtrl,
