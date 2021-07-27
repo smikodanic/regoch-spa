@@ -23,6 +23,11 @@ class MobileAppCtrl extends Controller {
     this.loadInc();
   }
 
+  async rend() {
+    this.showButtonBars = true;
+    await this.rgIf('showButtonBars');
+  }
+
 
   async postrend(trx) {
     await syslib.util.sleep(1300);

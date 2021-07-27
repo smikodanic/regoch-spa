@@ -6,16 +6,17 @@ table {
   font: 12px Verdana;
 }
 
-.docs-header > h1 {
-  color:Navy;
+.docs-header>h1 {
+  color: Navy;
 }
 
-ul.methods > li {
-  & > b {
+ul.methods>li {
+  &>b {
     color: #6da6f5;
     font-size: larger;
-    & > i {
-      font-size:smaller;
+
+    &>i {
+      font-size: smaller;
       color: #A4C4F2;
     }
   }

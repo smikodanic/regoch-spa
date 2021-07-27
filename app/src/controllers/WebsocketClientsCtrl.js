@@ -17,6 +17,11 @@ class WebsocketClientsCtrl extends Controller {
     await this.rgLazyjs();
   }
 
+  async rend() {
+    this.showButtonBars = false;
+    await this.rgIf('showButtonBars');
+  }
+
 
   destroy(elem, event) {
     this.unlazyJS();

@@ -21,6 +21,11 @@ class ContactCtrl extends Controller {
     this.loadInc();
   }
 
+  async rend() {
+    this.showButtonBars = false;
+    await this.rgIf('showButtonBars');
+  }
+
 
 }
 

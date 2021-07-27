@@ -25,6 +25,11 @@ class RouterCtrl extends Controller {
     this.loadInc();
   }
 
+  async rend() {
+    this.showButtonBars = true;
+    await this.rgIf('showButtonBars');
+  }
+
   async postrend(trx) {
     await syslib.util.sleep(1300);
     this.lazyJS([
