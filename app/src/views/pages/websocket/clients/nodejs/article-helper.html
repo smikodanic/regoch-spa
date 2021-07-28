@@ -1,37 +1,32 @@
 <header class="docs-header">
   <h1 class="docs-heading">helper</h1>
   <section class="docs-intro">
-    <i>instance of the class Helper</i>
-    <p>The auxilary helper methods.</p>
+    The part of the "regoch-websocket" package is the <b>lib</b> library.
+    It's consisted of:
+    subprotocol,
+    raw,
+    jsonRWS,
+    websocket13,
+    helper,
+    getMessageSize,
+    getMessageSizeFromBlob,
+    StringExt
+
+    <br>The most important is helper and getMessageSize.
   </section>
 </header>
 
 
 <section class="docs-section" id="item-4-1">
-  <h2 class="section-heading">Properties</h2>
-  <i>No class properties.</i>
+  <h2 class="section-heading">How to use</h2>
+  <pre><code class="language-js">
+const { RWClientNodejs, lib } = require('regoch-websocket');
+const helper = lib.helper;
+
+helper.sleep(1300);
+const bytes = lib.getMessageSize('AČ'); // gives 3 because Č is two bytes
+      </code></pre>
 </section>
 
 
-
- <section class="docs-section" id="item-4-2">
-  <h2 class="section-heading">Methods</h2>
-  <p>Use this methods as additional helpers.</p>
-	<ul class="methods">
-    <li>
-      <b>generateID <i>() :number</i></b>
-      <p class="desc">Create unique id. It's combination of timestamp and random number 'r'in format:
-        <br>YYMMDDHHmmssSSSrrr &rarr; YY year, MM month, DD day, HH hour, mm min, ss sec, SSS ms, rrr 3 random digits
-        <br>18 digits in total, for example: 210129163129492100</p>
-    </li>
-    <li>
-      <b>getMessageSize <i>(msg :string) :number</i></b>
-      <p class="desc">Get message size in bytes.For example: A -> 1 , Š -> 2 , ABC -> 3</p>
-    </li>
-    <li>
-      <i>async</i><b> sleep <i>(ms :number) :void</i></b>
-      <p class="desc">Pause the code execution in miliseconds.</p>
-    </li>
-  </ul>
-</section>
 
