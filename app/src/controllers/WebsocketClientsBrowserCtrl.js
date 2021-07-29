@@ -20,10 +20,9 @@ class WebsocketClientsBrowserCtrl extends Controller {
     this.loadViews([
       ['#sidebar', 'pages/websocket/clients/browser/sidebar.html'],
       ['#article-introduction', 'pages/websocket/clients/browser/article-introduction.html'],
-      ['#article-client13jsonrws', 'pages/websocket/clients/browser/article-client13jsonrws.html'],
-      ['#article-router', 'pages/websocket/clients/browser/article-router.html'],
+      ['#article-rwclientbrowser', 'pages/websocket/clients/browser/article-rwclientbrowser.html'],
       ['#article-helper', 'pages/websocket/clients/browser/article-helper.html'],
-      ['#article-stringext', 'pages/websocket/clients/browser/article-stringext.html'],
+      ['#article-router', 'pages/websocket/clients/nodejs/article-router.html']
     ], true);
     this.loadInc();
 
