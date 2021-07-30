@@ -21,12 +21,12 @@
 
     <li>
       <b>constructor <i>() :void</i></b>
-      <p class="desc">Create the StringExt class instance. <u>No need to use because it's already instantiated in the RWS class.</u>
+      <p class="desc">Create the StringExt class instance. <u>No need to instantiate because it's already instantiated in the RWServer class.</u>
       <pre><code class="language-js">
-const { StringExt } = require('regoch-websocket-server');
-new StringExt();
+const { lib } = require('regoch-websocket');
+new lib.StringExt();
 
-console.log('some tekst'.cliBoja('red', 'italic')); // prints red text
+console.log('some tekst'.cliBoja('red', 'italic')); // prints red, italic text
 });
       </code></pre>
       </p>

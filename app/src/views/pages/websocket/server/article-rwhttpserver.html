@@ -1,7 +1,6 @@
 <header class="docs-header">
-  <h1 class="docs-heading">RWSHttpServer</h1>
+  <h1 class="docs-heading"><i style="font-size:15px">class</i> RWHttpServer</h1>
   <section class="docs-intro">
-    <i>class RWSHttpServer</i>
     <p>The internal HTTP server. Simple creates a HTTP server instance on which websocket server will be attached.</p>
   </section>
 </header>
@@ -43,16 +42,16 @@
       <b>constructor <i>(httpOpts :object) :void</i></b>
       <p class="desc">Create the RWSHttpServer class instance.
       <pre><code class="language-js">
-const { RWSHttpServer } = require('regoch-websocket-server');
+const { RWHttpServer } = require('regoch-websocket');
 const httpOpts = {
   port: 3211,
   timeout: 0 // if 0 the socket connection will never timeout
 };
-const rwsHttpServer = new RWSHttpServer(httpOpts);
-const httpServer = rwsHttpServer.start(); // nodeJS HTTP server instance
+const rwHttpServer = new RWHttpServer(httpOpts);
+const httpServer = rwHttpServer.start(); // nodeJS HTTP server instance
 setTimeout(() => {
-  rwsHttpServer.restart();
-  // rwsHttpServer.stop();
+  rwHttpServer.restart();
+  // rwHttpServer.stop();
 }, 3400);
       </code></pre>
       </p>

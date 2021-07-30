@@ -154,9 +154,9 @@
   <h2 class="section-heading">Example</h2>
   <p>This class is instantiated in the RWS class so no need to use <b>new DataTransfer()</b>.</p>
   <pre><code class="language-js">
-const { RWS } = require('regoch-websocket-server');
+const { RWServer } = require('regoch-websocket');
 
-const rws = new RWS(wsOpts);
+const rws = new RWServer(wsOpts);
 rws.socketStorage.init(null);
 rws.bootup(httpServer);
 

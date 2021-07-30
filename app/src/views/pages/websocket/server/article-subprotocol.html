@@ -2,11 +2,12 @@
   <h1 class="docs-heading">subprotocol</h1>
   <section class="docs-intro">
     <p>The subprotocol is the "languge" which client and server must speak to understand each other.
-    It defines the format of the sent message when it's sent by the client:
+    It defines the format of the sent message when it's sent.
+    Currently the Regoch Websocket Server supports:
     <br><b>jsonRWS</b> subprotocol &rarr; {id:number, from:number, to:number, cmd:string, payload:any}
     <br><b>raw</b> subprotocol &rarr; msg:string
     </p>
-    <p>When using 'Router' the jsonRWS subprotocol have to be implemented.</p>
+    <p>When using 'Regoch-Router' the "jsonRWS" subprotocol have to be implemented.</p>
   </section>
 </header>
 
@@ -20,7 +21,13 @@
 
  <section class="docs-section" id="item-11-2">
   <h2 class="section-heading">Methods</h2>
-  <p>When creating a new subprotocol all methods must be defined and included in the class. This is like an interface.</p>
+  <p>
+    When creating a new subprotocol all methods must be defined and included in the class. This is like an interface.
+    <br><small>Examples:
+      <a href="https://github.com/smikodanic/regoch-websocket/blob/master/lib/subprotocol/jsonRWS.js" target="_blank">jsonRWS.js</a> ,
+      <a href="https://github.com/smikodanic/regoch-websocket/blob/master/lib/subprotocol/raw.js" target="_blank">raw.js</a>
+    </small>
+  </p>
   <ul class="methods">
     <li>
       <b>incoming <i>(msgSTR :string) :any</i></b>
@@ -64,12 +71,12 @@ const wsOpts = {
   maxConns: 5,
   maxIPConns: 3,
   storage: 'memory',
-  subprotocol: 'jsonRWS',
+  subprotocol: 'jsonRWS', // subprotocol supported by the server
   tightening: 100,
   version: 13,
   debug: false
 };
-const rws = new RWS(wsOpts);
+const rws = new RWServer(wsOpts);
 rws.socketStorage.init(null);
 rws.bootup(httpServer);
 
@@ -92,7 +99,7 @@ const wcOpts = {
   timeout: 3*1000, // wait 3secs for answer
   reconnectAttempts: 5, // try to reconnect 5 times
   reconnectDelay: 3000, // delay between reconnections is 3 seconds
-  subprotocols: ['jsonRWS'],
+  subprotocols: ['jsonRWS'], // tells server which subprotocols can the client handle
   debug: true
 };
 
@@ -102,7 +109,7 @@ const testCB = new TestClient(wcOpts);
 
 <br><br>
 1) Both client and server must support same subprotocol, otherwise the error on the server side will be thrown:
-<br><i style="color:red">Error: None of the requested subprotocols "xyz" is supported by the server.</i>
-<br>2) If <b>raw</b> subprotocol is used then regoch websocket server can not use Router.
+<br><i style="color:red">Error: None of the requested subprotocols "XYZ" is supported by the server.</i>
+<br>2) If <b>raw</b> subprotocol is used then Regoch Websocket Server can not use the Regoch Router.
 </section>
 

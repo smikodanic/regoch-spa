@@ -29,14 +29,20 @@
       <p class="desc">Gives now time in nice format -> Friday, 1/29/2021, 16:31:29.801.</p>
     </li>
     <li>
-      <i>async</i><b> sleep <i>(ms :number) :void</i></b>
+      <i>async</i><b> sleep <i>(ms :number) :Promise&lt;void&gt;</i></b>
       <p class="desc">Pause the code execution in miliseconds.</p>
     </li>
     <li>
       <b>printBuffer <i>(buff :Buffer) :void</i></b>
       <p class="desc">Print all buffer values as string. For example: 81 7e 00 8b 7b 22 69 64 22 3a 32 31 30 32 31 34 31 30. Useful to debug the buffer messages.</p>
     </li>
-
+    <li>
+      <b>tableOfBytes <i>(buff :Buffer, perRow :number) :string</i></b>
+      <p class="desc">Print buffer in nice table of bytes. The method returns string with bytes.
+        <br><b>buff</b> - buffer (hex numbers, bytes)
+        <br><b>perRow</b> - how many bytes printed per row (per line)
+      </p>
+    </li>
   </ul>
 </section>
 

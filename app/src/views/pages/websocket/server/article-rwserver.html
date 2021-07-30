@@ -1,8 +1,7 @@
 <header class="docs-header">
-  <h1 class="docs-heading">RWS</h1>
+  <h1 class="docs-heading"><i style="font-size:15px">class</i> RWServer</h1>
   <section class="docs-intro">
-    <i>class RWS</i>
-    <p>The most important class which defines methods to start the websocket server and listen events.</p>
+    <p>The most important class which defines methods to start the websocket server and listen the events.</p>
   </section>
 </header>
 
@@ -59,6 +58,12 @@
       <td>5*60*1000</td>
     </tr>
     <tr>
+      <td>allowHalfOpen</td>
+      <td>If false close socket if it's readyState is writeOnly or readOnly, <br>for example when NginX timeout socket on the client side <small>[Client -X- NginX --- WSServer(NodeJS)]</small></td>
+      <td>boolean</td>
+      <td>false</td>
+    </tr>
+    <tr>
       <td>maxConns</td>
       <td>Limit connections to the server</td>
       <td>number</td>
@@ -66,37 +71,37 @@
     </tr>
     <tr>
       <td>maxIPConns</td>
-      <td>limit connections from the same IP address. If 0 then infinite.</td>
+      <td>Limit connections from the same IP address. If 0 then infinite.</td>
       <td>number</td>
       <td>1</td>
     </tr>
     <tr>
       <td>storage</td>
-      <td>socket storage type: memory, redis, mongodb, ...</td>
+      <td>Socket storage type: memory, redis, mongodb, ...</td>
       <td>string</td>
       <td>memory</td>
     </tr>
     <tr>
       <td>subprotocol</td>
-      <td>protocol used internally in the server and client: jsonRWS, raw</td>
+      <td>Protocol used internally in the server and client: jsonRWS, raw</td>
       <td>string</td>
       <td>jsonRWS</td>
     </tr>
     <tr>
       <td>tightening</td>
-      <td>delays in the server process execution (miliseconds)</td>
+      <td>Delays in the server process execution (miliseconds)</td>
       <td>number</td>
       <td>400</td>
     </tr>
     <tr>
       <td>version</td>
-      <td>websocket version</td>
+      <td>Websocket version</td>
       <td>number</td>
       <td>13</td>
     </tr>
     <tr>
       <td>debug</td>
-      <td>debug incoming and outgoing messages</td>
+      <td>Debug incoming and outgoing messages</td>
       <td>boolean</td>
       <td>false</td>
     </tr>
@@ -113,7 +118,7 @@
       <b>constructor <i>(wsOpts :object) :void</i></b>
       <p class="desc">Create the RWS class instance.
       <pre><code class="language-js">
-const { RWS } = require('regoch-websocket-server');
+const { RWServer } = require('regoch-websocket');
 const wsOpts = {
   timeout: 5*60*1000, // close the socket if the client didn't send any message in this period of miliseconds
   maxConns: 5,
@@ -124,7 +129,7 @@ const wsOpts = {
   version: 13,
   debug: false
 };
-const rws = new RWS(wsOpts);
+const rws = new RWServer(wsOpts);
       </code></pre>
       </p>
     </li>
@@ -146,6 +151,13 @@ const rws = new RWS(wsOpts);
 
  <section class="docs-section" id="item-3-3">
   <h2 class="section-heading">Events</h2>
+  There are several events used in the client:
+  <ol>
+    <li><b>connection</b> - emitted when the client is succesfuly connected to the server</li>
+    <li><b>message</b> - emitted when client sent the valid message (valid means validated by the subprotocol)</li>
+    <li><b>route</b> - emitted when client sent the message with <i>cmd: 'route'</i> from the server. This is used to separate the route messages (messages useful for regoch-router) from other ordinary messages./li>
+  </ol>
+
 	<ul class="methods">
     <li>
       <b>on <i>('connection', (socket :Socket) => { ... }) :void</i></b>

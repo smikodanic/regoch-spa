@@ -2,9 +2,9 @@
   <h1 class="docs-heading">Introduction</h1>
   <section class="docs-intro">
     <p>
-      Ultra fast Websocket Server with builtin JS framework for creating real-time, complex apps.
+      Ultra fast Websocket Server with rich API for creating real-time, complex applications.
       <br>The library is made for NodeJS and according to <a href="https://tools.ietf.org/html/rfc6455" target="_blank">RFC6455 Standard</a> for websocket version 13.
-      <br><i>Very clean code with straightforward logic and no dependencies.</i>
+      <br><i>Very clean code with straightforward logic and no npm dependencies.</i>
     </p>
   </section>
 </header>
@@ -14,14 +14,15 @@
   <ul>
     <li>RFC6455, websocket v.13</li>
     <li>NodeJS v10+</li>
-    <li><b>no dependencies</b></li>
+    <li><b>no npm dependencies</b></li>
     <li>internal HTTP server</li>
     <li>socket (client) authentication</li>
     <li>limit total number of the connected clients</li>
     <li>limit the number of connected clients per IP</li>
     <li>rooms (grouped websocket clients)</li>
-    <li>built-in router</li>
-    <li>possible RxJS integration</li>
+    <li>ping &amp; pong supported</li>
+    <li>Regoch-Router integration (build complex, real-time API)</li>
+    <li>easy RxJS integration</li>
   </ul>
 </section>
 
@@ -29,7 +30,7 @@
   <h2 class="section-heading">Installation</h2>
   <p>Install the server in your project via npm:</p>
 	<pre><code class="language-bash">
-  $ npm install --save regoch-websocket-server
+  $ npm install --save regoch-websocket
   </code></pre>
 
   <br><br>
@@ -37,7 +38,7 @@
   <p>When developing the Regoch WS Server start the server with the command:</p>
 	<pre><code class="language-bash">
   ## start the test server
-  $ nodemon examples/001internal.js
+  $ nodemon examples/server/000dev.js
   </code></pre>
 </section>
 
@@ -45,19 +46,37 @@
   <h2 class="section-heading">Exports</h2>
   <p>When npm is used there are several exported classes and libraries:</p>
 	<pre><code class="language-javascript">
-  const { RWS, RWSHttpServer, Router, StringExt, helper } = require('regoch-websocket-server');
+  const { RWServer, RWHttpServer, lib } = require('regoch-websocket');
+
+  /*
+    lib
+    -------
+    {
+      subprotocol,
+      raw,
+      jsonRWS,
+      websocket13,
+      helper,
+      getMessageSize,
+      getMessageSizeFromBlob,
+      StringExt
+    }
+
+   */
   </code></pre>
-  Every exported class/lib is explained below.
 </section>
 
 <section class="docs-section" id="item-1-4">
   <h2 class="section-heading">Quick Start</h2>
-
+  A short example which shows the power of the Regoch Websocket Server.
 <pre><code class="language-javascript">
 /**
  * An example with the built-in HTTP server.
  */
-const { RWS, RWSHttpServer, Router, helper } = require('regoch-websocket-server');
+const { RWServer, RWHttpServer, lib } = require('regoch-websocket');
+const helper = lib.helper;
+
+const Router = require('regoch-router');
 const router = new Router({debug: false});
 
 
@@ -66,8 +85,8 @@ const httpOpts = {
   port: 3211,
   timeout: 0 // if 0 the socket connection will never timeout
 };
-const rwsHttpServer = new RWSHttpServer(httpOpts);
-const httpServer = rwsHttpServer.start(); // nodeJS HTTP server instance
+const rwHttpServer = new RWHttpServer(httpOpts);
+const httpServer = rwHttpServer.start(); // nodeJS HTTP server instance
 setTimeout(() => {
   // rwsHttpServer.restart();
   // rwsHttpServer.stop();
@@ -86,9 +105,10 @@ const wsOpts = {
   version: 13,
   debug: false
 };
-const rws = new RWS(wsOpts);
-rws.socketStorage.init(null); // init the storage defined in the wsOpts.storage
-rws.bootup(httpServer); // start the websocket server on the top of the HTTP server
+const rws = new RWServer(wsOpts);
+rws.socketStorage.init(null);
+rws.bootup(httpServer);
+
 
 
 /*** socket stream ***/
@@ -103,19 +123,27 @@ rws.on('connection', async socket => {
   const authkey = 'TRTmrt'; // can be fetched from the database, usually 'users' table
   socket.extension.authenticate(authkey); // authenticate the socket: compare authkey with the sent authkey in the client request URL ws://localhost:3211/something?authkey=TRTmrt
 
+  helper.sleep(1300);
 
   /* socketStorage test */
-  // await helper.sleep(5500);
+  // await new Promise(resolve => setTimeout(resolve, 5500));
   // const socketFound = rws.socketStorage.findOne({ip: '::1'});
   // if (!!socketFound && socketFound.extension) console.log('found socket.extension::', socketFound.extension);
 
 });
 
 
-/*** all messages stream ***/
-rws.on('message', async (msg, msgSTR, msgBUF, socket) => {
-  console.log('\nmessageStream::', msg);
+
+
+/*** message stream ***/
+rws.on('message', (msg, msgSTR, msgBUF, socket) => {
+  // console.log('\nreceived message SUBPROTOCOL::', msg); // after subprotocol
+  console.log('\nreceived message STRING::', msgSTR); // after DataParser
+  // console.log('\nreceived message BUFFER::', msgBUF); // incoming buffer
+  // console.log('\nsocketID', socket.extension.id);
+  // rws.dataTransfer.sendOne(msg, socket); // return message back to the sender
 });
+
 
 
 /*** route stream ***/
@@ -132,15 +160,16 @@ rws.on('route', (msgObj, socket, dataTransfer, socketStorage, eventEmitter) => {
     dataTransfer: rws.dataTransfer
   };
 
+
   // route definitions
   router.def('/shop/login', (trx) => { console.log('trx::', trx.uri); });
-  router.def('/shop/product/:id', (trx) => { console.log('trx::', trx.uri); });
+  router.def('/shop/product/:id', (trx) => { console.log('trx.uri::', trx.uri, '\ntrx.query::', trx.query, '\ntrx.params::', trx.params); });
   router.def('/send/me/back', (trx) => {
     const id = trx.msgObj.id;
     const from = 0;
     const to = trx.msgObj.from;
     const cmd = 'route';
-    const payload = {uri: '/returned/back/21', body: {x: 'something', y:28}};
+    const payload = {uri: '/returned/back/21', body: {x: 'something', y: 28}};
     const msg = {id, from, to, cmd, payload};
     rws.dataTransfer.sendOne(msg, trx.socket);
   }); // send new route back to the client

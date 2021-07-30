@@ -13,8 +13,8 @@
   Masking bytes always have 4 bytes length. If the message is sent from the server to client there's no masking bytes and the <b>mask = 0</b>.
   <br>2) The payload length in the second byte is the most important for defining payload data length.
   <br>- if the <b>payload length defined in the second byte is <i style="color:maroon">&lt;126</i></b> then there's no extension to define payload length
-  <br>- if the <b>payload length defined in the second byte is <i style="color:maroon">=126 =0b1111110</i></b> then there are 2 bytes (16 bits) extension to define payload length
-  <br>- if the <b>payload length defined in the second byte is <i style="color:maroon">=127 =0b1111110</i></b> then there are 8 bytes (64 bits) extension to define payload length
+  <br>- if the <b>payload length defined in the second byte is <i style="color:maroon">=126&nbsp;&nbsp; =0b1111110&nbsp;&nbsp; =0x7E</i></b> then there are 2 bytes (16 bits) extension to define payload length
+  <br>- if the <b>payload length defined in the second byte is <i style="color:maroon">=127&nbsp;&nbsp; =0b1111111&nbsp;&nbsp; =0x7F</i></b> then there are 8 bytes (64 bits) extension to define payload length
 
   <br><br>
   <h2 class="section-heading">&middot; Sending messages from client to server</h2>

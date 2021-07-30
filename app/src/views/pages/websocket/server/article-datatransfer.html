@@ -51,34 +51,34 @@
   <p>Use this methods to send messages from the websocket server to one or more clients or to a room.</p>
 	<ul class="methods">
     <li>
-      <i>async</i> <b>sendOne <i>(msg :any, socket :Socket) :void</i></b>
+      <i>async</i> <b>sendOne <i>(msg :any, socket :Socket) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message to one client (socket).
         <br><b>msg</b> - message which will be sent to the client
         <br><b>socket</b> - the client receiver
       </p>
     </li>
     <li>
-      <i>async</i> <b>send <i>(msg :any, sockets :Socket[]) :void</i></b>
+      <i>async</i> <b>send <i>(msg :any, sockets :Socket[]) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message to one or more clients (sockets).
         <br><b>msg</b> - message which will be sent to the client(s)
         <br><b>sockets</b> - array of the clients receivers
       </p>
     </li>
     <li>
-      <i>async</i> <b>broadcast <i>(msg :any, socketSender :Socket) :void</i></b>
+      <i>async</i> <b>broadcast <i>(msg :any, socketSender :Socket) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message to all clients excluding the client who sent the message.
         <br><b>msg</b> - message which will be sent to the clients
         <br><b>socketSender</b> - the client sender (prevent sending message back to the sender)
       </p>
     </li>
     <li>
-      <i>async</i> <b>sendAll <i>(msg :any) :void</i></b>
+      <i>async</i> <b>sendAll <i>(msg :any) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message to all clients including the client who sent the message.
         <br><b>msg</b> - message which will be sent to the clients
       </p>
     </li>
     <li>
-      <i>async</i> <b>sendRoom <i>(msg :any, socketSender :Socket, roomName :string) :void</i></b>
+      <i>async</i> <b>sendRoom <i>(msg :any, socketSender :Socket, roomName :string) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send message to all clients in the specific room excluding the client who sent the message.
         <br><b>msg</b> - message which will be sent to the clients
         <br><b>socketSender</b> - client which is sending message
@@ -86,14 +86,14 @@
       </p>
     </li>
     <li>
-      <b>sendError <i>(err :Error, socket :Socket) :void</i></b>
+      <i>async</i> <b>sendError <i>(err :Error, socket :Socket) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send error message to one client (socket) in format <small>{id, from, to, cmd, payload}</small>, where payload is the error.message.
         <br><b>err</b> - the error object
         <br><b>socket</b> - client receiver
       </p>
     </li>
     <li>
-      <b>sendID <i>(socket :Socket) :void</i></b>
+      <i>async</i> <b>sendID <i>(socket :Socket) :Promise&lt;void&gt;</i></b>
       <p class="desc">Send socket ID back to the client.
         <br><b>socket</b> - client receiver
       </p>
@@ -136,11 +136,11 @@ await rws.dataTransfer.sendOne(msg3, socket);
 
 <section class="docs-section" id="item-8-4">
   <h2 class="section-heading">Example</h2>
-  <p>This class is instantiated in the RWS class so no need to use <b>new DataTransfer()</b>.</p>
+  <p>This class is instantiated in the RWServer class so no need to use <b>new DataTransfer()</b>.</p>
   <pre><code class="language-js">
-const { RWS } = require('regoch-websocket-server');
+const { RWServer } = require('regoch-websocket');
 
-const rws = new RWS(wsOpts);
+const rws = new RWServer(wsOpts);
 rws.socketStorage.init(null);
 rws.bootup(httpServer);
 
