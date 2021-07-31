@@ -41,12 +41,11 @@ class SinglePageAppCtrl extends Controller {
     this.loadInc();
   }
 
-  async rend() {
-    this.showButtonBars = true;
-    await this.rgIf('showButtonBars');
-  }
 
   async postrend(trx) {
+    this.showButtonBars = true;
+    await this.rgIf('showButtonBars');
+
     await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',

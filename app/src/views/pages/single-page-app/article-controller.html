@@ -80,7 +80,7 @@
     <h4>LifeCycle Hook Methods</h4>
     <p>
       In the controller processing the developer can use 5 lifecycle hooks: loader(), init(), rend(), postrend() and destroy().
-      The preflight if defined withAPP::preflight() will be executed on every route.
+      The preflight if defined with app.preflight() will be executed on every route.
       <br><b style="color:orangered">PREFLIGHT</b><b style="color:orange">&rarr; LOADER &rarr; INIT &rarr; REND &rarr; POSTREND &rarr; DESTROY</b>
     </p>
 
@@ -94,9 +94,9 @@
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>
-      <i>async</i> <b>rend <i>(trx :object) :Promise&lt;void&gt;</i></b>
+      <i>async</i> <b style="color:Gray">rend <i>(trx :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">Render all elements with the "data-rg-..." attribute i.e. DataRg and DataRgListeners.
-      If this method is omitted then default render() will be executed.
+      If this method is omitted then default render() will be executed. Recommended not to use this method until you exactly know what you are doing.
       <br><b>trx</b> - regoch router transitional variable (carrier)</p>
     </li>
     <li>

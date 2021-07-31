@@ -17,7 +17,7 @@ class WebsocketClientsCtrl extends Controller {
     await this.rgLazyjs();
   }
 
-  async rend() {
+  async postrend() {
     this.showButtonBars = false;
     await this.rgIf('showButtonBars');
   }

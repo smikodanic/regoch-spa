@@ -28,12 +28,10 @@ class WebsocketClientsBrowserCtrl extends Controller {
 
   }
 
-  async rend() {
+  async postrend(trx) {
     this.showButtonBars = true;
     await this.rgIf('showButtonBars');
-  }
 
-  async postrend(trx) {
     await syslib.util.sleep(1300);
     this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js',

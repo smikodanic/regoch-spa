@@ -25,7 +25,7 @@ module.exports = class HomeCtrl extends Controller {
   }
 
 
-  async rend() {
+  async postrend() {
     this.showButtonBars = false;
     await this.rgIf('showButtonBars');
   }

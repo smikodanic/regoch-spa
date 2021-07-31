@@ -21,7 +21,7 @@ class ContactCtrl extends Controller {
     this.loadInc();
   }
 
-  async rend() {
+  async postrend() {
     this.showButtonBars = false;
     await this.rgIf('showButtonBars');
   }
