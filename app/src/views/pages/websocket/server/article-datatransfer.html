@@ -87,7 +87,7 @@
     </li>
     <li>
       <i>async</i> <b>sendError <i>(err :Error, socket :Socket) :Promise&lt;void&gt;</i></b>
-      <p class="desc">Send error message to one client (socket) in format <small>{id, from, to, cmd, payload}</small>, where payload is the error.message.
+      <p class="desc">Send error message to one client (socket) in format <small>{id, from, to, cmd, payload}</small>, where payload is the <b>error.message</b> and <b>cmd:'error'</b>.
         <br><b>err</b> - the error object
         <br><b>socket</b> - client receiver
       </p>

@@ -110,7 +110,7 @@
   <h2 class="section-heading">Methods</h2>
   <p>Use this methods to connect the NodeJS websocket client to the websocket server and to send the messages from the client to server and the other clients.</p>
 	<ul class="methods">
-    
+
     <li>
       <b>constructor <i>(wcOpts :object) :void</i></b>
       <p class="desc">Create the Client13jsonRWS class instance.
@@ -135,7 +135,7 @@ const wsocket = await client.connect();
     Connect/disconnect/reconnect the websocket client (application) to websocket server.
     <li>
       <b>connect <i>() :Promise&lt;Socket&gt;</i></b>
-      <p class="desc">Connect to the websocket server via wsURL. Returned value is the promise with the resolved 
+      <p class="desc">Connect to the websocket server via wsURL. Returned value is the promise with the resolved
         <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">TCP Socket object</a>.
         <br><small>Example: <a href="https://github.com/smikodanic/regoch-websocket/blob/master/examples/clientNodejs/001connect.js" target="_blank">001connect.js</a></small>
       </p>
@@ -166,7 +166,7 @@ const wsocket = await client.connect();
     <li>
       <b style="color:Silver">onMessage <i>() :void</i></b>
       <p class="desc">Receive the message as buffer and convert it in the appropriate subprotocol format.
-        Dispatch it as 'route', 'question', 'message', 'message-error' event to the eventEmitter.
+        Dispatch it as 'route', 'question', 'message', 'message-error' or 'error' event to the eventEmitter.
         <br><i>This method is used internally and it's not recommended to use in your app. Use <b>on()</b> listeners instead.</i>
       </p>
     </li>
@@ -330,14 +330,14 @@ const wsocket = await client.connect();
     <li>
       <b>on <i>(eventName :string, listener :Function) :void</i></b>
       <p class="desc">Listen eventName and execute listener on every event.
-        <br><b>eventName</b> event name: <span style="color:brown"></span>'connected', 'closed-by-server', 'ping', 'pong', 'message', 'message-error', 'question', 'route'
+        <br><b>eventName</b> event name: <span style="color:brown"></span>'connected', 'closed-by-server', 'ping', 'pong', 'message', 'message-error', 'question', 'route', 'error'
         <br><b>listener</b> the callback function
       </p>
     </li>
     <li>
       <b>once <i>(eventName :string, listener :Function) :void</i></b>
       <p class="desc">Listen eventName and execute the listener only once.
-        <br><b>eventName</b> event name: 'connected', 'closed-by-server', 'ping', 'pong', 'message', 'message-error', 'question', 'route'
+        <br><b>eventName</b> event name: 'connected', 'closed-by-server', 'ping', 'pong', 'message', 'message-error', 'question', 'route', 'error'
         <br><b>listener</b> the callback function
       </p>
     </li>
@@ -345,7 +345,7 @@ const wsocket = await client.connect();
       <b>off <i>(eventName :string, listener :Function) :void</i></b>
       <p class="desc">Remove the event listener.
         <br><i>Notice: The listener must be the same function as used in the on().</i>
-        <br><b>eventName</b> event name: 'connected', 'message', 'route'
+        <br><b>eventName</b> event name: 'connected', 'message', 'route', 'error'
         <br><b>listener</b> the callback function
       </p>
     </li>
@@ -365,6 +365,7 @@ const wsocket = await client.connect();
     <li><b>message-error</b> - emitted when client received the invalid message (invalid means if the message doesn't conform the subprotocol rules)</li>
     <li><b>route</b> - emitted when client received the message with <i>cmd: 'route'</i> from the server. This is used to separate the route messages (messages useful for regoch-router) from other ordinary messages./li>
     <li><b>question</b> - emitted when client received the message with <i>cmd: 'question/...'</i> from the server. This message is the response to the sent question.</li>
+    <li><b>error</b> - emitted when client received the message with <i>cmd: 'error'</i> from the server. This is the case when some error haeppend on the server side and server wants to announce the client. (see Datatransfer::sendError())</li>
   </ol>
 
 	<h4>How to use listeners</h4>
@@ -372,7 +373,7 @@ const wsocket = await client.connect();
     <li>
       <b>on <i>('connected', (socket: Socket) => { ... }) :void</i></b>
       <p class="desc">When client is connected to the websocket server.
-        <br><b>socket</b> - TCP Socket object <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">https://nodejs.org/api/net.html#net_class_net_socket</a> 
+        <br><b>socket</b> - TCP Socket object <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">https://nodejs.org/api/net.html#net_class_net_socket</a>
       </p>
     </li>
     <li>
@@ -419,6 +420,14 @@ const wsocket = await client.connect();
     <li>
       <b>once <i>('question', (msg :any, msgSTR :string) => { ... }) :void</i></b>
       <p class="desc">Used internally to get the answer. Not recommended to use in the app.</p>
+    </li>
+    <li>
+      <b>on <i>('error', (msg :any, msgSTR :string, msgBUF :Buffer) => { ... }) :void</i></b>
+      <p class="desc">When error haeppend on the server-side and it's sent to the client.
+        <br><b>msg</b> - the message after subprotocol is applied (jsonRWS)
+        <br><b>msgSTR</b> - the message converted from buffer to string
+        <br><b>msgBUF</b> - the message in buffer format (raw bytes)
+      </p>
     </li>
   </ul>
 </section>

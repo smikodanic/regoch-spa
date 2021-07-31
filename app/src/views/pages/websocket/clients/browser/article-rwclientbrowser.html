@@ -122,12 +122,12 @@ const wsocket = await client.connect();
       </code></pre>
       </p>
     </li>
-    
+
     <br><br>
     <h4>Connectors</h4>
     <li>
       <b>connect <i>() :Promise&lt;WebSocket&gt;</i></b>
-      <p class="desc">Connect to the websocket server via wsURL. Returned value is the promise with the resolved 
+      <p class="desc">Connect to the websocket server via wsURL. Returned value is the promise with the resolved
         <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket" target="_blank">WebSocket</a>.
       </p>
     </li>
@@ -149,7 +149,7 @@ const wsocket = await client.connect();
     <li>
       <b style="color:Silver">onMessage <i>() :void</i></b>
       <p class="desc">Receive the message as string and convert it in the appropriate subprotocol format.
-        Dispatch it as 'route', 'question', 'message', 'message-error' event to the eventEmitter.
+        Dispatch it as 'route', 'question', 'message', 'message-error' or 'error' event to the eventEmitter.
         <br><i>This method is used internally and it's not recommended to use in your app. Use <b>on()</b> listeners instead.</i>
       </p>
     </li>
@@ -305,6 +305,7 @@ const wsocket = await client.connect();
     <li><b>question</b> - emitted when client received the message with <i>cmd: 'question/...'</i> from the server. This message is the response to the sent question.</li>
     <li><b>route</b> - emitted when client received the message with <i>cmd: 'route'</i> from the server. This is used to separate the route messages (messages useful for regoch-router) from other ordinary messages./li>
     <li><b>message-error</b> - emitted when client received the invalid message (invalid means if the message doesn't conform the subprotocol rules)</li>
+    <li><b>error</b> - emitted when client received the message with <i>cmd: 'error'</i> from the server. This is the case when some error haeppend on the server side and server wants to announce the client. (see Datatransfer::sendError())</li>
   </ol>
 
   <h4>How to use listeners</h4>
@@ -312,7 +313,7 @@ const wsocket = await client.connect();
     <li>
       <b>on <i>('connected', (socket: Socket) => { ... }) :void</i></b>
       <p class="desc">When client is connected to the websocket server.
-        <br><b>socket</b> - TCP Socket object <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">https://nodejs.org/api/net.html#net_class_net_socket</a> 
+        <br><b>socket</b> - TCP Socket object <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">https://nodejs.org/api/net.html#net_class_net_socket</a>
       </p>
     </li>
     <li>
@@ -342,6 +343,13 @@ const wsocket = await client.connect();
       <p class="desc">When client receive the message from the websocket server which is invalid (usually not valid in the subprotocol). Useful to catch the invalid messages sent from the server.
         <br><b>err</b> - error which caused invalid message
     </li>
+    <li>
+      <b>on <i>('error', (msg :any, msgSTR :string) => { ... }) :void</i></b>
+      <p class="desc">When error haeppend on the server-side and it's sent to the client.
+        <br><b>msg</b> - the message after subprotocol is applied (jsonRWS)
+        <br><b>msgSTR</b> - the message converted from buffer to string
+      </p>
+    </li>
   </ul>
 
 
@@ -349,5 +357,5 @@ const wsocket = await client.connect();
   <h2 class="section-heading">Examples</h2>
   HTML: <a href="https://github.com/smikodanic/regoch-websocket/blob/master/examples/clientBrowser/001client.html" target="_blank">001client.html</a></small>
   <br>JS: <a href="https://github.com/smikodanic/regoch-websocket/blob/master/examples/clientBrowser/001client.js" target="_blank">001client.js</a></small>
-  
+
 </section>
