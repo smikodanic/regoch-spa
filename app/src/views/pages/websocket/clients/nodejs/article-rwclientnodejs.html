@@ -365,7 +365,7 @@ const wsocket = await client.connect();
     <li><b>message-error</b> - emitted when client received the invalid message (invalid means if the message doesn't conform the subprotocol rules)</li>
     <li><b>route</b> - emitted when client received the message with <i>cmd: 'route'</i> from the server. This is used to separate the route messages (messages useful for regoch-router) from other ordinary messages./li>
     <li><b>question</b> - emitted when client received the message with <i>cmd: 'question/...'</i> from the server. This message is the response to the sent question.</li>
-    <li><b>error</b> - emitted when client received the message with <i>cmd: 'error'</i> from the server. This is the case when some error haeppend on the server side and server wants to announce the client. (see Datatransfer::sendError())</li>
+    <li><b>server-error</b> - emitted when client received the message with <i>cmd: 'error'</i> from the server. This is the case when some error haeppend on the server side and server wants to announce the client. (see Datatransfer::sendError())</li>
   </ol>
 
 	<h4>How to use listeners</h4>
@@ -422,7 +422,7 @@ const wsocket = await client.connect();
       <p class="desc">Used internally to get the answer. Not recommended to use in the app.</p>
     </li>
     <li>
-      <b>on <i>('error', (msg :any, msgSTR :string, msgBUF :Buffer) => { ... }) :void</i></b>
+      <b>on <i>('server-error', (msg :any, msgSTR :string, msgBUF :Buffer) => { ... }) :void</i></b>
       <p class="desc">When error haeppend on the server-side and it's sent to the client.
         <br><b>msg</b> - the message after subprotocol is applied (jsonRWS)
         <br><b>msgSTR</b> - the message converted from buffer to string

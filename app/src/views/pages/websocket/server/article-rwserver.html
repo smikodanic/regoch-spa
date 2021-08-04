@@ -155,6 +155,7 @@ const rws = new RWServer(wsOpts);
   <ol>
     <li><b>connection</b> - emitted when the client is succesfuly connected to the server</li>
     <li><b>message</b> - emitted when client sent the valid message (valid means validated by the subprotocol)</li>
+    <li><b>message-error</b> - emitted when client sent invalid message (invalid means if the message doesn't conform the subprotocol rules)</li>
     <li><b>route</b> - emitted when client sent the message with <i>cmd: 'route'</i> from the server. This is used to separate the route messages (messages useful for regoch-router) from other ordinary messages./li>
   </ol>
 
@@ -172,6 +173,12 @@ const rws = new RWServer(wsOpts);
         <br><b>msgSTR</b> - the message converted from buffer to string
         <br><b>msgBUF</b> - the message in buffer format (originally sent from the client, unmodified, with no parsing)
         <br><b>socket</b> - connected client, net socket <a href="https://nodejs.org/api/net.html#net_class_net_socket" target="_blank">https://nodejs.org/api/net.html#net_class_net_socket</a>
+      </p>
+    </li>
+    <li>
+      <b>on <i>('message-error', (err :Error) => { ... }) :void</i></b>
+      <p class="desc">When server receive the message from the websocket client which is invalid (usually not valid in the subprotocol). Useful to catch the invalid messages sent from the client.
+        <br><b>err</b> - error which caused invalid message
       </p>
     </li>
     <li>
