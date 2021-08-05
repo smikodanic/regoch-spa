@@ -1,5 +1,9 @@
 class EventEmitter {
 
+  constructor() {
+    this.activeOns = []; // [{eventName:string, listenerCB:Function}]
+  }
+
   /**
    * Create and emit the event
    * @param {string} eventName - event name, for example: 'pushstate'
@@ -19,9 +23,20 @@ class EventEmitter {
    * @returns {void}
    */
   on(eventName, listener) {
-    window.addEventListener(eventName, event => {
-      listener(event);
-    });
+    const listenerCB = event => { listener(event); };
+
+    // remove duplicated listeners
+    let ind = 0;
+    for (const activeOn of this.activeOns) {
+      if (activeOn.eventName === eventName && activeOn.listenerCB.toString() === listenerCB.toString()) {
+        window.removeEventListener(eventName, activeOn.listenerCB);
+        this.activeOns.splice(ind, 1);
+      }
+      ind++;
+    }
+
+    this.activeOns.push({eventName, listenerCB});
+    window.addEventListener(eventName, listenerCB);
   }
 
 
@@ -32,20 +47,53 @@ class EventEmitter {
    * @returns {void}
    */
   once(eventName, listener) {
-    window.addEventListener(eventName, event => {
+    const listenerCB = event => {
       listener(event);
-      window.removeEventListener(eventName, () => {});
-    }, {once: true});
+      window.removeEventListener(eventName, listenerCB);
+    };
+    window.addEventListener(eventName, listenerCB, {once: true});
   }
 
 
   /**
-   * Stop listening the event
+   * Stop listening the event for specific listener.
+   * @param {string} eventName - event name, for example: 'pushstate'
+   * @param {Function} listener - callback function with event parameter
+   * @returns {void}
+   */
+  off(eventName, listener) {
+    const listenerCB = event => {
+      listener(event);
+    };
+    window.removeEventListener(eventName, listenerCB);
+  }
+
+
+  /**
+   * Stop listening the event for all listeners defined with on().
+   * For example eventEmitter.on('msg', fja1) & eventEmitter.on('msg', fja2) then eventEmitter.off('msg') will remove fja1 and fja2 listeners.
    * @param {string} eventName - event name, for example: 'pushstate'
    * @returns {void}
    */
-  off(eventName) {
-    window.removeEventListener(eventName, event => {});
+  offAll(eventName) {
+    let ind = 0;
+    for (const activeOn of this.activeOns) {
+      if (activeOn.eventName === eventName) {
+        window.removeEventListener(eventName, activeOn.listenerCB);
+        this.activeOns.splice(ind, 1);
+      }
+      ind++;
+    }
+  }
+
+
+
+  /**
+   * Get all active listeners.
+   * @returns {{eventName:string, listenerCB:Function}[]}
+   */
+  getListeners() {
+    return {...this.activeOns};
   }
 
 
