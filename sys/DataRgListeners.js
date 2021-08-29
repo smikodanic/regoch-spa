@@ -1,11 +1,12 @@
 const Aux = require('./Aux');
 const navig = require('./lib/navig');
+const eventEmitter = require('./lib/eventEmitter');
 
 
 /**
  * Parse HTML elements with the "data-rg-" attribute (event listeners)
  */
-class DataRgListeners extends Aux  {
+class DataRgListeners extends Aux {
 
   constructor() {
     super();
@@ -64,7 +65,7 @@ class DataRgListeners extends Aux  {
       };
 
       elem.addEventListener('click', handler);
-      this.rgListeners.push({attrName, elem, handler, eventName: 'click'});
+      this.rgListeners.push({ attrName, elem, handler, eventName: 'click' });
       this._debug('rgHref', `pushed::  tag: ${elem.localName} | href="${elem.pathname}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -94,13 +95,14 @@ class DataRgListeners extends Aux  {
 
       const handler = async event => {
         event.preventDefault();
-        const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
+        const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
+        eventEmitter.emit('autorender');
       };
 
       elem.addEventListener('click', handler);
-      this.rgListeners.push({attrName, elem, handler, eventName: 'click'});
+      this.rgListeners.push({ attrName, elem, handler, eventName: 'click' });
       this._debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -140,13 +142,13 @@ class DataRgListeners extends Aux  {
         if (event.code) { eventCode = event.code.toLowerCase(); }
         if (!!keyCode && keyCode !== eventCode) { return; }
 
-        const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
+        const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
       };
 
       elem.addEventListener('keyup', handler);
-      this.rgListeners.push({attrName, elem, handler, eventName: 'keyup'});
+      this.rgListeners.push({ attrName, elem, handler, eventName: 'keyup' });
       this._debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | ctrl="${this.constructor.name}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -176,13 +178,13 @@ class DataRgListeners extends Aux  {
 
       const handler = async event => {
         event.preventDefault();
-        const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
+        const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
       };
 
       elem.addEventListener('change', handler);
-      this.rgListeners.push({attrName, elem, handler, eventName: 'change'});
+      this.rgListeners.push({ attrName, elem, handler, eventName: 'change' });
       this._debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${attrVal}" | total: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -216,13 +218,13 @@ class DataRgListeners extends Aux  {
 
         const handler = async event => {
           event.preventDefault();
-          const {funcName, funcArgs, funcArgsStr} = this._funcParse(funcDef, elem, event);
+          const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
           await this._funcExe(funcName, funcArgs);
           this._debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
         };
 
         elem.addEventListener(eventName, handler);
-        this.rgListeners.push({eventName, attrName, elem, handler, eventName});
+        this.rgListeners.push({ eventName, attrName, elem, handler, eventName });
         this._debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-evt | event: ${eventName} | total: ${this.rgListeners.length}`, 'orange');
       }
     }
@@ -270,7 +272,7 @@ class DataRgListeners extends Aux  {
       handler(); // Execute the handler when controller is executed. This will set controller property defined in constructor() in the view.
 
       elem.addEventListener('input', handler);
-      this.rgListeners.push({attrName, elem, handler, eventName: 'input'});
+      this.rgListeners.push({ attrName, elem, handler, eventName: 'input' });
       this._debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -320,7 +322,7 @@ class DataRgListeners extends Aux  {
       };
 
       elem.addEventListener('input', handler);
-      this.rgListeners.push({attrName, elem, handler, eventName: 'input'});
+      this.rgListeners.push({ attrName, elem, handler, eventName: 'input' });
       this._debug('rgBind', `rgBind listener -- pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
     }
 

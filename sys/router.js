@@ -6,8 +6,8 @@ const navig = require('./lib/navig');
 class Router {
 
   constructor() {
-    this.regochRouter = new RegochRouter({debug: false});
-    this.debugOpts = {router: false};
+    this.regochRouter = new RegochRouter({ debug: false });
+    this.debugOpts = { router: false };
   }
 
 
@@ -21,13 +21,16 @@ class Router {
   when(route, ctrl, routeOpts = {}) {
     const authGuards = routeOpts.authGuards || [];
 
+    // autorender
+    if (routeOpts.autorender !== undefined) { ctrl.autorender = routeOpts.autorender; }
+
     // prechecks
     if (!route && !!ctrl) { throw new Error(`Route is not defined for "${ctrl.constructor.name}" controller.`); }
     if (!!route && !ctrl) { throw new Error(`Controller is not defined for route "${route}".`); }
     if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
     const setNavigCurrent = navig.setCurrent.bind(navig, ctrl); // set navig.current = {uri, ctrl}
-    const preflight = !!ctrl.preflight ? ctrl.preflight : () => {}; // array of preflight functions, will be executed on every route before controller loader()
+    const preflight = !!ctrl.preflight ? ctrl.preflight : () => { }; // array of preflight functions, will be executed on every route before controller loader()
     const processing = ctrl.processing.bind(ctrl);
 
     if (authGuards.length && ctrl.auth) {
@@ -146,13 +149,13 @@ class Router {
           console.log('_testRoutes::previous.ctrl:::', navig.previous.ctrl);
         }
 
-      } catch(err) {
+      } catch (err) {
         if (/AuthWarn::/.test(err.message)) { console.log(`%c${err.message}`, `color:#FF6500; background:#FFFEEE`); }
         else { console.error(err); }
       }
 
     } else {
-      if (this._debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navig.previous.uri}". Controller is not executed !`);}
+      if (this._debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navig.previous.uri}". Controller is not executed !`); }
     }
 
     // get elapsed time

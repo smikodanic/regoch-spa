@@ -74,7 +74,7 @@ class App {
    * @returns {App}
    */
   controllersInject(Ctrls) {
-    for(const Ctrl of Ctrls) {
+    for (const Ctrl of Ctrls) {
       const ctrl = new Ctrl(this);
       this.controllers[Ctrl.name] = ctrl;
     }
@@ -123,12 +123,23 @@ class App {
 
 
   /**
-   * Define preflight function which will be executed on every route and before controller loader().
+   * Define preflight functions which will be executed on every route and before controller loader().
    * @param {Function[]} funcs - array of preflight functions (app, trx) => { ... }
    * @returns {App}
    */
   preflight(...funcs) {
     this.controllerProp('preflight', funcs);
+    return this;
+  }
+
+
+  /**
+   * Define if the data-rg-... elements will be autorendered i.e. if it will be rendered on events like click, change, HTTPClient, ...etc.
+   * @param {boolean} tf - true | false
+   * @returns {App}
+   */
+  autorender(tf) {
+    this.controllerProp('autorender', tf);
     return this;
   }
 
@@ -158,7 +169,7 @@ class App {
         const ctrl = this.controllers[ctrlName];
         this.router.notfound(ctrl);
       } else if (cmd === 'do') {
-        const funcs = routeCnf.filter((routeCnfElem, key) => { if (key !== 0) {return routeCnfElem;} });
+        const funcs = routeCnf.filter((routeCnfElem, key) => { if (key !== 0) { return routeCnfElem; } });
         this.router.do(...funcs);
       } else if (cmd === 'redirect') {
         const fromRoute = routeCnf[1];

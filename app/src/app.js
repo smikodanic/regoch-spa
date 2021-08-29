@@ -36,6 +36,7 @@ const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
 const Navig1Ctrl = require('./controllers/playground/Navig1Ctrl');
 const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
 const ModelCtrl = require('./controllers/playground/ModelCtrl');
+const AutorenderCtrl = require('./controllers/playground/AutorenderCtrl');
 
 
 // auth
@@ -44,20 +45,20 @@ const httpClient = new syslib.HTTPClient(httpClientOpts);
 const auth = new syslib.Auth(authOpts, cookie, httpClient);
 
 // preflight
-const pf1 = async (trx) => {console.log('PREFLIGHT 1 trx::', trx);};
-const pf2 = async (trx) => {console.log('PREFLIGHT 2 trx::', trx);};
+const pf1 = async (trx) => { console.log('PREFLIGHT 1 trx::', trx); };
+const pf2 = async (trx) => { console.log('PREFLIGHT 2 trx::', trx); };
 
 const app = new App();
-app.router.debugOpts = {router: false};
+app.router.debugOpts = { router: false };
 
 app
   .const('apiConst', apiConst)
   .const('myNum', 10)
   .const('myStr', 'some thing')
-  .const('myObj', {a: 22})
+  .const('myObj', { a: 22 })
   .freeze();
 
-app.libInject({StringExt, Rand});
+app.libInject({ StringExt, Rand });
 
 app
   .controllersInject([
@@ -87,6 +88,7 @@ app
     Navig1Ctrl,
     Navig2Ctrl,
     ModelCtrl,
+    AutorenderCtrl,
 
     // not found page
     NotfoundCtrl
@@ -95,5 +97,6 @@ app
   .controllerViewsCached(viewsCached);
 
 app.preflight(pf1, pf2);
+app.autorender(false);
 
 app.routes(routes).run();

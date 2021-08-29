@@ -1,4 +1,5 @@
 const Page = require('./Page');
+const eventEmitter = require('./lib/eventEmitter');
 
 
 class Controller extends Page {
@@ -52,14 +53,14 @@ class Controller extends Page {
    * @param {object} trx - regoch router transitional variable
    * @returns {Promise<void>}
    */
-  async loader(trx) {}
+  async loader(trx) { }
 
   /**
    * Init the controller properties (set initial values).
    * @param {object} trx - regoch router transitional variable
    * @returns {Promise<void>}
    */
-  async init(trx) {}
+  async init(trx) { }
 
   /**
    * Render data-rg- elements.
@@ -73,7 +74,7 @@ class Controller extends Page {
    * @param {object} trx - regoch router transitional variable
    * @returns {Promise<void>}
    */
-  async postrend(trx) {}
+  async postrend(trx) { }
 
   /**
    * Destroy the controller when the data-rg-href element is clicked (see parse.href()).
@@ -81,7 +82,7 @@ class Controller extends Page {
    * @param {Event} pevent - popstate or pushstate event which caused URL change
    * @returns {Promise<void>}
    */
-  async destroy(pevent) {}
+  async destroy(pevent) { }
 
 
   /**
@@ -161,6 +162,8 @@ class Controller extends Page {
     this.renderNonGens(controllerProp);
     await new Promise(r => setTimeout(r, renderDelay));
     await this.renderLsns();
+    await new Promise(r => setTimeout(r, renderDelay));
+    eventEmitter.on('autorender', this.autorenderListener.bind(this));
     this._debug('render', `--------- render (end) ------`, 'green', '#D9FC9B');
   }
 
@@ -172,6 +175,15 @@ class Controller extends Page {
    */
   async renders(controllerProps = [], renderDelay) {
     for (const controllerProp of controllerProps) { await this.render(controllerProp, renderDelay); }
+  }
+
+
+
+  async autorenderListener() {
+    console.log('autorender fired!!!', this);
+    if (this.autorender) {
+      await this.render();
+    }
   }
 
 
