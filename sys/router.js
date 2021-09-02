@@ -1,5 +1,6 @@
 const RegochRouter = require('regoch-router');
 const navig = require('./lib/navig');
+const eventEmitter = require('./lib/eventEmitter');
 
 
 
@@ -127,7 +128,9 @@ class Router {
         // destroy previous controller
         if (!!navig && !!navig.previous && !!navig.previous.ctrl) {
           this._debug('router', `_testRoutes - destroy() of previous controller`, '#680C72');
-          navig.previous.ctrl.destroy(pevent); // execute destroy() defined in the Controller.js
+          const prevCtrl = navig.previous.ctrl;
+          prevCtrl.destroy(pevent); // execute destroy() defined in the controller
+          eventEmitter.off('autorender', prevCtrl.autorenderListener.bind(prevCtrl)); // close autorender listener for previous controller
         }
 
         // execute route middlewares

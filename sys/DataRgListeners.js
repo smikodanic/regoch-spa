@@ -94,11 +94,11 @@ class DataRgListeners extends Aux {
       const funcDef = attrVal.trim();
 
       const handler = async event => {
+        eventEmitter.emit('autorender');
         event.preventDefault();
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
-        eventEmitter.emit('autorender');
       };
 
       elem.addEventListener('click', handler);
@@ -136,6 +136,7 @@ class DataRgListeners extends Aux {
       keyCode = keyCode.trim().toLowerCase();
 
       const handler = async event => {
+        eventEmitter.emit('autorender');
         event.preventDefault();
 
         let eventCode;
@@ -144,6 +145,7 @@ class DataRgListeners extends Aux {
 
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
+
         this._debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
       };
 
@@ -177,6 +179,7 @@ class DataRgListeners extends Aux {
       const funcDef = attrVal.trim();
 
       const handler = async event => {
+        eventEmitter.emit('autorender');
         event.preventDefault();
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
@@ -217,6 +220,7 @@ class DataRgListeners extends Aux {
         const funcDef = attrValSplited[1].trim();
 
         const handler = async event => {
+          eventEmitter.emit('autorender');
           event.preventDefault();
           const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
           await this._funcExe(funcName, funcArgs);

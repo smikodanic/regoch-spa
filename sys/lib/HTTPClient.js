@@ -1,3 +1,6 @@
+const eventEmitter = require('./eventEmitter');
+
+
 class HTTPClient {
 
   /**
@@ -49,7 +52,7 @@ class HTTPClient {
    */
   _parseUrl(url) {
     url = this._correctUrl(url);
-    const urlObj  = new URL(url);
+    const urlObj = new URL(url);
     this.url = url;
     this.protocol = urlObj.protocol;
     this.hostname = urlObj.hostname;
@@ -75,7 +78,7 @@ class HTTPClient {
    * URL corrections
    */
   _correctUrl(url) {
-    if (!url) {throw new Error('URL is not defined'); }
+    if (!url) { throw new Error('URL is not defined'); }
 
     // 1. trim from left and right
     url = url.trim();
@@ -185,7 +188,7 @@ class HTTPClient {
       answer.https = /^https/.test(this.protocol);
     } catch (err) {
       // if URL is not properly defined
-      const ans = {...answer}; // clone object to prevent overwrite of object properies once promise is resolved
+      const ans = { ...answer }; // clone object to prevent overwrite of object properies once promise is resolved
       ans.status = 400; // client error - Bad Request
       ans.statusMessage = err.message || 'Bad Request';
       ans.time.res = this._getTime();
@@ -195,7 +198,7 @@ class HTTPClient {
     }
 
     /*** 0) intercept the request ***/
-    if(!!this.interceptor) { await this.interceptor(); }
+    if (!!this.interceptor) { await this.interceptor(); }
 
 
     /*** 1) init HTTP request ***/
@@ -224,11 +227,11 @@ class HTTPClient {
 
 
     /** 4) wait for response */
-    const promise = new Promise ((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
 
       this.xhr.onload = res => {
         // format answer
-        const ans = {...answer}; // clone object to prevent overwrite of object properies once promise is resolved
+        const ans = { ...answer }; // clone object to prevent overwrite of object properies once promise is resolved
         ans.status = this.xhr.status; // 2xx -ok response, 4xx -client error (bad request), 5xx -server error
         ans.statusMessage = this.xhr.statusText;
         ans.res.headers = this.getResHeaders();
@@ -245,7 +248,7 @@ class HTTPClient {
         const err = this._formatError(error, url);
 
         // format answer
-        const ans = {...answer}; // clone object to prevent overwrite of object properies once promise is resolved
+        const ans = { ...answer }; // clone object to prevent overwrite of object properies once promise is resolved
         ans.status = err.status;
         ans.statusMessage = err.message;
         ans.time.res = this._getTime();
@@ -260,7 +263,7 @@ class HTTPClient {
         this.kill();
 
         // format answer
-        const ans = {...answer}; // clone object to prevent overwrite of object properies once promise is resolved
+        const ans = { ...answer }; // clone object to prevent overwrite of object properies once promise is resolved
         ans.status = 408; // 408 - timeout
         ans.statusMessage = `Request aborted due to timeout (${this.opts.timeout} ms) ${url} `;
         ans.time.res = this._getTime();
@@ -269,6 +272,11 @@ class HTTPClient {
         resolve(ans);
       };
 
+    });
+
+    promise.then(ans => {
+      eventEmitter.emit('autorender');
+      return ans;
     });
 
     return promise;
@@ -392,7 +400,7 @@ class HTTPClient {
       str = !!elem ? elem.outerHTML : '';
     }
 
-    answer.res.content = {nodes, str};
+    answer.res.content = { nodes, str };
     return answer;
   }
 
@@ -461,7 +469,7 @@ class HTTPClient {
    */
   setReqHeader(headerName, headerValue) {
     const headerName2 = headerName.toLowerCase();
-    const headerObj = {[headerName2]: headerValue};
+    const headerObj = { [headerName2]: headerValue };
     this.headers = Object.assign(this.headers, headerObj);
   }
 

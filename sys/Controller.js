@@ -10,6 +10,7 @@ class Controller extends Page {
     this.debugOpts = {
       // Controller.js
       render: false,
+      autorender: false,
 
       // Page.js
       loadInc: false,
@@ -179,10 +180,14 @@ class Controller extends Page {
 
 
 
+  /**
+   * Listener for the autorender event. Autorender will automatically update the controller property in the view.
+   * Autorender can be enabled globally with app.autorender(true) or separatelly for every route with route option { autorender: true }
+   */
   async autorenderListener() {
-    console.log('autorender fired!!!', this);
     if (this.autorender) {
       await this.render();
+      this._debug('autorender', `--------- autorender -- ctrl: ${this.constructor.name} ------`, 'olive', '#D9FC9B');
     }
   }
 
