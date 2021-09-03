@@ -72,14 +72,17 @@ class Aux {
   /**
    * Find {{ctrlProp}} occurrences in the txt and replace it with the controller property value.
    * @param {string} txt - text which needs to be replaced
+   * @param {string} openingChar - opening character: { or {{
+   * @param {string} closingChar - closing character: } or }}
    */
-  _parseInterpolated(txt) {
-    const interpolations = txt.match(/\{\{[0-9a-zA-Z\$\_\.]+\}\}/g); // ["age", "user.name"]
+  _parseInterpolated(txt, openingChar, closingChar) {
+    const reg = new RegExp(`${openingChar}\\s*[0-9a-zA-Z\$\_\.]+\\s*${closingChar}`, 'g');
+    const interpolations = txt.match(reg); // ["age", "user.name"]
     if (!interpolations || !interpolations.length) { // if there's no interpolated controller properties in the text
       return txt;
     } {
       for (const interpolation of interpolations) {
-        const prop = interpolation.replace('{{', '').replace('}}', '');
+        const prop = interpolation.replace(openingChar, '').replace(closingChar, '').trim();
         if (/\$i/.test(prop)) { continue; } // jump over properies with $i, for example: users.$i.name
         let val = this._getControllerValue(prop);
         if (val === undefined) {

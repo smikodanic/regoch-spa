@@ -23,6 +23,8 @@ class Controller extends Page {
       rgFor: false,
       rgRepeat: false,
       rgPrint: false,
+      rgPrintMustache: false,
+
 
       rgIf: false,
       rgSwitch: false,
@@ -113,6 +115,7 @@ class Controller extends Page {
   renderGens(controllerProp) {
     this.rgFor(controllerProp);
     this.rgRepeat(controllerProp);
+    this.rgPrintMustache();
     this.rgPrint(controllerProp);
   }
 

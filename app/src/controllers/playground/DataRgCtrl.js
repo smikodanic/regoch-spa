@@ -6,7 +6,8 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      rgFor: true
+      rgFor: false,
+      rgPrintMustache: true
     };
   }
 
@@ -135,6 +136,15 @@ class DataRgCtrl extends Controller {
   printHTML() {
     this.bestFriend = 'Dog';
     this.rgIf('bestFriend');
+  }
+
+
+  mustacheDO() {
+    // mustache test
+    this.mustVar1 = 'Lorem ipsum dolor net morea';
+    this.mustVar2 = { txt: 'Lorem ipsum <b style="color:aqua">dolor net</b> morea' };
+    this.rgPrint('mustVar1');
+    this.rgPrint('mustVar2');
   }
 
 

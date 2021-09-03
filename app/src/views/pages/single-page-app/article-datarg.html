@@ -55,6 +55,12 @@
       <br><br><b>controllerProp</b> - controller property which is the repetition number</p>
     </li>
     <li>
+      <b>rgPrintMustache <i>() :void</i></b>
+      <p class="desc">It will convert mustache to data-rg-print in the SPAN tag.
+        <br>For example: &#123;&#123; company.name | slice(0, 21) &#125;&#125; will produce &lt;span data-rg-print="company.name | slice(0, 21)"&gt; &lt;/span&gt;
+      </p>
+    </li>
+    <li>
       <b>rgPrint <i>(controllerProp :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-print="&lt;controllerProperty&gt; [| pipeFunc()] [@@ inner|outer|sibling|prepend|append|inset] [@@ keep]"</b> elements. Print the controller's property in the view.
       <br>TIP1: If the controller property has <i>falsy</i> value and <i>@@keep</i> is used then innerHTML value is printed.
@@ -154,7 +160,7 @@
         <br>
         <br>Examples:
         <br><small>&lt;span data-rg-echo="$i+1"&gt;&lt;/span&gt;</small>
-        <br><small>&lt;span data-rg-echo="name: {{cars.0.name}} -- price: $ {{cars.0.price}}"&gt;&lt;/span&gt;</small> - if one of {{}} interpolations is undefined the echoed text will be empty string
+        <br><small>&lt;span data-rg-echo="name: {cars.0.name} -- price: $ {cars.0.price}"&gt;&lt;/span&gt;</small> - if one of {} interpolations is undefined the echoed text will be empty string
       </p>
     </li>
     <li>
