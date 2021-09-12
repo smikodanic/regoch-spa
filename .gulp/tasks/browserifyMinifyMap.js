@@ -32,7 +32,7 @@ module.exports = async () => {
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(header(banner, {pkg: pkg}))
-    .pipe(minify())
+    // .pipe(minify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./app/dist/js'));
 };
