@@ -187,10 +187,12 @@ class Controller extends Page {
    * Listener for the autorender event. Autorender will automatically update the controller property in the view.
    * Autorender can be enabled globally with app.autorender(true) or separatelly for every route with route option { autorender: true }
    */
-  async autorenderListener() {
+  async autorenderListener(event) {
+    const arEvt = event.detail.arEvt;
     if (this.autorender) {
+      this._debug('autorender', `--------- autorender START -- arEvt: ${arEvt} -- ctrl: ${this.constructor.name} ------`, 'olive', '#D9FC9B');
       await this.render();
-      this._debug('autorender', `--------- autorender -- ctrl: ${this.constructor.name} ------`, 'olive', '#D9FC9B');
+      this._debug('autorender', `--------- autorender STOP -- arEvt: ${arEvt} -- ctrl: ${this.constructor.name} ------`, 'olive', '#D9FC9B');
     }
   }
 

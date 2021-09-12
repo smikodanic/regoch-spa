@@ -30,7 +30,8 @@ class AutorenderCtrl extends Controller {
 
 
 
-  clickAR() {
+  async clickAR() {
+    await new Promise(r => setTimeout(r, 1300));
     this.clickVar = 'two';
     this.clickVars = [6, 7, 8];
   }

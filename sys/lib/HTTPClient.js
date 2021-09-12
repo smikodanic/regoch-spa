@@ -275,7 +275,7 @@ class HTTPClient {
     });
 
     promise.then(ans => {
-      eventEmitter.emit('autorender');
+      eventEmitter.emit('autorender', { arEvt: 'askOnce' });
       return ans;
     });
 

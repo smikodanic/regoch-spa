@@ -94,11 +94,11 @@ class DataRgListeners extends Aux {
       const funcDef = attrVal.trim();
 
       const handler = async event => {
-        eventEmitter.emit('autorender');
         event.preventDefault();
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
+        eventEmitter.emit('autorender', {arEvt: 'click'});
       };
 
       elem.addEventListener('click', handler);
@@ -136,7 +136,6 @@ class DataRgListeners extends Aux {
       keyCode = keyCode.trim().toLowerCase();
 
       const handler = async event => {
-        eventEmitter.emit('autorender');
         event.preventDefault();
 
         let eventCode;
@@ -147,6 +146,7 @@ class DataRgListeners extends Aux {
         await this._funcExe(funcName, funcArgs);
 
         this._debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
+        eventEmitter.emit('autorender', { arEvt: 'keyup' });
       };
 
       elem.addEventListener('keyup', handler);
@@ -179,11 +179,11 @@ class DataRgListeners extends Aux {
       const funcDef = attrVal.trim();
 
       const handler = async event => {
-        eventEmitter.emit('autorender');
         event.preventDefault();
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
+        eventEmitter.emit('autorender', { arEvt: 'change' });
       };
 
       elem.addEventListener('change', handler);
@@ -220,11 +220,11 @@ class DataRgListeners extends Aux {
         const funcDef = attrValSplited[1].trim();
 
         const handler = async event => {
-          eventEmitter.emit('autorender');
           event.preventDefault();
           const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
           await this._funcExe(funcName, funcArgs);
           this._debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
+          eventEmitter.emit('autorender', { arEvt: 'evt' });
         };
 
         elem.addEventListener(eventName, handler);
