@@ -1,10 +1,14 @@
+const Aux = require('../Aux');
+
 /**
  * HTML Form Library
  * According to W3C Standard https://html.spec.whatwg.org/multipage/forms.html
  */
-class Form {
+class Form extends Aux {
 
   constructor(formName) {
+    super();
+
     this.formName = formName;
     this.debugOpts = {
       setControl: false,
@@ -29,25 +33,7 @@ class Form {
     if (!elems.length) { console.log(`%c FormWarn:: Form "${this.formName}" doesn't have control with name="${key}" attribute.`, `color:Maroon; background:LightYellow`); return; }
 
     for (const elem of elems) {
-      if (elem.type === 'checkbox') { // CHECKBOX
-        elem.checked = false;
-        if (typeof val !== 'boolean' && val.indexOf(elem.value) !== -1) { elem.checked = true; } // val is array
-        else if (typeof val === 'boolean') { elem.checked = val; }
-
-      } else if (elem.type === 'radio') { // RADIO
-        elem.checked = false;
-        if (val === elem.value) { elem.checked = true; }
-
-      } else if (elem.type === 'select-multiple') { // on SELECT with multiple, for example <select name="family" size="4" multiple>
-        const options = elem; // all options
-        for (const option of options) {
-          option.selected = false;
-          if (val.indexOf(option.value) !== -1) { option.selected = true; }  // val is array
-        }
-
-      } else { // INPUT, SELECT
-        elem.value = val; // val is not array
-      }
+      this._setElementValue(elem, val);
       this._debug('setControl', `${elem.type}[name="${key}"] got value="${val}"`, 'green');
     }
 
@@ -85,7 +71,7 @@ class Form {
 
         if (!!attrVal) { this.setControl(attrVal, val); }
 
-        if(this._debug().setControls) { console.log(`setControls:: obj-key:: ${key} , attrVal:: ${attrVal} , elem::`, elem); }
+        if (this._debug().setControls) { console.log(`setControls:: obj-key:: ${key} , attrVal:: ${attrVal} , elem::`, elem); }
       }
 
     }

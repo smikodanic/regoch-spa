@@ -108,12 +108,12 @@ class Aux {
     const arg = funcArgs[0] ? this._typeConvertor(funcArgs[0]) : '';
 
     if (funcName === '$not') { tf = !val; }
-    else if (funcName === '$eq' && arg) { tf = val === arg; }
+    else if (funcName === '$eq') { tf = val === arg; }
+    else if (funcName === '$ne') { tf = val !== arg; }
     else if (funcName === '$gt' && arg) { tf = val > arg; }
     else if (funcName === '$gte' && arg) { tf = val >= arg; }
     else if (funcName === '$lt' && arg) { tf = val < arg; }
     else if (funcName === '$lte' && arg) { tf = val <= arg; }
-    else if (funcName === '$ne' && arg) { tf = val !== arg; }
     else if (funcName === '$in' && arg) { tf = arg.indexOf(val) !== -1; } // arg must be array
     else if (funcName === '$nin' && arg) { tf = arg.indexOf(val) === -1; } // arg must be array
 
@@ -130,7 +130,7 @@ class Aux {
   _typeConvertor(value) {
     function isJSON(str) {
       try { JSON.parse(str); }
-      catch(err) { return false; }
+      catch (err) { return false; }
       return true;
     }
 
@@ -182,7 +182,7 @@ class Aux {
         return arg;
       });
 
-    return {funcName, funcArgs, funcArgsStr};
+    return { funcName, funcArgs, funcArgsStr };
   }
 
 
@@ -251,6 +251,53 @@ class Aux {
     elem.parentNode.insertBefore(newElem, elem.nextSibling);
 
     return newElem;
+  }
+
+
+
+  /**
+   * Set the HTML form element value. Make correction according to the element & value type.
+   * @param {HTMLElement} elem
+   * @param {any} val
+   */
+  _setElementValue(elem, val) {
+    if (elem.type === 'checkbox') { // CHECKBOX
+      elem.checked = false;
+      if (typeof val !== 'boolean' && val.indexOf(elem.value) !== -1) { elem.checked = true; } // val is array
+      else if (typeof val === 'boolean') { elem.checked = val; }
+
+    } else if (elem.type === 'radio') { // RADIO
+      elem.checked = false;
+      if (val === elem.value) { elem.checked = true; }
+
+    } else if (elem.type === 'select-multiple') { // on SELECT with multiple, for example <select name="family" size="4" multiple>
+      const options = elem; // all options
+      for (const option of options) {
+        option.selected = false;
+        if (val.indexOf(option.value) !== -1) { option.selected = true; }  // val is array
+      }
+
+    } else if (elem.type === 'textarea') { // TEXTAREA
+      if (typeof val === 'object') {
+        val = JSON.stringify(val, null, 2);
+      }
+      elem.value = val;
+
+    } else if (elem.type === 'text') { // INPUT[type="text"]
+      if (typeof val === 'object') {
+        val = JSON.stringify(val);
+      }
+      elem.value = val;
+
+    } else if (elem.type === 'number') { // INPUT[type="number"]
+      if (typeof val === 'string') {
+        val = +val;
+      }
+      elem.value = val;
+
+    } else { // ALL OTHER
+      elem.value = val;
+    }
   }
 
 

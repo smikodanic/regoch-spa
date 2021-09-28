@@ -98,7 +98,7 @@ class DataRgListeners extends Aux {
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
-        eventEmitter.emit('autorender', {arEvt: 'click'});
+        eventEmitter.emit('autorender', { arEvt: 'click' });
       };
 
       elem.addEventListener('click', handler);
@@ -303,7 +303,7 @@ class DataRgListeners extends Aux {
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
       const attrValSplited = attrVal.split(this.separator);
-      if (!attrValSplited[0]) { console.error(`Attribute "data-rg-set" has bad definition (data-rg-set="${attrVal}").`); continue; }
+      if (!attrValSplited[0]) { console.error(`Attribute "data-rg-bind" has bad definition (data-rg-bind="${attrVal}").`); continue; }
 
       const prop = attrValSplited[0].trim(); // controller property name
       const doAfter_str = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // what to do after the controller property is set: 'rgPrint', 'rgSwitch'
@@ -311,7 +311,7 @@ class DataRgListeners extends Aux {
 
       /** SETTER **/
       const val = this._getControllerValue(prop);
-      elem.value = val;
+      this._setElementValue(elem, val);
       this._debug('rgBind', `rgBind setter -- ${prop}:: ${val}`, 'orangered');
 
       /** LISTENER **/

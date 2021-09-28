@@ -30,7 +30,7 @@ class DataRg extends DataRgListeners {
     let elems = document.querySelectorAll(`[${attrName}]`);
     if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
     this._debug('rgFor', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
-    if(!elems.length) { return; }
+    if (!elems.length) { return; }
 
 
     for (const elem of elems) {
@@ -50,7 +50,7 @@ class DataRg extends DataRgListeners {
       let prop = propLimSkpSplited[0];
       prop = prop.trim();
       const val = this._getControllerValue(prop);
-      if(this._debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
+      if (this._debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
       if (!val) { elem.style.display = 'none'; continue; }
 
       // generate new element and place it in the sibling position
@@ -188,7 +188,7 @@ class DataRg extends DataRgListeners {
       let pipe_funcDef = propPipeSplitted[1];
       if (!!pipe_funcDef && !!val) {
         pipe_funcDef = pipe_funcDef.trim();
-        const {funcName, funcArgs} = this._funcParse(pipe_funcDef);
+        const { funcName, funcArgs } = this._funcParse(pipe_funcDef);
         if (typeof val[funcName] !== 'function') { console.error(`The "${propPipe}" has type ${typeof val} and can't' be piped.`); continue; }
         val = val[funcName](...funcArgs);
       }
@@ -218,7 +218,7 @@ class DataRg extends DataRgListeners {
         newElem.innerHTML = elem.innerHTML + ' ' + val;
       } else if (act === 'inset') {
         newElem.innerHTML = elem.innerHTML.replace('${}', val);
-      } else  {
+      } else {
         elem.innerHTML = val;
       }
 
@@ -404,7 +404,7 @@ class DataRg extends DataRgListeners {
    * @param {string} controllerProp - the attribute value which relates to the controller property
    * @returns {void}
    */
-  rgValue (controllerProp) {
+  rgValue(controllerProp) {
     this._debug('rgValue', '--------- rgValue ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-value';
@@ -420,7 +420,7 @@ class DataRg extends DataRgListeners {
       const prop = attrVal.trim();
       const val = this._getControllerValue(prop);
       // elem.setAttribute('value', val);
-      elem.value = val;
+      this._setElementValue(elem, val);
       this._debug('rgValue', `${prop}:: ${val}`, 'navy');
     }
   }
