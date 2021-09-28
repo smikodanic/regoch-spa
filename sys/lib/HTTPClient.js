@@ -453,9 +453,9 @@ class HTTPClient {
    * @returns {void}
    */
   setReqHeaders(headerObj) {
-    Object.keys(this.headers).forEach(prop => {
+    Object.keys(headerObj).forEach(prop => {
       const headerName = prop;
-      const headerValue = this.headers[prop];
+      const headerValue = headerObj[prop];
       this.setReqHeader(headerName, headerValue);
     });
   }
