@@ -344,7 +344,7 @@ class HTTPClient {
 
     // convert body string to object
     let body_obj = body;
-    if (typeof body === 'string') {
+    if (!!body && typeof body === 'string') {
       try {
         body_obj = JSON.parse(body);
       } catch (err) {
