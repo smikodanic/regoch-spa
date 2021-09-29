@@ -257,10 +257,10 @@ class Aux {
 
   /**
    * Set the HTML form element value. Make correction according to the element & value type.
-   * @param {HTMLElement} elem
-   * @param {any} val
+   * @param {HTMLElement} elem - HTML form element
+   * @param {any} val - value to populate HTML form element (if val is undefined then it's empty string)
    */
-  _setElementValue(elem, val) {
+  _setElementValue(elem, val = '') {
     if (elem.type === 'checkbox') { // CHECKBOX
       elem.checked = false;
       if (typeof val !== 'boolean' && val.indexOf(elem.value) !== -1) { elem.checked = true; } // val is array
@@ -278,21 +278,16 @@ class Aux {
       }
 
     } else if (elem.type === 'textarea') { // TEXTAREA
-      if (typeof val === 'object') {
-        val = JSON.stringify(val, null, 2);
-      }
+      if (typeof val === 'object') { val = JSON.stringify(val, null, 2); }
       elem.value = val;
 
     } else if (elem.type === 'text') { // INPUT[type="text"]
-      if (typeof val === 'object') {
-        val = JSON.stringify(val);
-      }
+      if (typeof val === 'object') { val = JSON.stringify(val);}
       elem.value = val;
 
     } else if (elem.type === 'number') { // INPUT[type="number"]
-      if (typeof val === 'string') {
-        val = +val;
-      }
+      if (val === '') { val = 0; }
+      else if (typeof val === 'string') { val = +val; }
       elem.value = val;
 
     } else { // ALL OTHER
