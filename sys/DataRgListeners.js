@@ -312,7 +312,7 @@ class DataRgListeners extends Aux {
       /** SETTER **/
       const val = this._getControllerValue(prop);
       this._setElementValue(elem, val);
-      this._debug('rgBind', `rgBind setter -- ${prop}:: ${val}`, 'orangered');
+      this._debug('rgBind', `elem.type:: ${elem.type} -- ${prop}:: ${val}`, 'orangered');
 
       /** LISTENER **/
       const handler = event => {

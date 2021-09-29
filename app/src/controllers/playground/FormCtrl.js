@@ -22,7 +22,7 @@ class FormCtrl extends Controller {
   }
 
   async loader(trx) {
-    this.setTitle('DataRg Test');
+    this.setTitle('Form Test');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/form/primary.html', 'inner');
   }
@@ -109,11 +109,11 @@ class FormCtrl extends Controller {
   // used data-rg-print
   async generateAutos() {
     this.autos = [
-      {id: 1, name: 'Toyota', price: 8000},
-      {id: 2, name: 'WV', price: 4000},
-      {id: 3, name: 'BMW', price: 6000},
-      {id: 4, name: 'Fiat', price: 1000},
-      {id: 5, name: 'Audi', price: 5000}
+      { id: 1, name: 'Toyota', price: 8000 },
+      { id: 2, name: 'WV', price: 4000 },
+      { id: 3, name: 'BMW', price: 6000 },
+      { id: 4, name: 'Fiat', price: 1000 },
+      { id: 5, name: 'Audi', price: 5000 }
     ];
 
     // use one of the following
@@ -128,11 +128,11 @@ class FormCtrl extends Controller {
   // used data-rg-echo
   async generatePlants() {
     this.plants = [
-      {id: 1, name: 'Corn', price: 8000},
-      {id: 2, name: 'Ananas', price: 4000},
-      {id: 3, name: 'Banana', price: 6000},
-      {id: 4, name: 'Potato', price: 1000},
-      {id: 5, name: 'Apple', price: 5000}
+      { id: 1, name: 'Corn', price: 8000 },
+      { id: 2, name: 'Ananas', price: 4000 },
+      { id: 3, name: 'Banana', price: 6000 },
+      { id: 4, name: 'Potato', price: 1000 },
+      { id: 5, name: 'Apple', price: 5000 }
     ];
 
     await this.render('plants');
@@ -171,4 +171,4 @@ class FormCtrl extends Controller {
 }
 
 
-module.exports =  FormCtrl;
+module.exports = FormCtrl;

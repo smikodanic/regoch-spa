@@ -33,14 +33,14 @@ class DataRgCtrl extends Controller {
     this.limit = 3;
     this.skip = 2;
     this.companies = [
-      {name: 'Cloud Ltd', size: 3},
-      {name: 'Roto Ltd', size: 5},
-      {name: 'Zen Ltd', size: 8},
-      {name: 'Den Ltd', size: 9},
-      {name: 'Len Ltd', size: 10},
-      {name: 'Pen Ltd', size: 81},
-      {name: 'Gen Ltd', size: 82},
-      {name: 'Ren Ltd', size: 83}
+      { name: 'Cloud Ltd', size: 3 },
+      { name: 'Roto Ltd', size: 5 },
+      { name: 'Zen Ltd', size: 8 },
+      { name: 'Den Ltd', size: 9 },
+      { name: 'Len Ltd', size: 10 },
+      { name: 'Pen Ltd', size: 81 },
+      { name: 'Gen Ltd', size: 82 },
+      { name: 'Ren Ltd', size: 83 }
     ];
 
     // initial values for runFOR2
@@ -82,14 +82,14 @@ class DataRgCtrl extends Controller {
   // show array elements by using data-rg-for
   async runFOR() {
     this.companies = [
-      {name: 'Cloud2 Ltd', size: 3},
-      {name: 'Roto2 Ltd', size: 5},
-      {name: 'Zen2 Ltd', size: 8},
-      {name: 'Den2 Ltd', size: 81},
-      {name: 'Len2 Ltd', size: 82},
-      {name: 'Pen2 Ltd', size: 83},
-      {name: 'Gen2 Ltd', size: 84},
-      {name: 'Ren2 Ltd', size: 855}
+      { name: 'Cloud2 Ltd', size: 3 },
+      { name: 'Roto2 Ltd', size: 5 },
+      { name: 'Zen2 Ltd', size: 8 },
+      { name: 'Den2 Ltd', size: 81 },
+      { name: 'Len2 Ltd', size: 82 },
+      { name: 'Pen2 Ltd', size: 83 },
+      { name: 'Gen2 Ltd', size: 84 },
+      { name: 'Ren2 Ltd', size: 855 }
     ];
     this.rgFor('companies');
     this.rgPrint('companies');
@@ -192,7 +192,7 @@ class DataRgCtrl extends Controller {
 
   // Here are two tests. First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.
   runSWITCH() {
-    this.obj = {myColors: ['green2', 'blue2']};
+    this.obj = { myColors: ['green2', 'blue2'] };
     this.rgSwitch('myColor'); // this.myColor
     this.rgSwitch('obj.myColors @@ multiple'); // this.obj.myColors
   }
@@ -205,7 +205,7 @@ class DataRgCtrl extends Controller {
 
   // add style attribute values
   runSTYLE(fontSize, color) {
-    this.myStajl = {fontSize, color};
+    this.myStajl = { fontSize, color };
     this.rgStyle('myStajl');
   }
 
@@ -227,7 +227,17 @@ class DataRgCtrl extends Controller {
     this.render('isDisabled');
   }
 
+
+  setVALUES() {
+    this.input_text01 = 'some text';
+    this.input_text_undefined;
+    this.input_text_obj = { a: 22 };
+    this.input_numberAsString = '157';
+    this.input_text01 = 'some text';
+    this.rgValue('input_');
+  }
+
 }
 
 
-module.exports =  DataRgCtrl;
+module.exports = DataRgCtrl;

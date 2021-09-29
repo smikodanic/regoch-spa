@@ -419,9 +419,10 @@ class DataRg extends DataRgListeners {
 
       const prop = attrVal.trim();
       const val = this._getControllerValue(prop);
-      // elem.setAttribute('value', val);
+
       this._setElementValue(elem, val);
-      this._debug('rgValue', `${prop}:: ${val}`, 'navy');
+
+      this._debug('rgValue', `elem.type:: ${elem.type} -- ${prop}:: ${val}`, 'navy');
     }
   }
 

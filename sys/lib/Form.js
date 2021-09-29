@@ -1,14 +1,10 @@
-const Aux = require('../Aux');
-
 /**
  * HTML Form Library
  * According to W3C Standard https://html.spec.whatwg.org/multipage/forms.html
  */
-class Form extends Aux {
+class Form {
 
   constructor(formName) {
-    super();
-
     this.formName = formName;
     this.debugOpts = {
       setControl: false,
@@ -33,7 +29,40 @@ class Form extends Aux {
     if (!elems.length) { console.log(`%c FormWarn:: Form "${this.formName}" doesn't have control with name="${key}" attribute.`, `color:Maroon; background:LightYellow`); return; }
 
     for (const elem of elems) {
-      this._setElementValue(elem, val);
+      if (elem.type === 'text') { // INPUT[type="text"]
+        if (typeof val === 'object') { val = JSON.stringify(val); }
+        elem.value = val;
+        elem.setAttribute('value', val);
+
+      } else if (elem.type === 'number') { // INPUT[type="number"]
+        if (val === '') { val = 0; }
+        else if (typeof val === 'string') { val = +val; }
+        elem.value = val;
+        elem.setAttribute('value', val);
+
+      } else if (elem.type === 'checkbox') { // CHECKBOX
+        elem.checked = false;
+        if (typeof val !== 'boolean' && val.indexOf(elem.value) !== -1) { elem.checked = true; }
+        else if (typeof val === 'boolean') { elem.checked = val; }
+
+      } else if (elem.type === 'radio') { // RADIO
+        elem.checked = false;
+        if (val === elem.value) { elem.checked = true; }
+
+      } else if (elem.type === 'select-multiple') { // on SELECT with multiple, for example <select name="family" size="4" multiple>
+        const options = elem; // all options
+        for (const option of options) {
+          option.selected = false;
+          if (val.indexOf(option.value) !== -1) { option.selected = true; }  // val is array
+        }
+
+      } else if (elem.type === 'textarea') { // TEXTAREA
+        if (typeof val === 'object') { val = JSON.stringify(val, null, 2); }
+        elem.value = val;
+
+      } else { // ALL OTHER: select-one
+        elem.value = val;
+      }
       this._debug('setControl', `${elem.type}[name="${key}"] got value="${val}"`, 'green');
     }
 

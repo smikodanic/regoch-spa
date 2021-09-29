@@ -6,7 +6,7 @@
 <h3>--GENERATORS--</h3>
 
 <h4>DATA-RG-FOR</h4>
-<button data-rg-click="runFOR()">run FOR</button>  <i>NOTICE: The data-rg-flicker is used to prevent showing "$i+1 name:"</i>
+<button data-rg-click="runFOR()">run FOR</button> <i>NOTICE: The data-rg-flicker is used to prevent showing "$i+1 name:"</i>
 <p data-rg-flicker data-rg-for="companies:limit:skip" style="color:green" class="$i+1"><span data-rg-print="companies.$i.name @@ append">$i+1 name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
 
 <br><br>
@@ -181,3 +181,12 @@ Mustaches will be replaced with data-rg-print in the SPAN tag.
 <h4>DATA-RG-DISABLED</h4>
 <button data-rg-click="toggleDISABLED()">toggle DISABLED</button> - disable/enable the INPUT element
 <input type="text" style="width:32%" data-rg-disabled="isDisabled">
+
+
+<br><br>
+<h4>DATA-RG-VALUE <button data-rg-click="setVALUES()">Set Values</button></h4>
+string -- <input type="text" style="width:210px" data-rg-value="input_text01">
+<br>undefined -- <input type="text" style="width:210px" data-rg-value="input_text_undefined">
+<br>object -- <input type="text" style="width:210px" data-rg-value="input_text_obj">
+<br>string in number -- <input type="number" style="width:210px" data-rg-value="input_numberAsString">
+<br>object in textrea <br><textarea data-rg-value="input_text_obj" cols="55"></textarea>
