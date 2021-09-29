@@ -70,7 +70,7 @@ class Aux {
 
 
   /**
-   * Find {{ctrlProp}} occurrences in the txt and replace it with the controller property value.
+   * Find {ctrlProp} occurrences in the txt and replace it with the controller property value.
    * @param {string} txt - text which needs to be replaced
    * @param {string} openingChar - opening character: { or {{
    * @param {string} closingChar - closing character: } or }}

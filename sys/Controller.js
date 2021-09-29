@@ -158,7 +158,7 @@ class Controller extends Page {
    * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
    * @param {number} renderDelay - delay in miliseconds
    */
-  async render(controllerProp, renderDelay = 0) {
+  async render(controllerProp, renderDelay = 10) {
     this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
     await new Promise(r => setTimeout(r, renderDelay));
     this.renderGens(controllerProp);
