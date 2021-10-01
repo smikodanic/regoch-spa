@@ -261,7 +261,10 @@ class Aux {
    * @param {any} val - value to populate HTML form element (if val is undefined then it's empty string)
    */
   _setElementValue(elem, val = '') {
-    if (typeof val === 'object') { val = JSON.stringify(val); }
+    if (typeof val === 'object') {
+      if (elem.type === 'textarea') { val = JSON.stringify(val, null, 2); }
+      else { val = JSON.stringify(val); }
+    }
     elem.value = val;
     elem.setAttribute('value', val);
   }
