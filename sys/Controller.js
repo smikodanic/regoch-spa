@@ -188,11 +188,14 @@ class Controller extends Page {
    * Autorender can be enabled globally with app.autorender(true) or separatelly for every route with route option { autorender: true }
    */
   async autorenderListener(event) {
-    const arEvt = event.detail.arEvt;
+    const trigger = event.detail.trigger;
+    const funcName = event.detail.funcName;
+    const funcArgs = event.detail.funcArgs;
     if (this.autorender) {
-      this._debug('autorender', `--------- autorender START -- arEvt: ${arEvt} -- ctrl: ${this.constructor.name} ------`, 'olive', '#D9FC9B');
-      await this.render();
-      this._debug('autorender', `--------- autorender STOP -- arEvt: ${arEvt} -- ctrl: ${this.constructor.name} ------`, 'olive', '#D9FC9B');
+      this._debug('autorender', `--------- autorender START -- trigger: ${trigger} -- ctrl: ${this.constructor.name} -- ctrl method: ${funcName}(${funcArgs})  ------`, 'olive', '#D9FC9B');
+      await this.rend();
+      await this.postrend();
+      this._debug('autorender', `--------- autorender STOP -- trigger: ${trigger} -- ctrl: ${this.constructor.name} -- ctrl method: ${funcName}(${funcArgs})  ------`, 'olive', '#D9FC9B');
     }
   }
 

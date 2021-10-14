@@ -145,7 +145,8 @@
     </li>
     <li>
       <i>async</i> <strong>autorenderListener <i>() :Promise&lt;void&gt;</i></strong>
-      <p class="desc">Listener for the autorender event. Autorender will automatically update the controller property in the view.
+      <p class="desc">Listener for the autorender event. Autorender will execute controller's rend() and postrend() and thus automatically update the controller property in the view.
+        When autorender is used no need for calling rgPrint(), rgFor(), ...etc.
       </p>
     </li>
   </ul>
@@ -156,7 +157,7 @@
   <h2 class="section-heading">Autorender</h2>
   The autorender is a nice Regoch-SPA feature which provides auto rendering of the controller property.
   When autorender is enabled developer doesn't need to use rendering methods like <i>render(), rgPrint(), rgEcho(), ...etc.</i>.
-  Autorender will automatically update the controller property in the view.
+  Autorender will automatically update the controller property in the view by calling controller's rend() and postrend() methods.
   <br>
   <br>When controllers have a lot of properties which should be shown in the view it's not recommended to use autorender because it can slow down the application.
   Instead use render methods (rgPrint(), rgEcho(), rgIf(), rgFor(), ...) separately in every controller method.

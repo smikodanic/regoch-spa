@@ -200,7 +200,7 @@ class Aux {
         const propSplitted = funcName.split('.'); // ['print', 'inConsole']
         let obj = this;
         for (const prop of propSplitted) { obj = obj[prop]; }
-        obj(...funcArgs);
+        await obj(...funcArgs);
       } else {
         // execute the controller method
         if (!this[funcName]) { throw new Error(`Method "${funcName}" is not defined in the "${this.constructor.name}" controller.`); }

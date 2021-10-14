@@ -66,7 +66,7 @@ class Page extends DataRg {
       const viewPath = !!path_dest_cssSel && !!path_dest_cssSel.length ? 'inc/' + path_dest_cssSel[0] : '';
       const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
       const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
-      if(this._debug().loadInc) { console.log('\n******** path_dest_cssSel:: ', viewPath, dest, cssSel, '********'); }
+      if (this._debug().loadInc) { console.log('\n******** path_dest_cssSel:: ', viewPath, dest, cssSel, '********'); }
       if (!viewPath) { console.error('viewPath is not defined'); return; }
 
       // Get HTML content. First try from the cached JSON and if it doesn't exist then request from the server.
@@ -83,7 +83,7 @@ class Page extends DataRg {
         this._debug('loadInc', '--from server', '#8B0892');
       }
 
-      if(this._debug().loadInc) {
+      if (this._debug().loadInc) {
         console.log('elem::', elem);
         console.log('nodes loaded::', nodes);
         // console.log('str loaded::', str);
@@ -163,9 +163,9 @@ class Page extends DataRg {
     // get a HTML element with data-rg-view attribute
     const elem = document.querySelector(attrSel);
     this._debug('loadView', `--------- loadView ${attrSel} -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
-    if(this._debug().loadView) { console.log('elem::', elem); }
+    if (this._debug().loadView) { console.log('elem::', elem); }
     if (!elem) { throw new Error(`Element ${attrSel} not found.`); }
-    if (!viewPath){ throw new Error(`View path is not defined.`); }
+    if (!viewPath) { throw new Error(`View path is not defined.`); }
 
     // Get HTML content. First try from the cached JSON and if it doesn't exist then request from the server.
     let nodes, str;
@@ -181,7 +181,7 @@ class Page extends DataRg {
       this._debug('loadView', '--from server', '#8B0892');
     }
 
-    if(this._debug().loadView) {
+    if (this._debug().loadView) {
       console.log('nodes loaded::', nodes);
       // console.log('str loaded::', str);
     }
@@ -230,7 +230,7 @@ class Page extends DataRg {
 
     }
 
-    return {elem, str, nodes};
+    return { elem, str, nodes };
   }
 
 
@@ -243,7 +243,7 @@ class Page extends DataRg {
    * @returns {void}
    */
   async loadViews(viewDefs, isAsync) {
-    for(const viewDef of viewDefs) {
+    for (const viewDef of viewDefs) {
       const viewName = viewDef[0];
       const viewPath = viewDef[1];
       const dest = viewDef[2];
@@ -264,7 +264,7 @@ class Page extends DataRg {
     const attrSel = `[data-rg-view="${viewName}"]`;
     const elem = document.querySelector(attrSel);
     this._debug('emptyView', `--------- emptyView ${attrSel} | ${dest} ---------`, '#8B0892', '#EDA1F1');
-    if(this._debug().emptyView) { console.log('elem::', elem); }
+    if (this._debug().emptyView) { console.log('elem::', elem); }
     if (!elem) { return; }
 
     // empty the interpolated content
@@ -309,7 +309,7 @@ class Page extends DataRg {
       str = !!elem ? elem.outerHTML : '';
     }
 
-    return {nodes, str};
+    return { nodes, str };
   }
 
 
@@ -329,7 +329,7 @@ class Page extends DataRg {
     const nodes = answer.res.content.nodes; // Node[]
     const str = answer.res.content.str; // string
 
-    return {nodes, str};
+    return { nodes, str };
   }
 
 
@@ -549,9 +549,9 @@ class Page extends DataRg {
     // get the <head> HTML element
     const elem = document.querySelector('head');
     this._debug('loadHead', `--------- loadHead -- ${viewPath} ---------`, '#8B0892', '#EDA1F1');
-    if(this._debug().loadView) { console.log('elem::', elem); }
+    if (this._debug().loadView) { console.log('elem::', elem); }
     if (!elem) { throw new Error(`Element HEAD not found.`); }
-    if (!viewPath){ throw new Error(`View path is not defined.`); }
+    if (!viewPath) { throw new Error(`View path is not defined.`); }
 
     // Get HTML content. First try from the cached JSON and if it doesn't exist then request from the server.
     let nodes, str;
@@ -567,8 +567,8 @@ class Page extends DataRg {
       this._debug('loadHead', '--from server', '#8B0892');
     }
 
-    if(this._debug().loadHead) { console.log('nodes::', nodes); }
-    if(this._debug().loadHead) { console.log('str::', str); }
+    if (this._debug().loadHead) { console.log('nodes::', nodes); }
+    if (this._debug().loadHead) { console.log('str::', str); }
 
 
     // remove previously generated elements, i.e. elements with the data-rg-headgen attribute
@@ -600,7 +600,7 @@ class Page extends DataRg {
 
     }
 
-    return {elem, str, nodes};
+    return { elem, str, nodes };
   }
 
 

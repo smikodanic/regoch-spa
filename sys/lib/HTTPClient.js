@@ -1,6 +1,3 @@
-const eventEmitter = require('./eventEmitter');
-
-
 class HTTPClient {
 
   /**
@@ -272,11 +269,6 @@ class HTTPClient {
         resolve(ans);
       };
 
-    });
-
-    promise.then(ans => {
-      eventEmitter.emit('autorender', { arEvt: 'askOnce' });
-      return ans;
     });
 
     return promise;

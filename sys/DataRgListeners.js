@@ -98,7 +98,7 @@ class DataRgListeners extends Aux {
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
-        eventEmitter.emit('autorender', { arEvt: 'click' });
+        eventEmitter.emit('autorender', { trigger: 'rgClick', funcName, funcArgs });
       };
 
       elem.addEventListener('click', handler);
@@ -146,7 +146,7 @@ class DataRgListeners extends Aux {
         await this._funcExe(funcName, funcArgs);
 
         this._debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
-        eventEmitter.emit('autorender', { arEvt: 'keyup' });
+        eventEmitter.emit('autorender', { trigger: 'rgKeyup', funcName, funcArgs });
       };
 
       elem.addEventListener('keyup', handler);
@@ -183,7 +183,7 @@ class DataRgListeners extends Aux {
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
-        eventEmitter.emit('autorender', { arEvt: 'change' });
+        eventEmitter.emit('autorender', { trigger: 'rgChange', funcName, funcArgs });
       };
 
       elem.addEventListener('change', handler);
@@ -224,7 +224,7 @@ class DataRgListeners extends Aux {
           const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
           await this._funcExe(funcName, funcArgs);
           this._debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
-          eventEmitter.emit('autorender', { arEvt: 'evt' });
+          eventEmitter.emit('autorender', { trigger: 'rgEvt', funcName, funcArgs });
         };
 
         elem.addEventListener(eventName, handler);
