@@ -378,7 +378,7 @@ class Page extends DataRg {
    * Remove all SCRIPT tags with the data-rg-lazyjs attribute.
    */
   unlazyAllJS() {
-    const elems = document.querySelectorAll(`script[data-rg-lazyjs]`) || [];
+    const elems = document.querySelectorAll('script[data-rg-lazyjs]') || [];
     for (const elem of elems) {
       if (!!elem) { elem.remove(); }
     }

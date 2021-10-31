@@ -185,11 +185,11 @@ class DataRg extends DataRgListeners {
       else { val = val; }
 
       // apply pipe, for example: data-rg-print="val | slice(0,130)"
-      let pipe_funcDef = propPipeSplitted[1];
+      let pipe_funcDef = propPipeSplitted[1]; // slice(0, 130)
       if (!!pipe_funcDef && !!val) {
         pipe_funcDef = pipe_funcDef.trim();
-        const { funcName, funcArgs } = this._funcParse(pipe_funcDef);
-        if (typeof val[funcName] !== 'function') { console.error(`The "${propPipe}" has type ${typeof val} and can't' be piped.`); continue; }
+        const { funcName, funcArgs } = this._funcParse(pipe_funcDef, elem);
+        if (typeof val[funcName] !== 'function') { console.error(`The "${funcName}" is not valid function and can't be applied in "${attrVal}".`); continue; }
         val = val[funcName](...funcArgs);
       }
 
@@ -264,7 +264,7 @@ class DataRg extends DataRgListeners {
       let tf = false;
       if (!!funcDef) {
         // parse data-rg-if with the comparison operators: $not(), $eq(22), $ne(22), ...
-        const { funcName, funcArgs } = this._funcParse(funcDef);
+        const { funcName, funcArgs } = this._funcParse(funcDef, elem);
         tf = this._calcComparison(val, funcName, funcArgs);
       } else {
         // parse data-rg-if without the comparison operators
@@ -376,7 +376,7 @@ class DataRg extends DataRgListeners {
       let tf = false;
       if (!!funcDef) {
         // parse data-rg-disabled with the comparison operators: $not(), $eq(22), $ne(22), ...
-        const { funcName, funcArgs } = this._funcParse(funcDef);
+        const { funcName, funcArgs } = this._funcParse(funcDef, elem);
         tf = this._calcComparison(val, funcName, funcArgs);
       } else {
         // parse data-rg-disabled without the comparison operators

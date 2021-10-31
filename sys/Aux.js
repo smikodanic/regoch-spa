@@ -153,12 +153,12 @@ class Aux {
    * For example: products.list(25, 'str', $event, $element) -> {funcName: 'products.list', funcArgs: [55, elem]}
    * @param {string} funcDef - function definition in the data-rg- attribute
    * @param {HTMLElement} elem - data-rg- HTML element on which is the event applied
-   * @param {Event} event - event (click, keyup, ...) applied on the data-rg- element
+   * @param {Event} event - event (click, keyup, ...) applied on the data-rg- element (used only in the DataRgListeners)
    * @returns {{funcName:string, funcArgs:any[], funcArgsStr:string}
    */
   _funcParse(funcDef, elem, event) {
     const matched = funcDef.match(/^(.+)\((.*)\)$/);
-    if (!matched) { console.error(`_funcParseErr: Function "${funcDef}" has bad definition.`); return; }
+    if (!matched) { console.error(`_funcParseErr: Function "${funcDef}" has bad definition.`); return {}; }
     const funcName = matched[1] || ''; // function name: products.list
 
     const funcArgsStr = matched[2] || ''; // function arguments: 25, 'str', $event, $element, this.products
