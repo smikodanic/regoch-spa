@@ -39,35 +39,35 @@
 
     <h4>SOCKET METHODS</h4>
     <li>
-      <i>async</i> <b>count <i>() :number</i></b>
+      <i>async</i> <b>count <i>() :Promise&lt;number&gt;</i></b>
       <p class="desc">Get total number of saved sockets.</p>
     </li>
     <li>
-      <i>async</i> <b>getAll <i>() :Socket[]</i></b>
+      <i>async</i> <b>getAll <i>() :Promise&lt;Socket[]&gt;</i></b>
       <p class="desc">Get all sockets.</p>
     </li>
     <li>
-      <i>async</i> <b>add <i>(socket :Socket) :void</i></b>
+      <i>async</i> <b>add <i>(socket :Socket) :Promise&lt;void&gt;</i></b>
       <p class="desc">Add socket to sockets array which is used when we want to send message (broadcast) to all TCP sockets (TCP clients).</p>
     </li>
     <li>
-      <b>remove <i>(socket :Socket) :void</i></b>
+      <i>async</i> <b>remove <i>(socket :Socket) :Promise&lt;void&gt;</i></b>
       <p class="desc">
         1. Kill the web socket. Ensures that no more I/O activity happens on this socket
         <br>2. Remove socket from sockets array.
         <br>3. Remove socket from the rooms.</p>
     </li>
     <li>
-      <b>removeByQuery <i>(query :object) :void</i></b>
+      <i>async</i> <b>removeByQuery <i>(query :object) :Promise&lt;void&gt;</i></b>
       <p class="desc">First find all sockets by the query, then remove them.</p>
     </li>
     <li>
-      <i>async</i> <b>listIDs <i>(sort :'asc'|'desc') :number[]</i></b>
+      <i>async</i> <b>listIDs <i>(sort :'asc'|'desc') :Promise&lt;number[]&gt;</i></b>
       <p class="desc">Get array of all socket IDs. Because socket object is very big and hard to debug.
         <br><b>sort</b> - sort IDs ascending or descending</p>
     </li>
     <li>
-      <i>async</i> <b>find <i>(query :object) :Socket[]</i></b>
+      <i>async</i> <b>find <i>(query :object) :Promise&lt;Socket[]&gt;</i></b>
       <p class="desc">Find an array of sockets by querying the socket.extension object (see SocketExtension.js).
         <br><b>query</b> - search query object {id, ip, port, time, ... }. The fields are the socket.extension properties.
         <br>Query examples:
@@ -78,19 +78,19 @@
       </p>
     </li>
     <li>
-      <i>async</i> <b>findOne <i>(query :object) :Socket</i></b>
+      <i>async</i> <b>findOne <i>(query :object) :Promise&lt;Socket&gt;</i></b>
       <p class="desc">Find a socket by querying the socket.extension object.</p>
     </li>
     <li>
-      <i>async</i> <b>exists <i>(socket :Socket) :boolean</i></b>
+      <i>async</i> <b>exists <i>(socket :Socket) :Promise&lt;boolean&gt;</i></b>
       <p class="desc">Find out if the socket exists i.e. if the socket is saved in the storage.</p>
     </li>
     <li>
-      <i>async</i> <b>setNick <i>(socket :Socket, nickname: string) :void</i></b>
+      <i>async</i> <b>setNick <i>(socket :Socket, nickname: string) :Promise&lt;void&gt;</i></b>
       <p class="desc">Set an unique nick name to the socket (client). If the nickname already exists the error will be thrown.</p>
     </li>
     <li>
-      <i>async</i> <b>purge <i>(sec :number) :void</i></b>
+      <i>async</i> <b>purge <i>(sec :number) :Promise&lt;void&gt;</i></b>
       <p class="desc">Purge disconnected sockets periodically every sec seconds. If sec=0 then purge once.
         <br>Check the readyState for every socket periodically. If the socket is readOnly or writeOnly remove it.
         <br>readyState: opening, open, readOnly, writeOnly -- <a href="https://nodejs.org/api/net.html#net_socket_readystate" target="_blank">https://nodejs.org/api/net.html#net_socket_readystate</a></p>
@@ -111,16 +111,16 @@
       <p class="desc">Remove socket from all rooms. For example in case that socket is closed.</p>
     </li>
     <li>
-      <i>async</i> <b>roomList <i>() :[{name:string, socketIds:number[]}]</i></b>
+      <i>async</i> <b>roomList <i>() :Promise&lt;[{name:string, socketIds:number[]}]&gt;</i></b>
       <p class="desc">List all the rooms. The returned value is array of objects <b>{name:string, socketIds:number[]}</b>
         where name is the room name and socketIds are socket ids in the room.</p>
     </li>
     <li>
-      <i>async</i> <b>roomListOf <i>(socket :Socket) :[{name:string, socketIds:number[]}]</i></b>
+      <i>async</i> <b>roomListOf <i>(socket :Socket) :Promise&lt;[{name:string, socketIds:number[]}]&gt;</i></b>
       <p class="desc">List all the rooms where is the specific client.</p>
     </li>
     <li>
-      <i>async</i> <b>roomFindOne <i>(roomName :string) :{name:string, socketIds:number[]}</i></b>
+      <i>async</i> <b>roomFindOne <i>(roomName :string) :Promise&lt;{name:string, socketIds:number[]}&gt;</i></b>
       <p class="desc">Find a room by room name.</p>
     </li>
   </ul>
