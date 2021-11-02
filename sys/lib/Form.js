@@ -123,16 +123,19 @@ class Form {
     let i = 1;
     for (const elem of elems) {
       if (elem.type === 'checkbox') {
-        if (elem.checked) { valArr.push(elem.value); val = valArr; }
+        const v = this._typeConvertor(elem.value);
+        if (elem.checked) { valArr.push(v); val = valArr; }
         if (i === elems.length && !val) { val = []; }
 
       } else if (elem.type === 'radio') {
-        if (elem.checked) { val = elem.value; }
+        const v = this._typeConvertor(elem.value);
+        if (elem.checked) { val = v; }
 
       } else if (elem.type === 'select-multiple') {
         const opts = elem.selectedOptions; // selected options
         for (const opt of opts) {
-          valArr.push(opt.value);
+          const v = this._typeConvertor(opt.value);
+          valArr.push(v);
           val = valArr;
         }
         if (i === elems.length && !val) { val = []; }
@@ -141,7 +144,8 @@ class Form {
         val = elem.valueAsNumber;
 
       } else {
-        val = elem.value;
+        const v = this._typeConvertor(elem.value);
+        val = v;
       }
       i++;
     }
@@ -209,6 +213,32 @@ class Form {
     for (const key of keys) {
       this.delControl(key);
     }
+  }
+
+
+  /**
+   * Convert string into integer, float or boolean.
+   * @param {string} value
+   * @returns {string | number | boolean | object}
+   */
+  _typeConvertor(value) {
+    function isJSON(str) {
+      try { JSON.parse(str); }
+      catch (err) { return false; }
+      return true;
+    }
+
+    if (!!value && !isNaN(value) && !/\./.test(value)) { // convert string into integer (12)
+      value = parseInt(value, 10);
+    } else if (!!value && !isNaN(value) && /\./.test(value)) { // convert string into float (12.35)
+      value = parseFloat(value);
+    } else if (value === 'true' || value === 'false') { // convert string into boolean (true)
+      value = JSON.parse(value);
+    } else if (isJSON(value)) {
+      value = JSON.parse(value);
+    }
+
+    return value;
   }
 
 

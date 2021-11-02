@@ -244,14 +244,16 @@ class DataRgListeners extends Aux {
    * data-rg-set="product.name"
    * data-rg-set="product.name @@ rgPrint" -> after set do rgPrint() which will update the view as the user type
    * data-rg-set="product.name @@ rgSwich" -> after set do rgSwitch() which will render data-rg-switch elements
+   * @param {string} controllerProp - part of the attribute value which relates to the controller property,
    * @returns {void}
    */
-  rgSet() {
+  rgSet(controllerProp) {
     this._debug('rgSet', '--------- rgSet ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-set';
-    const elems = document.querySelectorAll(`[${attrName}]`);
-    this._debug('rgSet', `found elements:: ${elems.length}`, 'orange');
+    let elems = document.querySelectorAll(`[${attrName}]`);
+    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
+    this._debug('rgSet', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -264,13 +266,14 @@ class DataRgListeners extends Aux {
       const doAfter_arr = !!doAfter_str ? doAfter_str.split(',') : [];
 
       const handler = event => {
-        this._setControllerValue(prop, elem.value);
+        const val = this._getElementValue(elem);
+        this._setControllerValue(prop, val);
 
         for (const doAfter of doAfter_arr) {
           const doAfter2 = doAfter.trim();
           this[doAfter2](prop);
         }
-        this._debug('rgSet', `controller property:: ${prop} = ${elem.value}`, 'orange');
+        this._debug('rgSet', `controller property:: ${prop} = ${val}`, 'orange');
       };
 
       handler(); // Execute the handler when controller is executed. This will set controller property defined in constructor() in the view.
@@ -284,7 +287,7 @@ class DataRgListeners extends Aux {
 
 
   /**
-   * data-rg-bind="<controllerProp>"
+   * data-rg-bind="<controllerProp> [@@ <doAfter>]"
    * Bind controller property and view INPUT, SELECT, TEXTAREA, ...etc in both directions.
    * When the view is updated the controller property will be updated and when controller property is updated the view will be updated.
    * This is a shortcut of rgSet and rgValue.

@@ -271,6 +271,52 @@ class Aux {
 
 
   /**
+   * Get the HTML form element value. Make correction according to the element & value type.
+   * @param {HTMLElement} elem - HTML form element
+   * @returns {any} val
+   */
+  _getElementValue(elem) {
+    // pickup all elements with same name="something", for example checkboxes
+    const name = elem.name;
+    const elems = document.querySelectorAll(`[name="${name}"]`);
+
+    let val;
+    const valArr = [];
+    let i = 1;
+    for (const elem of elems) {
+      if (elem.type === 'checkbox') {
+        const v = this._typeConvertor(elem.value);
+        if (elem.checked) { valArr.push(v); val = valArr; }
+        if (i === elems.length && !val) { val = []; }
+
+      } else if (elem.type === 'radio') {
+        const v = this._typeConvertor(elem.value);
+        if (elem.checked) { val = v; }
+
+      } else if (elem.type === 'select-multiple') {
+        const opts = elem.selectedOptions; // selected options
+        for (const opt of opts) {
+          const v = this._typeConvertor(opt.value);
+          valArr.push(v);
+          val = valArr;
+        }
+        if (i === elems.length && !val) { val = []; }
+
+      } else if (elem.type === 'number') {
+        val = elem.valueAsNumber;
+
+      } else {
+        const v = this._typeConvertor(elem.value);
+        val = v;
+      }
+      i++;
+    }
+
+    return val;
+  }
+
+
+  /**
    * Create unique id.
    */
   _uid() {
