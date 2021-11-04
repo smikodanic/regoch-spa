@@ -143,6 +143,9 @@ class Form {
       } else if (elem.type === 'number') {
         val = elem.valueAsNumber;
 
+      } else if (elem.type === 'password') {
+        val = elem.value;
+
       } else {
         const v = this._typeConvertor(elem.value);
         val = v;
