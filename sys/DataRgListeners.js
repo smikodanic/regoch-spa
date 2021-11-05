@@ -273,7 +273,7 @@ class DataRgListeners extends Aux {
           const doAfter2 = doAfter.trim();
           this[doAfter2](prop);
         }
-        this._debug('rgSet', `controller property:: ${prop} = ${val}`, 'orange');
+        this._debug('rgSet', `Executed rgSet listener --> controller property:: ${prop} = ${val}`, 'orange');
       };
 
       handler(); // Execute the handler when controller is executed. This will set controller property defined in constructor() in the view.
@@ -319,13 +319,14 @@ class DataRgListeners extends Aux {
 
       /** LISTENER **/
       const handler = event => {
-        this._setControllerValue(prop, elem.value);
+        const val = this._getElementValue(elem);
+        this._setControllerValue(prop, val);
 
         for (const doAfter of doAfter_arr) {
           const doAfter2 = doAfter.trim();
           this[doAfter2](prop);
         }
-        this._debug('rgBind', `rgBind listener -- controller property:: ${prop} = ${elem.value}`, 'orange');
+        this._debug('rgBind', `Executed rgBind listener -- controller property:: ${prop} = ${val}`, 'orange');
       };
 
       elem.addEventListener('input', handler);

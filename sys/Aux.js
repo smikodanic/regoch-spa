@@ -167,6 +167,7 @@ class Aux {
       .map(arg => {
         arg = arg.trim().replace(/\'|\"/g, '');
         if (arg === '$element') { arg = elem; }
+        else if (arg === '$value') { arg = this._getElementValue(elem); }
         else if (arg === '$event') { arg = event; }
         else if (arg === 'true' || arg === 'false') { arg = JSON.parse(arg); } // boolean
         else if (/^-?\d+\.?\d*$/.test(arg)) { arg = +arg; } // number
@@ -271,14 +272,69 @@ class Aux {
 
 
   /**
-   * Get the HTML form element value. Make correction according to the element & value type.
+   * Get the HTML form element value. Make correction according to the element type & value type.
+   * Element types: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
    * @param {HTMLElement} elem - HTML form element
-   * @returns {any} val
+   * @returns {any} val - single value or array for checkbox and select-multiple
    */
   _getElementValue(elem) {
     // pickup all elements with same name="something", for example checkboxes
+    let val;
+
+    if (elem.type === 'checkbox') {
+      const elems = document.querySelectorAll(`[name="${elem.name}"]`);
+      const valArr = [];
+      let i = 1;
+      for (const elem of elems) {
+        const v = this._typeConvertor(elem.value);
+        if (elem.checked) { valArr.push(v); val = valArr; }
+        if (i === elems.length && !val) { val = []; }
+        i++;
+      }
+
+    } else if (elem.type === 'select-multiple') {
+      const opts = elem.selectedOptions; // selected options
+      const valArr = [];
+      let i = 1;
+      for (const opt of opts) {
+        const v = this._typeConvertor(opt.value);
+        valArr.push(v);
+        val = valArr;
+        if (i === opts.length && !val) { val = []; }
+        i++;
+      }
+
+    } else if (elem.type === 'radio') {
+      const v = this._typeConvertor(elem.value);
+      if (elem.checked) { val = v; }
+
+    } else if (elem.type === 'number') {
+      const v = elem.valueAsNumber;
+      val = v;
+
+    } else if (elem.type === 'password') {
+      val = elem.value;
+
+    } else {
+      const v = this._typeConvertor(elem.value);
+      val = v;
+    }
+
+    return val;
+  }
+
+
+  /**
+   * Get the HTML form element value. Make correction according to the element type & value type.
+   * Element types: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+   * @param {HTMLElement} elem - HTML form element
+   * @returns {any} val
+   */
+  _getElementValue_old(elem) {
+    // pickup all elements with same name="something", for example checkboxes
     const name = elem.name;
     const elems = document.querySelectorAll(`[name="${name}"]`);
+    console.log(elems);
 
     let val;
     const valArr = [];
@@ -304,6 +360,9 @@ class Aux {
 
       } else if (elem.type === 'number') {
         val = elem.valueAsNumber;
+
+      } else if (elem.type === 'password') {
+        val = elem.value;
 
       } else {
         const v = this._typeConvertor(elem.value);

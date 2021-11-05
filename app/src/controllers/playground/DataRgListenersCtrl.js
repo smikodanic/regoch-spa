@@ -5,6 +5,16 @@ class DataRgListenersCtrl extends Controller {
 
   constructor(app) {
     super();
+    this.debugOpts = {
+      rgKill: false,
+      rgHref: false,
+      rgClick: false,
+      rgKeyup: false,
+      rgChange: false,
+      rgEvt: false,
+      rgSet: false,
+      rgChange: false
+    };
   }
 
   async loader(trx) {
@@ -27,8 +37,8 @@ class DataRgListenersCtrl extends Controller {
 
     // test CLICK2
     this.products = [
-      {name: 'Toy', price: 22.34},
-      {name: 'Flower', price: 88.56},
+      { name: 'Toy', price: 22.34 },
+      { name: 'Flower', price: 88.56 },
     ];
   }
 
@@ -43,6 +53,14 @@ class DataRgListenersCtrl extends Controller {
 
 
 
+
+  // show the history
+  historyData() {
+    console.log('window.history::', window.history);
+  }
+
+
+
   // A) fetch the API response and show it in the data-rg-print element   B) change the clicked button color
   async runCLICK(n, str, ...rest) {
     console.log('This is a click. Params::', n, str, rest);
@@ -51,7 +69,7 @@ class DataRgListenersCtrl extends Controller {
     console.log('answer::', this.answer);
 
     // make the clicked button green
-    if(rest[2]) {
+    if (rest[2]) {
       const elem = rest[2];
       elem.style.color = 'red';
       elem.style.backgroundColor = 'lightgreen';
@@ -63,11 +81,16 @@ class DataRgListenersCtrl extends Controller {
     console.log('this.prods::', prods);
   }
 
-  runCLICK3 (str, num, bool, reg) {
+  runCLICK3(str, num, bool, reg) {
     console.log('str::', typeof str, str);
     console.log('num::', typeof num, num);
     console.log('bool::', typeof bool, bool);
     console.log('reg::', typeof reg, reg, '--- reg.test("oglas")::', reg.test('oglas'));
+  }
+
+  // click on the INPUT tag
+  runCLICK4(val) {
+    console.log('val::', typeof val, val);
   }
 
 
@@ -84,15 +107,23 @@ class DataRgListenersCtrl extends Controller {
   }
 
 
+  // run on keyup event
+  runKEYUP(elem, val, evt) {
+    console.log('runKEYUP $element::', elem);
+    console.log('runKEYUP $value::', typeof val, val);
+    console.log('runKEYUP $event::', evt);
+  }
+
 
   // update data-rg-switch and data-rg-if every time the SELECT is changed
-  async runCHANGE() {
-    await this.rgSwitch('mySelect');
-
-    this.ifThree = this.mySelect === 'three';
-    await this.rgIf('ifThree');
-
-    this.rgPrint('mySelect');
+  async runCHANGE(n, val) {
+    if (n === 1) {
+      this.change1 = val;
+      this.rgPrint('change1');
+    } else if (n === 2) {
+      this.change2 = val;
+      this.renders('change2');
+    }
   }
 
 
@@ -104,22 +135,15 @@ class DataRgListenersCtrl extends Controller {
   }
 
 
-  // run on keyup event
-  runKEYUP(elem, evt) {
-    console.log('runKEYUP $element::', elem);
-    console.log('runKEYUP $event::', evt);
+  // change the controller value and affect data-rg-bind element
+  runBIND() {
+    this.bander = 'I changed it !!!';
+    this.rgBind('bander');
+    this.rgPrint('bander');
   }
-
-
-
-  // show the history
-  historyData() {
-    console.log('window.history::', window.history);
-  }
-
 
 
 }
 
 
-module.exports =  DataRgListenersCtrl;
+module.exports = DataRgListenersCtrl;

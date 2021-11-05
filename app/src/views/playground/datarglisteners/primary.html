@@ -23,39 +23,93 @@ Click on the button to get the history data. Open the browser dev tools console.
 <br><button data-rg-click="runCLICK2(this.products.1.name)">CLICK 2</button> - test function argument as controller property, for example <i>data-rg-click="runCLICK2(this.products.1.name)"</i>
 <br>
 <br><button data-rg-click="runCLICK3('some text', 333, false, /as$/)">CLICK 3</button> - test different function argumant types: string, number, boolean, regexp</i>
+<br>
+<br><input value="Perica" data-rg-click="runCLICK4($value)"> - click on the input field
 
 
 <br><br>
 <h4>DATA-RG-KEYUP</h4>
 Focus the INPUT field, type some letters and press enter. (Open console to watch the result.)
-<br><input type="text" style="width:210" data-rg-keyup="runKEYUP($element, $event)"> - bind to all keyup event codes
-<br><input type="text" style="width:210" data-rg-keyup="runKEYUP($element, $event) @@ enter"> - bind to "enter" keyup event.code
+<br><input type="text" style="width:210" data-rg-keyup="runKEYUP($element, $value, $event)"> - bind to all keyup event codes
+<br><input type="text" value="123.45" style="width:210" data-rg-keyup="runKEYUP($element, $value, $event) @@ enter"> - bind to "enter" keyup event.code
 
 
 <br><br>
 <h4>DATA-RG-CHANGE</h4>
-Update data-rg-switch and data-rg-if every time the SELECT is changed. <br>
-<select data-rg-change="runCHANGE()" data-rg-set="mySelect @@ rgSwitch, rgPrint">
+Execute controller method on element's "change" event. <br>
+<input type="text" data-rg-change="runCHANGE(1, $value)"> <span data-rg-print="change1"></span>
+<br>
+<br>
+<select data-rg-change="runCHANGE(2, $value)">
   <option value="one">one</option>
   <option value="two" selected>two</option>
   <option value="three">three</option>
 </select>
-<ol data-rg-switch="mySelect">
+<ol data-rg-switch="change2">
   <li data-rg-switchcase="one">ONE</li>
   <li data-rg-switchcase="two">TWO</li>
   <li data-rg-switchcase="three">THREE</li>
 </ol>
 <div>
-  Selected value is: <b data-rg-print="mySelect"></b>
-  <p data-rg-if="ifThree">The selected value is <b data-rg-print="mySelect @@ inset"></b> (data-rg-if example).</p>
+  Selected value is: <b data-rg-print="change2"></b>
+  <p data-rg-if="change2 $eq(three)" style="color:blueviolet">The selected value is <b data-rg-print="change2 @@ inset"></b> (data-rg-if example).</p>
 </div>
-<div></div>
 
 
 <br><br>
-<h4>EVT</h4>
+<h4>DATA-RG-EVT</h4>
 <span style="font-weight:bold" data-rg-evt="
   mouseenter @@ runEVT($element, $event, 'red') &&
   mouseleave @@ runEVT($element, $event, 'green') &&
   click @@ runEVT($element, $event, 'blue')
 ">mouseenter and click this text</span>
+
+
+
+<br><br>
+<h4>DATA-RG-SET</h4>
+Set the controller value on "input" JS DOM event i.e. on every input change.
+<br>
+<input type="checkbox" name="my_set1" data-rg-set="mySet1 @@ rgPrint" value="125"> 125 &nbsp;&nbsp;
+<input type="checkbox" name="my_set1" data-rg-set="mySet1 @@ rgPrint" value="sasa" checked> sasa &nbsp;&nbsp;
+<input type="checkbox" name="my_set1" data-rg-set="mySet1 @@ rgPrint" value="true"> true
+&nbsp;&nbsp; <span data-rg-print="mySet1"></span>
+<br>
+<br>
+<select data-rg-set="mySet2 @@ rgPrint" size="5" multiple>
+  <option value="225" selected>225</option>
+  <option value="18.923">18.923</option>
+  <option value="false" selected>false</option>
+  <option value='{"x": 22, "y":"something", "z": true}'>{"x": 22, "y":"something", "z": true}</option>
+  <option value="Tom">Tom</option>
+</select>
+&nbsp;&nbsp; <span data-rg-print="mySet2"></span>
+<br>
+<br>
+<select data-rg-set="mySet3 @@ rgPrint">
+  <option value="Lara">Lara</option>
+  <option value="Dara" selected>Dara</option>
+  <option value="Mara">Mara</option>
+</select>
+&nbsp;&nbsp; <span data-rg-print="mySet3"></span>
+<br>
+<br>
+<input type="radio" name="my_set4" data-rg-set="mySet4 @@ rgIf,rgPrint" value="YES"> YES &nbsp;&nbsp;
+<input type="radio" name="my_set4" data-rg-set="mySet4 @@ rgIf,rgPrint" value="NO" checked> NO
+&nbsp;&nbsp; <span data-rg-if="mySet4 $eq(YES)" data-rg-print="mySet4" style="color:green"></span>
+&nbsp;&nbsp; <span data-rg-if="mySet4 $eq('NO')" data-rg-print="mySet4" style="color:red"></span>
+<br>
+<br>
+<input type="number" value="88.21" data-rg-set="mySet5 @@ rgPrint"> &nbsp;&nbsp; <span data-rg-print="mySet5"></span>
+<br>
+<br>
+<input type="text" value="Saša" data-rg-set="mySet9 @@ rgPrint"> &nbsp;&nbsp; <span data-rg-print="mySet9"></span>
+
+
+<br><br>
+<h4>DATA-RG-BIND</h4>
+<input type="text" data-rg-bind="bander @@ rgPrint">
+<br>
+<br>Value is: <span data-rg-print="bander"></span>
+<br>
+<br><button data-rg-click="runBIND()">Change controller value</button>

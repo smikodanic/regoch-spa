@@ -95,7 +95,7 @@ class Controller extends Page {
    */
   async processing(trx) {
     await this.loader(trx);
-    await this.renderLsns();
+    // await this.renderLsns();
     this.rgFlicker(false);
     await this.init(trx);
     await this.rend(trx);

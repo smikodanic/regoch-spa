@@ -38,14 +38,15 @@
     <li>
       <b>rgClick <i>(controllerMeth :string) :void</i></b>
       <p class="desc">Parser for the <b>data-rg-click="&lt;controllerMeth&gt;"</b>. Event "click".
-        <br>The <b>$element</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-click="func(5, 'str', 8, 9, $element, $event)"</small>
+        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-click="func(5, 'str', 8, 9, $element, $event)"</small>
+        <br>The $value is element.value with the corrected data type. For example if element.value is 34.58 it's converted to Number.
         <br><b>controllerMeth</b> - controller method name. When defined only the data-rg elements with this attribute value will be rendered.
         <br>Example: &lt;button data-rg-click="showData()"&gt;</p>
     </li>
     <li>
       <b>rgKeyup <i>(controllerMeth :string) :void</i></b>
       <p class="desc">Parser for the <b>data-rg-keyup="&lt;controllerMeth&gt; [@@ &lt;keyCode&gt;]"</b>. Event "keyup".
-        <br>The <b>$element</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-keyup="func($event, $element, 'Peter') @@ enter"</small>
+        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-keyup="func($event, $element, 'Peter') @@ enter"</small>
         <br><b>controllerMeth</b> - controller method name
         <br>Example: &lt;button data-rg-click="showData()"&gt;</p>
     </li>
@@ -53,7 +54,7 @@
       <b>rgChange <i>(controllerMeth :string): void</i></b>
       <p class="desc">Parser for the <b>data-rg-change="&lt;controllerMethod&gt;"</b>. Event "change".
         Listen for change and execute the function i.e. controller method. Usually used in the HTML form fields like INPUT or SELECT tag.
-        <br>The <b>$element</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-change="func(5, 'str', 8, 9, $element, $event)"</small>
+        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-change="func(5, 'str', 8, 9, $element, $event)"</small>
         <br><b>controllerMeth</b> - controller method name
         <br>Example: &lt;input data-rg-change="showData()"&gt;</p>
     </li>
@@ -61,7 +62,7 @@
       <b>rgEvt <i>() :void</i></b>
       <p class="desc">Parser for the <b>data-rg-evt="eventName1 @@ <function1> [&& eventName2 @@ <function2>]"</b>.
         Listen for any attached event and execute the function i.e. controller method. Events can be chained with the <b>&&</b>.
-        <br>The <b>$element</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-evt="func(5, 'str', 8, 9, $element, $event)"</small>
+        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-evt="func(5, 'str', 8, 9, $element, $event)"</small>
         <br>Example: &lt;input data-rg-evt="showData()"&gt;</p>
     </li>
     <li>
