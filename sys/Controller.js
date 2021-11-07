@@ -168,7 +168,7 @@ class Controller extends Page {
     await this.renderLsns();
     await new Promise(r => setTimeout(r, renderDelay));
     eventEmitter.on('autorender', this.autorenderListener.bind(this));
-    this._debug('render', `--------- render (end) ------`, 'green', '#D9FC9B');
+    this._debug('render', `--------- render (end) -- controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
   }
 
 
