@@ -32,7 +32,7 @@ module.exports = [
   ['when', '/playground/navig1', 'Navig1Ctrl'],
   ['when', '/playground/navig2', 'Navig2Ctrl'],
   ['redirect', '/playground/navig3', '/playground/navig1'],
-  ['when', '/playground/model', 'ModelCtrl'],
+  ['when', '/playground/model2', 'Model2Ctrl'],
   ['when', '/playground/autorender', 'AutorenderCtrl', { autorender: true }],
 
   ['notfound', 'NotfoundCtrl'],

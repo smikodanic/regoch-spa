@@ -1,12 +1,12 @@
 const { Controller, syslib } = require('../../../../sys');
 
 
-class ModelCtrl extends Controller {
+class Model2Ctrl extends Controller {
 
   constructor(app) {
     super();
 
-    this.model = new syslib.Model([
+    this.model = new syslib.Model2([
       'company.name',
       'company.year',
       'company.isActive',
@@ -23,7 +23,7 @@ class ModelCtrl extends Controller {
       set: false,
       reset: false
     };
-    this.debugOpts = {render: true};
+    this.debugOpts = { render: true };
   }
 
 
@@ -31,7 +31,7 @@ class ModelCtrl extends Controller {
     this.setTitle('Model Test');
     this.loadCSS(['https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-coy.min.css']);
     this.unloadCSS(['/assets/css/theme.css']);
-    await this.loadView('#primary', 'playground/model/primary.html');
+    await this.loadView('#primary', 'playground/model2/primary.html');
   }
 
 
@@ -42,8 +42,8 @@ class ModelCtrl extends Controller {
       isActive: false,
       cities: ['London', 'Tokyo', 'Paris'],
       employees: [
-        {name: 'John Doe', age: 22},
-        {name: 'Melinda Doe', age: 21}
+        { name: 'John Doe', age: 22 },
+        { name: 'Melinda Doe', age: 21 }
       ]
     };
 
@@ -107,4 +107,4 @@ class ModelCtrl extends Controller {
 }
 
 
-module.exports =  ModelCtrl;
+module.exports = Model2Ctrl;

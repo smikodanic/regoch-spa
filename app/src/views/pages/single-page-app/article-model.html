@@ -1,10 +1,14 @@
 <header class="docs-header">
-  <h1 class="docs-heading">Model</h1>
+  <h1 class="docs-heading">Model2</h1>
   <section class="docs-intro">
-    <i>class Model extends Page</i>
+    <i>class Model2</i>
     <br><br>
     <p>Define the model i.e. controller properties which will be permanently monitored and when modification occurs the render of the data-rg- elements will be triggered.
-    This makes the controller reactive and view will respond on the controller property changes.</p>
+      This makes the controller reactive and view will respond on the controller property changes.
+      <br>
+      <br>
+      <i>Warning: The Model2 is using setInterval and it's obsolete modeling method. Use Model insted which is using Proxy.</i>
+    </p>
   </section>
 </header>
 
@@ -46,42 +50,42 @@
       <td>model debugging options</td>
       <td>object</td>
       <td><small>{
-      fill: false,
-      watch: false,
-      watchStart: false,
-      watchStop: false,
-      set: false,
-      reset: false,
-    }</small></td>
+          fill: false,
+          watch: false,
+          watchStart: false,
+          watchStop: false,
+          set: false,
+          reset: false,
+          }</small></td>
     </tr>
   </table>
 </section>
 
 <section class="docs-section" id="item-17-2">
   <h2 class="section-heading">Methods</h2>
-	<ul class="methods">
+  <ul class="methods">
     <li>
       <b>constructor <i>(controllerProps :string[], ctrl :Controller) :void</i></b>
       <p class="desc">Creates the Model instance which can be used in the controller.
-      <br><b>controllerProps</b> - controller properties which will be monitored (watched). For example: <small>['company.name','company.year','company.isActive']</small>
-      <br><b>ctrl</b> - the current controller instance
+        <br><b>controllerProps</b> - controller properties which will be monitored (watched). For example: <small>['company.name','company.year','company.isActive']</small>
+        <br><b>ctrl</b> - the current controller instance
     </li>
     <li>
       <strong>fill <i>() :void</i></strong>
       <p class="desc">Copy the controller values ('this.company.name') and set the $model values ('this.$model.company.name).
-      The this.$model is the previous controller property value value and it's compared with the current controller value.
-      For example: this.company.name vs. this.$model.company.name .
-      <br><i>The method is used internally and in the most cases the developer will not need it.</i>
+        The this.$model is the previous controller property value value and it's compared with the current controller value.
+        For example: this.company.name vs. this.$model.company.name .
+        <br><i>The method is used internally and in the most cases the developer will not need it.</i>
     </li>
     <li>
       <strong>watch <i>() :void</i></strong>
       <p class="desc">Compare current controller value and previously set $model values. If they are different then render the data-rg elements.
-      <br><i>The method is used internally and in the most cases the developer will not need it.</i></p>
+        <br><i>The method is used internally and in the most cases the developer will not need it.</i></p>
     </li>
     <li>
       <b>watchStart <i>(msInt :number) :void</i></b>
       <p class="desc">Start the watch process, the monitoring loop.
-      <br><b>msInt</b> - the monitoring period in miliseconds</p>
+        <br><b>msInt</b> - the monitoring period in miliseconds</p>
     </li>
     <li>
       <b>watchStop <i>() :void</i></b>
@@ -90,16 +94,16 @@
     <li>
       <b>set <i>(prop :string, val :any) :Promise&lt;void&gt;</i></b>
       <p class="desc">Update the $model and controller property which is in the schema and render the data-rg elements.
-      <br>This is useful for the <b>stream of data</b> when data is permanently coming and the data-rg elements should be re-rendered.
-      <br><b>prop</b> - controller / $model property name: <i>'company.name'</i>
-      <br><b>val</b> - controller / $model property value
+        <br>This is useful for the <b>stream of data</b> when data is permanently coming and the data-rg elements should be re-rendered.
+        <br><b>prop</b> - controller / $model property name: <i>'company.name'</i>
+        <br><b>val</b> - controller / $model property value
       </p>
     </li>
     <li>
       <b>reset <i>(prop :string) :void</i></b>
       <p class="desc">Update the $model and controller property with the <i>undefined</i> and re-render the data-rg elements.
-      <br><b>prop</b> - controller / $model property name: <i>'company.name'</i>
-      <br><i>TIP: When modelReset() is used (without argument) then all $model properties and controller properties which are in the controllerProps are set to <i>undefined</i></i>
+        <br><b>prop</b> - controller / $model property name: <i>'company.name'</i>
+        <br><i>TIP: When modelReset() is used (without argument) then all $model properties and controller properties which are in the controllerProps are set to <i>undefined</i></i>
       </p>
     </li>
   </ul>
@@ -114,7 +118,7 @@ class ModelCtrl extends Controller {
   constructor(app) {
     super();
 
-    this.model = new syslib.Model([
+    this.model = new syslib.Model2([
       'company.name',
       'company.year',
       'company.isActive',
@@ -168,6 +172,3 @@ class ModelCtrl extends Controller {
 
 }
   </code></pre>
-
-
-

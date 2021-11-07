@@ -35,8 +35,8 @@ const LoginCtrl = require('./controllers/playground/LoginCtrl');
 const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
 const Navig1Ctrl = require('./controllers/playground/Navig1Ctrl');
 const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
-const ModelCtrl = require('./controllers/playground/ModelCtrl');
 const AutorenderCtrl = require('./controllers/playground/AutorenderCtrl');
+const Model2Ctrl = require('./controllers/playground/Model2Ctrl');
 
 
 // auth
@@ -87,8 +87,8 @@ app
     LoginokCtrl,
     Navig1Ctrl,
     Navig2Ctrl,
-    ModelCtrl,
     AutorenderCtrl,
+    Model2Ctrl,
 
     // not found page
     NotfoundCtrl
