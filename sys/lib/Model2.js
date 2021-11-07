@@ -1,4 +1,4 @@
-class Model {
+class Model2 {
 
   /**
    * @param {Controller} ctrl - controller instance
@@ -94,7 +94,7 @@ class Model {
    */
   watchStart(msInt = 400) {
     this._debug('watchStart', `--------- watchStart (ctrl: ${this.ctrl.constructor.name})------`, '#32938C', '#BAF6F2');
-    if (this.intervalID) {  console.log(`%c ModelWarn:: Watch is already running.`, `color:Maroon; background:LightYellow`); return; }
+    if (this.intervalID) { console.log(`%c ModelWarn:: Watch is already running.`, `color:Maroon; background:LightYellow`); return; }
     const watch = this.watch.bind(this);
     this.intervalID = setInterval(watch, msInt);
   }
@@ -120,7 +120,7 @@ class Model {
 
     // check if the property name is in the schema
     const props = this.controllerProps;
-    if (props.indexOf(prop) === -1) { console.error(`setErr:: The controller property ${prop} is not in the $modelDef.`); return;}
+    if (props.indexOf(prop) === -1) { console.error(`setErr:: The controller property ${prop} is not in the $modelDef.`); return; }
 
     this._setModelValue(prop, val);
     this.ctrl._setControllerValue(prop, val);
@@ -140,7 +140,7 @@ class Model {
     const props = !!prop ? [prop] : this.controllerProps;
 
     // check if the property name is in the schema
-    if (!!prop && props.indexOf(prop) === -1) { console.error(`resetErr:: The controller property ${prop} is not in the $modelDef.`); return;}
+    if (!!prop && props.indexOf(prop) === -1) { console.error(`resetErr:: The controller property ${prop} is not in the $modelDef.`); return; }
 
     for (const prop of props) {
       const val = undefined;
@@ -185,8 +185,8 @@ class Model {
         obj = obj[prop];
       }
       else { // on last property associate the value
-        if (typeof val === 'object' && !Array.isArray(val)) { obj[prop] = { ...val };}
-        if (typeof val === 'object' && Array.isArray(val)) { obj[prop] = [ ...val ];}
+        if (typeof val === 'object' && !Array.isArray(val)) { obj[prop] = { ...val }; }
+        if (typeof val === 'object' && Array.isArray(val)) { obj[prop] = [...val]; }
         else { obj[prop] = val; }
       }
       i++;
@@ -210,4 +210,4 @@ class Model {
 }
 
 
-module.exports = Model;
+module.exports = Model2;
