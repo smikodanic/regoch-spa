@@ -3,6 +3,10 @@
  */
 class Aux {
 
+  constructor() {
+    this.varnameChars = '[a-zA-Z\\d\\$\\_\\.]+'; // valid characters in the variable name
+  }
+
   /**
    * Get the controller property's value.
    * For example controller's property is this.company.name
@@ -10,6 +14,9 @@ class Aux {
    * @returns {any}
    */
   _getControllerValue(prop) {
+    const reg = new RegExp(`\\(${this.varnameChars}\\)`);
+    if (reg.test(prop)) { prop = this._solveControllerName(prop); }
+
     const propSplitted = prop.split('.'); // ['company', 'name']
     const prop1 = propSplitted[0]; // company
     let val = this[prop1]; // controller property value
@@ -17,6 +24,26 @@ class Aux {
       if (key !== 0 && !!val) { val = val[prop]; }
     });
     return val;
+  }
+
+
+  /**
+   * Solve round brackets in the controller property name, for example: trains.$i.(fields.$i2) --> trains.$i.name
+   * @param {string} prop - controller property name, trains.$i.(fields.$i2)
+   */
+  _solveControllerName(prop) {
+    const reg = new RegExp(`\\(${this.varnameChars}\\)`, 'g');
+    const brackets = prop.match(reg);
+    if (!brackets) { return prop; }
+
+    for (const bracket of brackets) {
+      const reg2 = new RegExp(`\\((${this.varnameChars})\\)`);
+      const prop2 = bracket.match(reg2)[1];
+      const val = this._getControllerValue(prop2);
+      prop = prop.replace(reg2, val);
+    }
+
+    return prop;
   }
 
 
@@ -44,54 +71,98 @@ class Aux {
   }
 
 
+
   /**
-   * Parse iteration variable $i or $j or $k in the text. Vars $i, $j, $k makes possible three level nesting, for example for(){ for(){ for(){} } }.
-   * - replace .$i with the number i
-   * - replace $i, $i+1 , $i-1, $i^1, ...
+   * Replace iteration variable $i with the number.
    * @param {number} i - number to replace $i with
-   * @param {string} txt - text which needs to be replaced
+   * @param {string} txt - text which needs to be replaced, usually it contains HTML tags
+   * @param {string} nameExtension - extension of the variable name. For example if nameExtension is 2p then the $i2p will be replaced.
    * @returns {string}
    */
-  _parse$i(i, txt) {
-    const txt2 = txt.replace(/\.\$i/g, `.${i}`)
-      .replace(/\$i\s*(\+|\-|\*|\/|\%|\^)?\s*(\d+)?/g, (match, $1, $2) => {
-        let result = i;
-        const n = parseInt($2, 10);
-        if ($1 === '+') { result = i + n; }
-        else if ($1 === '-') { result = i - n; }
-        else if ($1 === '*') { result = i * n; }
-        else if ($1 === '/') { result = i / n; }
-        else if ($1 === '%') { result = i % n; }
-        else if ($1 === '^') { result = Math.pow(i, n); }
-        return result;
-      });
-    return txt2;
+  _numerize_$i(i, txt, nameExtension) {
+    let reg;
+    if (!nameExtension || nameExtension === '0') { reg = new RegExp(`\\$i0`, 'g'); }
+    else { reg = new RegExp(`\\$i${nameExtension}`, 'g'); }
+    txt = txt.replace(reg, i);
+    return txt;
   }
+
+
+  /**
+   * Replace controller property this. with the number. Value of this.prop must be a number.
+   * @param {string} txt - text which needs to be replaced, usually it contains HTML tags
+   * @returns {string}
+   */
+  _numerize_this(txt) {
+    const reg = new RegExp(`this\\.${this.varnameChars}`, 'g');
+    const thises = txt.match(reg);
+    if (!thises) { return txt; }
+
+    for (const thise of thises) {
+      const reg2 = new RegExp(`this\\.(${this.varnameChars})`);
+      const prop = thise.match(reg2)[1];
+      const val = this._getControllerValue(prop);
+      if (typeof val === 'number') { txt = txt.replace(reg2, val); }
+    }
+
+    return txt;
+  }
+
+
+  /**
+   * Replace eval(expression) in the txt (HTML code) with the evaluated value.
+   * @param {string} txt  - text which needs to be replaced, usually it contains HTML tags
+   */
+  _evalMath(txt) {
+    const reg = /evalMath\([\d\+\-\*\/\%\s]+\)/g;
+    const evs = txt.match(reg); // ['eval(0 + 1)', 'eval(0 ^ 2)']
+    if (!evs) { return txt; }
+
+    for (const ev of evs) {
+      const reg2 = /evalMath\(([\d\+\-\*\/\%\s]+)\)/;
+      const expression = ev.match(reg2)[1];
+      const result = eval(expression);
+      txt = txt.replace(reg2, result);
+    }
+
+    return txt;
+  }
+
+
 
 
   /**
    * Find {ctrlProp} occurrences in the txt and replace it with the controller property value.
    * @param {string} txt - text which needs to be replaced
-   * @param {string} openingChar - opening character: { or {{
-   * @param {string} closingChar - closing character: } or }}
    */
-  _parseInterpolated(txt, openingChar, closingChar) {
+  _parseInterpolated(txt) {
+    const openingChar = '{';
+    const closingChar = '}';
+
     const reg = new RegExp(`${openingChar}\\s*[0-9a-zA-Z\$\_\.]+\\s*${closingChar}`, 'g');
     const interpolations = txt.match(reg); // ["age", "user.name"]
+
     if (!interpolations || !interpolations.length) { // if there's no interpolated controller properties in the text
       return txt;
-    } {
+    } else {
       for (const interpolation of interpolations) {
         const prop = interpolation.replace(openingChar, '').replace(closingChar, '').trim();
         if (/\$i/.test(prop)) { continue; } // jump over properies with $i, for example: users.$i.name
+
         let val = this._getControllerValue(prop);
         if (val === undefined) {
           console.log(`%c _parseInterpolatedWarn:: Controller property ${prop} is undefined.`, `color:Maroon; background:LightYellow`);
           val = '';
         }
         txt = txt.replace(interpolation, val);
+
+        // nested interpolation, for example: data-rg-echo="{docs.$i.{fields.$i}}"
+        if (reg.test(txt)) {
+          txt = this._parseInterpolated(txt);
+        }
       }
     }
+
     return txt;
   }
 
@@ -232,14 +303,14 @@ class Aux {
     const dataRgId = elem.getAttribute(`${attrName}-id`);
     if (!dataRgId) {
       elem.setAttribute(`${attrName}-id`, uid); // add data-rg-xyz-id , unique ID (because the page can have multiple elements with [data-rg-xyz-gen="${attrVal}"] and we need to distinguish them)
-    }
-    else {
+    } else {
       uid = dataRgId; // if the uid is already assigned
     }
 
     // remove generated data-rg-xyz-gen elements
     const genElems = document.querySelectorAll(`[${attrName}-gen="${attrVal}"][${attrName}-id="${uid}"]`);
     for (const genElem of genElems) { genElem.remove(); }
+
 
     // clone the data-rg-xyz element
     const newElem = elem.cloneNode(true);
@@ -253,6 +324,8 @@ class Aux {
 
     return newElem;
   }
+
+
 
 
 
@@ -324,54 +397,62 @@ class Aux {
   }
 
 
+
   /**
-   * Get the HTML form element value. Make correction according to the element type & value type.
-   * Element types: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
-   * @param {HTMLElement} elem - HTML form element
-   * @returns {any} val
+   * Get the DOM elements by the query.
+   * For example in data-rg-for="companies.$i{fields.$i}" --> attrName will be 'data-rg-for' and attrQuery will be /^companies\.\$\{fields/
+   * @param {string} attrName - attribute name - 'data-rg-for'
+   * @param {string|RegExp} attrValQuery - query the attribute value, for example: 'companies' , or /companies\.\$/i
+   * @returns {HTMLElement[]}
    */
-  _getElementValue_old(elem) {
-    // pickup all elements with same name="something", for example checkboxes
-    const name = elem.name;
-    const elems = document.querySelectorAll(`[name="${name}"]`);
-    console.log(elems);
+  _listElements(attrName, attrValQuery) {
+    let elems = document.querySelectorAll(`[${attrName}]`);
 
-    let val;
-    const valArr = [];
-    let i = 1;
-    for (const elem of elems) {
-      if (elem.type === 'checkbox') {
-        const v = this._typeConvertor(elem.value);
-        if (elem.checked) { valArr.push(v); val = valArr; }
-        if (i === elems.length && !val) { val = []; }
+    if (!!attrValQuery && typeof attrValQuery === 'string') {
+      elems = document.querySelectorAll(`[${attrName}^="${attrValQuery}"]`);
 
-      } else if (elem.type === 'radio') {
-        const v = this._typeConvertor(elem.value);
-        if (elem.checked) { val = v; }
-
-      } else if (elem.type === 'select-multiple') {
-        const opts = elem.selectedOptions; // selected options
-        for (const opt of opts) {
-          const v = this._typeConvertor(opt.value);
-          valArr.push(v);
-          val = valArr;
-        }
-        if (i === elems.length && !val) { val = []; }
-
-      } else if (elem.type === 'number') {
-        val = elem.valueAsNumber;
-
-      } else if (elem.type === 'password') {
-        val = elem.value;
-
-      } else {
-        const v = this._typeConvertor(elem.value);
-        val = v;
+    } else if (!!attrValQuery && attrValQuery instanceof RegExp) {
+      const elems2 = [];
+      for (const elem of elems) {
+        const attrVal = elem.getAttribute(attrName);
+        const tf = attrValQuery.test(attrVal);
+        if (tf) { elems2.push(elem); }
       }
-      i++;
+      elems = elems2;
     }
 
-    return val;
+    return elems;
+  }
+
+
+
+  /**
+   * Remove elements which has generated element as parent i.e. if the parent has data-rg-xyz-gen attribute the delete that parent.
+   * @param {string} attrName - attribute name - 'data-rg-for'
+   * @param {string|RegExp} attrValQuery - query the attribute value, for example: 'companies' , or /companies\.\$/i
+   * @returns {void}
+   */
+  _removeParentElements(attrName, attrValQuery) {
+    let elems = document.querySelectorAll(`[${attrName}]`);
+
+    if (!!attrValQuery && typeof attrValQuery === 'string') {
+      elems = document.querySelectorAll(`[${attrName}^="${attrValQuery}"]`);
+
+    } else if (!!attrValQuery && attrValQuery instanceof RegExp) {
+      const elems2 = [];
+      for (const elem of elems) {
+        const attrVal = elem.getAttribute(attrName);
+        const tf = attrValQuery.test(attrVal);
+        if (tf) { elems2.push(elem); }
+      }
+      elems = elems2;
+    }
+
+    // removals
+    for (const elem of elems) {
+      const parentElem = elem.parentNode;
+      if (parentElem.hasAttribute(`${attrName}-gen`)) { parentElem.remove(); }
+    }
   }
 
 

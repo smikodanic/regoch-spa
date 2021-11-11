@@ -1,8 +1,8 @@
-const Page = require('./Page');
+const Model = require('./Model');
 const eventEmitter = require('./lib/eventEmitter');
 
 
-class Controller extends Page {
+class Controller extends Model {
 
   constructor() {
     super();
@@ -11,6 +11,7 @@ class Controller extends Page {
       // Controller.js
       render: false,
       autorender: false,
+      model: false,
 
       // Page.js
       loadInc: false,
@@ -110,75 +111,76 @@ class Controller extends Page {
 
   /**
    * Render DataRg generators.
-   * @param {string} controllerProp - controller property name
+   * @param {string|RegExp} attrValQuery - query for the attribute value
    */
-  renderGens(controllerProp) {
-    this.rgFor(controllerProp);
-    this.rgRepeat(controllerProp);
+  renderGens(attrValQuery) {
+    this.rgFor(attrValQuery);
+    this.rgRepeat(attrValQuery);
     this.rgPrintMustache();
-    this.rgPrint(controllerProp);
+    this.rgPrint(attrValQuery);
   }
 
 
   /**
    * Render DataRg non-generators.
-   * @param {string} controllerProp - controller property name
+   * @param {string|RegExp} attrValQuery - query for the attribute value
    */
-  renderNonGens(controllerProp) {
-    this.rgIf(controllerProp);
-    this.rgSwitch(controllerProp);
-    this.rgDisabled(controllerProp);
-    this.rgValue(controllerProp);
-    this.rgClass(controllerProp);
-    this.rgStyle(controllerProp);
-    this.rgSrc(controllerProp);
-    this.rgElem();
-    this.rgEcho();
+  renderNonGens(attrValQuery) {
+    this.rgIf(attrValQuery);
+    this.rgSwitch(attrValQuery);
+    this.rgDisabled(attrValQuery);
+    this.rgValue(attrValQuery);
+    this.rgClass(attrValQuery);
+    this.rgStyle(attrValQuery);
+    this.rgSrc(attrValQuery);
+    this.rgElem(attrValQuery);
+    this.rgEcho(attrValQuery);
   }
 
 
   /**
    * Render DataRgListeners.
+   * @param {string|RegExp} attrValQuery - query for the attribute value
    */
-  async renderLsns() {
+  async renderLsns(attrValQuery) {
     await this.rgKILL(); // remove all listeners first
-    this.rgHref();
-    this.rgClick();
-    this.rgKeyup();
-    this.rgChange();
-    this.rgEvt();
-    this.rgSet();
-    this.rgBind();
+    this.rgHref(attrValQuery);
+    this.rgClick(attrValQuery);
+    this.rgKeyup(attrValQuery);
+    this.rgChange(attrValQuery);
+    this.rgEvt(attrValQuery);
+    this.rgSet(attrValQuery);
+    this.rgBind(attrValQuery);
   }
 
 
   /**
-   * Render the view i.e. the data-rg- elements with the controllerProp.
+   * Render the view i.e. the data-rg- elements with the attrValQuery.
    * For example: data-rg-print="first_name", where first_name is the controllerProp.
-   * @param {string} controllerProp - controller property name. Limit the render process only to the elements with the data-rg-...="controllerProp ..."
+   * @param {string|RegExp} attrValQuery - query for the attribute value
    * @param {number} renderDelay - delay in miliseconds
    */
-  async render(controllerProp, renderDelay = 10) {
-    this._debug('render', `--------- render (start) -- controllerProp: ${controllerProp} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
+  async render(attrValQuery, renderDelay = 10) {
+    this._debug('render', `--------- render (start) -- attrValQuery: ${attrValQuery} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
     await new Promise(r => setTimeout(r, renderDelay));
-    this.renderGens(controllerProp);
+    this.renderGens(attrValQuery);
     await new Promise(r => setTimeout(r, renderDelay));
-    this.renderNonGens(controllerProp);
+    this.renderNonGens(attrValQuery);
     await new Promise(r => setTimeout(r, renderDelay));
     await this.renderLsns();
     await new Promise(r => setTimeout(r, renderDelay));
     eventEmitter.on('autorender', this.autorenderListener.bind(this));
-    this._debug('render', `--------- render (end) -- controllerProp: ${controllerProp} ------`, 'green', '#D9FC9B');
+    this._debug('render', `--------- render (end) -- attrValQuery: ${attrValQuery} ------`, 'green', '#D9FC9B');
   }
 
 
   /**
    * Use render() method multiple times.
-   * @param {string[]} controllerProps - array of the controller property names: ['company.name', 'company.year']
+   * @param {string[]|RegExp[]} attrValQuerys - array of the controller property names: ['company.name', /^company\.year/]
    * @param {number} renderDelay - delay in miliseconds
    */
-  async renders(controllerProps = [], renderDelay) {
-    for (const controllerProp of controllerProps) { await this.render(controllerProp, renderDelay); }
+  async renders(attrValQuerys = [], renderDelay) {
+    for (const attrValQuery of attrValQuerys) { await this.render(attrValQuery, renderDelay); }
   }
 
 

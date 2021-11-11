@@ -6,8 +6,9 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      rgFor: false,
-      rgPrintMustache: true
+      rgFor: true,
+      rgPrint: false,
+      rgPrintMustache: false
     };
   }
 
@@ -64,13 +65,13 @@ class DataRgCtrl extends Controller {
 
 
   // if rend() is not used then default render() is executed
-  async rend() {
-    this.renderGens();
-    await syslib.util.sleep(10);
-    this.renderNonGens();
-    await syslib.util.sleep(10);
-    await this.renderLsns();
-  }
+  // async rend() {
+  //   this.renderGens();
+  //   await syslib.util.sleep(10);
+  //   this.renderNonGens();
+  //   await syslib.util.sleep(10);
+  //   await this.renderLsns();
+  // }
 
 
 
@@ -97,17 +98,29 @@ class DataRgCtrl extends Controller {
 
   // show array elements by using data-rg-for
   async runFOR2() {
+    this.skipNum = 10;
     this.herbals = ['corn', 'banana', 'plum', 'straw'];
     this.render('herbals');
   }
 
+
+  // run data-rg-for inside data-rg-for
+  async runFORnested() {
+    this.fields = ['name', 'from', 'to', 'duration'];
+    this.trains = [
+      { name: 'TRAIN1', from: 'OS', to: 'NA', duration: 2 },
+      { name: 'TRAIN2', from: 'OS', to: 'ZG', duration: 3 },
+      { name: 'TRAIN3', from: 'SB', to: 'VK', duration: 5 }
+    ];
+    this.render('fields');
+    // await syslib.util.sleep(1300);
+    this.render('trains');
+  }
+
   // repeat the data-rg-repeat num times
   async runREPEAT(num) {
-    this.multiplikator = 5;
-    // this.rgRepeat('multiplikator');
-    // this.rgSet('pets');
-    // this.rgEcho('company name:'); // due to <p data-rg-repeat="multiplikator" data-rg-echo="company name: {{companies.$i.name}} -- company size: {{companies.$i.size}}"></p>
-    this.render();
+    this.multiplikator = num;
+    this.render('multiplikator');
   }
 
 

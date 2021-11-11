@@ -15,55 +15,51 @@ class DataRg extends DataRgListeners {
 
   /************** GENERATORS (create or remove HTML elements) *************/
   /**
-   * data-rg-for="<controllerProp>[:<limit>][:<skip>]"
-   * Parse the "data-rg-for" attribute. Multiply element.
+   * data-rg-for="<controllerProperty> [@@<priority>]"
+   * Parse the "data-rg-for" attribute. Multiply element by the controllerProperty array value.
+   * Element with the higher priprity will be parsed before.
    * Examples:
    * data-rg-for="companies"
    * data-rg-for="company.employers"
-   * @param {string} controllerProp - controller property name
+   * data-rg-for="company.employers @@ 2" --> priority is 2
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgFor(controllerProp) {
+  rgFor(attrValQuery) {
     this._debug('rgFor', `--------- rgFor (start) ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-for';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgFor', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    this._removeParentElements(attrName, attrValQuery);
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgFor', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // company.employers
+      const attrValSplited = attrVal.split(this.separator);
 
-      const propLimSkp = attrVal.trim(); // company.employers:limit:skip
-      const propLimSkpSplited = propLimSkp.split(':');
+      const priority = !!attrValSplited[1] ? attrValSplited[1].trim() : 0;
 
-      let limitName = propLimSkpSplited[1]; // limit variable name
-      limitName = !!limitName ? limitName.trim() : '';
-      const limit = +this[limitName] || 1000;
-
-      let skipName = propLimSkpSplited[2]; // skip variable name
-      skipName = !!skipName ? skipName.trim() : '';
-      const skip = +this[skipName] || 0;
-
-      let prop = propLimSkpSplited[0];
-      prop = prop.trim();
+      const prop = attrValSplited[0].trim();
       const val = this._getControllerValue(prop);
-      if (this._debug().rgFor) { console.log('rgFor() -->', 'attrVal::', attrVal, ' | val::', val, ' limit::', limit, ' skip::', skip); }
-      if (!val) { elem.style.display = 'none'; continue; }
+
+      if (this._debug().rgFor) { console.log('rgFor -->', 'attrVal::', attrVal, ' | val::', val, ' priority::', priority); }
+      if (!val || (!!val && !val.length)) { elem.style.display = 'none'; continue; }
 
       // generate new element and place it in the sibling position
       const newElem = this._generateNewElem(elem, attrName, attrVal);
 
-      if (!val.length) { newElem.style.display = 'none'; continue; } // hide element if val is empty array
-
-      // multiply element by cloning and adding sibling elements
-      const limit2 = skip + limit < val.length ? skip + limit : val.length;
-      for (let i = skip; i < limit2; i++) {
-        const j = limit2 - 1 - i + skip;
+      // multiply new element by cloning and adding sibling elements
+      const newElemsTotal = val.length;
+      for (let i = 1; i <= newElemsTotal; i++) {
+        const i2 = newElemsTotal - i; // when newElemsTotal=4 then i2 has 3,2,1,0
         elem.parentNode.insertBefore(newElem, elem.nextSibling);
-        newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
+        let outerHTML = this._numerize_$i(i2, newElem.outerHTML, priority); // replace $i, $i1, $i12 with the number
+        outerHTML = this._numerize_this(outerHTML); // replace this.ctrlProp with the number
+        outerHTML = this._evalMath(outerHTML); // calculte for example evalMath($i0 + 1)
+        newElem.outerHTML = outerHTML;
+        newElem.style.display = '';
       }
 
     }
@@ -74,21 +70,20 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * data-rg-repeat="controllerProp"
+   * data-rg-repeat="controllerProperty"
    * Parse the "data-rg-repeat" attribute. Repeat the element n times wher n is defined in the controller property.
    * It's same as rgFor() except the controller property is not array but number.
    * Examples:
    * data-rg-repeat="totalRows"
-   * @param {string} controllerProp - controller property name
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgRepeat(controllerProp) {
+  rgRepeat(attrValQuery) {
     this._debug('rgRepeat', `--------- rgRepeat (start) ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-repeat';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgRepeat', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgRepeat', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
 
@@ -102,13 +97,15 @@ class DataRg extends DataRgListeners {
       // generate new element and place it in the sibling position
       const newElem = this._generateNewElem(elem, attrName, attrVal);
 
-      if (val === 0) { newElem.style.display = 'none'; continue; } // hide element if val is zero
-
       // multiply element by cloning and adding sibling elements
-      for (let i = 0; i < val; i++) {
-        const j = val - 1 - i;
+      const newElemsTotal = +val;
+      for (let i = 1; i <= newElemsTotal; i++) {
+        const i2 = newElemsTotal - i; // 3,2,1,0
         elem.parentNode.insertBefore(newElem, elem.nextSibling);
-        newElem.outerHTML = this._parse$i(j, newElem.outerHTML); // replace .$i or $i+1 , $i-1, $i^1, ...
+        let outerHTML = this._numerize_$i(i2, newElem.outerHTML, 0); // replace $i, $i1, $i12 with the number
+        outerHTML = this._numerize_this(outerHTML); // replace this.ctrlProp with the number
+        outerHTML = this._evalMath(outerHTML);
+        newElem.outerHTML = outerHTML;
       }
 
     }
@@ -151,17 +148,16 @@ class DataRg extends DataRgListeners {
    * data-rg-print="product" - product is the controller property
    * data-rg-print="product.name @@ outer"
    * data-rg-print="product.name @@ sibling"
-   * @param {string} controllerProp - part of the attribute value which relates to the controller property,
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * for example product.name in the data-rg-print="product.name @@ inner". This speed up parsing because it's limited only to one element.
    * @returns {void}
    */
-  rgPrint(controllerProp) {
+  rgPrint(attrValQuery) {
     this._debug('rgPrint', `--------- rgPrint (start) ------`, 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-print';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgPrint', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgPrint', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
 
@@ -238,16 +234,15 @@ class DataRg extends DataRgListeners {
    * Examples:
    * data-rg-if="ifAge"
    * data-rg-if="ifAge $eq(22)"
-   * @param {string} controllerProp - controller property name
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgIf(controllerProp) {
+  rgIf(attrValQuery) {
     this._debug('rgIf', '--------- rgIf (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-if';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgIf', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgIf', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -295,16 +290,15 @@ class DataRg extends DataRgListeners {
    * data-rg-switch="ctrlprop" - ctrlprop is string, number or boolean
    * data-rg-switch="ctrlprop @@ multiple" - ctrlprop is array of string, number or boolean
    * Notice @@ multiple can select multiple switchcases.
-   * @param {string} controllerProp - controller property name
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgSwitch(controllerProp) {
+  rgSwitch(attrValQuery) {
     this._debug('rgSwitch', '--------- rgSwitch (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-switch';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgSwitch', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgSwitch', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -350,16 +344,15 @@ class DataRg extends DataRgListeners {
    * Examples:
    * data-rg-disabled="ifAge"
    * data-rg-disabled="ifAge $eq(22)"
-   * @param {string} controllerProp - controller property name
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgDisabled(controllerProp) {
+  rgDisabled(attrValQuery) {
     this._debug('rgDisabled', '--------- rgDisabled (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-disabled';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgDisabled', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgDisabled', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -401,16 +394,15 @@ class DataRg extends DataRgListeners {
    * Examples:
    * data-rg-value="product"
    * data-rg-value="employee.name"
-   * @param {string} controllerProp - the attribute value which relates to the controller property
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgValue(controllerProp) {
+  rgValue(attrValQuery) {
     this._debug('rgValue', '--------- rgValue ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-value';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgValue', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgValue', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -435,16 +427,15 @@ class DataRg extends DataRgListeners {
    * data-rg-class="myKlass" - add new classes to existing classes
    * data-rg-class="myKlass @@ add" - add new classes to existing classes
    * data-rg-class="myKlass @@ replace" - replace existing classes with new classes
-   * @param {string} controllerProp - controller property which defines "class" attribute
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgClass(controllerProp) {
+  rgClass(attrValQuery) {
     this._debug('rgClass', '--------- rgClass ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-class';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgClass', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgClass', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -474,16 +465,15 @@ class DataRg extends DataRgListeners {
    * data-rg-style="myStyl" - add new styles to existing sytles
    * data-rg-style="myStyl @@ add" - add new styles to existing sytles
    * data-rg-style="myStyl @@ replace" - replace existing styles with new styles
-   * @param {string} controllerProp - controller property which defines "style" attribute
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgStyle(controllerProp) {
+  rgStyle(attrValQuery) {
     this._debug('rgStyle', '--------- rgStyle ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-style';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgStyle', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgStyle', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -515,15 +505,15 @@ class DataRg extends DataRgListeners {
    * Parse the "data-rg-src" attribute. Set element src attribute.
    * Examples:
    * data-rg-src="imageURL" - define <img src="">
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgSrc(controllerProp) {
+  rgSrc(attrValQuery) {
     this._debug('rgSrc', '--------- rgSrc ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-src';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgSrc', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgSrc', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -551,14 +541,15 @@ class DataRg extends DataRgListeners {
    * Parse the "data-rg-elem" attribute. Transfer the DOM element to the controller property "this.rgelems".
    * Examples:
    * data-rg-elem="paragraf" -> fetch it with this.rgelems['paragraf']
+   * @param {string|RegExp} attrValQuery - query for the attribute value
    * @returns {void}
    */
-  rgElem() {
+  rgElem(attrValQuery) {
     this._debug('rgElem', '--------- rgElem ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-elem';
-    const elems = document.querySelectorAll(`[${attrName}]`);
-    this._debug('rgElem', `found elements:: ${elems.length}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgElem', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     // associate values
@@ -575,16 +566,15 @@ class DataRg extends DataRgListeners {
    * Parse the "data-rg-echo" attribute. Prints the "text" in the HTML element as innerHTML.
    * Examples:
    * data-rg-echo="$i+1"  --> prints the iteration number
-   * @param {string} text - the text which will be echoed in the element as textContent
+   * @param {string|RegExp} attrValQuery - the text which will be echoed in the element as textContent
    * @returns {void}
    */
-  rgEcho(text) {
-    this._debug('rgEcho', '--------- rgEcho ------', 'navy', '#B6ECFF');
+  rgEcho(attrValQuery) {
+    this._debug('rgEcho', '--------- rgEcho (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-echo';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!text) { elems = document.querySelectorAll(`[${attrName}^="${text}"]`); }
-    this._debug('rgEcho', `found elements:: ${elems.length}`, 'navy');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgEcho', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
     // associate values
@@ -595,13 +585,13 @@ class DataRg extends DataRgListeners {
       // checks html tags
       if (/<[^>]*>/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain HTML tags.`, `color:Maroon; background:LightYellow`); }
 
-      const openingChar = '{';
-      const closingChar = '}';
-      txt = this._parseInterpolated(txt, openingChar, closingChar); // parse {ctrlProp}
+      txt = this._parseInterpolated(txt); // parse {ctrlProp}
       this._debug('rgEcho', `rgEcho txt after: ${txt}\n`, 'navy', '#B6ECFF');
 
       elem.textContent = txt;
     }
+
+    this._debug('rgEcho', '--------- rgEcho (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -617,7 +607,7 @@ class DataRg extends DataRgListeners {
     this._debug('rgFlicker', '--------- rgFlicker ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-flicker';
-    const elems = document.querySelectorAll(`[${attrName}]`);
+    const elems = this._listElements(attrName, '');
     this._debug('rgFlicker', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 

@@ -41,14 +41,18 @@ class DataRgListeners extends Aux {
   /**
    * data-rg-href
    * <a href="/product/12" data-rg-href>Product 12</a>
+   * <a href="/product/12" data-rg-href="/product/12">Product 12</a>
    * Href listeners and changing URLs (browser history states).
    * NOTICE: Click on data-rg-href element will destroy the controller i.e. rgKILL() will be invoked.
+   * @param {string|RegExp} attrValQuery - query for the attribute value (in most cases it will be undefined)
    * @returns {void}
    */
-  rgHref() {
+  rgHref(attrValQuery) {
     this._debug('rgHref', '--------- rgHref ------', 'orange', '#FFD8B6');
+
     const attrName = 'data-rg-href';
-    const elems = document.querySelectorAll(`[${attrName}]`);
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgHref', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'ornge');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -76,16 +80,15 @@ class DataRgListeners extends Aux {
    * data-rg-click="<controllerMethod>"
    * <button data-rg-click="myFunc()">CLICK ME</button>
    * Listen for click and execute the function i.e. controller method.
-   * @param {string} controllerMeth - controller method name
+   * @param {string|RegExp} attrValQuery - query for the attribute value (controllerMethod)
    * @returns {void}
    */
-  rgClick(controllerMeth) {
+  rgClick(attrValQuery) {
     this._debug('rgClick', '--------- rgClick ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-click';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
-    this._debug('rgClick', `found elements:: ${elems.length}`, 'orange');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgClick', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -113,16 +116,15 @@ class DataRgListeners extends Aux {
    * <input type="text" data-rg-keyup="myFunc()"> - it will execute myFunc on every key
    * <input type="text" data-rg-keyup="myFunc() @@ enter"> - it will execute myFunc on Enter
    * Parse the "data-rg-keyup" attribute. Listen for the keyup event on certain element and execute the controller method.
-   * @param {string} controllerMeth - controller method name
+   * @param {string|RegExp} attrValQuery - query for the attribute value (controllerMethod)
    * @returns {void}
    */
-  rgKeyup(controllerMeth) {
+  rgKeyup(attrValQuery) {
     this._debug('rgKeyup', '--------- rgKeyup ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-keyup';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
-    this._debug('rgKeyup', `found elements:: ${elems.length}`, 'orange');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgKeyup', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -161,16 +163,15 @@ class DataRgListeners extends Aux {
    * data-rg-change="<controllerMethod>"
    * <select data-rg-change="myFunc()">
    * Listen for change and execute the function i.e. controller method.
-   * @param {string} controllerMeth - controller method name
+   * @param {string|RegExp} attrValQuery - query for the attribute value (controllerMethod)
    * @returns {void}
    */
-  rgChange(controllerMeth) {
+  rgChange(attrValQuery) {
     this._debug('rgChange', '--------- rgChange ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-change';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerMeth) { elems = document.querySelectorAll(`[${attrName}^="${controllerMeth}"]`); }
-    this._debug('rgChange', `found elements:: ${elems.length}`, 'orange');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgChange', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -199,13 +200,14 @@ class DataRgListeners extends Aux {
    * Listen for event and execute the function i.e. controller method.
    * Example:
    * data-rg-evt="mouseenter @@ myFunc($element, $event, 25, 'some text')"  - $element and $event are the DOM objects of the data-rg-evt element
+   * @param {string|RegExp} attrValQuery - query for the attribute value (eventName)
    * @returns {void}
    */
-  rgEvt() {
+  rgEvt(attrValQuery) {
     this._debug('rgEvt', '--------- rgEvt ------', 'orange', '#FFD8B6');
     const attrName = 'data-rg-evt';
-    const elems = document.querySelectorAll(`[${attrName}]`);
-    this._debug('rgEvt', `found elements:: ${elems.length}`, 'orange');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgEvt', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -237,23 +239,22 @@ class DataRgListeners extends Aux {
 
 
   /**
-   * data-rg-set="<controllerProp> [@@ <doAfter>]"
+   * data-rg-set="<controllerProperty> [@@ <doAfter>]"
    * Parse the "data-rg-set" attribute. Get the value from elements like INPUT, SELECT, TEXTAREA, .... and set the controller property.
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"
    * data-rg-set="product.name @@ rgPrint" -> after set do rgPrint() which will update the view as the user type
    * data-rg-set="product.name @@ rgSwich" -> after set do rgSwitch() which will render data-rg-switch elements
-   * @param {string} controllerProp - part of the attribute value which relates to the controller property,
+   * @param {string|RegExp} attrValQuery - query for the attribute value (controllerProperty)
    * @returns {void}
    */
-  rgSet(controllerProp) {
+  rgSet(attrValQuery) {
     this._debug('rgSet', '--------- rgSet ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-set';
-    let elems = document.querySelectorAll(`[${attrName}]`);
-    if (!!controllerProp) { elems = document.querySelectorAll(`[${attrName}^="${controllerProp}"]`); }
-    this._debug('rgSet', `found elements:: ${elems.length} | controllerProp:: ${controllerProp}`, 'orange');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgSet', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -293,14 +294,15 @@ class DataRgListeners extends Aux {
    * This is a shortcut of rgSet and rgValue.
    * Example:
    * data-rg-bind="product.name"
+   * @param {string|RegExp} attrValQuery - query for the attribute value (controllerProperty)
    * @returns {void}
    */
-  rgBind() {
+  rgBind(attrValQuery) {
     this._debug('rgBind', '--------- rgBind ------', 'orange', '#FFD8B6');
 
     const attrName = 'data-rg-bind';
-    const elems = document.querySelectorAll(`[${attrName}]`);
-    this._debug('rgBind', `found elements:: ${elems.length}`, 'orange');
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgBind', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
