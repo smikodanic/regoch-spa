@@ -114,12 +114,12 @@ class Aux {
    * @param {string} txt  - text which needs to be replaced, usually it contains HTML tags
    */
   _evalMath(txt) {
-    const reg = /evalMath\([\d\+\-\*\/\%\s]+\)/g;
+    const reg = /evalMath\([\d\+\-\*\/\%\(\)\s]+\)/g;
     const evs = txt.match(reg); // ['eval(0 + 1)', 'eval(0 ^ 2)']
     if (!evs) { return txt; }
 
     for (const ev of evs) {
-      const reg2 = /evalMath\(([\d\+\-\*\/\%\s]+)\)/;
+      const reg2 = /evalMath\(([\d\+\-\*\/\%\(\)\s]+)\)/;
       const expression = ev.match(reg2)[1];
       const result = eval(expression);
       txt = txt.replace(reg2, result);
