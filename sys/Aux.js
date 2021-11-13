@@ -397,6 +397,35 @@ class Aux {
   }
 
 
+  /**
+ * Remove elements which has generated element as parent i.e. if the parent has data-rg-xyz-gen attribute then delete that parent.
+ * @param {string} attrName - attribute name - 'data-rg-for'
+ * @param {string|RegExp} attrValQuery - query the attribute value, for example: 'companies' , or /companies\.\$/i
+ * @returns {void}
+ */
+  _removeParentElements(attrName, attrValQuery) {
+    let elems = document.querySelectorAll(`[${attrName}]`);
+
+    if (!!attrValQuery && typeof attrValQuery === 'string') {
+      elems = document.querySelectorAll(`[${attrName}^="${attrValQuery}"]`);
+
+    } else if (!!attrValQuery && attrValQuery instanceof RegExp) {
+      const elems2 = [];
+      for (const elem of elems) {
+        const attrVal = elem.getAttribute(attrName);
+        const tf = attrValQuery.test(attrVal);
+        if (tf) { elems2.push(elem); }
+      }
+      elems = elems2;
+    }
+
+    // removals
+    for (const elem of elems) {
+      const parentElem = elem.parentNode;
+      if (parentElem.hasAttribute(`${attrName}-gen`)) { parentElem.remove(); }
+    }
+  }
+
 
   /**
    * Get the DOM elements by the query.
@@ -458,38 +487,6 @@ class Aux {
     elems = elems_arr.map(elem_arr => elem_arr.elem);
 
     return elems;
-  }
-
-
-
-
-  /**
-   * Remove elements which has generated element as parent i.e. if the parent has data-rg-xyz-gen attribute the delete that parent.
-   * @param {string} attrName - attribute name - 'data-rg-for'
-   * @param {string|RegExp} attrValQuery - query the attribute value, for example: 'companies' , or /companies\.\$/i
-   * @returns {void}
-   */
-  _removeParentElements(attrName, attrValQuery) {
-    let elems = document.querySelectorAll(`[${attrName}]`);
-
-    if (!!attrValQuery && typeof attrValQuery === 'string') {
-      elems = document.querySelectorAll(`[${attrName}^="${attrValQuery}"]`);
-
-    } else if (!!attrValQuery && attrValQuery instanceof RegExp) {
-      const elems2 = [];
-      for (const elem of elems) {
-        const attrVal = elem.getAttribute(attrName);
-        const tf = attrValQuery.test(attrVal);
-        if (tf) { elems2.push(elem); }
-      }
-      elems = elems2;
-    }
-
-    // removals
-    for (const elem of elems) {
-      const parentElem = elem.parentNode;
-      if (parentElem.hasAttribute(`${attrName}-gen`)) { parentElem.remove(); }
-    }
   }
 
 

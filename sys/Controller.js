@@ -109,53 +109,6 @@ class Controller extends Model {
 
 
   /************ RENDER METHODS ***********/
-
-  /**
-   * Render DataRg generators.
-   * @param {string|RegExp} attrValQuery - query for the attribute value
-   */
-  renderGens(attrValQuery) {
-    this.rgFor(attrValQuery);
-    this.rgRepeat(attrValQuery);
-    this.rgPrintMustache();
-    this.rgPrint(attrValQuery);
-  }
-
-
-  /**
-   * Render DataRg non-generators.
-   * @param {string|RegExp} attrValQuery - query for the attribute value
-   */
-  renderNonGens(attrValQuery) {
-    this.rgIf(attrValQuery);
-    this.rgSwitch(attrValQuery);
-    this.rgDisabled(attrValQuery);
-    this.rgValue(attrValQuery);
-    this.rgChecked(attrValQuery);
-    this.rgClass(attrValQuery);
-    this.rgStyle(attrValQuery);
-    this.rgSrc(attrValQuery);
-    this.rgElem(attrValQuery);
-    this.rgEcho(attrValQuery);
-  }
-
-
-  /**
-   * Render DataRgListeners.
-   * @param {string|RegExp} attrValQuery - query for the attribute value
-   */
-  async renderLsns(attrValQuery) {
-    await this.rgKILL(attrValQuery); // remove all listeners first
-    this.rgHref(attrValQuery);
-    this.rgClick(attrValQuery);
-    this.rgKeyup(attrValQuery);
-    this.rgChange(attrValQuery);
-    this.rgEvt(attrValQuery);
-    this.rgSet(attrValQuery);
-    this.rgBind(attrValQuery);
-  }
-
-
   /**
    * Render the view i.e. the data-rg- elements with the attrValQuery.
    * For example: data-rg-print="first_name", where first_name is the controllerProp.
@@ -165,11 +118,11 @@ class Controller extends Model {
   async render(attrValQuery, renderDelay = 10) {
     this._debug('render', `--------- render (start) -- attrValQuery: ${attrValQuery} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
     await new Promise(r => setTimeout(r, renderDelay));
-    this.renderGens(attrValQuery);
+    this._renderGens(attrValQuery);
     await new Promise(r => setTimeout(r, renderDelay));
-    this.renderNonGens(attrValQuery);
+    this._renderNonGens(attrValQuery);
     await new Promise(r => setTimeout(r, renderDelay));
-    await this.renderLsns(attrValQuery);
+    await this._renderLsns();
     await new Promise(r => setTimeout(r, renderDelay));
     eventEmitter.on('autorender', this.autorenderListener.bind(this));
     this._debug('render', `--------- render (end) -- attrValQuery: ${attrValQuery} ------`, 'green', '#D9FC9B');
@@ -201,6 +154,52 @@ class Controller extends Model {
       await this.postrend();
       this._debug('autorender', `--------- autorender STOP -- trigger: ${trigger} -- ctrl: ${this.constructor.name} -- ctrl method: ${funcName}(${funcArgs})  ------`, 'olive', '#D9FC9B');
     }
+  }
+
+
+  /**
+   * Render DataRg generators.
+   * @param {string|RegExp} attrValQuery - query for the attribute value
+   */
+  _renderGens(attrValQuery) {
+    this.rgFor(attrValQuery);
+    this.rgRepeat(attrValQuery);
+    this.rgPrintMustache();
+    this.rgPrint(attrValQuery);
+  }
+
+
+  /**
+   * Render DataRg non-generators.
+   * @param {string|RegExp} attrValQuery - query for the attribute value
+   */
+  _renderNonGens(attrValQuery) {
+    this.rgIf(attrValQuery);
+    this.rgSwitch(attrValQuery);
+    this.rgDisabled(attrValQuery);
+    this.rgValue(attrValQuery);
+    this.rgChecked(attrValQuery);
+    this.rgClass(attrValQuery);
+    this.rgStyle(attrValQuery);
+    this.rgSrc(attrValQuery);
+    this.rgElem(attrValQuery);
+    this.rgEcho(attrValQuery);
+  }
+
+
+  /**
+   * Render DataRgListeners.
+   * First remove all listeners with the rgKILL() and after that associate listeners to data-rg- elements.
+   */
+  async _renderLsns() {
+    await this.rgKILL();
+    this.rgHref();
+    this.rgClick();
+    this.rgKeyup();
+    this.rgChange();
+    this.rgEvt();
+    this.rgSet();
+    this.rgBind();
   }
 
 
