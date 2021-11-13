@@ -143,7 +143,7 @@ class Controller extends Model {
    * @param {string|RegExp} attrValQuery - query for the attribute value
    */
   async renderLsns(attrValQuery) {
-    await this.rgKILL(); // remove all listeners first
+    await this.rgKILL(attrValQuery); // remove all listeners first
     this.rgHref(attrValQuery);
     this.rgClick(attrValQuery);
     this.rgKeyup(attrValQuery);
@@ -167,7 +167,7 @@ class Controller extends Model {
     await new Promise(r => setTimeout(r, renderDelay));
     this.renderNonGens(attrValQuery);
     await new Promise(r => setTimeout(r, renderDelay));
-    await this.renderLsns();
+    await this.renderLsns(attrValQuery);
     await new Promise(r => setTimeout(r, renderDelay));
     eventEmitter.on('autorender', this.autorenderListener.bind(this));
     this._debug('render', `--------- render (end) -- attrValQuery: ${attrValQuery} ------`, 'green', '#D9FC9B');
