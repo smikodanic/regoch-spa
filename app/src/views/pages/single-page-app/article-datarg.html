@@ -125,14 +125,18 @@
       </p>
     </li>
     <li>
-      <b>rgElem <i>() :void</i></b>
-      <p class="desc">Parse the <b>data-rg-elem="&lt;rgelemsProp&gt;"</b> elements. Transfer the DOM element to the controller property "this.rgelems".</p>
-    </li>
-    <li>
       <b>rgValue <i>(controllerProp :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-value="&lt;controllerProperty&gt;</b> elements. Set the element value attribute.
         <br>It's specially useful when using in combination with <i>data-rg-for</i>:
         <br><small>&lt;option data-rg-for="autos" data-rg-value="autos.$i.id" data-rg-print="autos.$i.name"&gt;&lt;/option&gt;</small>
+        <br><b>controllerProp</b> - controller property which defines the "value" attribute</p>
+    </li>
+    <li>
+      <b>rgChecked <i>(controllerProp :string) :void</i></b>
+      <p class="desc">Parse the <b>data-rg-checked="&lt;controllerProperty&gt;</b> elements.
+        Sets the "checked" attribute with the controller property value.
+        The controller property is an array. If the checkbox value is in that array then the checkbox is checked.
+        Use it for checkboxes only.
         <br><b>controllerProp</b> - controller property which defines the "value" attribute</p>
     </li>
     <li>
@@ -152,6 +156,10 @@
       <p class="desc">Parse the <b>data-rg-src="&lt;controllerProperty&gt; [@@ defaultSrc]"</b> elements. Set the element src attribute, for example in the image tag.
         <br>The <i>@@defaultSrc</i> will be loaded in case when <i>controllerProp</i> is undefined, for example <small>data-rg-src="myImageURL @@ http://image.com/robot.jpg"</small>
         <br><b>controllerProp</b> - controller property which defines the "src" attribute value</p>
+    </li>
+    <li>
+      <b>rgElem <i>() :void</i></b>
+      <p class="desc">Parse the <b>data-rg-elem="&lt;rgelemsProp&gt;"</b> elements. Transfer the DOM element to the controller property "this.rgelems".</p>
     </li>
     <li>
       <b>rgEcho <i>(text :string) :void</i></b>

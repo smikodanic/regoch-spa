@@ -6,7 +6,8 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      rgFor: true,
+      rgFor: false,
+      rgChecked: false,
       rgPrint: false,
       rgPrintMustache: false
     };
@@ -47,6 +48,13 @@ class DataRgCtrl extends Controller {
     // initial values for runFOR2
     this.herbals = [];
 
+    // initial for runFORnested
+    this.fields = ['name', 'from', 'to', 'duration'];
+    this.trains = [
+      { name: 'TRAIN-A', from: 'DU', to: 'ST', duration: 55 },
+      { name: 'TRAIN-B', from: 'ST', to: 'KN', duration: 66 }
+    ];
+
     // initial value for runREPEAT
     this.multiplikator = 3;
 
@@ -61,6 +69,9 @@ class DataRgCtrl extends Controller {
 
     // initial value for the data-rg-bind
     this.bander = { name: 'Smokie', animal: 'horse', article: 'Lorem ipsumus ...' };
+
+    // initial value for the data-rg-checked
+    this.checks1 = ['Tin'];
   }
 
 
@@ -112,9 +123,8 @@ class DataRgCtrl extends Controller {
       { name: 'TRAIN2', from: 'OS', to: 'ZG', duration: 3 },
       { name: 'TRAIN3', from: 'SB', to: 'VK', duration: 5 }
     ];
-    this.render('fields');
-    // await syslib.util.sleep(1300);
-    this.render('trains');
+    this.renders(['fields', 'trains']); // data-rg-for will be rendered by defined order i.e. first 'fields' and then 'trains'
+    // this.render(); // data-rg-for will be rendered by the priority number
   }
 
   // repeat the data-rg-repeat num times
@@ -248,6 +258,12 @@ class DataRgCtrl extends Controller {
     this.input_numberAsString = '157';
     this.input_text01 = 'some text';
     this.rgValue('input_');
+  }
+
+
+  setCHECKED() {
+    this.checks1 = ['Pin', 'Tin'];
+    this.rgChecked('checks1');
   }
 
 }

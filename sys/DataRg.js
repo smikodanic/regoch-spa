@@ -358,7 +358,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName).trim(); // ifAge
-      if (!attrVal) { console.error(`Attribute "data-rg-disabled" has bad definition (data-rg-disabled="${attrVal}").`); continue; }
+      if (!attrVal) { console.error(`rgDisabled Error:: Attribute has bad definition (data-rg-disabled="${attrVal}").`); continue; }
 
       const propComp = attrVal.trim(); // controller property with comparison function, for example: ifAge $eq(22)
       const propCompSplitted = propComp.split(/\s+/);
@@ -408,7 +408,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      if (!attrVal) { console.error(`Attribute "data-rg-value" has bad definition (data-rg-value="${attrVal}").`); continue; }
+      if (!attrVal) { console.error(`rgValue Error:: Attribute has bad definition (data-rg-value="${attrVal}").`); continue; }
 
       const prop = attrVal.trim();
       const val = this._getControllerValue(prop);
@@ -416,6 +416,40 @@ class DataRg extends DataRgListeners {
       this._setElementValue(elem, val);
 
       this._debug('rgValue', `elem.type:: ${elem.type} -- ${prop}:: ${val}`, 'navy');
+    }
+  }
+
+
+
+  /**
+   * data-rg-checked="<controllerProperty>"
+   * Sets the "checked" attribute with the controller property value.
+   * The controller property is an array. If the checkbox value is in that array then the checkbox is checked.
+   * Examples:
+   * data-rg-checked="selectedProducts"
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
+   * @returns {void}
+   */
+  rgChecked(attrValQuery) {
+    this._debug('rgChecked', '--------- rgChecked ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-checked';
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgChecked', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      if (!attrVal) { console.error(`rgChecked Error:: Attribute has bad definition (data-rg-checked="${attrVal}").`); continue; }
+
+      const prop = attrVal.trim();
+      const val = this._getControllerValue(prop); // val must be array
+      if (!Array.isArray(val)) { console.error(`rgChecked Error:: The controller property ${prop} is not array.`); continue; }
+
+      if (val.indexOf(elem.value) !== -1) { elem.checked = true; }
+      else { elem.checked = false; }
+
+      this._debug('rgChecked', `elem.type:: ${elem.type} -- ${prop}:: ${val}`, 'navy');
     }
   }
 

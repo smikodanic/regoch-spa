@@ -31,6 +31,7 @@ class Controller extends Model {
       rgSwitch: false,
       rgDisabled: false,
       rgValue: false,
+      rgChecked: false,
       rgClass: false,
       rgStyle: false,
       rgSrc: false,
@@ -130,6 +131,7 @@ class Controller extends Model {
     this.rgSwitch(attrValQuery);
     this.rgDisabled(attrValQuery);
     this.rgValue(attrValQuery);
+    this.rgChecked(attrValQuery);
     this.rgClass(attrValQuery);
     this.rgStyle(attrValQuery);
     this.rgSrc(attrValQuery);
