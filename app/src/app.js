@@ -36,6 +36,7 @@ const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
 const Navig1Ctrl = require('./controllers/playground/Navig1Ctrl');
 const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
 const AutorenderCtrl = require('./controllers/playground/AutorenderCtrl');
+const ModelCtrl = require('./controllers/playground/ModelCtrl');
 const Model2Ctrl = require('./controllers/playground/Model2Ctrl');
 
 
@@ -88,6 +89,7 @@ app
     Navig1Ctrl,
     Navig2Ctrl,
     AutorenderCtrl,
+    ModelCtrl,
     Model2Ctrl,
 
     // not found page

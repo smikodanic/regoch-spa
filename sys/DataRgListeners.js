@@ -20,7 +20,7 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   async rgKILL(attrValQuery) {
-    this._debug('rgKILL', `------- rgKILL (start) ctrl: ${this.constructor.name} | attrValQuery:: ${attrValQuery} -------`, 'orange', '#FFD8B6');
+    this._debug('rgKILL', `------- rgKILL (start) ctrl: ${this.constructor.name} | attrValQuery:: ${attrValQuery} | rgListeners: ${this.rgListeners.length} -------`, 'orange', '#F4EA9E');
 
     const promises = [];
     let i = 1;
@@ -44,7 +44,7 @@ class DataRgListeners extends Aux {
       if (toRemove) {
         elem.removeEventListener(eventName, handler); // remove listeners
         this.rgListeners.splice(i, 1); // remove from the array
-        this._debug('rgKILL', `${i}. killed:: ${attrName}  | attrValQuery:: ${attrValQuery} | eventName: ${eventName} | elem.localName: ${elem.localName} | elem.innerHTML: ${elem.innerHTML}`, 'orange');
+        this._debug('rgKILL', `${i}. killed:: ${attrName}  | attrValQuery:: ${attrValQuery} | eventName: ${eventName} | elem.localName: ${elem.localName} | elem.innerHTML: ${elem.innerHTML}`, 'orangered');
         promises.push(Promise.resolve(true));
       }
 
@@ -52,8 +52,7 @@ class DataRgListeners extends Aux {
     }
 
     await Promise.all(promises);
-    this.rgListeners = [];
-    this._debug('rgKILL', '------- rgKILL (end) -------', 'orange', '#FFD8B6');
+    this._debug('rgKILL', `'------- rgKILL (end) | rgListeners: ${this.rgListeners.length} -------`, 'orange', '#F4EA9E');
   }
 
 
@@ -68,7 +67,7 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   rgHref(attrValQuery) {
-    this._debug('rgHref', '--------- rgHref ------', 'orange', '#FFD8B6');
+    this._debug('rgHref', '--------- rgHref ------', 'orange', '#F4EA9E');
 
     const attrName = 'data-rg-href';
     const elems = this._listElements(attrName, attrValQuery);
@@ -104,7 +103,7 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   rgClick(attrValQuery) {
-    this._debug('rgClick', '--------- rgClick ------', 'orange', '#FFD8B6');
+    this._debug('rgClick', '--------- rgClick ------', 'orange', '#F4EA9E');
 
     const attrName = 'data-rg-click';
     const elems = this._listElements(attrName, attrValQuery);
@@ -140,7 +139,7 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   rgKeyup(attrValQuery) {
-    this._debug('rgKeyup', '--------- rgKeyup ------', 'orange', '#FFD8B6');
+    this._debug('rgKeyup', '--------- rgKeyup ------', 'orange', '#F4EA9E');
 
     const attrName = 'data-rg-keyup';
     const elems = this._listElements(attrName, attrValQuery);
@@ -187,7 +186,7 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   rgChange(attrValQuery) {
-    this._debug('rgChange', '--------- rgChange ------', 'orange', '#FFD8B6');
+    this._debug('rgChange', '--------- rgChange ------', 'orange', '#F4EA9E');
 
     const attrName = 'data-rg-change';
     const elems = this._listElements(attrName, attrValQuery);
@@ -224,7 +223,7 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   rgEvt(attrValQuery) {
-    this._debug('rgEvt', '--------- rgEvt ------', 'orange', '#FFD8B6');
+    this._debug('rgEvt', '--------- rgEvt ------', 'orange', '#F4EA9E');
     const attrName = 'data-rg-evt';
     const elems = this._listElements(attrName, attrValQuery);
     this._debug('rgEvt', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'orange');
@@ -270,7 +269,7 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   rgSet(attrValQuery) {
-    this._debug('rgSet', '--------- rgSet ------', 'orange', '#FFD8B6');
+    this._debug('rgSet', '--------- rgSet ------', 'orange', '#F4EA9E');
 
     const attrName = 'data-rg-set';
     const elems = this._listElements(attrName, attrValQuery);
@@ -316,7 +315,7 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   rgBind(attrValQuery) {
-    this._debug('rgBind', '--------- rgBind ------', 'orange', '#FFD8B6');
+    this._debug('rgBind', '--------- rgBind ------', 'orange', '#F4EA9E');
 
     const attrName = 'data-rg-bind';
     const elems = this._listElements(attrName, attrValQuery);

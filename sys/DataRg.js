@@ -425,6 +425,7 @@ class DataRg extends DataRgListeners {
    * data-rg-checked="<controllerProperty>"
    * Sets the "checked" attribute with the controller property value.
    * The controller property is an array. If the checkbox value is in that array then the checkbox is checked.
+   * Use it for checkboxes only.
    * Examples:
    * data-rg-checked="selectedProducts"
    * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
