@@ -24,8 +24,6 @@ class Controller extends Model {
       rgFor: false,
       rgRepeat: false,
       rgPrint: false,
-      rgPrintMustache: false,
-
 
       rgIf: false,
       rgSwitch: false,
@@ -164,7 +162,6 @@ class Controller extends Model {
   _renderGens(attrValQuery) {
     this.rgFor(attrValQuery);
     this.rgRepeat(attrValQuery);
-    this.rgPrintMustache();
     this.rgPrint(attrValQuery);
   }
 

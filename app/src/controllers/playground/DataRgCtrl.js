@@ -8,8 +8,7 @@ class DataRgCtrl extends Controller {
     this.debugOpts = {
       rgFor: false,
       rgChecked: false,
-      rgPrint: false,
-      rgPrintMustache: false
+      rgPrint: false
     };
   }
 
@@ -160,16 +159,6 @@ class DataRgCtrl extends Controller {
     this.bestFriend = 'Dog';
     this.rgIf('bestFriend');
   }
-
-
-  mustacheDO() {
-    // mustache test
-    this.mustVar1 = 'Lorem ipsum dolor net morea';
-    this.mustVar2 = { txt: 'Lorem ipsum <b style="color:aqua">dolor net</b> morea' };
-    this.rgPrint('mustVar1');
-    this.rgPrint('mustVar2');
-  }
-
 
 
 

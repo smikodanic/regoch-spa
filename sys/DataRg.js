@@ -116,31 +116,6 @@ class DataRg extends DataRgListeners {
 
 
   /**
-  * {{controllerProperty [| pipe]}}
-  * Convert mustache to data-rg-print in the SPAN tag.
-  * @returns {void}
-  */
-  rgPrintMustache() {
-    this._debug('rgPrintMustache', `--------- rgPrintMustache (start) ------`, 'navy', '#B6ECFF');
-    const html = document.body.innerHTML;
-    const mustacheRegex = /{{\s?([^}]*)\s?}}/g;
-    const mustaches = html.match(mustacheRegex);
-    this._debug('rgPrintMustache', mustaches, 'navy');
-    if (!mustaches) { return; }
-
-    const openingChar = '{{';
-    const closingChar = '}}';
-
-    for (const mustache of mustaches) { // {{ var1.a | slice(0, 5) }}
-      const mustache_stripped = mustache.replace(openingChar, '').replace(closingChar, '').trim(); // var1.a | slice(0, 5)
-      document.body.innerHTML = document.body.innerHTML.replace(mustache, `<span data-rg-print="${mustache_stripped}"></span>`);
-    }
-
-    this._debug('rgPrintMustache', '--------- rgPrintMustache (end) ------', 'navy', '#B6ECFF');
-  }
-
-
-  /**
    * data-rg-print="<controllerProperty> [@@ inner|outer|sibling|prepend|append]"
    * data-rg-print="company.name @@ inner"
    * data-rg-print="company.name @@ inner @@ keep"   - keep the innerHTML when value is undefined
