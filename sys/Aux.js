@@ -425,6 +425,43 @@ class Aux {
   }
 
 
+  /**
+   * Sort elements from higher to lower priority -> 3,2,1,0 . Priority is defined in the attribute value, data-rg-for="companies @@ <priority>"
+   * @param {HTMLElement[]} elems - array of the elements with specific attribute name
+   * @param {string} attrName - attribute name, for example data-rg-for
+   */
+  _sortElementsByPriority(elems, attrName) {
+    // get priority number from data-rg-for="companies @@ 2"
+    const getPriority = elem => {
+      const attrVal = elem.getAttribute(attrName);
+      const attrValSplited = attrVal.split(this.separator);
+      const priority = !!attrValSplited[1] ? attrValSplited[1].trim() : 0;
+      return +priority;
+    };
+
+    // convert elems to JS Array --> [{elem, priority}]  because elems doesn't have sort()
+    let elems_arr = [];
+    for (const elem of elems) {
+      const priority = getPriority(elem);
+      elems_arr.push({ elem, priority });
+    }
+
+    // sort elements descending
+    elems_arr = elems_arr.sort((elem1, elem2) => {
+      const prior1 = elem1.priority;
+      const prior2 = elem2.priority;
+      return prior2 - prior1;
+    });
+    // console.log('elems_arr::', elems_arr);
+
+    // convert JS Array to HTML Elements array
+    elems = elems_arr.map(elem_arr => elem_arr.elem);
+
+    return elems;
+  }
+
+
+
 
   /**
    * Remove elements which has generated element as parent i.e. if the parent has data-rg-xyz-gen attribute the delete that parent.

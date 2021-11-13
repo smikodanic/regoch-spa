@@ -30,7 +30,8 @@ class DataRg extends DataRgListeners {
 
     const attrName = 'data-rg-for';
     this._removeParentElements(attrName, attrValQuery);
-    const elems = this._listElements(attrName, attrValQuery);
+    let elems = this._listElements(attrName, attrValQuery);
+    elems = this._sortElementsByPriority(elems, attrName); // sorted elements
     this._debug('rgFor', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
     if (!elems.length) { return; }
 
