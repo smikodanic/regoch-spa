@@ -19,15 +19,35 @@ class DataRgListeners extends Aux {
    * when controller is destroyed i.e. when URL is changed. See /sys/router.js
    * @returns {void}
    */
-  async rgKILL() {
-    this._debug('rgKILL', `------- rgKILL (start) ctrl: ${this.constructor.name} -------`, 'orange', '#FFD8B6');
+  async rgKILL(attrValQuery) {
+    this._debug('rgKILL', `------- rgKILL (start) ctrl: ${this.constructor.name} | attrValQuery:: ${attrValQuery} -------`, 'orange', '#FFD8B6');
 
     const promises = [];
     let i = 1;
     for (const rgListener of this.rgListeners) {
-      rgListener.elem.removeEventListener(rgListener.eventName, rgListener.handler);
-      this._debug('rgKILL', `${i}. killed:: ${rgListener.attrName} --- ${rgListener.eventName} --- ${rgListener.elem.localName} -- ${rgListener.elem.innerHTML}`, 'orange');
-      promises.push(Promise.resolve(true));
+      const attrName = rgListener.attrName;
+      const elem = rgListener.elem;
+      const handler = rgListener.handler;
+      const eventName = rgListener.eventName;
+
+      const attrVal = elem.getAttribute(attrName);
+
+      let toRemove = false;
+      if (!!attrValQuery && typeof attrValQuery === 'string') {
+        const reg = new RegExp(`^${attrValQuery}`); // for example attrValQuery='company' affects element with the data-rg-set="company.name"
+        toRemove = reg.test(attrVal);
+      } else if (!!attrValQuery && attrValQuery instanceof RegExp) {
+        const reg = attrValQuery; // for example attrValQuery=/company\.name/ affects element with the data-rg-set="company.name"
+        toRemove = reg.test(attrVal);
+      }
+
+      if (toRemove) {
+        elem.removeEventListener(eventName, handler); // remove listeners
+        this.rgListeners.splice(i, 1); // remove from the array
+        this._debug('rgKILL', `${i}. killed:: ${attrName}  | attrValQuery:: ${attrValQuery} | eventName: ${eventName} | elem.localName: ${elem.localName} | elem.innerHTML: ${elem.innerHTML}`, 'orange');
+        promises.push(Promise.resolve(true));
+      }
+
       i++;
     }
 
@@ -52,7 +72,7 @@ class DataRgListeners extends Aux {
 
     const attrName = 'data-rg-href';
     const elems = this._listElements(attrName, attrValQuery);
-    this._debug('rgHref', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'ornge');
+    this._debug('rgHref', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
@@ -65,7 +85,7 @@ class DataRgListeners extends Aux {
         const state = { href };
         const title = elem.getAttribute(attrName).trim();
         if (!!href) { navig.goto(href.trim(), state, title); }
-        this._debug('rgHref', `Clicked data-rg-href element. href: ${href}`, 'orange');
+        this._debug('rgHref', `Clicked data-rg-href element --> href: ${href}`, 'orangered');
       };
 
       elem.addEventListener('click', handler);
@@ -100,7 +120,7 @@ class DataRgListeners extends Aux {
         event.preventDefault();
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
-        this._debug('rgClick', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-click).`, 'orange');
+        this._debug('rgClick', `Executed rgClick listener --> ${funcName}(${funcArgsStr})`, 'orangered');
         eventEmitter.emit('autorender', { trigger: 'rgClick', funcName, funcArgs });
       };
 
@@ -147,7 +167,7 @@ class DataRgListeners extends Aux {
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
 
-        this._debug('rgKeyup', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-keyup). | eventCode: ${eventCode}`, 'orange');
+        this._debug('rgKeyup', `Executed rgKeyup listener --> ${funcName}(${funcArgsStr}) | eventCode: ${eventCode}`, 'orangered');
         eventEmitter.emit('autorender', { trigger: 'rgKeyup', funcName, funcArgs });
       };
 
@@ -183,7 +203,7 @@ class DataRgListeners extends Aux {
         event.preventDefault();
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
-        this._debug('rgChange', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-change).`, 'orange');
+        this._debug('rgChange', `Executed rgChange listener --> ${funcName}(${funcArgsStr})`, 'orangered');
         eventEmitter.emit('autorender', { trigger: 'rgChange', funcName, funcArgs });
       };
 
@@ -225,7 +245,7 @@ class DataRgListeners extends Aux {
           event.preventDefault();
           const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
           await this._funcExe(funcName, funcArgs);
-          this._debug('rgEvt', `Executed ${funcName}(${funcArgsStr}) controller method (data-rg-evt).`, 'orange');
+          this._debug('rgEvt', `Executed rgEvt listener --> ${funcName}(${funcArgsStr})`, 'orangered');
           eventEmitter.emit('autorender', { trigger: 'rgEvt', funcName, funcArgs });
         };
 
@@ -274,14 +294,12 @@ class DataRgListeners extends Aux {
           const doAfter2 = doAfter.trim();
           this[doAfter2](prop);
         }
-        this._debug('rgSet', `Executed rgSet listener --> controller property:: ${prop} = ${val}`, 'orange');
+        this._debug('rgSet', `Executed rgSet listener --> controller property:: ${prop} = ${val}`, 'orangered');
       };
-
-      handler(); // Execute the handler when controller is executed. This will set controller property defined in constructor() in the view.
 
       elem.addEventListener('input', handler);
       this.rgListeners.push({ attrName, elem, handler, eventName: 'input' });
-      this._debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> | rgListeners total: ${this.rgListeners.length}`, 'orange');
     }
   }
 
@@ -315,20 +333,20 @@ class DataRgListeners extends Aux {
       const doAfter_arr = !!doAfter_str ? doAfter_str.split(',') : [];
 
       /** SETTER **/
-      const val = this._getControllerValue(prop);
-      this._setElementValue(elem, val);
-      this._debug('rgBind', `elem.type:: ${elem.type} -- ${prop}:: ${val}`, 'orangered');
+      const val1 = this._getControllerValue(prop);
+      this._setElementValue(elem, val1);
+      this._debug('rgBind', `rgBind set element value  --> controller property:: ${prop} = ${val1} | elem.type:: ${elem.type}`, 'orangered');
 
       /** LISTENER **/
       const handler = event => {
-        const val = this._getElementValue(elem);
-        this._setControllerValue(prop, val);
+        const val2 = this._getElementValue(elem);
+        this._setControllerValue(prop, val2);
 
         for (const doAfter of doAfter_arr) {
           const doAfter2 = doAfter.trim();
           this[doAfter2](prop);
         }
-        this._debug('rgBind', `Executed rgBind listener -- controller property:: ${prop} = ${val}`, 'orange');
+        this._debug('rgBind', `Executed rgBind listener --> controller property:: ${prop} = ${val2}`, 'orangered');
       };
 
       elem.addEventListener('input', handler);
