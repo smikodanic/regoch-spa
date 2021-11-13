@@ -31,46 +31,46 @@
   <ul class="methods">
     <li>
       <b>rgHref <i>() :void</i></b>
-      <p class="desc">Href click listener for changing URLs. It will push new browser history state <i>window.history.pushState(state, title, url)</i>.
+      <p class="desc">Parser for the <b>data-rg-href="&lt;URL&gt;"</b>. Event "click".
+        <br>Href click listener for changing URLs. It will push new browser history state <i>window.history.pushState(state, title, url)</i>.
         <br>Just add <b>data-rg-href</b> attribute to the existing A tag and the href value will work as single page app.
-        <br>Example: &lt;a href="/product/12" data-rg-href&gt;Product 12&lt;/a&gt;</p>
+        <br>Example:
+        &lt;a href="/product/12" data-rg-href&gt;Product 12&lt;/a&gt; OR &lt;a href="" data-rg-href="/product/12"&gt;Product 12&lt;/a&gt;
+      </p>
     </li>
     <li>
-      <b>rgClick <i>(controllerMeth :string) :void</i></b>
-      <p class="desc">Parser for the <b>data-rg-click="&lt;controllerMeth&gt;"</b>. Event "click".
-        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-click="func(5, 'str', 8, 9, $element, $event)"</small>
+      <b>rgClick <i>() :void</i></b>
+      <p class="desc">Parser for the <b>data-rg-click="&lt;controllerMethod&gt;"</b>. Event "click".
+        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-click="func(5, 'str', 8, 9, $element, $event, $value)"</small>
         <br>The $value is element.value with the corrected data type. For example if element.value is 34.58 it's converted to Number.
-        <br><b>controllerMeth</b> - controller method name. When defined only the data-rg elements with this attribute value will be rendered.
         <br>Example: &lt;button data-rg-click="showData()"&gt;</p>
     </li>
     <li>
-      <b>rgKeyup <i>(controllerMeth :string) :void</i></b>
-      <p class="desc">Parser for the <b>data-rg-keyup="&lt;controllerMeth&gt; [@@ &lt;keyCode&gt;]"</b>. Event "keyup".
-        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-keyup="func($event, $element, 'Peter') @@ enter"</small>
-        <br><b>controllerMeth</b> - controller method name
+      <b>rgKeyup <i>() :void</i></b>
+      <p class="desc">Parser for the <b>data-rg-keyup="&lt;controllerMethod&gt; [@@ &lt;keyCode&gt;]"</b>. Event "keyup".
+        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-keyup="func($event, $element, $value, 'Peter') @@ enter"</small>
         <br>Example: &lt;button data-rg-click="showData()"&gt;</p>
     </li>
     <li>
-      <b>rgChange <i>(controllerMeth :string): void</i></b>
+      <b>rgChange <i>(): void</i></b>
       <p class="desc">Parser for the <b>data-rg-change="&lt;controllerMethod&gt;"</b>. Event "change".
         Listen for change and execute the function i.e. controller method. Usually used in the HTML form fields like INPUT or SELECT tag.
-        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-change="func(5, 'str', 8, 9, $element, $event)"</small>
+        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-change="func(5, 'str', 8, 9, $element, $value, $event)"</small>
         <br><b>controllerMeth</b> - controller method name
         <br>Example: &lt;input data-rg-change="showData()"&gt;</p>
     </li>
     <li>
       <b>rgEvt <i>() :void</i></b>
-      <p class="desc">Parser for the <b>data-rg-evt="eventName1 @@ <function1> [&& eventName2 @@ <function2>]"</b>.
+      <p class="desc">Parser for the <b>data-rg-evt="eventName1 @@ &lt;controllerMethod1&gt; [&& eventName2 @@ &lt;controllerMethod2&gt;]"</b>.
         Listen for any attached event and execute the function i.e. controller method. Events can be chained with the <b>&&</b>.
-        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-evt="func(5, 'str', 8, 9, $element, $event)"</small>
+        <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-evt="func(5, 'str', 8, 9, $element, $value, $event)"</small>
         <br>Example: &lt;input data-rg-evt="showData()"&gt;</p>
     </li>
     <li>
-      <b>rgSet <i>(controllerProp :string) :void</i></b>
-      <p class="desc">Parser for the <b>data-rg-set="&lt;controllerProperty&gt; [@@ &lt;doAfter&gt;]"</b>, where <i>doAfter</i> define
+      <b>rgSet <i>() :void</i></b>
+      <p class="desc">Parser for the <b>data-rg-set="&lt;controllerProperty&gt; [@@ &lt;doAfter&gt;]"</b>, where <i>doAfter</i> defines
         what render processes will be done after the controller property is set. For example: <small>&lt;input data-rg-set="product.name @@ rgPrint,rgSwitch"&gt;</small>
         <br>The data-rg-set is activated after "input" event i.e. when the input field is changed value and blured (blured by click outside of the element).
-        <br><b>controllerProp</b> - controller property name
         <br>Get the value from elements like INPUT, SELECT, TEXTAREA, .... and set the controller property.
         <br>Example1: &lt;input data-rg-set="first_name"&gt;
         <br>Example2: &lt;input data-rg-set="product.name @@ rgPrint,rgFor,rgRepeat"&gt;
@@ -89,20 +89,22 @@
 
 
 <section class="docs-section" id="item-6-3">
-  <h2 class="section-heading">$event &nbsp;&nbsp; $element &nbsp; arguments</h2>
-  The arguments <b>$event</b> and <b>&element</b> can be used in the controller method.
+  <h2 class="section-heading">$event &nbsp;&nbsp; $element &nbsp;&nbsp; $value &nbsp; arguments</h2>
+  The arguments <b>$event</b>, <b>&element</b> and <b>$value</b> can be used in the controller method.
   <br><b>$event</b> - event object applied on the data-rg- element
   <br><b>$element</b> - the data-rg- element DOM object
+  <br><b>$value</b> -element.value with the corrected data type. For example if element.value is 34.58 it's converted to Number.
   <br>
   <pre><code class="language-markup"><xmp>
-<br><input type="text" data-rg-keyup="runKEYUP($element, $event)">
-<br><input type="text" data-rg-keyup="runKEYUP($element, $event) @@ enter">
+<br><input type="text" data-rg-keyup="runKEYUP($element, $event, $value)">
+<br><input type="text" data-rg-keyup="runKEYUP($element, $event, $value) @@ enter">
   </xmp></code></pre>
   <br>then use the arguments in the controller method:
   <pre><code class="language-js">
-runKEYUP(elem, evt) {
+runKEYUP(elem, evt, val) {
   console.log('runKEYUP elem::', elem);
   console.log('runKEYUP evt', evt);
+  console.log('runKEYUP val', val);
 }
   </code></pre>
 </section>
