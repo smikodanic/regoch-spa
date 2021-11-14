@@ -147,7 +147,7 @@ class Aux {
     } else {
       for (const interpolation of interpolations) {
         const prop = interpolation.replace(openingChar, '').replace(closingChar, '').trim();
-        if (/\$i/.test(prop)) { continue; } // jump over properies with $i, for example: users.$i.name
+        if (/\$i/.test(prop)) { txt = ''; break; } // don't parse the text with $i0, $i1, ... for example: users.$i0.name
 
         let val = this._getControllerValue(prop);
         if (val === undefined) {
