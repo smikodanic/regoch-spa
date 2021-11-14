@@ -294,7 +294,7 @@ class Aux {
    * @param {string} attrVal - attribute value: 'continent @@ append'
    * @returns
    */
-  _generateNewElem(elem, attrName, attrVal) {
+  _genElem_create(elem, attrName, attrVal) {
     // hide the original data-rg-xyz (reference) element
     elem.style.display = 'none';
 
@@ -306,10 +306,6 @@ class Aux {
     } else {
       uid = dataRgId; // if the uid is already assigned
     }
-
-    // remove generated data-rg-xyz-gen elements
-    const genElems = document.querySelectorAll(`[${attrName}-gen="${attrVal}"][${attrName}-id="${uid}"]`);
-    for (const genElem of genElems) { genElem.remove(); }
 
 
     // clone the data-rg-xyz element
@@ -323,6 +319,22 @@ class Aux {
     elem.parentNode.insertBefore(newElem, elem.nextSibling);
 
     return newElem;
+  }
+
+
+
+  /**
+   * Remove element with the specific data-rg-xyz-gen and data-rg-xyz-id attributes.
+   * @param {Element} elem - original element
+   * @param {string} attrName - attribute name: data-rg-for, data-rg-repeat, data-rg-print
+   * @param {string} attrVal - attribute value: 'continent @@ append'
+   * @returns
+   */
+  _genElem_remove(elem, attrName, attrVal) {
+    const uid = elem.getAttribute(`${attrName}-id`);
+    const genAttr_sel = `[${attrName}-gen="${attrVal}"][${attrName}-id="${uid}"]`;
+    const genElems = document.querySelectorAll(genAttr_sel);
+    for (const genElem of genElems) { genElem.remove(); }
   }
 
 

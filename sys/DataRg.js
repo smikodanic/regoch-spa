@@ -45,11 +45,14 @@ class DataRg extends DataRgListeners {
       const prop = attrValSplited[0].trim();
       const val = this._getControllerValue(prop);
 
+      // remove all gen elems
+      this._genElem_remove(elem, attrName, attrVal);
+
       if (this._debug().rgFor) { console.log('rgFor -->', 'attrVal::', attrVal, ' | val::', val, ' priority::', priority); }
       if (!val || (!!val && !val.length)) { elem.style.display = 'none'; continue; }
 
       // generate new element and place it in the sibling position
-      const newElem = this._generateNewElem(elem, attrName, attrVal);
+      const newElem = this._genElem_create(elem, attrName, attrVal);
 
       // multiply new element by cloning and adding sibling elements
       const newElemsTotal = val.length;
@@ -95,8 +98,11 @@ class DataRg extends DataRgListeners {
       const val = +this._getControllerValue(prop);
       this._debug('rgRepeat', `Element will be repeated ${val} times.`, 'navy');
 
+      // remove all gen elems
+      this._genElem_remove(elem, attrName, attrVal);
+
       // generate new element and place it in the sibling position
-      const newElem = this._generateNewElem(elem, attrName, attrVal);
+      const newElem = this._genElem_create(elem, attrName, attrVal);
 
       // multiply element by cloning and adding sibling elements
       const newElemsTotal = +val;
@@ -169,9 +175,12 @@ class DataRg extends DataRgListeners {
       let act = attrValSplited[1] || 'inner';
       act = act.trim();
 
+      // remove all gen elems
+      this._genElem_remove(elem, attrName, attrVal);
+
       // generate new element and place it in the sibling position
       let newElem;
-      if (act !== 'inner') { newElem = this._generateNewElem(elem, attrName, attrVal); }
+      if (act !== 'inner') { newElem = this._genElem_create(elem, attrName, attrVal); }
 
 
       // load content in the element
@@ -245,7 +254,7 @@ class DataRg extends DataRgListeners {
       // hide/show elem
       if (tf) {
         const dataRgPrint_attrVal = elem.getAttribute('data-rg-print');
-        if (!!dataRgPrint_attrVal && /outer|sibling|prepend|append|inset/.test(dataRgPrint_attrVal)) { elem.style.display = 'none'; } // element with data-rg-print should stay hidden because of _generateNewElem()
+        if (!!dataRgPrint_attrVal && /outer|sibling|prepend|append|inset/.test(dataRgPrint_attrVal)) { elem.style.display = 'none'; } // element with data-rg-print should stay hidden because of _genElem_create()
         else { elem.style.display = ''; }
       } else {
         elem.style.display = 'none';
