@@ -111,9 +111,10 @@ class Form {
   /**
    * Get the form control value.
    * @param {string} key - the value of the "name" HTML attribute
+   * @param {boolean} convertType - default true
    * @returns {string|number}
    */
-  getControl(key) {
+  getControl(key, convertType = true) {
     this._debug('getControl', '--------- getControl ------', 'green', '#A1F8DC');
     const elems = document.querySelectorAll(`[data-rg-form="${this.formName}"] [name="${key}"]`);
     if (!elems.length) { console.error(`Form "${this.formName}" doesn't have name="${key}" control.`); }
@@ -123,18 +124,21 @@ class Form {
     let i = 1;
     for (const elem of elems) {
       if (elem.type === 'checkbox') {
-        const v = this._typeConvertor(elem.value);
+        let v = elem.value;
+        if (convertType) { v = this._typeConvertor(elem.value); }
         if (elem.checked) { valArr.push(v); val = valArr; }
         if (i === elems.length && !val) { val = []; }
 
       } else if (elem.type === 'radio') {
-        const v = this._typeConvertor(elem.value);
+        let v = elem.value;
+        if (convertType) { v = this._typeConvertor(elem.value); }
         if (elem.checked) { val = v; }
 
       } else if (elem.type === 'select-multiple') {
         const opts = elem.selectedOptions; // selected options
         for (const opt of opts) {
-          const v = this._typeConvertor(opt.value);
+          let v = opt.value;
+          if (convertType) { v = this._typeConvertor(opt.value); }
           valArr.push(v);
           val = valArr;
         }
@@ -147,7 +151,8 @@ class Form {
         val = elem.value;
 
       } else {
-        const v = this._typeConvertor(elem.value);
+        let v = elem.value;
+        if (convertType) { v = this._typeConvertor(elem.value); }
         val = v;
       }
       i++;
