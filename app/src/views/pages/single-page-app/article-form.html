@@ -53,15 +53,16 @@
     </li>
     <li>
       <b>getControl <i>(key :string, convertType: boolean) :string|number</i></b>
-      <p class="desc">Get the form control value. Returned value type is string or number.
+      <p class="desc">Get the form control value. Returned value is array for checkboxes and select-multiple.
         <br><b>key</b> - the value of the "name" HTML attribute
-        <br><b>convertType</b> - to convert the type, for example '5' to Number or '{"a": 22}' to Object
+        <br><b>convertType</b> - to convert the type, for example '5' to Number or '{"a": 22}' to Object. Default is true.
       </p>
     </li>
     <li>
-      <b>getControls <i>(keys :string[]) :object</i></b>
+      <b>getControls <i>(keys :string[], convertType: boolean) :object</i></b>
       <p class="desc">Get the form control values. Returned value is the corresponding object.
         <br><b>keys</b> - the values of the "name" HTML attributes (This is an JS Array!)
+        <br><b>convertType</b> - to convert the type, for example '5' to Number or '{"a": 22}' to Object. Default is true.
       </p>
     </li>
     <li>

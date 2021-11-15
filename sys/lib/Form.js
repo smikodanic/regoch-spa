@@ -166,15 +166,16 @@ class Form {
   /**
    * Get the form controll values and return corresponding object
    * @param {string[]} keys - the value of the "name" HTML attribute
+   * @param {boolean} convertType - default true
    * @returns {object}
    */
-  getControls(keys) {
+  getControls(keys, convertType = true) {
     if (!keys) { console.error('getControlsErr: Argument "keys" is not defined. It should be an array.'); }
     this._debug('getControls', '--------- getControls ------', 'green', '#A1F8DC');
     this._debug('getControls', keys, 'green');
     const obj = {};
     for (const key of keys) {
-      obj[key] = this.getControl(key);
+      obj[key] = this.getControl(key, convertType);
     }
     return obj;
   }
