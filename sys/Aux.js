@@ -187,6 +187,8 @@ class Aux {
     else if (funcName === '$lte' && arg) { tf = val <= arg; }
     else if (funcName === '$in' && arg) { tf = arg.indexOf(val) !== -1; } // arg must be array
     else if (funcName === '$nin' && arg) { tf = arg.indexOf(val) === -1; } // arg must be array
+    else if (funcName === '$reg' && arg) { tf = arg.test(val); } // arg must be RegExp, val must contain regexp to be true
+    else if (funcName === '$nreg' && arg) { tf = !arg.test(val); } // arg must be RegExp, val shouldn't contain regexp to be true
 
     // console.log(`funcName:: ${funcName} -- val:.${val} -- arg:.${arg} -- tf:.${tf} --`);
     return tf;
