@@ -33,6 +33,7 @@ class Controller extends Model {
       rgClass: false,
       rgStyle: false,
       rgSrc: false,
+      rgAttr: false,
       rgElem: false,
       rgEcho: false,
       rgFlicker: false,
@@ -179,6 +180,7 @@ class Controller extends Model {
     this.rgClass(attrValQuery);
     this.rgStyle(attrValQuery);
     this.rgSrc(attrValQuery);
+    this.rgAttr(attrValQuery);
     this.rgElem(attrValQuery);
     this.rgEcho(attrValQuery);
   }

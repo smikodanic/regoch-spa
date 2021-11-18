@@ -145,6 +145,12 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 
 
 <br><br>
+<h4>DATA-RG-DISABLED</h4>
+<button data-rg-click="toggleDISABLED()">toggle DISABLED</button> - disable/enable the INPUT element
+<input type="text" style="width:32%" data-rg-disabled="isDisabled">
+
+
+<br><br>
 <h4>DATA-RG-CLASS</h4>
 <button data-rg-click="runCLASS()">runCLASS</button>
 <small>Open browser developer tools to see the effect after the button is clicked.</small>
@@ -157,6 +163,12 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 <button data-rg-click="runSTYLE(21px, red)">run STYLE</button>
 <p style="font-weight:bold" data-rg-style="myStajl">"font-weight:bold" will remain</p>
 <p style="font-weight:bold" data-rg-style="myStajl @@ replace">"font-weight:bold" will be removed</p>
+
+
+<br><br>
+<h4>DATA-RG-ATTR</h4>
+<button data-rg-click="runATTR()">run ATTR</button>
+<br><a data-rg-attr="someURL @@ href" data-rg-print="someURL"></a>
 
 
 <br><br>
@@ -180,12 +192,6 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 <br>
 <br><textarea data-rg-bind="bander.article" cols="30" rows="10" data-rg-change="runRERENDER()"></textarea>
 &nbsp; <span data-rg-print="bander.article"></span>
-
-
-<br><br>
-<h4>DATA-RG-DISABLED</h4>
-<button data-rg-click="toggleDISABLED()">toggle DISABLED</button> - disable/enable the INPUT element
-<input type="text" style="width:32%" data-rg-disabled="isDisabled">
 
 
 <br><br>

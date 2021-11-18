@@ -557,6 +557,40 @@ class DataRg extends DataRgListeners {
 
 
   /**
+  * data-rg-attr"<controllerProperty> [@@<attributeName>]"
+  * Parse the "data-rg-attr" attribute. Set element's attribute value.
+  * Examples:
+  * data-rg-attr="pageURL @@ href" - define <a href="">
+  * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
+  * @returns {void}
+  */
+  rgAttr(attrValQuery) {
+    this._debug('rgAttr', '--------- rgAttr ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-attr';
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgAttr', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName) || ''; // pageURL @@ href
+      const attrValSplited = attrVal.split(this.separator);
+
+      const prop = attrValSplited[0].trim();
+      const val = this._getControllerValue(prop);
+
+      if (!attrValSplited[1]) { console.error(`Attribute name is not defined in the ${attrName}="${attrVal}".`); continue; }
+      const attribute_name = attrValSplited[1].trim(); // href
+
+      elem.setAttribute(attribute_name, val);
+
+      this._debug('rgAttr', `data-rg-attr="${attrVal}" --prop:: "${prop}" --val:: "${val}" --> added ${attribute_name}="${val}"`, 'navy');
+    }
+  }
+
+
+
+  /**
    * data-rg-elem="<rgelemsProp>"     --> rgelemsProp is the property of the this.rgelems, for example data-rg-elem="myElement" => this.rgelems.myElement
    * Parse the "data-rg-elem" attribute. Transfer the DOM element to the controller property "this.rgelems".
    * Examples:

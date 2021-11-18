@@ -8,7 +8,8 @@ class DataRgCtrl extends Controller {
     this.debugOpts = {
       rgFor: false,
       rgChecked: false,
-      rgPrint: false
+      rgPrint: false,
+      rgAttr: true
     };
   }
 
@@ -225,6 +226,12 @@ class DataRgCtrl extends Controller {
   runSRC() {
     this.imageURL = 'http://cdn.dex8.com/img/turnkey_tasks/scraper_free.png';
     this.rgSrc('imageURL');
+  }
+
+
+  runATTR() {
+    this.someURL = 'https://www.adsuu.com';
+    this.renders(['someURL']);
   }
 
 
