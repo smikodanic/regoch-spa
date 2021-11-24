@@ -114,7 +114,7 @@ class Controller extends Model {
    * @param {string|RegExp} attrValQuery - query for the attribute value
    * @param {number} renderDelay - delay in miliseconds
    */
-  async render(attrValQuery, renderDelay = 10) {
+  async render(attrValQuery, renderDelay = 5) {
     this._debug('render', `--------- render (start) -- attrValQuery: ${attrValQuery} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
     await new Promise(r => setTimeout(r, renderDelay));
     this._renderGens(attrValQuery);
@@ -133,7 +133,7 @@ class Controller extends Model {
    * @param {string[]|RegExp[]} attrValQuerys - array of the controller property names: ['company.name', /^company\.year/]
    * @param {number} renderDelay - delay in miliseconds
    */
-  async renders(attrValQuerys = [], renderDelay) {
+  async renders(attrValQuerys = [], renderDelay = 5) {
     for (const attrValQuery of attrValQuerys) { await this.render(attrValQuery, renderDelay); }
   }
 

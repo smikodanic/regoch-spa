@@ -95,7 +95,6 @@ class DataRgListeners extends Aux {
       const funcDef = attrVal.trim();
 
       const handler = async event => {
-        event.preventDefault();
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgClick', `Executed rgClick listener --> ${funcName}(${funcArgsStr})`, 'orangered');
@@ -135,8 +134,6 @@ class DataRgListeners extends Aux {
       keyCode = keyCode.trim().toLowerCase();
 
       const handler = async event => {
-        event.preventDefault();
-
         let eventCode;
         if (event.code) { eventCode = event.code.toLowerCase(); }
         if (!!keyCode && keyCode !== eventCode) { return; }
@@ -176,7 +173,6 @@ class DataRgListeners extends Aux {
       const funcDef = attrVal.trim();
 
       const handler = async event => {
-        event.preventDefault();
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgChange', `Executed rgChange listener --> ${funcName}(${funcArgsStr})`, 'orangered');
@@ -217,7 +213,6 @@ class DataRgListeners extends Aux {
         const funcDef = attrValSplited[1].trim();
 
         const handler = async event => {
-          event.preventDefault();
           const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
           await this._funcExe(funcName, funcArgs);
           this._debug('rgEvt', `Executed rgEvt listener --> ${funcName}(${funcArgsStr})`, 'orangered');

@@ -163,6 +163,12 @@
         <br><b>attrValQuery</b>- the attribute query</p>
     </li>
     <li>
+      <b>rgAttr <i>(attrValQuery :string) :void</i></b>
+      <p class="desc">Parse the <b>data-rg-src="&lt;controllerProperty&gt; @@ attribute_name"</b> elements. Set the element attribute, for example href in the "a" tag.
+        <br> Example: <small>&lt;a data-rg-attr="myURL @@ href"&gt;My Link&lt;/a&gt;</small>
+        <br><b>attrValQuery</b>- the attribute query</p>
+    </li>
+    <li>
       <b>rgElem <i>(attrValQuery :string) :void</i></b>
       <p class="desc">Parse the <b>data-rg-elem="&lt;rgelemsProp&gt;"</b> elements. Transfer the DOM element to the controller property "this.rgelems".
         <br><b>attrValQuery</b>- the attribute query, the property of the this.rgelems</p>

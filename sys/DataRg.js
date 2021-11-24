@@ -167,8 +167,7 @@ class DataRg extends DataRgListeners {
       if (!!pipe_funcDef && !!val) {
         pipe_funcDef = pipe_funcDef.trim();
         const { funcName, funcArgs } = this._funcParse(pipe_funcDef, elem);
-        if (typeof val[funcName] !== 'function') { console.error(`The "${funcName}" is not valid function and can't be applied in "${attrVal}".`); continue; }
-        val = val[funcName](...funcArgs);
+        if (typeof val[funcName] === 'function') { val = val[funcName](...funcArgs); }
       }
 
       // define action
