@@ -76,7 +76,7 @@ class DataRgListeners extends Aux {
 
 
   /**
-   * data-rg-click="<controllerMethod>"
+   * data-rg-click="<controllerMethod> [@@ preventDefault]"
    * <button data-rg-click="myFunc()">CLICK ME</button>
    * Listen for click and execute the function i.e. controller method.
    * @returns {void}
@@ -90,20 +90,24 @@ class DataRgListeners extends Aux {
     if (!elems.length) { return; }
 
     for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName); // string 'myFunc(x, y, ...restArgs)'
+      const attrVal = elem.getAttribute(attrName); // string 'myFunc(x, y, ...restArgs) @@ preventDefault'
       if (!attrVal) { console.error(`Attribute "data-rg-click" has bad definition (data-rg-click="${attrVal}").`); continue; }
-      const funcDef = attrVal.trim();
+
+      const attrValSplited = attrVal.split(this.separator);
+      const funcDef = attrValSplited[0].trim();
+      const tf = !!attrValSplited[1] && attrValSplited[1].trim() === 'preventDefault';
 
       const handler = async event => {
+        if (tf) { event.preventDefault(); }
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
-        this._debug('rgClick', `Executed rgClick listener --> ${funcName}(${funcArgsStr})`, 'orangered');
+        this._debug('rgClick', `Executed rgClick listener --> ${funcName}(${funcArgsStr}) | preventDefault: ${tf}`, 'orangered');
         eventEmitter.emit('autorender', { trigger: 'rgClick', funcName, funcArgs });
       };
 
       elem.addEventListener('click', handler);
       this.rgListeners.push({ attrName, elem, handler, eventName: 'click' });
-      this._debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | rgListeners: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | preventDefault: ${tf} | rgListeners: ${this.rgListeners.length}`, 'orange');
     }
   }
 
