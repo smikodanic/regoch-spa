@@ -40,7 +40,8 @@
     </li>
     <li>
       <b>rgClick <i>() :void</i></b>
-      <p class="desc">Parser for the <b>data-rg-click="&lt;controllerMethod&gt;"</b>. Event "click".
+      <p class="desc">Parser for the <b>data-rg-click="&lt;controllerMethod&gt; [@@ preventDefault]"</b>. Event "click".
+        <br>The option <i>@@preventDefault</i> will execute <i>event.preventDefault()</i>.
         <br>The <b>$element</b>, <b>$value</b> and <b>$event</b> arguments can be used in the view. For example: <small>data-rg-click="func(5, 'str', 8, 9, $element, $event, $value)"</small>
         <br>The $value is element.value with the corrected data type. For example if element.value is 34.58 it's converted to Number.
         <br>Example: &lt;button data-rg-click="showData()"&gt;</p>
