@@ -116,16 +116,48 @@ class Controller extends Model {
    */
   async render(attrValQuery, renderDelay = 5) {
     this._debug('render', `--------- render (start) -- attrValQuery: ${attrValQuery} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
+
+    this.rgSetinitial(attrValQuery);
+
     await new Promise(r => setTimeout(r, renderDelay));
-    this._renderGens(attrValQuery);
+
+    // Render DataRg generators.
+    this.rgFor(attrValQuery);
+    this.rgRepeat(attrValQuery);
+    this.rgPrint(attrValQuery);
+
     await new Promise(r => setTimeout(r, renderDelay));
-    this._renderNonGens(attrValQuery);
+
+    // Render DataRg non-generators.
+    this.rgIf(attrValQuery);
+    this.rgSwitch(attrValQuery);
+    this.rgDisabled(attrValQuery);
+    this.rgValue(attrValQuery);
+    this.rgChecked(attrValQuery);
+    this.rgClass(attrValQuery);
+    this.rgStyle(attrValQuery);
+    this.rgSrc(attrValQuery);
+    this.rgAttr(attrValQuery);
+    this.rgElem(attrValQuery);
+    this.rgEcho(attrValQuery);
+
     await new Promise(r => setTimeout(r, renderDelay));
-    await this._renderLsns();
+
+    // Render DataRgListeners. First remove all listeners with the rgKILL() and after that associate listeners to data - rg - elements.
+    await this.rgKILL();
+    this.rgHref();
+    this.rgClick();
+    this.rgKeyup();
+    this.rgChange();
+    this.rgEvt();
+    this.rgSet();
+    this.rgBind();
+
     await new Promise(r => setTimeout(r, renderDelay));
     eventEmitter.on('autorender', this.autorenderListener.bind(this));
     this._debug('render', `--------- render (end) -- attrValQuery: ${attrValQuery} ------`, 'green', '#D9FC9B');
   }
+
 
 
   /**
@@ -156,50 +188,6 @@ class Controller extends Model {
   }
 
 
-  /**
-   * Render DataRg generators.
-   * @param {string|RegExp} attrValQuery - query for the attribute value
-   */
-  _renderGens(attrValQuery) {
-    this.rgFor(attrValQuery);
-    this.rgRepeat(attrValQuery);
-    this.rgPrint(attrValQuery);
-  }
-
-
-  /**
-   * Render DataRg non-generators.
-   * @param {string|RegExp} attrValQuery - query for the attribute value
-   */
-  _renderNonGens(attrValQuery) {
-    this.rgIf(attrValQuery);
-    this.rgSwitch(attrValQuery);
-    this.rgDisabled(attrValQuery);
-    this.rgValue(attrValQuery);
-    this.rgChecked(attrValQuery);
-    this.rgClass(attrValQuery);
-    this.rgStyle(attrValQuery);
-    this.rgSrc(attrValQuery);
-    this.rgAttr(attrValQuery);
-    this.rgElem(attrValQuery);
-    this.rgEcho(attrValQuery);
-  }
-
-
-  /**
-   * Render DataRgListeners.
-   * First remove all listeners with the rgKILL() and after that associate listeners to data-rg- elements.
-   */
-  async _renderLsns() {
-    await this.rgKILL();
-    this.rgHref();
-    this.rgClick();
-    this.rgKeyup();
-    this.rgChange();
-    this.rgEvt();
-    this.rgSet();
-    this.rgBind();
-  }
 
 
 

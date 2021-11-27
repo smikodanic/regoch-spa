@@ -6,8 +6,8 @@
 <h3>--GENERATORS--</h3>
 
 <h4>DATA-RG-FOR</h4>
-<button data-rg-click="runFOR()">run FOR (priority: 0)</button> <i>NOTICE: The data-rg-flicker is used to prevent showing "$i+1 name:"</i>
-<p data-rg-flicker data-rg-for="companies" style="color:green" class="evalMath($i0+1)"><span data-rg-print="companies.$i0.name @@ append">evalMath($i0+1) name:</span> -- <b data-rg-print="companies.$i.size"></b></p>
+<button data-rg-click="runFOR()">run FOR (priority: 0)</button>
+<p data-rg-for="companies" style="color:green" class="evalMath($i0+1)"><span data-rg-print="companies.$i0.name @@ append">evalMath($i0+1). name:</span> -- <b data-rg-print="companies.$i0.size"></b></p>
 
 <br><br>
 <button data-rg-click="runFOR2()">run FOR2 (priority: 1)</button> - initial array has no elements. Example with <b>@@priority</b> parameter and evalMath() method.
@@ -20,7 +20,7 @@
 <button data-rg-click="runFORnested()">run FORnested (priorities: 2,3)</button> - run data-rg-for in the another data-rg-for
 <table>
   <tr data-rg-for="trains @@ 2">
-    <td data-rg-for="fields @@ 3" style="width:123px"><span data-rg-print="trains.$i2.(fields.$i3) @@ append"><b>evalMath($i3 + 1).</b></span></td>
+    <td data-rg-for="fields @@ 3" style="width:123px"><span data-rg-print="trains.$i2.($model.fields.$i3) @@ append"><b>evalMath($i3 + 1).</b></span></td>
   </tr>
 </table>
 
@@ -29,7 +29,7 @@
 <h4>DATA-RG-REPEAT</h4>
 <p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>
 <p>Initially the P element will be repeated 3 times due to <b>data-rg-repeat="3"</b> attribute. When the button "run REPEAT" is clicked the element will be repeated 5 times.</p>
-<button data-rg-click="runREPEAT(5)">run REPEAT</button>
+<button data-rg-click="runREPEAT(5)">run REPEAT 5</button>
 <p data-rg-flicker data-rg-repeat="multiplikator" class="evalMath($i0+1)">The pet #evalMath($i0+1): <input data-rg-set="pets.$i0 @@ rgPrint"> <span data-rg-print="pets.$i0"></span></p>
 
 <br><br>
@@ -56,9 +56,9 @@
 
 
 <br><br>
-<h4>DATA-RG-PRINT &amp; DATA-RG-SET (initial value)</h4>
-<p>Set the initial value of the input tag with the <b>value</b> attribute.</p>
-Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat.name @@ rgPrint">
+<h4>DATA-RG-SETINITIAL &amp; DATA-RG-PRINT (initial value)</h4>
+<p>Set the initial value of the input tag with the <b>value</b> attribute. Then print that initial value.</p>
+Change pet name: <input type="text" value="Mrnjao" data-rg-setinitial="pet.cat.name" data-rg-set="pet.cat.name @@ rgPrint">
 <br><span data-rg-print="pet.cat.name @@ append">Pet name is</span>
 
 
@@ -180,17 +180,17 @@ Change pet name: <input type="text" name="x" value="Mrnjao" data-rg-set="pet.cat
 
 <br><br><br>
 <h4>DATA-RG-BIND</h4>
-<input type="text" data-rg-bind="bander.name" data-rg-change="runRERENDER()">
+<input type="text" data-rg-bind="bander.name" data-rg-change="runBIND_RERENDER()">
 &nbsp; <span data-rg-print="bander.name"></span>
 <br>
-<br><select data-rg-bind="bander.animal" data-rg-change="runRERENDER()">
+<br><select data-rg-bind="bander.animal" data-rg-change="runBIND_RERENDER()">
   <option value="cat">cat</option>
   <option value="dog">dog</option>
   <option value="horse">horse</option>
 </select>
-&nbsp; <span data-rg-print="bander.animal" data-rg-change="runRERENDER()"></span>
+&nbsp; <span data-rg-print="bander.animal" data-rg-change="runBIND_RERENDER()"></span>
 <br>
-<br><textarea data-rg-bind="bander.article" cols="30" rows="10" data-rg-change="runRERENDER()"></textarea>
+<br><textarea data-rg-bind="bander.article" cols="30" rows="10" data-rg-change="runBIND_RERENDER()"></textarea>
 &nbsp; <span data-rg-print="bander.article"></span>
 
 

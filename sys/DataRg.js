@@ -43,7 +43,7 @@ class DataRg extends DataRgListeners {
       const priority = !!attrValSplited[1] ? attrValSplited[1].trim() : 0;
 
       const prop = attrValSplited[0].trim();
-      const val = this._getControllerValue(prop);
+      const val = this._getControllerValue('$model.' + prop);
 
       // remove all gen elems
       this._genElem_remove(elem, attrName, attrVal);
@@ -95,7 +95,7 @@ class DataRg extends DataRgListeners {
       const attrVal = elem.getAttribute(attrName);
 
       const prop = attrVal.trim();
-      const val = +this._getControllerValue(prop);
+      const val = +this._getControllerValue('$model.' + prop);
       this._debug('rgRepeat', `Element will be repeated ${val} times.`, 'navy');
 
       // remove all gen elems
@@ -150,8 +150,8 @@ class DataRg extends DataRgListeners {
       // get val and apply pipe to the val
       const propPipe = attrValSplited[0].trim(); // controller property name with pipe:  company.name | slice(0,21)
       const propPipeSplitted = propPipe.split('|');
-      const prop = propPipeSplitted[0].trim();
-      let val = this._getControllerValue(prop);
+      const prop = propPipeSplitted[0].trim(); // company.name
+      let val = this._getControllerValue('$model.' + prop);
 
       // correct val
       const toKeep = !!attrValSplited[2] ? attrValSplited[2].trim() === 'keep' : false; // to keep the innerHTML as value when val is undefined
@@ -237,7 +237,7 @@ class DataRg extends DataRgListeners {
       const propCompSplitted = propComp.split(/\s+/);
 
       const prop = propCompSplitted[0].trim(); // ifAge
-      const val = this._getControllerValue(prop);
+      const val = this._getControllerValue('$model.' + prop);
 
       const funcDef = propCompSplitted[1] ? propCompSplitted[1].trim() : false; // $eq(22)
       let tf = false;
@@ -292,7 +292,7 @@ class DataRg extends DataRgListeners {
       const isMultiple = !!attrValSplited[1] ? attrValSplited[1].trim() === 'multiple' : false;
 
       const prop = attrValSplited[0].trim();
-      const val = this._getControllerValue(prop);
+      const val = this._getControllerValue('$model.' + prop);
 
       // get data-rg-switchcase and data-rg-switchdefault attribute values
       const switchcaseElems = elem.querySelectorAll('[data-rg-switch] > [data-rg-switchcase]');
@@ -347,7 +347,7 @@ class DataRg extends DataRgListeners {
       const propCompSplitted = propComp.split(/\s+/);
 
       const prop = propCompSplitted[0].trim(); // ifAge
-      const val = this._getControllerValue(prop);
+      const val = this._getControllerValue('$model.' + prop);
 
       const funcDef = propCompSplitted[1] ? propCompSplitted[1].trim() : false; // $eq(22)
       let tf = false;
@@ -394,11 +394,41 @@ class DataRg extends DataRgListeners {
       if (!attrVal) { console.error(`rgValue Error:: Attribute has bad definition (data-rg-value="${attrVal}").`); continue; }
 
       const prop = attrVal.trim();
-      const val = this._getControllerValue(prop);
+      const val = this._getControllerValue('$model.' + prop);
 
       this._setElementValue(elem, val);
 
       this._debug('rgValue', `elem.type:: ${elem.type} -- ${prop}:: ${val}`, 'navy');
+    }
+  }
+
+
+  /**
+   * data-rg-setinitial="<controllerProperty>"
+   * Parse the "data-rg-setinitial" attribute. Get the element value and set the controller property value..
+   * Examples:
+   * data-rg-setinitial="product"
+   * data-rg-setinitial="employee.name"
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
+   * @returns {void}
+   */
+  rgSetinitial(attrValQuery) {
+    this._debug('rgSetinitial', '--------- rgSetinitial ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-setinitial';
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgSetinitial', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      if (!attrVal) { console.error(`rgSetinitial Error:: Attribute has bad definition (data-rg-setinitial="${attrVal}").`); continue; }
+
+      const val = this._getElementValue(elem);
+      const prop = attrVal.trim();
+      this._setControllerValue('$model.' + prop, val);
+
+      this._debug('rgSetinitial', `elem.type:: ${elem.type} -- set initial --> ${prop}:: ${val}`, 'navy');
     }
   }
 
@@ -427,7 +457,7 @@ class DataRg extends DataRgListeners {
       if (!attrVal) { console.error(`rgChecked Error:: Attribute has bad definition (data-rg-checked="${attrVal}").`); continue; }
 
       const prop = attrVal.trim();
-      const val = this._getControllerValue(prop); // val must be array
+      const val = this._getControllerValue('$model.' + prop); // val must be array
       if (!Array.isArray(val)) { console.error(`rgChecked Error:: The controller property ${prop} is not array.`); continue; }
 
       if (val.indexOf(elem.value) !== -1) { elem.checked = true; }
@@ -462,7 +492,7 @@ class DataRg extends DataRgListeners {
       const attrValSplited = attrVal.split(this.separator);
 
       const prop = attrValSplited[0].trim(); // controller property name company.name
-      const valArr = this._getControllerValue(prop) || []; // ['my-bold', 'my-italic']
+      const valArr = this._getControllerValue('$model.' + prop) || []; // ['my-bold', 'my-italic']
       if (!Array.isArray(valArr)) { console.log(`%c rgClassWarn:: The controller property "${prop}" is not an array.`, `color:Maroon; background:LightYellow`); continue; }
 
       let act = attrValSplited[1] || '';
@@ -500,7 +530,7 @@ class DataRg extends DataRgListeners {
       const attrValSplited = attrVal.split(this.separator);
 
       const prop = attrValSplited[0].trim();
-      const valObj = this._getControllerValue(prop); // {fontSize: '21px', color: 'red'}
+      const valObj = this._getControllerValue('$model.' + prop); // {fontSize: '21px', color: 'red'}
 
       let act = attrValSplited[1] || '';
       act = act.trim() || 'add';
@@ -540,7 +570,7 @@ class DataRg extends DataRgListeners {
       const attrValSplited = attrVal.split(this.separator);
 
       const prop = attrValSplited[0].trim();
-      const val = this._getControllerValue(prop);
+      const val = this._getControllerValue('$model.' + prop);
 
       // when val is undefined load defaultSrc
       let defaultSrc = attrValSplited[1] || '';
@@ -576,7 +606,7 @@ class DataRg extends DataRgListeners {
       const attrValSplited = attrVal.split(this.separator);
 
       const prop = attrValSplited[0].trim();
-      const val = this._getControllerValue(prop);
+      const val = this._getControllerValue('$model.' + prop);
 
       if (!attrValSplited[1]) { console.error(`Attribute name is not defined in the ${attrName}="${attrVal}".`); continue; }
       const attribute_name = attrValSplited[1].trim(); // href

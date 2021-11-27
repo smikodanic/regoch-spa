@@ -6,10 +6,9 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      rgFor: false,
-      rgChecked: false,
+      rgSetinitial: false,
       rgPrint: false,
-      rgAttr: true
+      rgChecked: true,
     };
   }
 
@@ -32,9 +31,7 @@ class DataRgCtrl extends Controller {
 
   async init(trx) {
     // initial values for the runFOR example
-    this.limit = 3;
-    this.skip = 2;
-    this.companies = [
+    this.$model.companies = [
       { name: 'Cloud Ltd', size: 3 },
       { name: 'Roto Ltd', size: 5 },
       { name: 'Zen Ltd', size: 8 },
@@ -46,32 +43,32 @@ class DataRgCtrl extends Controller {
     ];
 
     // initial values for runFOR2
-    this.herbals = [];
+    this.$model.herbals = [];
 
     // initial for runFORnested
-    this.fields = ['name', 'from', 'to', 'duration'];
-    this.trains = [
+    this.$model.fields = ['name', 'from', 'to', 'duration'];
+    this.$model.trains = [
       { name: 'TRAIN-A', from: 'DU', to: 'ST', duration: 55 },
       { name: 'TRAIN-B', from: 'ST', to: 'KN', duration: 66 }
     ];
 
     // initial value for runREPEAT
-    this.multiplikator = 3;
+    this.$model.multiplikator = 3;
 
     // initial values for the runSWITCH example
-    this.myColor = 'green';
+    this.$model.myColor = 'green';
 
     // initail value for data-rg-print with the pipe
-    this.longText = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard.';
+    this.$model.longText = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard.';
 
     // text with the HTML
-    this.htmlText = 'The best <b style="color:red">man</b> friend is: <i data-rg-if="bestFriend $not()">NOBODY</i> <i data-rg-if="bestFriend $eq(Dog)">DOG</i>';
+    this.$model.htmlText = 'The best <b style="color:red">man</b> friend is: <i data-rg-if="bestFriend $not()">NOBODY</i> <i data-rg-if="bestFriend $eq(Dog)">DOG</i>';
 
     // initial value for the data-rg-bind
-    this.bander = { name: 'Smokie', animal: 'horse', article: 'Lorem ipsumus ...' };
+    this.$model.bander = { name: 'Smokie', animal: 'horse', article: 'Lorem ipsumus ...' };
 
     // initial value for the data-rg-checked
-    this.checks1 = ['Tin'];
+    this.$model.checks1 = ['Tin'];
   }
 
 
@@ -93,7 +90,7 @@ class DataRgCtrl extends Controller {
 
   // show array elements by using data-rg-for
   async runFOR() {
-    this.companies = [
+    this.$model.companies = [
       { name: 'Cloud2 Ltd', size: 3 },
       { name: 'Roto2 Ltd', size: 5 },
       { name: 'Zen2 Ltd', size: 8 },
@@ -103,62 +100,54 @@ class DataRgCtrl extends Controller {
       { name: 'Gen2 Ltd', size: 84 },
       { name: 'Ren2 Ltd', size: 855 }
     ];
-    this.rgFor('companies');
-    this.rgPrint('companies');
   }
 
   // show array elements by using data-rg-for
   async runFOR2() {
     this.skipNum = 10;
-    this.herbals = ['corn', 'banana', 'plum', 'straw'];
-    this.render('herbals');
+    this.$model.herbals = ['corn', 'banana', 'plum', 'straw'];
   }
 
 
   // run data-rg-for inside data-rg-for
   async runFORnested() {
-    this.fields = ['name', 'from', 'to', 'duration'];
-    this.trains = [
+    this.$model.fields = ['name', 'from', 'to', 'duration'];
+    this.$model.trains = [
       { name: 'TRAIN1', from: 'OS', to: 'NA', duration: 2 },
       { name: 'TRAIN2', from: 'OS', to: 'ZG', duration: 3 },
       { name: 'TRAIN3', from: 'SB', to: 'VK', duration: 5 }
     ];
-    this.renders(['fields', 'trains']); // data-rg-for will be rendered by defined order i.e. first 'fields' and then 'trains'
-    // this.render(); // data-rg-for will be rendered by the priority number
   }
 
   // repeat the data-rg-repeat num times
   async runREPEAT(num) {
-    this.multiplikator = num;
-    this.render('multiplikator');
+    this.$model.multiplikator = num;
   }
 
 
   // print initial value and after 1300ms the modified value
   async runPRINT() {
-    this.product = {
+    this.$model.product = {
       name: 'Toyota',
       address: {
         city: 'London'
       },
       colors: ['red', 'green']
     };
-    this.rgPrint('product'); // affect data-rg-print with the product
 
     await syslib.util.sleep(1300);
-    console.log('Product properties changed!');
 
-    this.product.address.city = 'Zagreb';
-    this.rgPrint('product.address.city');  // affect only data-rg-print with the product.address.city
+    this.$model.product = { ...this.$model.product, ...{ address: { city: 'Zagreb' } } };
 
-    this.product.colors = ['blue', 'orange'];
-    this.rgPrint('product.colors');  // affect only data-rg-print with the product.colors
+    await syslib.util.sleep(1300);
+
+    this.$model.product.colors = ['blue', 'orange'];
+    this.model('product').mrender();
   }
 
 
   printHTML() {
-    this.bestFriend = 'Dog';
-    this.rgIf('bestFriend');
+    this.$model.bestFriend = 'Dog';
   }
 
 
@@ -178,88 +167,75 @@ class DataRgCtrl extends Controller {
 
   // toggle if and show hide elements
   toggleIF() {
-    this.ifX = !this.ifX;
+    this.$model.ifX = !this.$model.ifX;
     console.log('toggleIF::', this.ifX);
-    this.rgIf('ifX');
   }
 
   runIF() {
-    this.myNum = 5;
-    this.myStr = 'some str';
-    this.myArr = [5, 4, 'lorem'];
+    this.$model.myNum = 5;
+    this.$model.myStr = 'some str';
+    this.$model.myArr = [5, 4, 'lorem'];
 
-    this.ifY = {
+    this.$model.ifY = {
       bool: true,
       num: 5,
       str: 'some str'
     };
-    console.log('runIF::', this.ifY);
-    this.rgIf('ifY');
   }
 
   async toggleIF2() {
-    this.continent = !!this.continent ? '' : 'Europe';
-    this.render('continent');
+    this.$model.continent = !!this.continent ? '' : 'Europe';
   }
 
 
   // Here are two tests. First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.
   runSWITCH() {
-    this.obj = { myColors: ['green2', 'blue2'] };
-    this.rgSwitch('myColor'); // this.myColor
-    this.rgSwitch('obj.myColors @@ multiple'); // this.obj.myColors
+    this.$model.obj = { myColors: ['green2', 'blue2'] };
   }
 
   // add CSS classes 'my-red' and 'my-font-size' to the element data-rg-class="myKlases"
   runCLASS() {
-    this.myKlases = ['my-red', 'my-font-size'];
-    this.rgClass('myKlases');
+    this.$model.myKlases = ['my-red', 'my-font-size'];
   }
 
   // add style attribute values
   runSTYLE(fontSize, color) {
-    this.myStajl = { fontSize, color };
-    this.rgStyle('myStajl');
+    this.$model.myStajl = { fontSize, color };
   }
 
   // define image src attribute
   runSRC() {
-    this.imageURL = 'http://cdn.dex8.com/img/turnkey_tasks/scraper_free.png';
-    this.rgSrc('imageURL');
+    this.$model.imageURL = 'http://cdn.dex8.com/img/turnkey_tasks/scraper_free.png';
   }
 
 
   runATTR() {
-    this.someURL = 'https://www.adsuu.com';
-    this.renders(['someURL']);
+    this.$model.someURL = 'https://www.adsuu.com';
   }
 
 
-  runRERENDER() {
+  runBIND_RERENDER() {
     console.log('runRERENDER::', this.bander);
     this.render('bander');
   }
 
 
   toggleDISABLED() {
-    this.isDisabled = !this.isDisabled;
-    this.render('isDisabled');
+    this.$model.isDisabled = !this.$model.isDisabled;
   }
 
 
   setVALUES() {
-    this.input_text01 = 'some text';
-    this.input_text_undefined;
-    this.input_text_obj = { a: 22 };
-    this.input_numberAsString = '157';
-    this.input_text01 = 'some text';
-    this.rgValue('input_');
+    this.$model.input_text01 = 'some text';
+    this.$model.input_text_undefined;
+    this.$model.input_text_obj = { a: 22 };
+    this.$model.input_numberAsString = '157';
+    this.$model.input_text01 = 'some text';
   }
 
 
   setCHECKED() {
-    this.checks1 = ['Pin', 'Tin'];
-    this.rgChecked('checks1');
+    this.$model.checks1 = ['Pin', 'Tin'];
   }
 
 }

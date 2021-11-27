@@ -1,11 +1,11 @@
-const { Controller, syslib } = require('../../../../sys');
+const { Controller } = require('../../../../sys');
 
 
 class ModelCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.debugOpts = { render: false };
+    this.debugOpts = { render: true };
   }
 
 
@@ -18,24 +18,37 @@ class ModelCtrl extends Controller {
 
 
   async init(trx) {
-    const userModel = {
-      name: 'string',
-      age: 'number',
-      isActive: 'boolean',
-      company: {
-        name: 'string',
-        employers: 'string[]',
-        years: 'number[]'
-      }
-    };
-    this.model('user', userModel);
-
+    this.$model.user = { name: 'John Doe', age: 11 };
   }
 
 
 
 
+  async str() {
+    this.$model.first_name = 'Saša';
+    await new Promise(r => setTimeout(r, 1300));
+    this.model('first_name').setValue(3);
+    await new Promise(r => setTimeout(r, 1300));
+    this.$model.first_name = 'Petar'; // shortcut for  this.model('first_name').setValue('Petar');
+  }
 
+  async obj() {
+    this.$model.user = { name: 'John', age: 23, isActive: false };
+    await new Promise(r => setTimeout(r, 1300));
+    this.$model.user = { name: 'Peter', age: 28, isActive: true };
+  }
+
+  async arr() {
+    this.$model.pets = ['dog', 'cat'];
+    await new Promise(r => setTimeout(r, 1300));
+    this.model('pets').mpush('rabbit');
+    await new Promise(r => setTimeout(r, 1300));
+    this.model('pets').mpop();
+    await new Promise(r => setTimeout(r, 1300));
+    this.model('pets').munshift('anaconda');
+    await new Promise(r => setTimeout(r, 1300));
+    this.model('pets').mshift();
+  }
 
 
 

@@ -28,8 +28,8 @@ class Aux {
 
 
   /**
-   * Solve round brackets in the controller property name, for example: trains.$i.(fields.$i2) --> trains.$i.name
-   * @param {string} prop - controller property name, trains.$i.(fields.$i2)
+   * Solve round brackets in the controller property name, for example: trains.$i.($model.fields.$i2) --> trains.$i.name
+   * @param {string} prop - controller property name, trains.$i.($model.fields.$i2)
    */
   _solveControllerName(prop) {
     const reg = new RegExp(`\\(${this.varnameChars}\\)`, 'g');
@@ -149,7 +149,7 @@ class Aux {
         const prop = interpolation.replace(openingChar, '').replace(closingChar, '').trim();
         if (/\$i/.test(prop)) { txt = ''; break; } // don't parse the text with $i0, $i1, ... for example: users.$i0.name
 
-        let val = this._getControllerValue(prop);
+        let val = this._getControllerValue('$model.' + prop);
         if (val === undefined) {
           console.log(`%c _parseInterpolatedWarn:: Controller property ${prop} is undefined.`, `color:Maroon; background:LightYellow`);
           val = '';
@@ -464,7 +464,14 @@ class Aux {
       elems = elems2;
     }
 
-    return elems;
+    // remove elems with $i in its data-rg- attribute
+    const elems_filtered = [];
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      if (!/\$i/.test(attrVal)) { elems_filtered.push(elem); }
+    }
+
+    return elems_filtered;
   }
 
 

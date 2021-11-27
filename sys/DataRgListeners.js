@@ -261,7 +261,7 @@ class DataRgListeners extends Aux {
 
       const handler = event => {
         const val = this._getElementValue(elem);
-        this._setControllerValue(prop, val);
+        this._setControllerValue('$model.' + prop, val);
 
         for (const doAfter of doAfter_arr) {
           const doAfter2 = doAfter.trim();
@@ -305,14 +305,14 @@ class DataRgListeners extends Aux {
       const doAfter_arr = !!doAfter_str ? doAfter_str.split(',') : [];
 
       /** SETTER **/
-      const val1 = this._getControllerValue(prop);
+      const val1 = this._getControllerValue('$model.' + prop);
       this._setElementValue(elem, val1);
       this._debug('rgBind', `rgBind set element value  --> controller property:: ${prop} = ${val1} | elem.type:: ${elem.type}`, 'orangered');
 
       /** LISTENER **/
       const handler = event => {
         const val2 = this._getElementValue(elem);
-        this._setControllerValue(prop, val2);
+        this._setControllerValue('$model.' + prop, val2);
 
         for (const doAfter of doAfter_arr) {
           const doAfter2 = doAfter.trim();
