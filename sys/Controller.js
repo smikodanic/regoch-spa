@@ -10,8 +10,6 @@ class Controller extends Model {
     this.debugOpts = {
       // Controller.js
       render: false,
-      autorender: false,
-      model: false,
 
       // Page.js
       loadInc: false,
@@ -46,7 +44,7 @@ class Controller extends Model {
       rgChange: false,
       rgEvt: false,
       rgSet: false,
-      rgBind: false
+      rgModel: false
     };
   }
 
@@ -153,8 +151,6 @@ class Controller extends Model {
     this.rgSet();
     this.rgModel();
 
-    await new Promise(r => setTimeout(r, renderDelay));
-    eventEmitter.on('autorender', this.autorenderListener.bind(this));
     this._debug('render', `--------- render (end) -- attrValQuery: ${attrValQuery} ------`, 'green', '#D9FC9B');
   }
 
@@ -168,26 +164,6 @@ class Controller extends Model {
   async renders(attrValQuerys = [], renderDelay = 5) {
     for (const attrValQuery of attrValQuerys) { await this.render(attrValQuery, renderDelay); }
   }
-
-
-
-  /**
-   * Listener for the autorender event. Autorender will automatically update the controller property in the view.
-   * Autorender can be enabled globally with app.autorender(true) or separatelly for every route with route option { autorender: true }
-   */
-  async autorenderListener(event) {
-    const trigger = event.detail.trigger;
-    const funcName = event.detail.funcName;
-    const funcArgs = event.detail.funcArgs;
-    if (this.autorender) {
-      this._debug('autorender', `--------- autorender START -- trigger: ${trigger} -- ctrl: ${this.constructor.name} -- ctrl method: ${funcName}(${funcArgs})  ------`, 'olive', '#D9FC9B');
-      await this.rend();
-      await this.postrend();
-      this._debug('autorender', `--------- autorender STOP -- trigger: ${trigger} -- ctrl: ${this.constructor.name} -- ctrl method: ${funcName}(${funcArgs})  ------`, 'olive', '#D9FC9B');
-    }
-  }
-
-
 
 
 

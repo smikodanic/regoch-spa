@@ -22,9 +22,6 @@ class Router {
   when(route, ctrl, routeOpts = {}) {
     const authGuards = routeOpts.authGuards || [];
 
-    // autorender
-    if (routeOpts.autorender !== undefined) { ctrl.autorender = routeOpts.autorender; }
-
     // prechecks
     if (!route && !!ctrl) { throw new Error(`Route is not defined for "${ctrl.constructor.name}" controller.`); }
     if (!!route && !ctrl) { throw new Error(`Controller is not defined for route "${route}".`); }
@@ -130,7 +127,6 @@ class Router {
           this._debug('router', `_testRoutes - destroy() of previous controller`, '#680C72');
           const prevCtrl = navig.previous.ctrl;
           prevCtrl.destroy(pevent); // execute destroy() defined in the controller
-          eventEmitter.off('autorender', prevCtrl.autorenderListener.bind(prevCtrl)); // close autorender listener for previous controller
         }
 
         // execute route middlewares

@@ -102,7 +102,6 @@ class DataRgListeners extends Aux {
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgClick', `Executed rgClick listener --> ${funcName}(${funcArgsStr}) | preventDefault: ${tf}`, 'orangered');
-        eventEmitter.emit('autorender', { trigger: 'rgClick', funcName, funcArgs });
       };
 
       elem.addEventListener('click', handler);
@@ -146,7 +145,6 @@ class DataRgListeners extends Aux {
         await this._funcExe(funcName, funcArgs);
 
         this._debug('rgKeyup', `Executed rgKeyup listener --> ${funcName}(${funcArgsStr}) | eventCode: ${eventCode}`, 'orangered');
-        eventEmitter.emit('autorender', { trigger: 'rgKeyup', funcName, funcArgs });
       };
 
       elem.addEventListener('keyup', handler);
@@ -180,7 +178,6 @@ class DataRgListeners extends Aux {
         const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
         await this._funcExe(funcName, funcArgs);
         this._debug('rgChange', `Executed rgChange listener --> ${funcName}(${funcArgsStr})`, 'orangered');
-        eventEmitter.emit('autorender', { trigger: 'rgChange', funcName, funcArgs });
       };
 
       elem.addEventListener('change', handler);
@@ -220,7 +217,6 @@ class DataRgListeners extends Aux {
           const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
           await this._funcExe(funcName, funcArgs);
           this._debug('rgEvt', `Executed rgEvt listener --> ${funcName}(${funcArgsStr})`, 'orangered');
-          eventEmitter.emit('autorender', { trigger: 'rgEvt', funcName, funcArgs });
         };
 
         elem.addEventListener(eventName, handler);

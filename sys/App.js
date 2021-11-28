@@ -133,17 +133,6 @@ class App {
   }
 
 
-  /**
-   * Define if the data-rg-... elements will be autorendered i.e. if it will be rendered on events like click, change, HTTPClient, ...etc.
-   * @param {boolean} tf - true | false
-   * @returns {App}
-   */
-  autorender(tf) {
-    this.controllerProp('autorender', tf);
-    return this;
-  }
-
-
 
 
   /*============================== ROUTES ==============================*/

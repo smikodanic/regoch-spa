@@ -35,7 +35,6 @@ const LoginCtrl = require('./controllers/playground/LoginCtrl');
 const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
 const Navig1Ctrl = require('./controllers/playground/Navig1Ctrl');
 const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
-const AutorenderCtrl = require('./controllers/playground/AutorenderCtrl');
 const ModelCtrl = require('./controllers/playground/ModelCtrl');
 
 
@@ -87,7 +86,6 @@ app
     LoginokCtrl,
     Navig1Ctrl,
     Navig2Ctrl,
-    AutorenderCtrl,
     ModelCtrl,
 
     // not found page
@@ -97,6 +95,5 @@ app
   .controllerViewsCached(viewsCached);
 
 app.preflight(pf1, pf2);
-app.autorender(false);
 
 app.routes(routes).run();
