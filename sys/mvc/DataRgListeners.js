@@ -1,6 +1,5 @@
 const Aux = require('./Aux');
-const navig = require('./lib/navig');
-const eventEmitter = require('./lib/eventEmitter');
+const navig = require('../lib/navig');
 
 
 /**

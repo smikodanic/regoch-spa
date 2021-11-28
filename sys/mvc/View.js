@@ -1,8 +1,8 @@
 const DataRg = require('./DataRg');
-const HTTPClient = require('./lib/HTTPClient');
+const HTTPClient = require('../lib/HTTPClient');
 
 
-class Page extends DataRg {
+class View extends DataRg {
 
   constructor() {
     super();
@@ -611,4 +611,4 @@ class Page extends DataRg {
 
 
 
-module.exports = Page;
+module.exports = View;

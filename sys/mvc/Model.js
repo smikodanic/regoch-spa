@@ -1,7 +1,7 @@
-const Page = require('./Page');
+const View = require('./View');
 
 
-class Model extends Page {
+class Model extends View {
 
   constructor() {
     super();

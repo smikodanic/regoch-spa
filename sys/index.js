@@ -1,5 +1,5 @@
 const App = require('./App');
-const Controller = require('./Controller');
+const Controller = require('./mvc/Controller');
 const syslib = require('./lib');
 
 

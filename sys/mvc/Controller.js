@@ -1,5 +1,4 @@
 const Model = require('./Model');
-const eventEmitter = require('./lib/eventEmitter');
 
 
 class Controller extends Model {
@@ -11,7 +10,7 @@ class Controller extends Model {
       // Controller.js
       render: false,
 
-      // Page.js
+      // View.js
       loadInc: false,
       loadView: false,
       emptyView: false,
@@ -51,7 +50,7 @@ class Controller extends Model {
 
   /************* LIFECYCLE HOOK METHODS ***********/
   /**
-   * Load the page views, includes, lazy loads, etc... Use "Page" methods here.
+   * Load the page views, includes, lazy loads, etc... Use "View" methods here.
    * @param {object} trx - regoch router transitional variable
    * @returns {Promise<void>}
    */
