@@ -69,20 +69,20 @@
     </li>
     <li>
       <b>rgSet <i>() :void</i></b>
-      <p class="desc">Parser for the <b>data-rg-set="&lt;controllerProperty&gt; [@@ &lt;doAfter&gt;]"</b>, where <i>doAfter</i> defines
-        what render processes will be done after the controller property is set. For example: <small>&lt;input data-rg-set="product.name @@ rgPrint,rgSwitch"&gt;</small>
-        <br>The data-rg-set is activated after "input" event i.e. when the input field is changed value and blured (blured by click outside of the element).
-        <br>Get the value from elements like INPUT, SELECT, TEXTAREA, .... and set the controller property.
+      <p class="desc">Parser for the <b>data-rg-set="&lt;controllerProperty&gt;"</b>
+        <br>Get the value from elements like INPUT, SELECT, TEXTAREA, .... and set the controller's $model.
+        <br>The data-rg-set is activated after "input" event i.e. every time the input is changed. This event will also render the elements with
+        <i>data-rg-...="controllerProperty"</i> automatically.
         <br>Example1: &lt;input data-rg-set="first_name"&gt;
-        <br>Example2: &lt;input data-rg-set="product.name @@ rgPrint,rgFor,rgRepeat"&gt;
+        <br>Example2: &lt;input data-rg-set="product.name"&gt;
       </p>
     </li>
     <li>
-      <b>rgBind <i>() :void</i></b>
-      <p class="desc">Parser for the <b>data-rg-bind="&lt;controllerProperty&gt; [@@ &lt;doAfter&gt;]"</b>
-        Bind controller property and view INPUT, SELECT, TEXTAREA, ...etc in both directions.
-        When the view is rendered the controller property will be set. Also when controller property is updated the corresponding value in the view will be updated.
-        This is a shortcut of rgSet and rgValue.
+      <b>rgModel <i>() :void</i></b>
+      <p class="desc">Parser for the <b>data-rg-model="&lt;controllerProperty&gt;"</b>
+        <br>Bind controller property and view INPUT, SELECT, TEXTAREA, ...etc in both directions.
+        When the view is rendered the controller property will be set. Also when $model property is updated the corresponding value in the view will be updated.
+        This is a shortcut of rgValue and rgSet, for example &lt;input type="text" data-rg-value="product" data-rg-set="product"&gt; is equal to &lt;input type="text" data-rg-model="product"&gt;
       </p>
     </li>
   </ul>

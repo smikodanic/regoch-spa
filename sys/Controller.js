@@ -151,7 +151,7 @@ class Controller extends Model {
     this.rgChange();
     this.rgEvt();
     this.rgSet();
-    this.rgBind();
+    this.rgModel();
 
     await new Promise(r => setTimeout(r, renderDelay));
     eventEmitter.on('autorender', this.autorenderListener.bind(this));

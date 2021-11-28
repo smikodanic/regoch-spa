@@ -64,11 +64,17 @@ class DataRgCtrl extends Controller {
     // text with the HTML
     this.$model.htmlText = 'The best <b style="color:red">man</b> friend is: <i data-rg-if="bestFriend $not()">NOBODY</i> <i data-rg-if="bestFriend $eq(Dog)">DOG</i>';
 
-    // initial value for the data-rg-bind
-    this.$model.bander = { name: 'Smokie', animal: 'horse', article: 'Lorem ipsumus ...' };
+    // initial value for the data-rg-model
+    this.$model.myMDL = { name: 'Smokie', animal: 'horse', article: 'Lorem ipsumus ...' };
 
     // initial value for the data-rg-checked
     this.$model.checks1 = ['Tin'];
+
+    this.$model.bander = {
+      name: 'Johnny',
+      animal: 'dog',
+      article: 'Some article ...'
+    };
   }
 
 
@@ -212,12 +218,6 @@ class DataRgCtrl extends Controller {
 
   runATTR() {
     this.$model.someURL = 'https://www.adsuu.com';
-  }
-
-
-  runBIND_RERENDER() {
-    console.log('runRERENDER::', this.bander);
-    this.render('bander');
   }
 
 

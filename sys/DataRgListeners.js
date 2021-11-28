@@ -254,8 +254,8 @@ class DataRgListeners extends Aux {
       if (!attrVal) { console.error(`Attribute "data-rg-set" has bad definition (data-rg-set="${attrVal}").`); continue; }
 
       const handler = event => {
-        const val = this._getElementValue(elem);
         const prop = attrVal.trim();
+        const val = this._getElementValue(elem);
         this._setModelValue(prop, val);
         this._debug('rgSet', `Executed rgSet listener --> controller property:: ${prop} = ${val}`, 'orangered');
       };
@@ -269,51 +269,43 @@ class DataRgListeners extends Aux {
 
 
   /**
-   * data-rg-bind="<controllerProp> [@@ <doAfter>]"
+   * data-rg-model="<controllerProp>"
    * Bind controller property and view INPUT, SELECT, TEXTAREA, ...etc in both directions.
    * When the view is updated the controller property will be updated and when controller property is updated the view will be updated.
-   * This is a shortcut of rgSet and rgValue.
+   * This is a shortcut of rgSet and rgValue, for example <input type="text" data-rg-input="product" data-rg-set="product"> is <input type="text" data-rg-model="product">
    * Example:
-   * data-rg-bind="product.name"
+   * data-rg-model="product.name"
    * @returns {void}
    */
-  rgBind() {
-    this._debug('rgBind', '--------- rgBind ------', 'orange', '#F4EA9E');
+  rgModel() {
+    this._debug('rgModel', '--------- rgModel ------', 'orange', '#F4EA9E');
 
-    const attrName = 'data-rg-bind';
+    const attrName = 'data-rg-model';
     const elems = this._listElements(attrName, '');
-    this._debug('rgBind', `found elements:: ${elems.length}`, 'orange');
+    this._debug('rgModel', `found elements:: ${elems.length}`, 'orange');
     if (!elems.length) { return; }
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.separator);
-      if (!attrValSplited[0]) { console.error(`Attribute "data-rg-bind" has bad definition (data-rg-bind="${attrVal}").`); continue; }
+      if (!attrVal) { console.error(`Attribute "data-rg-model" has bad definition (data-rg-model="${attrVal}").`); continue; }
 
-      const prop = attrValSplited[0].trim(); // controller property name
-      const doAfter_str = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // what to do after the controller property is set: 'rgPrint', 'rgSwitch'
-      const doAfter_arr = !!doAfter_str ? doAfter_str.split(',') : [];
+      const prop = attrVal.trim();
 
       /** SETTER **/
       const val1 = this._getControllerValue('$model.' + prop);
       this._setElementValue(elem, val1);
-      this._debug('rgBind', `rgBind set element value  --> controller property:: ${prop} = ${val1} | elem.type:: ${elem.type}`, 'orangered');
+      this._debug('rgModel', `rgModel set element value  --> controller property:: ${prop} = ${val1} | elem.type:: ${elem.type}`, 'orangered');
 
       /** LISTENER **/
       const handler = event => {
         const val2 = this._getElementValue(elem);
-        this._setControllerValue('$model.' + prop, val2);
-
-        for (const doAfter of doAfter_arr) {
-          const doAfter2 = doAfter.trim();
-          this[doAfter2](prop);
-        }
-        this._debug('rgBind', `Executed rgBind listener --> controller property:: ${prop} = ${val2}`, 'orangered');
+        this._setModelValue(prop, val2);
+        this._debug('rgModel', `Executed rgModel listener --> controller property:: ${prop} = ${val2}`, 'orangered');
       };
 
       elem.addEventListener('input', handler);
       this.rgListeners.push({ attrName, elem, handler, eventName: 'input' });
-      this._debug('rgBind', `rgBind listener -- pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
+      this._debug('rgModel', `rgModel listener -- pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
     }
 
   }
