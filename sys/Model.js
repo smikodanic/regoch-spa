@@ -17,7 +17,11 @@ class Model extends Page {
   _proxer() {
     const trapHandler = {
       set: (obj, prop, value) => {
+        // console.log('obj-before::', { ...obj });
+        // console.log('prop::', prop);
+        // console.log('value::', value);
         const tf = Reflect.set(obj, prop, value);
+        // console.log('obj-after::', obj);
         this.render(prop);
         return tf;
       }
@@ -43,8 +47,9 @@ class Model extends Page {
           this.render(modelName);
         },
 
-        setValue: (val) => {
-          this.$model[modelName] = val;
+        setValue: (val, path) => {
+          const prop = !!path ? `${modelName}.${path}` : modelName;
+          this._setModelValue(prop, val); // see Aux class
         },
 
         getValue: () => {

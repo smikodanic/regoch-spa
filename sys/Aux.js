@@ -28,6 +28,97 @@ class Aux {
 
 
   /**
+   * Set the controller property's value.
+   * For example controller's property is this.product.name
+   * @param {string} prop - controller property name, for example: $model.product.name
+   * @param {any} val - controller property value
+   * @returns {void}
+   */
+  _setControllerValue(prop, val) {
+    const propSplitted = prop.split('.'); // ['$model', 'product', 'name']
+    let i = 1;
+    let obj = this;
+    for (const prop of propSplitted) {
+      if (i !== propSplitted.length) { // not last property
+        if (obj[prop] === undefined) { obj[prop] = {}; }
+        obj = obj[prop];
+      } else { // on last property associate the value
+        obj[prop] = val;
+      }
+      i++;
+    }
+  }
+
+
+  /**
+   * Set the $model property's value. Up to 5 levels deep.
+   * @param {string} prop - $model property name (path), for example: 'company.ceo.name' represents this.$model.company.ceo.name
+   * @param {any} val - $model property value
+   * @returns {void}
+   */
+  _setModelValue(prop, val) {
+    const props = prop.split('.'); // ['company', 'cto',  'name']
+    const modelName = props.shift(); // modelName:: 'company'  AND  props:: ['cto',  'name']
+
+    if (props.length === 0) {
+      this.$model[modelName] = val;
+
+    } else if (props.length === 1) {
+      const prop1 = props[0];
+      const obj = this.$model[modelName] || {};
+      obj[prop1] = val;
+      this.$model[modelName] = obj;
+
+    } else if (props.length === 2) {
+      const prop1 = props[0];
+      const prop2 = props[1];
+      const obj = this.$model[modelName] || {};
+      obj[prop1] = obj[prop1] || {};
+      obj[prop1][prop2] = val;
+      this.$model[modelName] = obj;
+
+    } else if (props.length === 3) {
+      const prop1 = props[0];
+      const prop2 = props[1];
+      const prop3 = props[2];
+      const obj = this.$model[modelName] || {};
+      obj[prop1] = obj[prop1] || {};
+      obj[prop1][prop2] = obj[prop1][prop2] || {};
+      obj[prop1][prop2][prop3] = val;
+      this.$model[modelName] = obj;
+
+    } else if (props.length === 4) {
+      const prop1 = props[0];
+      const prop2 = props[1];
+      const prop3 = props[2];
+      const prop4 = props[3];
+      const obj = this.$model[modelName] || {};
+      obj[prop1] = obj[prop1] || {};
+      obj[prop1][prop2] = obj[prop1][prop2] || {};
+      obj[prop1][prop2][prop3] = obj[prop1][prop2][prop3] || {};
+      obj[prop1][prop2][prop3][prop4] = val;
+      this.$model[modelName] = obj;
+
+    } else if (props.length === 5) {
+      const prop1 = props[0];
+      const prop2 = props[1];
+      const prop3 = props[2];
+      const prop4 = props[3];
+      const prop5 = props[4];
+      const obj = this.$model[modelName] || {};
+      obj[prop1] = obj[prop1] || {};
+      obj[prop1][prop2] = obj[prop1][prop2] || {};
+      obj[prop1][prop2][prop3] = obj[prop1][prop2][prop3] || {};
+      obj[prop1][prop2][prop3][prop4] = obj[prop1][prop2][prop3][prop4] || {};
+      obj[prop1][prop2][prop3][prop4][prop5] = val;
+      this.$model[modelName] = obj;
+    }
+
+  }
+
+
+
+  /**
    * Solve round brackets in the controller property name, for example: trains.$i.($model.fields.$i2) --> trains.$i.name
    * @param {string} prop - controller property name, trains.$i.($model.fields.$i2)
    */
@@ -44,30 +135,6 @@ class Aux {
     }
 
     return prop;
-  }
-
-
-  /**
-   * Set the controller property's value.
-   * For example controller's property is this.product.name
-   * @param {string} prop - controller property name, for example: product.name
-   * @param {any} val - controller property value
-   * @returns {void}
-   */
-  _setControllerValue(prop, val) {
-    const propSplitted = prop.split('.'); // ['product', 'name']
-    let i = 1;
-    let obj = this;
-    for (const prop of propSplitted) {
-      if (i !== propSplitted.length) { // not last property
-        if (obj[prop] === undefined) { obj[prop] = {}; }
-        obj = obj[prop];
-      }
-      else { // on last property associate the value
-        obj[prop] = val;
-      }
-      i++;
-    }
   }
 
 

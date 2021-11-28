@@ -30,7 +30,7 @@
 <p>The example shows how <b>data-rg-repeat</b> will multiply the element. It will work good even if it contains data-rg-set and data-rg-print elements.</p>
 <p>Initially the P element will be repeated 3 times due to <b>data-rg-repeat="3"</b> attribute. When the button "run REPEAT" is clicked the element will be repeated 5 times.</p>
 <button data-rg-click="runREPEAT(5)">run REPEAT 5</button>
-<p data-rg-flicker data-rg-repeat="multiplikator" class="evalMath($i0+1)">The pet #evalMath($i0+1): <input data-rg-set="pets.$i0 @@ rgPrint"> <span data-rg-print="pets.$i0"></span></p>
+<p data-rg-flicker data-rg-repeat="multiplikator" class="evalMath($i0+1)">The pet #evalMath($i0+1): <input data-rg-set="pets.$i0"> <span data-rg-print="pets.$i0"></span></p>
 
 <br><br>
 <h4>DATA-RG-PRINT &amp; DATA-RG-SET</h4>
@@ -43,22 +43,22 @@
 <br>d) @@append -- <b data-rg-print="product.name @@ append">product.name:</b>
 <br>e) @@prepend -- <b data-rg-print="product.name @@ prepend">is the product.name</b>
 <br>f) @@inset -- <b data-rg-print="product.name @@ inset">The product name is <i>${}</i> !</b>
-<br> <input type="text" name="x" data-rg-set="product.name @@ rgPrint" placeholder="change product.name">
+<br> <input type="text" name="x" data-rg-set="product.name" placeholder="change product.name">
 <br>
 <br>g) <span data-rg-print="product.address.city @@ append">The product.address.city is</span>
 <br>h) <span data-rg-print="product @@ append" style="color:Gray">JSON: </span>
 <br>
 <br>i) array test
 <br>product.colors: <span data-rg-print="product.colors"></span>
-<br>product.colors.0: <span data-rg-print="product.colors.0">A</span> <input type="text" data-rg-set="product.colors.0 @@ rgPrint" placeholder="change product.colors.0">
-<br>product.colors.1: <span data-rg-print="product.colors.1">AA</span>
-<br>product.colors.2: <span data-rg-print="product.colors.2 @@ inner @@ keep">AAA</span> <input type="text" data-rg-set="product.colors.2 @@ rgPrint" placeholder="change product.colors.2">
-
+<br>product.colors.0: <span data-rg-print="product.colors.0">Dont keep</span> <input type="text" data-rg-set="product.colors.0" placeholder="change product.colors.0">
+<br>product.colors.1: <span data-rg-print="product.colors.1">Dont keep</span>
+<br>product.colors.2: <span data-rg-print="product.colors.2 @@ inner @@ keep">KEEP</span> <input type="text" data-rg-set="product.colors.2" placeholder="change product.colors.2">
+<br><br>
 
 <br><br>
 <h4>DATA-RG-SETINITIAL &amp; DATA-RG-PRINT (initial value)</h4>
 <p>Set the initial value of the input tag with the <b>value</b> attribute. Then print that initial value.</p>
-Change pet name: <input type="text" value="Mrnjao" data-rg-setinitial="pet.cat.name" data-rg-set="pet.cat.name @@ rgPrint">
+<!-- Change pet name: <input type="text" value="Mrnjao" data-rg-setinitial="pet.cat.name" data-rg-set="pet.cat.name"> -->
 <br><span data-rg-print="pet.cat.name @@ append">Pet name is</span>
 
 

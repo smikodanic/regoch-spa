@@ -13,6 +13,36 @@ class DataRg extends DataRgListeners {
   }
 
 
+  /**
+   * data-rg-setinitial="<controllerProperty>"
+   * Parse the "data-rg-setinitial" attribute. Get the element value and set the controller property value..
+   * Examples:
+   * data-rg-setinitial="product"
+   * data-rg-setinitial="employee.name"
+   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
+   * @returns {void}
+   */
+  rgSetinitial(attrValQuery) {
+    this._debug('rgSetinitial', '--------- rgSetinitial ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-setinitial';
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgSetinitial', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName);
+      if (!attrVal) { console.error(`rgSetinitial Error:: Attribute has bad definition (data-rg-setinitial="${attrVal}").`); continue; }
+
+      const val = this._getElementValue(elem);
+      const prop = attrVal.trim();
+      this._setControllerValue('$model.' + prop, val);
+
+      this._debug('rgSetinitial', `elem.type:: ${elem.type} -- set initial --> ${prop}:: ${val}`, 'navy');
+    }
+  }
+
+
   /************** GENERATORS (create or remove HTML elements) *************/
   /**
    * data-rg-for="<controllerProperty> [@@<priority>]"
@@ -399,36 +429,6 @@ class DataRg extends DataRgListeners {
       this._setElementValue(elem, val);
 
       this._debug('rgValue', `elem.type:: ${elem.type} -- ${prop}:: ${val}`, 'navy');
-    }
-  }
-
-
-  /**
-   * data-rg-setinitial="<controllerProperty>"
-   * Parse the "data-rg-setinitial" attribute. Get the element value and set the controller property value..
-   * Examples:
-   * data-rg-setinitial="product"
-   * data-rg-setinitial="employee.name"
-   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
-   * @returns {void}
-   */
-  rgSetinitial(attrValQuery) {
-    this._debug('rgSetinitial', '--------- rgSetinitial ------', 'navy', '#B6ECFF');
-
-    const attrName = 'data-rg-setinitial';
-    const elems = this._listElements(attrName, attrValQuery);
-    this._debug('rgSetinitial', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
-    if (!elems.length) { return; }
-
-    for (const elem of elems) {
-      const attrVal = elem.getAttribute(attrName);
-      if (!attrVal) { console.error(`rgSetinitial Error:: Attribute has bad definition (data-rg-setinitial="${attrVal}").`); continue; }
-
-      const val = this._getElementValue(elem);
-      const prop = attrVal.trim();
-      this._setControllerValue('$model.' + prop, val);
-
-      this._debug('rgSetinitial', `elem.type:: ${elem.type} -- set initial --> ${prop}:: ${val}`, 'navy');
     }
   }
 

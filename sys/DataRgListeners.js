@@ -233,13 +233,12 @@ class DataRgListeners extends Aux {
 
 
   /**
-   * data-rg-set="<controllerProperty> [@@ <doAfter>]"
-   * Parse the "data-rg-set" attribute. Get the value from elements like INPUT, SELECT, TEXTAREA, .... and set the controller property.
+   * data-rg-set="<controllerProperty>"
+   * Parse the "data-rg-set" attribute. Get the value from elements like INPUT, SELECT, TEXTAREA, .... and set the controller property i.e. $model.
    * Examples:
    * data-rg-set="product" - product is the controller property
    * data-rg-set="product.name"
-   * data-rg-set="product.name @@ rgPrint" -> after set do rgPrint() which will update the view as the user type
-   * data-rg-set="product.name @@ rgSwich" -> after set do rgSwitch() which will render data-rg-switch elements
+   * data-rg-set="product.name @@ preventRender" -> render() will not be executed
    * @returns {void}
    */
   rgSet() {
@@ -252,21 +251,12 @@ class DataRgListeners extends Aux {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.separator);
-      if (!attrValSplited[0]) { console.error(`Attribute "data-rg-set" has bad definition (data-rg-set="${attrVal}").`); continue; }
-
-      const prop = attrValSplited[0].trim(); // controller property name
-      const doAfter_str = !!attrValSplited[1] ? attrValSplited[1].trim() : ''; // what to do after the controller property is set: 'rgPrint', 'rgSwitch'
-      const doAfter_arr = !!doAfter_str ? doAfter_str.split(',') : [];
+      if (!attrVal) { console.error(`Attribute "data-rg-set" has bad definition (data-rg-set="${attrVal}").`); continue; }
 
       const handler = event => {
         const val = this._getElementValue(elem);
-        this._setControllerValue('$model.' + prop, val);
-
-        for (const doAfter of doAfter_arr) {
-          const doAfter2 = doAfter.trim();
-          this[doAfter2](prop);
-        }
+        const prop = attrVal.trim();
+        this._setModelValue(prop, val);
         this._debug('rgSet', `Executed rgSet listener --> controller property:: ${prop} = ${val}`, 'orangered');
       };
 

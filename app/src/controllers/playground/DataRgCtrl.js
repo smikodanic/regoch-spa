@@ -6,9 +6,9 @@ class DataRgCtrl extends Controller {
   constructor(app) {
     super();
     this.debugOpts = {
-      rgSetinitial: false,
+      rgSet: false,
       rgPrint: false,
-      rgChecked: true,
+      render: false
     };
   }
 
@@ -121,6 +121,7 @@ class DataRgCtrl extends Controller {
 
   // repeat the data-rg-repeat num times
   async runREPEAT(num) {
+    this.$model.pets = [];
     this.$model.multiplikator = num;
   }
 
@@ -184,7 +185,7 @@ class DataRgCtrl extends Controller {
   }
 
   async toggleIF2() {
-    this.$model.continent = !!this.continent ? '' : 'Europe';
+    this.$model.continent = !!this.$model.continent ? '' : 'Europe';
   }
 
 
