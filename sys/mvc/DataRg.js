@@ -649,15 +649,14 @@ class DataRg extends DataRgListeners {
    * Parse the "data-rg-echo" attribute. Prints the "text" in the HTML element as innerHTML.
    * Examples:
    * data-rg-echo="$i+1"  --> prints the iteration number
-   * @param {string|RegExp} attrValQuery - the text which will be echoed in the element as textContent
    * @returns {void}
    */
-  rgEcho(attrValQuery) {
+  rgEcho() {
     this._debug('rgEcho', '--------- rgEcho (start) ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-echo';
-    const elems = this._listElements(attrName, attrValQuery);
-    this._debug('rgEcho', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
+    const elems = this._listElements(attrName, '');
+    this._debug('rgEcho', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     // associate values

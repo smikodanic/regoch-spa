@@ -93,7 +93,6 @@ class Controller extends Model {
    */
   async processing(trx) {
     await this.loader(trx);
-    // await this.renderLsns();
     this.rgFlicker(false);
     await this.init(trx);
     await this.rend(trx);
@@ -136,7 +135,7 @@ class Controller extends Model {
     this.rgSrc(attrValQuery);
     this.rgAttr(attrValQuery);
     this.rgElem(attrValQuery);
-    this.rgEcho(attrValQuery);
+    this.rgEcho();
 
     await new Promise(r => setTimeout(r, renderDelay));
 

@@ -1,5 +1,5 @@
 /**
- * Auxilary controller private methods.
+ * Auxilary controller methods.
  */
 class Aux {
 
@@ -243,21 +243,21 @@ class Aux {
    */
   _calcComparison(val, funcName, funcArgs) {
     let tf = false;
-    const arg = funcArgs[0] ? this._typeConvertor(funcArgs[0]) : '';
+    const arg = !!funcArgs.length ? this._typeConvertor(funcArgs[0]) : '';
 
     if (funcName === '$not') { tf = !val; }
     else if (funcName === '$eq') { tf = val === arg; }
     else if (funcName === '$ne') { tf = val !== arg; }
-    else if (funcName === '$gt' && arg) { tf = val > arg; }
-    else if (funcName === '$gte' && arg) { tf = val >= arg; }
-    else if (funcName === '$lt' && arg) { tf = val < arg; }
-    else if (funcName === '$lte' && arg) { tf = val <= arg; }
-    else if (funcName === '$in' && arg) { tf = arg.indexOf(val) !== -1; } // arg must be array
-    else if (funcName === '$nin' && arg) { tf = arg.indexOf(val) === -1; } // arg must be array
-    else if (funcName === '$reg' && arg) { tf = arg.test(val); } // arg must be RegExp, val must contain regexp to be true
-    else if (funcName === '$nreg' && arg) { tf = !arg.test(val); } // arg must be RegExp, val shouldn't contain regexp to be true
+    else if (funcName === '$gt') { tf = val > arg; }
+    else if (funcName === '$gte') { tf = val >= arg; }
+    else if (funcName === '$lt') { tf = val < arg; }
+    else if (funcName === '$lte') { tf = val <= arg; }
+    else if (funcName === '$in') { tf = arg.indexOf(val) !== -1; } // arg must be array
+    else if (funcName === '$nin') { tf = arg.indexOf(val) === -1; } // arg must be array
+    else if (funcName === '$reg') { tf = arg.test(val); } // arg must be RegExp, val must contain regexp to be true
+    else if (funcName === '$nreg') { tf = !arg.test(val); } // arg must be RegExp, val shouldn't contain regexp to be true
 
-    // console.log(`funcName:: ${funcName} -- val:.${val} -- arg:.${arg} -- tf:.${tf} --`);
+    // console.log(`funcName:: ${funcName} -- val::${typeof val} ${val} vs. arg::${typeof arg} ${arg} => tf::${tf} --`);
     return tf;
   }
 
@@ -268,8 +268,8 @@ class Aux {
    * @returns {string | number | boolean | object}
    */
   _typeConvertor(value) {
-    function isJSON(str) {
-      try { JSON.parse(str); }
+    function isJSON(value) {
+      try { JSON.parse(value); }
       catch (err) { return false; }
       return true;
     }
