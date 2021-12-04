@@ -92,6 +92,12 @@ class Controller extends Model {
    * @returns {Promise<void>}
    */
   async processing(trx) {
+    // the $model should be empty object. Otherwise it will triger render() before the view is loaded
+    if (!this.isModelEmpty()) {
+      console.error('The $model is set before the loader() method so it runs render() before loader(). The preflight functions and the controller constructor should not contain $model.', this);
+      return;
+    }
+
     await this.loader(trx);
     this.rgFlicker(false);
     await this.init(trx);

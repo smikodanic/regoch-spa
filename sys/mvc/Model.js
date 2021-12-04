@@ -47,6 +47,11 @@ class Model extends View {
           this.render(modelName);
         },
 
+        /**
+         * Set the model value
+         * @param {any} val - the model value at certain path
+         * @param {string} path - the $model property path, for example 'product.name'
+         */
         setValue: (val, path) => {
           const prop = !!path ? `${modelName}.${path}` : modelName;
           this._setModelValue(prop, val); // see Aux class
@@ -80,6 +85,15 @@ class Model extends View {
       return methods;
     };
 
+  }
+
+
+  /**
+   * Check if the this.$model is empty object
+   * @returns {boolean}
+   */
+  isModelEmpty() {
+    return !Object.keys(this.$model).length;
   }
 
 

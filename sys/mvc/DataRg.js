@@ -667,7 +667,7 @@ class DataRg extends DataRgListeners {
       // checks html tags
       if (/<[^>]*>/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain HTML tags.`, `color:Maroon; background:LightYellow`); }
 
-      txt = this._parseInterpolated(txt); // parse {ctrlProp}
+      txt = this._parseInterpolated(txt); // replace {ctrlProp} with the controller property value
       this._debug('rgEcho', `rgEcho txt after: ${txt}\n`, 'navy', '#B6ECFF');
 
       elem.textContent = txt;

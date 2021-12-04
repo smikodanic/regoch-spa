@@ -6,7 +6,7 @@ class App {
   constructor() {
     this.CONST = {};
     this.lib = {};
-    this.controllers = {};
+    this.controllers = {}; // { ctrlName1: {}, ctrlName2: {}}
     window.regochGlob = {}; // define global variable
     this.router = router;
   }
@@ -76,11 +76,6 @@ class App {
   controllersInject(Ctrls) {
     for (const Ctrl of Ctrls) {
       const ctrl = new Ctrl(this);
-
-      // prevent using of this.$model.xyz = ... in the constructor because it will activate render() i.e. DataRgListeners
-      const $model_props = Object.keys(ctrl.$model);
-      if (!!$model_props.length) { throw new Error(`Do not set $model in the controller's constructor (${ctrl.constructor.name}).`); }
-
       this.controllers[Ctrl.name] = ctrl;
     }
     return this;
@@ -95,10 +90,7 @@ class App {
   controllerProp(name, val) {
     const controllersCount = Object.keys(this.controllers).length;
     if (controllersCount === 0) { throw new Error(`The controller property "${name}" should be defined after the method controllersInject().`); }
-    for (const ctrlName of Object.keys(this.controllers)) {
-      this.controllers[ctrlName][name] = val;
-    }
-
+    for (const ctrlName of Object.keys(this.controllers)) { this.controllers[ctrlName][name] = val; }
     return this;
   }
 
