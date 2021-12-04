@@ -120,12 +120,25 @@ class App {
 
 
   /**
-   * Define preflight functions which will be executed on every route and before controller loader().
+   * Define preflight functions which will be executed on every route, before the controller processing() i.e. before loader().
+   * Never define $model in the preflight function because it will triger render() before loader().
    * @param {Function[]} funcs - array of preflight functions (app, trx) => { ... }
    * @returns {App}
    */
   preflight(...funcs) {
     this.controllerProp('preflight', funcs);
+    return this;
+  }
+
+
+  /**
+   * Define postflight functions which will be executed on every route, after the controller processing(), i.e. after the postrend().
+   * Here the $model can be defined (what wil trigger the render()).
+   * @param {Function[]} funcs - array of preflight functions (app, trx) => { ... }
+   * @returns {App}
+   */
+  postflight(...funcs) {
+    this.controllerProp('postflight', funcs);
     return this;
   }
 

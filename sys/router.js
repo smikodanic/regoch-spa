@@ -27,8 +27,9 @@ class Router {
     if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
     const setNavigCurrent = navig.setCurrent.bind(navig, ctrl); // set navig.current = {uri, ctrl}
-    const preflight = !!ctrl.preflight ? ctrl.preflight : () => { }; // array of preflight functions, will be executed on every route before controller loader()
+    const preflight = !!ctrl.preflight ? ctrl.preflight : () => { }; // array of preflight functions, will be executed on every route before the controller's loader()
     const processing = ctrl.processing.bind(ctrl);
+    const postflight = !!ctrl.postflight ? ctrl.postflight : () => { }; // array of postflight functions, will be executed on every route ater the controller's postrend()
 
     if (authGuards.length && ctrl.auth) {
       // Auth guards
@@ -41,10 +42,10 @@ class Router {
       if (authGuards.indexOf('isLogged') !== -1) { guards.push(isLogged); }
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }
 
-      this.regochRouter.def(route, ...guards, setNavigCurrent, ...preflight, processing);
+      this.regochRouter.def(route, ...guards, setNavigCurrent, ...preflight, processing, ...postflight);
 
     } else {
-      this.regochRouter.def(route, setNavigCurrent, ...preflight, processing);
+      this.regochRouter.def(route, setNavigCurrent, ...preflight, processing, ...postflight);
     }
 
   }
