@@ -19,13 +19,14 @@ class DataRgListeners extends Aux {
    * @returns {void}
    */
   async rgKILL() {
+    // this._debug().rgKILL = true;
     this._debug('rgKILL', `------- rgKILL (start) ctrl: ${this.constructor.name} -------`, 'orange', '#FFD8B6');
 
     const promises = [];
     let i = 1;
     for (const rgListener of this.rgListeners) {
       rgListener.elem.removeEventListener(rgListener.eventName, rgListener.handler);
-      this._debug('rgKILL', `${i}. killed:: ${rgListener.attrName} --- ${rgListener.eventName} --- ${rgListener.elem.localName} -- ${rgListener.elem.innerHTML}`, 'orange');
+      this._debug('rgKILL', `${i}. killed:: ${rgListener.attrName} --- ${rgListener.eventName} --- ${rgListener.elem.localName} -- ${rgListener.elem.innerHTML} -- ctrl:: ${this.constructor.name}`, 'orange');
       promises.push(Promise.resolve(true));
       i++;
     }
@@ -60,14 +61,17 @@ class DataRgListeners extends Aux {
 
         // change browser's address bar (emit 'pushstate' event)
         const href = elem.getAttribute('data-rg-href') || elem.getAttribute('href') || '';
+        const url = href.trim();
         const state = { href };
-        const title = elem.getAttribute(attrName).trim();
-        if (!!href) { navig.goto(href.trim(), state, title); }
-        this._debug('rgHref', `Executed rgHref listener -->  href: ${href}`, 'orangered');
+        const title = !!elem.innerText ? elem.innerText.trim() : '';
+        if (!!url) { navig.goto(url, state, title); }
+
+        this._debug('rgHref', `Executed rgHref listener -->  href: ${href}, ctrl:: ${this.constructor.name}`, 'orangered');
       };
 
-      elem.addEventListener('click', handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName: 'click-href' });
+      const eventName = 'click';
+      elem.addEventListener(eventName, handler);
+      this.rgListeners.push({ attrName, elem, handler, eventName });
       this._debug('rgHref', `pushed::  tag: ${elem.localName} | href="${elem.pathname}" | rgListeners: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -103,8 +107,9 @@ class DataRgListeners extends Aux {
         this._debug('rgClick', `Executed rgClick listener --> ${funcName}(${funcArgsStr}) | preventDefault: ${tf}`, 'orangered');
       };
 
-      elem.addEventListener('click', handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName: 'click' });
+      const eventName = 'click';
+      elem.addEventListener(eventName, handler);
+      this.rgListeners.push({ attrName, elem, handler, eventName });
       this._debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | preventDefault: ${tf} | rgListeners: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -146,8 +151,9 @@ class DataRgListeners extends Aux {
         this._debug('rgKeyup', `Executed rgKeyup listener --> ${funcName}(${funcArgsStr}) | eventCode: ${eventCode}`, 'orangered');
       };
 
-      elem.addEventListener('keyup', handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName: 'keyup' });
+      const eventName = 'keyup';
+      elem.addEventListener(eventName, handler);
+      this.rgListeners.push({ attrName, elem, handler, eventName });
       this._debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | ctrl="${this.constructor.name}" | rgListeners: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -179,8 +185,9 @@ class DataRgListeners extends Aux {
         this._debug('rgChange', `Executed rgChange listener --> ${funcName}(${funcArgsStr})`, 'orangered');
       };
 
-      elem.addEventListener('change', handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName: 'change' });
+      const eventName = 'change';
+      elem.addEventListener(eventName, handler);
+      this.rgListeners.push({ attrName, elem, handler, eventName });
       this._debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${attrVal}" | rgListeners: ${this.rgListeners.length}`, 'orange');
     }
   }
@@ -255,9 +262,10 @@ class DataRgListeners extends Aux {
         this._debug('rgSet', `Executed rgSet listener --> controller property:: ${prop} = ${val}`, 'orangered');
       };
 
-      elem.addEventListener('input', handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName: 'input' });
-      this._debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> | rgListeners rgListeners: ${this.rgListeners.length}`, 'orange');
+      const eventName = 'input';
+      elem.addEventListener(eventName, handler);
+      this.rgListeners.push({ attrName, elem, handler, eventName });
+      this._debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> | rgListeners: ${this.rgListeners.length}`, 'orange');
     }
   }
 
@@ -298,9 +306,10 @@ class DataRgListeners extends Aux {
         this._debug('rgModel', `Executed rgModel listener --> controller property:: ${prop} = ${val2}`, 'orangered');
       };
 
-      elem.addEventListener('input', handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName: 'input' });
-      this._debug('rgModel', `rgModel listener -- pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- TOTAL listeners.length: ${this.rgListeners.length}`, 'orange');
+      const eventName = 'input';
+      elem.addEventListener(eventName, handler);
+      this.rgListeners.push({ attrName, elem, handler, eventName });
+      this._debug('rgModel', `rgModel listener -- pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- rgListeners: ${this.rgListeners.length}`, 'orange');
     }
 
   }
