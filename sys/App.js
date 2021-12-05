@@ -177,17 +177,11 @@ class App {
       }
     }
 
+    this.router.use();
+
     return this;
   }
 
-
-  /**
-   * Run the app by executing the router.
-   * @returns {void}
-   */
-  run() {
-    this.router.use();
-  }
 
 
   /********** EVENTS **********/

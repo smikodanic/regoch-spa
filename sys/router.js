@@ -26,7 +26,7 @@ class Router {
     if (!!route && !ctrl) { throw new Error(`Controller is not defined for route "${route}".`); }
     if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
-    const setNavigCurrent = navig.setCurrent.bind(navig, ctrl); // set navig.current = {uri, ctrl}
+    const navigMemorise = navig.memorise.bind(navig, ctrl); // set navig.current = {uri, ctrl}
     const preflight = !!ctrl.preflight ? ctrl.preflight : () => { }; // array of preflight functions, will be executed on every route before the controller's loader()
     const processing = ctrl.processing.bind(ctrl);
     const postflight = !!ctrl.postflight ? ctrl.postflight : () => { }; // array of postflight functions, will be executed on every route ater the controller's postrend()
@@ -42,10 +42,10 @@ class Router {
       if (authGuards.indexOf('isLogged') !== -1) { guards.push(isLogged); }
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }
 
-      this.regochRouter.def(route, ...guards, setNavigCurrent, ...preflight, processing, ...postflight);
+      this.regochRouter.def(route, ...guards, navigMemorise, ...preflight, processing, ...postflight);
 
     } else {
-      this.regochRouter.def(route, setNavigCurrent, ...preflight, processing, ...postflight);
+      this.regochRouter.def(route, navigMemorise, ...preflight, processing, ...postflight);
     }
 
   }
@@ -58,9 +58,9 @@ class Router {
    * @returns {void}
    */
   notfound(ctrl) {
-    const setNavigCurrent = navig.setCurrent.bind(navig, ctrl);
+    const navigMemorise = navig.memorise.bind(navig, ctrl);
     const processing = ctrl.processing.bind(ctrl);
-    this.regochRouter.notfound(setNavigCurrent, processing);
+    this.regochRouter.notfound(navigMemorise, processing);
   }
 
 
@@ -92,59 +92,64 @@ class Router {
 
 
   /**
-   * Execute all defined routes.
+   * Test all defined routes and execute matched route.
    */
   use() {
     /* 1) test URI against routes when element with data-rg-href attribute is clicked
        2) test URI against routes when BACK/FORWARD button is clicked */
     navig.onUrlChange(pevent => {
-      this._testRoutes(pevent);
+      console.log(pevent);
+      this._testRoutesAndExecute(pevent);
     });
 
-    this._testRoutes(); // test URI against routes when browser's Reload button is clicked
+    this._testRoutesAndExecute(); // test URI against routes when browser's Reload button is clicked
   }
 
 
 
   /**
-   * Match routes against current browser URI.
+   * Match routes against current browser URI and execute matched route.
    * @param {Event} pevent - popstate or pushstate event
    * @returns {void}
    */
-  async _testRoutes(pevent) {
+  async _testRoutesAndExecute(pevent) {
+    this._debug().router = true;
     this._debug('router', `--------- _testRoutes (start) ------`, '#680C72', '#E59FED');
+
     const startTime = new Date();
-
-    navig.setPrevious(); // copy current to previous
-
     const uri = navig.getCurrentURI(); // get the current uri: /page/2?id=55 (no hash in the uri)
 
     // execute route middlewares, i.e. controller only if the URL is changed
     if (uri !== navig.previous.uri) {
       try {
-        // destroy previous controller
-        if (!!navig && !!navig.previous && !!navig.previous.ctrl) {
-          this._debug('router', `_testRoutes - destroy() of previous controller`, '#680C72');
-          const prevCtrl = navig.previous.ctrl;
-          prevCtrl.destroy(pevent); // execute destroy() defined in the controller
-        }
 
-        // execute route middlewares
+        // execute matched route middlewares
         this.regochRouter.trx = { uri, navig };
         const trx = await this.regochRouter.exe();
 
-        // navig.previous.ctrl !== navig.current.ctrl in case when two routes don't share same controller
-        if (!!navig && !!navig.previous && !!navig.previous.ctrl && navig.previous.ctrl !== navig.current.ctrl) {
-          this._debug('router', `_testRoutes - rgKILL() of previous controller`, '#680C72');
-          navig.previous.ctrl.rgKILL(); // kill the previous controller event listeners
+        if (!!navig && !!navig.previous && !!navig.previous.ctrl) {
+          // destroy previous controller and reset the model
+          navig.previous.ctrl.destroy(pevent); // execute destroy() defined in the controller
           navig.previous.ctrl.$model = {}; // reset the previous controller $model
+          this._debug('router', `_testRoutes - destroy() of previous controller`, '#680C72');
+
+
+          // kill listeners
+          const prevCtrlName = navig.previous.ctrl.constructor ? navig.previous.ctrl.constructor.name : '';
+          const currCtrlName = navig.current.ctrl.constructor ? navig.current.ctrl.constructor.name : '';
+          // console.log(prevCtrlName !== currCtrlName, prevCtrlName, currCtrlName);
+          if (prevCtrlName !== currCtrlName) {  // prevCtrlName !== currCtrlName in case when two routes don't share same controller
+            navig.previous.ctrl.rgKILL(); // kill the previous controller event listeners
+            this._debug('router', `_testRoutes - rgKILL() of previous controller`, '#680C72');
+          }
         }
 
         if (this._debug().router) {
           console.log('_testRoutes::pevent:::', pevent);
           console.log('_testRoutes::trx:::', trx);
-          console.log('_testRoutes::current.uri:::', navig.current.uri); // current URI is set in the controller middleware (setCurrent() function)
+          console.log('_testRoutes::current.uri:::', navig.current.uri); // current URI is set in the controller middleware (memorise() function)
           console.log('_testRoutes::current.ctrl:::', navig.current.ctrl);
+          console.log('_testRoutes::current.ctrl.constructor.name:::', navig.current.ctrl.constructor.name);
           console.log('_testRoutes::previous.uri:::', navig.previous.uri);
           console.log('_testRoutes::previous.ctrl:::', navig.previous.ctrl);
         }

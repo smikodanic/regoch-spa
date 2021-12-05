@@ -2,33 +2,28 @@ const eventEmitter = require('./eventEmitter');
 
 
 /**
- * Navigate to certain URL by changing browser's address bar data.
+ * Manage the URL in browser's address bar.
  */
 class Navig {
 
   constructor() {
-    this.previous = {};
-    this.current = {};
+    this.previous = { uri: '', ctrl: null };
+    this.current = { uri: '', ctrl: null };
   }
 
   /********** SETTERS & GETTERS ********/
   /**
-   * Set current uri and controller.
+   * Memorise the previous and current uri and controller.
    * @param {Controller} ctrl - instance of the current controller
    * @param {{uri:string, body:any, params:object, query:object, routeParsed:object, uriParsed:object}} trx - regoch-router transitional variable for matched route
    */
-  setCurrent(ctrl) {
-    const uri = this.getCurrentURI();
-    this.current = {uri, ctrl};
-  }
-
-
-  /**
-   * Set previous uri and controller.
-   */
-  setPrevious() {
+  memorise(ctrl) {
     this.previous = { ...this.current };
+
+    const uri = this.getCurrentURI();
+    this.current = { uri, ctrl };
   }
+
 
 
   /**
@@ -54,7 +49,8 @@ class Navig {
     if (!url) { throw new Error('The argument "url" is not defined'); }
     if (!state) { state = {}; }
     if (!title) { title = ''; }
-    state = {...state, url};
+    state = { ...state, url };
+    console.log('url-state-title', url, state, title);
     window.history.pushState(state, title, url); // change URL in the browser address bar
     eventEmitter.emit('pushstate', state); // pushstate event to activate controller in the router.js
   }
@@ -70,7 +66,7 @@ class Navig {
     if (!url) { throw new Error('The argument "url" is not defined'); }
     if (!state) { state = {}; }
     if (!title) { title = ''; }
-    state = {...state, url};
+    state = { ...state, url };
     window.history.pushState(state, title, url); // change URL in the browser address bar
   }
 

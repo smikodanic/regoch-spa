@@ -96,4 +96,4 @@ app
 
 app.preflight(pf1, pf2);
 
-app.routes(routes).run();
+app.routes(routes);
