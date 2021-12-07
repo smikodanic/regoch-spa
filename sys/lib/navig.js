@@ -11,20 +11,32 @@ class Navig {
     this.current = { uri: '', ctrl: null };
   }
 
+
+
   /********** SETTERS & GETTERS ********/
   /**
-   * Memorise the previous and current uri and controller.
-   * @param {Controller} ctrl - instance of the current controller
-   * @param {{uri:string, body:any, params:object, query:object, routeParsed:object, uriParsed:object}} trx - regoch-router transitional variable for matched route
+   * Set previous uri and controller.
    */
-  memorise(ctrl) {
+  setPrevious() {
     this.previous = { ...this.current };
+  }
 
+  /**
+   * Set current uri and controller.
+   * @param {Controller} ctrl - instance of the current controller
+   */
+  setCurrent(ctrl) {
     const uri = this.getCurrentURI();
     this.current = { uri, ctrl };
   }
 
-
+  /**
+  * Get the current URI. The uri is path + query string, without hash, for example: /page1.html?q=12
+  * @returns {string}
+  */
+  getPrevioustURI() {
+    return this.previous.uri;
+  }
 
   /**
    * Get the current URI. The uri is path + query string, without hash, for example: /page1.html?q=12
@@ -50,7 +62,6 @@ class Navig {
     if (!state) { state = {}; }
     if (!title) { title = ''; }
     state = { ...state, url };
-    console.log('url-state-title', url, state, title);
     window.history.pushState(state, title, url); // change URL in the browser address bar
     eventEmitter.emit('pushstate', state); // pushstate event to activate controller in the router.js
   }

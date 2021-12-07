@@ -1,24 +1,21 @@
-const RegochRouter = require('regoch-router');
-const navig = require('./lib/navig');
+const RegochRouter = require('./lib/RegochRouter');
 
 
-
-class Router {
+class Router extends RegochRouter {
 
   constructor() {
-    this.regochRouter = new RegochRouter({ debug: false });
-    this.debugOpts = { router: false };
+    super({ debug: false });
   }
 
 
   /**
-   * Define route
+   * Define the routes
    * @param {string} route - route, for example: '/page1.html'
    * @param {object} ctrl - route controller instance
    * @param {{authGuards:string[]}} routeOpts - route options: {authGuards: ['autoLogin', 'isLogged', 'hasRole']}
    * @returns {void}
    */
-  when(route, ctrl, routeOpts = {}) {
+  _when(route, ctrl, routeOpts = {}) {
     const authGuards = routeOpts.authGuards || [];
 
     // prechecks
@@ -26,28 +23,21 @@ class Router {
     if (!!route && !ctrl) { throw new Error(`Controller is not defined for route "${route}".`); }
     if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
-    const navigMemorise = navig.memorise.bind(navig, ctrl); // set navig.current = {uri, ctrl}
-    const preflight = !!ctrl.preflight ? ctrl.preflight : () => { }; // array of preflight functions, will be executed on every route before the controller's loader()
-    const processing = ctrl.processing.bind(ctrl);
-    const postflight = !!ctrl.postflight ? ctrl.postflight : () => { }; // array of postflight functions, will be executed on every route ater the controller's postrend()
-
+    const guards = [];
     if (authGuards.length && ctrl.auth) {
-      // Auth guards
       const autoLogin = ctrl.auth.autoLogin.bind(ctrl.auth);
       const isLogged = ctrl.auth.isLogged.bind(ctrl.auth);
       const hasRole = ctrl.auth.hasRole.bind(ctrl.auth);
-
-      const guards = [];
       if (authGuards.indexOf('autoLogin') !== -1) { guards.push(autoLogin); }
       if (authGuards.indexOf('isLogged') !== -1) { guards.push(isLogged); }
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }
-
-      this.regochRouter.def(route, ...guards, navigMemorise, ...preflight, processing, ...postflight);
-
-    } else {
-      this.regochRouter.def(route, navigMemorise, ...preflight, processing, ...postflight);
     }
 
+    const preflight = !!ctrl.preflight ? ctrl.preflight : []; // array of preflight functions, will be executed on every route before the controller's loader()
+    const ctrl_processing = ctrl.processing.bind(ctrl);
+    const postflight = !!ctrl.postflight ? ctrl.postflight : []; // array of postflight functions, will be executed on every route ater the controller's postrend()
+
+    this.when(route, ...guards, ...preflight, ctrl_processing, ...postflight);
   }
 
 
@@ -57,10 +47,9 @@ class Router {
    * @param {object} ctrl - route controller instance
    * @returns {void}
    */
-  notfound(ctrl) {
-    const navigMemorise = navig.memorise.bind(navig, ctrl);
-    const processing = ctrl.processing.bind(ctrl);
-    this.regochRouter.notfound(navigMemorise, processing);
+  _notfound(ctrl) {
+    const ctrl_processing = ctrl.processing.bind(ctrl);
+    this.notfound(ctrl_processing);
   }
 
 
@@ -70,8 +59,8 @@ class Router {
    * @param {Function[]} funcs - function which will be executed on every request, e.g. every exe()
    * @returns {Router}
    */
-  do(...funcs) {
-    this.regochRouter.do(...funcs);
+  _do(...funcs) {
+    this.do(...funcs);
   }
 
 
@@ -82,27 +71,11 @@ class Router {
    * @param {string} toRoute - destination route (where to redirect)
    * @returns {Router}
    */
-  redirect(fromRoute, toRoute) {
+  _redirect(fromRoute, toRoute) {
     const cb = () => {
       window.history.pushState(null, '', toRoute); // change URL in the address bar
     };
-    this.regochRouter.redirect(fromRoute, toRoute, cb);
-  }
-
-
-
-  /**
-   * Test all defined routes and execute matched route.
-   */
-  use() {
-    /* 1) test URI against routes when element with data-rg-href attribute is clicked
-       2) test URI against routes when BACK/FORWARD button is clicked */
-    navig.onUrlChange(pevent => {
-      console.log(pevent);
-      this._testRoutesAndExecute(pevent);
-    });
-
-    this._testRoutesAndExecute(); // test URI against routes when browser's Reload button is clicked
+    this.redirect(fromRoute, toRoute, cb);
   }
 
 
@@ -112,68 +85,26 @@ class Router {
    * @param {Event} pevent - popstate or pushstate event
    * @returns {void}
    */
-  async _testRoutesAndExecute(pevent) {
-    this._debug().router = true;
-    this._debug('router', `--------- _testRoutes (start) ------`, '#680C72', '#E59FED');
-
-    const startTime = new Date();
-    const uri = navig.getCurrentURI(); // get the current uri: /page/2?id=55 (no hash in the uri)
-
-    // execute route middlewares, i.e. controller only if the URL is changed
-    if (uri !== navig.previous.uri) {
-      try {
-
-        // execute matched route middlewares
-        this.regochRouter.trx = { uri, navig };
-        const trx = await this.regochRouter.exe();
-
-        if (!!navig && !!navig.previous && !!navig.previous.ctrl) {
-          // destroy previous controller and reset the model
-          navig.previous.ctrl.destroy(pevent); // execute destroy() defined in the controller
-          navig.previous.ctrl.$model = {}; // reset the previous controller $model
-          this._debug('router', `_testRoutes - destroy() of previous controller`, '#680C72');
+  async _exe(pevent) {
+    try {
+      const start = new Date();
+      const uri = window.location.pathname + window.location.search; // the current uri -  The uri is path + query string, without hash, for example: /page1.html?q=12
+      console.log(`%c --------- route start --> ${uri} ------`, 'color:#680C72; background:#E59FED');
 
 
-          // kill listeners
-          const prevCtrlName = navig.previous.ctrl.constructor ? navig.previous.ctrl.constructor.name : '';
-          const currCtrlName = navig.current.ctrl.constructor ? navig.current.ctrl.constructor.name : '';
-          // console.log(prevCtrlName !== currCtrlName, prevCtrlName, currCtrlName);
-          if (prevCtrlName !== currCtrlName) {  // prevCtrlName !== currCtrlName in case when two routes don't share same controller
-            navig.previous.ctrl.rgKILL(); // kill the previous controller event listeners
-            this._debug('router', `_testRoutes - rgKILL() of previous controller`, '#680C72');
-          }
-        }
+      // execute matched route middlewares
+      this.trx = { uri, pevent };
+      const trx = await this.exe();
 
-        if (this._debug().router) {
-          console.log('_testRoutes::pevent:::', pevent);
-          console.log('_testRoutes::trx:::', trx);
-          console.log('_testRoutes::current.uri:::', navig.current.uri); // current URI is set in the controller middleware (memorise() function)
-          console.log('_testRoutes::current.ctrl:::', navig.current.ctrl);
-          console.log('_testRoutes::current.ctrl.constructor.name:::', navig.current.ctrl.constructor.name);
-          console.log('_testRoutes::previous.uri:::', navig.previous.uri);
-          console.log('_testRoutes::previous.ctrl:::', navig.previous.ctrl);
-        }
+      const end = new Date();
+      trx.elapsedTime = (end - start) + ' ms'; // in miliseconds
 
-      } catch (err) {
-        if (/AuthWarn::/.test(err.message)) { console.log(`%c${err.message}`, `color:#FF6500; background:#FFFEEE`); }
-        else { console.error(err); }
-      }
+      console.log(`%c --------- route end --> elapsedTime: ${this.trx.elapsedTime} ------`, 'color:#680C72; background:#E59FED');
 
-    } else {
-      if (this._debug().router) { console.log(`Current uri "${uri}" is same as previous uri "${navig.previous.uri}". Controller is not executed !`); }
+    } catch (err) {
+      if (/AuthWarn::/.test(err.message)) { console.log(`%c${err.message}`, `color:#FF6500; background:#FFFEEE;`); }
+      else { console.error(err); }
     }
-
-    // get elapsed time
-    const endTime = new Date();
-    const timeDiff = endTime - startTime;
-    this._debug('router', `--------- _testRoutes (end) -- ELAPSED: ${timeDiff} ms ------`, '#680C72', '#E59FED');
-  }
-
-
-  /******** DEBUG *******/
-  _debug(tip, text, color, background) {
-    if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
-    return this.debugOpts;
   }
 
 

@@ -3,17 +3,31 @@
   The example shows in which order will be executed controller constructor and the lifecycle hooks.
   Open the browser console to see the constructor and hook arguments.
   <ol>
-    <li>constructor(app) - <i>app</i> is the app instance (initialised when app is started i.e. when browser reload the page)</li>
+    <li>constructor(app) - Will be executed on the browser page reload. The <i>app</i> is the App class instance.</li>
     <li>loader(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
-    <li>init(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
-    <li>rend(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
-    <li>postrend(trx) - <i>trx</i> is the regoch router transitional variable. It contains the current URL and other injected data. (initialised by the router)</li>
-    <li>destroy(pevent) - <i>pevent</i> popstate or pushstate event which caused URL change (initilialised when the route is changed)</li>
+    <li>init(trx) - <i>trx</i> is the regoch router transitional variable.</li>
+    <li>rend(trx) - <i>trx</i> is the regoch router transitional variable.</li>
+    <li>postrend(trx) - <i>trx</i> is the regoch router transitional variable.</li>
+    <li>destroy(trx) - <i>trx</i> is the regoch router transitional variable.</li>
   </ol>
+
+  <br><br>
+  <h3>A) Open different uri and different controller</h3>
+  <a href="/playground/page-loadinc" data-rg-href>/playground/page-loadinc</a>
+  <br>- open "Page_loadIncCtrl" controller
+  <br>- execute the destroy() method in the "Controller_hooksCtrl" controller
+
+  <br><br>
+  <h3>B) Open different uri but same controller</h3>
+  <a href="/playground/controller-hooks-same" data-rg-href>/playground/controller-hooks-same</a>
+  <br>- open "Controller_hooksCtrl" controller
+  <br>- execute the destroy() method in the "Controller_hooksCtrl" controller
+
+  <br><br>
+  <h3>C) Open same uri and same controller</h3>
+  <a href="/playground/controller-hooks" data-rg-href>/playground/controller-hooks</a>
+  <br>- open "Controller_hooksCtrl" controller
+  <br>- execute the destroy() method in the "Controller_hooksCtrl" controller
+
+  <br><br>
 </div>
-
-<p>Click <a href="/playground/page-loadinc" data-rg-href>/playground/page-loadinc</a> to destroy the controller.</p>
-<p>The route <a href="/playground/controller-hooks-same" data-rg-href>/playground/controller-hooks-same</a> will not destroy the controller because it's using the same controller.</p>
-
-
-

@@ -1,4 +1,5 @@
 const router = require('./router');
+const navig = require('./lib/navig');
 
 
 class App {
@@ -8,7 +9,6 @@ class App {
     this.lib = {};
     this.controllers = {}; // { ctrlName1: {}, ctrlName2: {}}
     window.regochGlob = {}; // define global variable
-    this.router = router;
   }
 
 
@@ -153,7 +153,7 @@ class App {
    */
   routes(routesCnf) {
     for (const routeCnf of routesCnf) {
-      const cmd = routeCnf[0]; // 'when', 'notFound'
+      const cmd = routeCnf[0]; // '_def', '_notfound'
 
       if (cmd === 'when') {
         const route = routeCnf[1]; // '/page1'
@@ -161,23 +161,34 @@ class App {
         const routeOpts = routeCnf[3]; // {authGuards: ['autoLogin', 'isLogged', 'hasRole']}
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
-        this.router.when(route, ctrl, routeOpts);
+        router._when(route, ctrl, routeOpts);
+
       } else if (cmd === 'notfound') {
         const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
         if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
         const ctrl = this.controllers[ctrlName];
-        this.router.notfound(ctrl);
+        router._notfound(ctrl);
+
       } else if (cmd === 'do') {
         const funcs = routeCnf.filter((routeCnfElem, key) => { if (key !== 0) { return routeCnfElem; } });
-        this.router.do(...funcs);
+        router._do(...funcs);
+
       } else if (cmd === 'redirect') {
         const fromRoute = routeCnf[1];
         const toRoute = routeCnf[2];
-        this.router.redirect(fromRoute, toRoute);
+        router._redirect(fromRoute, toRoute);
       }
     }
 
-    this.router.use();
+
+    // test URI against routes when browser's Reload button is clicked
+    router._exe();
+
+    // A) test URI against routes when element with data-rg-href attribute is clicked --> 'pushstate'
+    // B) test URI against routes when BACK/FORWARD button is clicked --> 'popstate'
+    navig.onUrlChange(pevent => {
+      router._exe(pevent); // pevent is popstate or pushstae event (see navig.onUrlChange())
+    });
 
     return this;
   }

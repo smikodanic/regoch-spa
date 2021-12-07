@@ -22,9 +22,7 @@
     "prod": "rm -rf node_modules && npm install --only=production && pm2 start server --name regoch-spa",
     "prod-win": "remove-item 'node_modules' -recurse -force && npm install --only=production && pm2 start server --name regoch-spa"
   },
-  "dependencies": {
-    "regoch-router": "~1.0.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "browserify": "^17.0.0",
     "fs-extra": "^9.1.0",
