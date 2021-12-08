@@ -262,7 +262,6 @@ class DataRg extends DataRgListeners {
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName).trim(); // ifAge
       if (!attrVal) { console.error(`Attribute "data-rg-if" has bad definition (data-rg-if="${attrVal}").`); continue; }
-
       const propComp = attrVal.trim(); // controller property with comparison function, for example: ifAge $eq(22)
       const propCompSplitted = propComp.split(/\s+/);
 
@@ -289,7 +288,7 @@ class DataRg extends DataRgListeners {
         elem.style.display = 'none';
       }
 
-      this._debug('rgIf', `rgIF:: data-rg-if="${attrVal}" & val=(${typeof val}) ${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
+      this._debug('rgIf', `rgIF:: <${elem.tagName} data-rg-if="${attrVal}"> & val=(${typeof val}) ${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
     }
 
     this._debug('rgIf', '--------- rgIf (end) ------', 'navy', '#B6ECFF');

@@ -35,7 +35,7 @@ class Page_LazyJSCtrl extends Controller {
 
   lazyTest() {
     this.lazyJS([
-      '/assets/regoch/js/lazyTest2.js'
+      '/assets/regoch/js/lazyTest.js'
     ], 1000);
   }
 
@@ -53,4 +53,4 @@ class Page_LazyJSCtrl extends Controller {
 }
 
 
-module.exports =  Page_LazyJSCtrl;
+module.exports = Page_LazyJSCtrl;

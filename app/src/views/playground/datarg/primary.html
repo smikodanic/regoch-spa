@@ -84,6 +84,7 @@ Change pet name: <input type="text" value="Mrnjao" data-rg-setinitial="pet.cat.n
 <br><br>
 <h4>DATA-RG-IF (with comparison functions: $not)</h4>
 <button data-rg-click="runIF()">run IF</button>
+<br>1. ifY.bool <span data-rg-if="ifY.bool" style="color:green">OK</span>
 <br>1. ifY.bool $not() <span data-rg-if="ifY.bool $not()" style="color:green">OK</span>
 <br>2. ifY.num $eq(5) <span data-rg-if="ifY.num $eq(5)" style="color:green">OK</span>
 <br>4. ifY.str $eq(this.myStr) <span data-rg-if="ifY.str $eq(this.myStr)" style="color:green">OK</span>
@@ -91,10 +92,10 @@ Change pet name: <input type="text" value="Mrnjao" data-rg-setinitial="pet.cat.n
 <br>4. ifY.num $lt(5.5) <span data-rg-if="ifY.num $lt(5.5)" style="color:green">OK</span>
 <br>5. ifY.num $gte(this.myNum) <span data-rg-if="ifY.num $gte(this.myNum)" style="color:green">OK</span>
 <br>6. ifY.num $in(this.myArr) <span data-rg-if="ifY.num $in(this.myArr)" style="color:green">OK</span>
-<br>7. ifY.num $nin(this.myArr) <span data-rg-if="ifY.num $nin(this.myArr)" style="color:green">OK</span>
+<!-- <br>7. ifY.num $nin(this.myArr) <span data-rg-if="ifY.num $nin(this.myArr)" style="color:green">OK</span> -->
 <br>8. ifY.str $reg(/^some/) <span data-rg-if="ifY.str $reg(/^some/)" style="color:green">OK</span>
 <br>9. ifY.str $nreg(/^some/) <span data-rg-if="ifY.str $nreg(/^some/)" style="color:green">OK</span>
-<br>9. ifY.str $nreg(/^nonsense/) <span data-rg-if="ifY.str $nreg(/^nonsense/)" style="color:green">OK</span>
+<br>10. ifY.str $nreg(/^nonsense/) <span data-rg-if="ifY.str $nreg(/^nonsense/)" style="color:green">OK</span>
 
 <br><br>
 <h4>DATA-RG-IF (child of the data-rg-print)</h4>
@@ -114,8 +115,7 @@ Change pet name: <input type="text" value="Mrnjao" data-rg-setinitial="pet.cat.n
 <h4>DATA-RG-SWITCH</h4>
 <p>Here are two tests. <br>First will show only one switchcase when red, blue, green is typed in the input field. Another test will show multiple switchcases.</p>
 <i>-- switch one example</i>
-<br><input type="text" data-rg-set="myColor @@ rgPrint" placeholder="type red, green or blue">
-<button data-rg-click="runSWITCH()">run SWITCH "<span data-rg-print="myColor"></span>"</button>
+<br><input type="text" data-rg-set="myColor" placeholder="type red, green or blue">
 <ul data-rg-switch="myColor">
   <li data-rg-switchcase="red">red</li>
   <li data-rg-switchcase="green">green</li>
@@ -124,6 +124,7 @@ Change pet name: <input type="text" value="Mrnjao" data-rg-setinitial="pet.cat.n
 </ul>
 <br>
 <br><i>--switch multiple example</i>
+<br><button data-rg-click="runSWITCH()">run SWITCH</button>
 <div data-rg-switch="obj.myColors @@ multiple">
   <p data-rg-switchcase="red2">red2</p>
   <p data-rg-switchcase="green2">green2</p>

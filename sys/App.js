@@ -114,7 +114,8 @@ class App {
    * @returns {App}
    */
   controllerViewsCached(viewsCached) {
-    this.controllerProp('viewsCached', viewsCached);
+    // this.controllerProp('viewsCached', viewsCached);
+    window.regochGlob.viewsCached = viewsCached;
     return this;
   }
 

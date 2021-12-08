@@ -10,6 +10,7 @@ class Controller extends Model {
     this.debugOpts = {
       // Controller.js
       render: false,
+      navig: true,
 
       // View.js
       loadInc: false,
@@ -96,24 +97,19 @@ class Controller extends Model {
    * 3) rgKILL() - kill the previous controller event listeners
    * 2)  $model = {} - reset the pevious and current $model
    * @param {object} navig - navigation stages {uri:string, ctrl:Controller}
-   * @param {object} trx - regoch router transitional variable (defined in router.js -> _testRoutes())
+   * @param {object} trx - regoch router transitional variable (defined in router.js -> _exe())
    * @returns {Promise<void>}
    */
   async processing(trx) {
     // prechecks
     if (!this.isModelEmpty()) { console.log(`%c ControllerWarn(${this.constructor.name}):: The $model is set before the loader() method so it runs render() before loader(). The preflight functions and the controller constructor should not contain $model.`); }
 
-    // set navig.previous and navig.current  --> {uri, ctrl}
+    // navig operations
     navig.setPrevious();
+    navig.resetPreviousController(trx);
     navig.setCurrent(this);
+    if (this._debug().navig) { console.log('navig::', navig); }
 
-    // previous controller resets
-    const ctrl_prev = navig.previous.ctrl;
-    if (!!ctrl_prev) {
-      ctrl_prev.destroy(trx); // execute destroy() defined in the previous controller
-      ctrl_prev.$model = {}; // reset the previous controller $model
-      ctrl_prev.rgKILL(); // kill the previous controller event listeners
-    }
 
     await this.loader(trx);
     this.rgFlicker(false);
@@ -134,7 +130,6 @@ class Controller extends Model {
    * @param {number} renderDelay - delay in miliseconds
    */
   async render(attrValQuery, renderDelay = 5) {
-    console.log('RENDER');
     this._debug('render', `--------- render (start) -- attrValQuery: ${attrValQuery} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
 
     this.rgSetinitial(attrValQuery);

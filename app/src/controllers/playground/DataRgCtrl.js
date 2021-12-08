@@ -7,7 +7,7 @@ class DataRgCtrl extends Controller {
     super();
     this.debugOpts = {
       rgSet: false,
-      rgPrint: false,
+      rgIf: false,
       render: false
     };
   }
@@ -179,9 +179,9 @@ class DataRgCtrl extends Controller {
   }
 
   runIF() {
-    this.$model.myNum = 5;
-    this.$model.myStr = 'some str';
-    this.$model.myArr = [5, 4, 'lorem'];
+    this.myNum = 5;
+    this.myStr = 'some str';
+    this.myArr = [5, 4, 'lorem'];
 
     this.$model.ifY = {
       bool: true,

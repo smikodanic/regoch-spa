@@ -47,6 +47,43 @@ class Navig {
   }
 
 
+  /**
+   * Reset the previous controller properties and execute destroy()
+   * @param {object} trx - regoch router transitional variable (defined in router.js -> _exe())
+   */
+  resetPreviousController(trx) {
+    const ctrl_prev = this.previous.ctrl;
+    if (!!ctrl_prev) {
+      ctrl_prev.destroy(trx); // execute destroy() defined in the previous controller
+      ctrl_prev.$model = {}; // reset the previous controller $model
+      ctrl_prev.rgKILL(); // kill the previous controller event listeners
+
+      // purge non-standard controller properties
+      const ctrlProps = Object.keys(ctrl_prev);
+      for (const ctrlProp of ctrlProps) {
+        if (
+          ctrlProp !== '$model' &&
+          ctrlProp !== 'auth' &&
+          ctrlProp !== 'baseURIhost' &&
+          ctrlProp !== 'debugOpts' &&
+          ctrlProp !== 'httpClient' &&
+          ctrlProp !== 'model' &&
+          ctrlProp !== 'rgListeners' &&
+          ctrlProp !== 'rgelems' &&
+          ctrlProp !== 'separator' &&
+          ctrlProp !== 'varnameChars' &&
+          ctrlProp !== 'viewsCached'
+        ) {
+          delete ctrl_prev[ctrlProp];
+          // console.log('purged::', ctrlProp);
+        }
+      }
+
+    }
+
+  }
+
+
 
 
   /************ NAVIGATION ************/

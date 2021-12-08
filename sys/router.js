@@ -89,7 +89,7 @@ class Router extends RegochRouter {
     try {
       const start = new Date();
       const uri = window.location.pathname + window.location.search; // the current uri -  The uri is path + query string, without hash, for example: /page1.html?q=12
-      console.log(`%c --------- route start --> ${uri} ------`, 'color:#680C72; background:#E59FED');
+      console.log(`%c --------- router exe start --> ${uri} ------`, 'color:#680C72; background:#E59FED');
 
 
       // execute matched route middlewares
@@ -99,7 +99,7 @@ class Router extends RegochRouter {
       const end = new Date();
       trx.elapsedTime = (end - start) + ' ms'; // in miliseconds
 
-      console.log(`%c --------- route end --> elapsedTime: ${this.trx.elapsedTime} ------`, 'color:#680C72; background:#E59FED');
+      console.log(`%c --------- router exe end --> elapsedTime: ${this.trx.elapsedTime} ------`, 'color:#680C72; background:#E59FED');
 
     } catch (err) {
       if (/AuthWarn::/.test(err.message)) { console.log(`%c${err.message}`, `color:#FF6500; background:#FFFEEE;`); }

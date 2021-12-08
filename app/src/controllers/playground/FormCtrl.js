@@ -108,7 +108,7 @@ class FormCtrl extends Controller {
 
   // used data-rg-print
   async generateAutos() {
-    this.autos = [
+    this.$model.autos = [
       { id: 1, name: 'Toyota', price: 8000 },
       { id: 2, name: 'WV', price: 4000 },
       { id: 3, name: 'BMW', price: 6000 },
@@ -116,18 +116,13 @@ class FormCtrl extends Controller {
       { id: 5, name: 'Audi', price: 5000 }
     ];
 
-    // use one of the following
-    await this.render('autos'); // the fastest
-    // await this.renders(['autos']);
-    // await this.render();
-
-    await syslib.util.sleep(700);
-    this.testForm.setControl('autos', 2);
+    await new Promise(r => setTimeout(r, 400));
+    this.testForm.setControl('autosN', 2);
   }
 
   // used data-rg-echo
   async generatePlants() {
-    this.plants = [
+    this.$model.plants = [
       { id: 1, name: 'Corn', price: 8000 },
       { id: 2, name: 'Ananas', price: 4000 },
       { id: 3, name: 'Banana', price: 6000 },
@@ -135,8 +130,23 @@ class FormCtrl extends Controller {
       { id: 5, name: 'Apple', price: 5000 }
     ];
 
-    await this.render('plants');
-    this.testForm.setControl('plants', 3);
+    await new Promise(r => setTimeout(r, 700));
+    this.testForm.setControl('plantsN', 3);
+  }
+
+
+
+  async setAll() {
+    this.testForm.setControls({
+      fullName: 'John Doe',
+      age: 48,
+      country: 'Kenya',
+      family: ['Mary', 'Betty'],
+      jobs: ['IT'],
+      pet: 'horse',
+      autosN: 5,
+      plantsN: 5,
+    });
   }
 
 
@@ -152,18 +162,8 @@ class FormCtrl extends Controller {
       }
     };
 
-    this.testForm.setControls(fruit);
-  }
-
-
-
-  async setAll() {
-    this.testForm.setControls({
-      fullName: 'John Doe',
-      age: 48,
-      country: 'Kenya',
-      autos: 5
-    });
+    this.testForm.setControl('fruit.name', fruit.name);
+    this.testForm.setControl('fruit.seller.name', fruit.seller.name);
   }
 
 

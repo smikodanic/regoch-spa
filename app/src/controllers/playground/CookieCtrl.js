@@ -39,31 +39,32 @@ class CookieCtrl extends Controller {
     const cookieMethod = this.cookieForm.getControl('cookieMethod');
     console.log('\n', cookieMethod, ':', cookieName, cookieValue);
 
-    switch(cookieMethod) {
-    case 'put': { this.cookie.put(cookieName, cookieValue); break; }
-    case 'putObject': { this.cookie.putObject('someObj', {x:22,y:'str'}); break; }
-    case 'getAll': { console.log(this.cookie.getAll()); break; }
-    case 'get': { console.log(this.cookie.get(cookieName)); break; }
-    case 'getObject': { console.log(this.cookie.getObject('someObj')); break; }
-    case 'remove': { this.cookie.remove(cookieName); break; }
-    case 'removeAll': { this.cookie.removeAll(); break; }
-    case 'exists': { console.log(this.cookie.exists(cookieName)); break; }
+    switch (cookieMethod) {
+      case 'put': { this.cookie.put(cookieName, cookieValue); break; }
+      case 'putObject': { this.cookie.putObject('someObj', { x: 22, y: 'str' }); break; }
+      case 'getAll': { console.log(this.cookie.getAll()); break; }
+      case 'get': { console.log(this.cookie.get(cookieName)); break; }
+      case 'getObject': { console.log(this.cookie.getObject('someObj')); break; }
+      case 'remove': { this.cookie.remove(cookieName); break; }
+      case 'removeAll': { this.cookie.removeAll(); break; }
+      case 'exists': { console.log(this.cookie.exists(cookieName)); break; }
     }
 
   }
 
+
   showFields() {
     const cookieMethod = this.cookieForm.getControl('cookieMethod');
-    switch(cookieMethod) {
-    case 'put': { this.input1 = true; this.input2 = true; break; }
-    case 'putObject': { this.input1 = false; this.input2 = false; break; }
-    case 'getAll': { this.input1 = false; this.input2 = false; break; }
-    case 'get': { this.input1 = true; this.input2 = false; break; }
-    case 'getObject': { this.input1 = false; this.input2 = false; break; }
-    case 'remove': { this.input1 = true; this.input2 = false; break; }
-    case 'removeAll': { this.input1 = false; this.input2 = false; break; }
-    case 'empty': { this.input1 = true;  this.input2 = false; break; }
-    case 'exists': { this.input1 = true;  this.input2 = false; break; }
+    switch (cookieMethod) {
+      case 'put': { this.$model.input1 = true; this.$model.input2 = true; break; }
+      case 'putObject': { this.$model.input1 = false; this.$model.input2 = false; break; }
+      case 'getAll': { this.$model.input1 = false; this.$model.input2 = false; break; }
+      case 'get': { this.$model.input1 = true; this.$model.input2 = false; break; }
+      case 'getObject': { this.$model.input1 = false; this.$model.input2 = false; break; }
+      case 'remove': { this.$model.input1 = true; this.$model.input2 = false; break; }
+      case 'removeAll': { this.$model.input1 = false; this.$model.input2 = false; break; }
+      case 'empty': { this.$model.input1 = true; this.$model.input2 = false; break; }
+      case 'exists': { this.$model.input1 = true; this.$model.input2 = false; break; }
     }
     this.rgIf();
   }
@@ -73,4 +74,4 @@ class CookieCtrl extends Controller {
 }
 
 
-module.exports =  CookieCtrl;
+module.exports = CookieCtrl;

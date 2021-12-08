@@ -242,6 +242,8 @@ class Aux {
    * @returns {boolean}
    */
   _calcComparison(val, funcName, funcArgs) {
+    if (!val) { return false; }
+
     let tf = false;
     const arg = !!funcArgs.length ? this._typeConvertor(funcArgs[0]) : '';
 
@@ -252,10 +254,10 @@ class Aux {
     else if (funcName === '$gte') { tf = val >= arg; }
     else if (funcName === '$lt') { tf = val < arg; }
     else if (funcName === '$lte') { tf = val <= arg; }
-    else if (funcName === '$in') { tf = arg.indexOf(val) !== -1; } // arg must be array
-    else if (funcName === '$nin') { tf = arg.indexOf(val) === -1; } // arg must be array
-    else if (funcName === '$reg') { tf = arg.test(val); } // arg must be RegExp, val must contain regexp to be true
-    else if (funcName === '$nreg') { tf = !arg.test(val); } // arg must be RegExp, val shouldn't contain regexp to be true
+    else if (funcName === '$in' && !!arg) { tf = arg.indexOf(val) !== -1; } // arg must be array
+    else if (funcName === '$nin' && !!arg) { tf = arg.indexOf(val) === -1; } // arg must be array
+    else if (funcName === '$reg' && !!arg) { tf = arg.test(val); } // arg must be RegExp, val must contain regexp to be true
+    else if (funcName === '$nreg' && !!arg) { tf = !arg.test(val); } // arg must be RegExp, val shouldn't contain regexp to be true
 
     // console.log(`funcName:: ${funcName} -- val::${typeof val} ${val} vs. arg::${typeof arg} ${arg} => tf::${tf} --`);
     return tf;
@@ -531,11 +533,11 @@ class Aux {
       elems = elems2;
     }
 
-    // remove elems with $i in its data-rg- attribute
+    // remove elems with .$i in its data-rg- attribute
     const elems_filtered = [];
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      if (!/\$i/.test(attrVal)) { elems_filtered.push(elem); }
+      if (!/\.\$i/.test(attrVal)) { elems_filtered.push(elem); }
     }
 
     return elems_filtered;

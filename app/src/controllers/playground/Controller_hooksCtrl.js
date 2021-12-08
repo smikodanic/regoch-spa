@@ -23,6 +23,8 @@ class Controller_hooksCtrl extends Controller {
   async init(trx) {
     console.log('init() -- trx::', trx);
     console.log('init() -- navig::', syslib.navig);
+    console.log('init() -- ctrl::', this);
+    this.something = 'smthng';
   }
 
   // if rend() is not defined then this.render() is used
