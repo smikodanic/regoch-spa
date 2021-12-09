@@ -3,10 +3,6 @@
  */
 class Aux {
 
-  constructor() {
-    this.varnameChars = '[a-zA-Z\\d\\$\\_\\.]+'; // valid characters in the variable name
-  }
-
   /**
    * Get the controller property's value.
    * For example controller's property is this.company.name
@@ -14,7 +10,7 @@ class Aux {
    * @returns {any}
    */
   _getControllerValue(prop) {
-    const reg = new RegExp(`\\(${this.varnameChars}\\)`);
+    const reg = new RegExp(`\\(${this.$rg.varnameChars}\\)`);
     if (reg.test(prop)) { prop = this._solveControllerName(prop); }
 
     const propSplitted = prop.split('.'); // ['company', 'name']
@@ -123,12 +119,12 @@ class Aux {
    * @param {string} prop - controller property name, trains.$i.($model.fields.$i2)
    */
   _solveControllerName(prop) {
-    const reg = new RegExp(`\\(${this.varnameChars}\\)`, 'g');
+    const reg = new RegExp(`\\(${this.$rg.varnameChars}\\)`, 'g');
     const brackets = prop.match(reg);
     if (!brackets) { return prop; }
 
     for (const bracket of brackets) {
-      const reg2 = new RegExp(`\\((${this.varnameChars})\\)`);
+      const reg2 = new RegExp(`\\((${this.$rg.varnameChars})\\)`);
       const prop2 = bracket.match(reg2)[1];
       const val = this._getControllerValue(prop2);
       prop = prop.replace(reg2, val);
@@ -161,12 +157,12 @@ class Aux {
    * @returns {string}
    */
   _numerize_this(txt) {
-    const reg = new RegExp(`this\\.${this.varnameChars}`, 'g');
+    const reg = new RegExp(`this\\.${this.$rg.varnameChars}`, 'g');
     const thises = txt.match(reg);
     if (!thises) { return txt; }
 
     for (const thise of thises) {
-      const reg2 = new RegExp(`this\\.(${this.varnameChars})`);
+      const reg2 = new RegExp(`this\\.(${this.$rg.varnameChars})`);
       const prop = thise.match(reg2)[1];
       const val = this._getControllerValue(prop);
       if (typeof val === 'number') { txt = txt.replace(reg2, val); }
@@ -553,7 +549,7 @@ class Aux {
     // get priority number from data-rg-for="companies @@ 2"
     const getPriority = elem => {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
       const priority = !!attrValSplited[1] ? attrValSplited[1].trim() : 0;
       return +priority;
     };

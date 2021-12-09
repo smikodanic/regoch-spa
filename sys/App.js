@@ -1,4 +1,4 @@
-const router = require('./router');
+const Router = require('./router/Router');
 const navig = require('./lib/navig');
 
 
@@ -150,9 +150,12 @@ class App {
   /**
    * Define routes
    * @param {string[][]} routesCnf
+   * @param {boolean} debug - debug the Router.js
    * @returns {App}
    */
-  routes(routesCnf) {
+  routes(routesCnf, debug) {
+    const router = new Router(debug);
+
     for (const routeCnf of routesCnf) {
       const cmd = routeCnf[0]; // '_def', '_notfound'
 

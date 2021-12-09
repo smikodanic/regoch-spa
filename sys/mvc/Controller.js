@@ -7,10 +7,11 @@ class Controller extends Model {
   constructor() {
     super();
 
+    /*** all controller variables ***/
     this.debugOpts = {
       // Controller.js
       render: false,
-      navig: true,
+      navig: false,
 
       // View.js
       loadInc: false,
@@ -47,6 +48,10 @@ class Controller extends Model {
       rgSet: false,
       rgModel: false
     };
+
+    this.$fridge = {}; // fridged properties will not be deleted during controller processing i.e. in the navig.resetPreviousController()
+    // this.$model;
+    // this.$view;
   }
 
 

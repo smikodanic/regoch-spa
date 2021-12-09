@@ -12,6 +12,7 @@ class Navig1Ctrl extends Controller {
     this.setTitle('Navig Test - Page 1');
     this.unloadCSS(['/assets/css/theme.css']);
     await this.loadView('#primary', 'playground/navig/primary1.html', 'inner');
+    console.log(this);
   }
 
 
@@ -41,4 +42,4 @@ class Navig1Ctrl extends Controller {
 }
 
 
-module.exports =  Navig1Ctrl;
+module.exports = Navig1Ctrl;

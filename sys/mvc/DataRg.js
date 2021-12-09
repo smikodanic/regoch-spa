@@ -8,8 +8,13 @@ class DataRg extends DataRgListeners {
 
   constructor() {
     super();
-    this.separator = '@@';
-    this.rgelems = {}; // set by rgElem()
+
+    this.$rg = {
+      separator: '@@', // separator in the data-rg- attribute
+      elems: {},  // set by rgElem()
+      listeners: [], // collector of the data-rg- listeners  [{attrName, elem, handler, eventName}]
+      varnameChars: '[a-zA-Z\\d\\$\\_\\.]+' // valid characters in the variable name
+    };
   }
 
 
@@ -68,7 +73,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // company.employers
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
 
       const priority = !!attrValSplited[1] ? attrValSplited[1].trim() : 0;
 
@@ -175,7 +180,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
 
       // get val and apply pipe to the val
       const propPipe = attrValSplited[0].trim(); // controller property name with pipe:  company.name | slice(0,21)
@@ -316,7 +321,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty @@ multiple'
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
 
       const isMultiple = !!attrValSplited[1] ? attrValSplited[1].trim() === 'multiple' : false;
 
@@ -488,7 +493,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
 
       const prop = attrValSplited[0].trim(); // controller property name company.name
       const valArr = this._getControllerValue('$model.' + prop) || []; // ['my-bold', 'my-italic']
@@ -526,7 +531,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName) || ''; // 'controllerProperty'
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
 
       const prop = attrValSplited[0].trim();
       const valObj = this._getControllerValue('$model.' + prop); // {fontSize: '21px', color: 'red'}
@@ -566,7 +571,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName) || '';
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
 
       const prop = attrValSplited[0].trim();
       const val = this._getControllerValue('$model.' + prop);
@@ -602,7 +607,7 @@ class DataRg extends DataRgListeners {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName) || ''; // pageURL @@ href
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
 
       const prop = attrValSplited[0].trim();
       const val = this._getControllerValue('$model.' + prop);
@@ -619,10 +624,10 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * data-rg-elem="<rgelemsProp>"     --> rgelemsProp is the property of the this.rgelems, for example data-rg-elem="myElement" => this.rgelems.myElement
-   * Parse the "data-rg-elem" attribute. Transfer the DOM element to the controller property "this.rgelems".
+   * data-rg-elem="<rgelemsProp>"     --> rgelemsProp is the property of the this.$rg.elems, for example data-rg-elem="myElement" => this.$rg.elems.myElement
+   * Parse the "data-rg-elem" attribute. Transfer the DOM element to the controller property "this.$rg.elems".
    * Examples:
-   * data-rg-elem="paragraf" -> fetch it with this.rgelems['paragraf']
+   * data-rg-elem="paragraf" -> fetch it with this.$rg.elems['paragraf']
    * @param {string|RegExp} attrValQuery - query for the attribute value
    * @returns {void}
    */
@@ -637,7 +642,7 @@ class DataRg extends DataRgListeners {
     // associate values
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName) || ''; // 'paragraf'
-      this.rgelems[attrVal] = elem;
+      this.$rg.elems[attrVal] = elem;
     }
   }
 

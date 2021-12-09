@@ -62,16 +62,13 @@ class Navig {
       const ctrlProps = Object.keys(ctrl_prev);
       for (const ctrlProp of ctrlProps) {
         if (
-          ctrlProp !== '$model' &&
-          ctrlProp !== 'auth' &&
-          ctrlProp !== 'baseURIhost' &&
           ctrlProp !== 'debugOpts' &&
-          ctrlProp !== 'httpClient' &&
+          ctrlProp !== '$fridge' &&
+          ctrlProp !== '$model' &&
           ctrlProp !== 'model' &&
-          ctrlProp !== 'rgListeners' &&
-          ctrlProp !== 'rgelems' &&
-          ctrlProp !== 'separator' &&
-          ctrlProp !== 'varnameChars' &&
+          ctrlProp !== '$view' &&
+          ctrlProp !== '$rg' &&
+          ctrlProp !== 'auth' &&
           ctrlProp !== 'viewsCached'
         ) {
           delete ctrl_prev[ctrlProp];

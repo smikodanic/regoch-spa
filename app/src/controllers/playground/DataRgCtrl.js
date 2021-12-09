@@ -166,9 +166,9 @@ class DataRgCtrl extends Controller {
   runELEM() {
     this.toggle = !this.toggle;
     if (this.toggle) {
-      this.rgelems.myElem.style.color = 'blue';
+      this.$rg.elems.myElem.style.color = 'blue';
     } else {
-      this.rgelems.myElem.style.color = 'silver';
+      this.$rg.elems.myElem.style.color = 'silver';
     }
   }
 

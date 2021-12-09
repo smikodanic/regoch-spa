@@ -9,7 +9,6 @@ class DataRgListeners extends Aux {
 
   constructor() {
     super();
-    this.rgListeners = []; // collector of the data-rg- listeners  [{attrName, elem, handler, eventName}]
   }
 
 
@@ -24,7 +23,7 @@ class DataRgListeners extends Aux {
 
     const promises = [];
     let i = 1;
-    for (const rgListener of this.rgListeners) {
+    for (const rgListener of this.$rg.listeners) {
       rgListener.elem.removeEventListener(rgListener.eventName, rgListener.handler);
       this._debug('rgKILL', `${i}. killed:: ${rgListener.attrName} --- ${rgListener.eventName} --- ${rgListener.elem.localName} -- ${rgListener.elem.innerHTML} -- ctrl:: ${this.constructor.name}`, 'orange');
       promises.push(Promise.resolve(true));
@@ -32,7 +31,7 @@ class DataRgListeners extends Aux {
     }
 
     await Promise.all(promises);
-    this.rgListeners = [];
+    this.$rg.listeners = [];
     this._debug('rgKILL', '------- rgKILL (end) -------', 'orange', '#FFD8B6');
   }
 
@@ -71,8 +70,8 @@ class DataRgListeners extends Aux {
 
       const eventName = 'click';
       elem.addEventListener(eventName, handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName });
-      this._debug('rgHref', `pushed::  tag: ${elem.localName} | href="${elem.pathname}" | rgListeners: ${this.rgListeners.length}`, 'orange');
+      this.$rg.listeners.push({ attrName, elem, handler, eventName });
+      this._debug('rgHref', `pushed::  tag: ${elem.localName} | href="${elem.pathname}" | rgListeners: ${this.$rg.listeners.length}`, 'orange');
     }
   }
 
@@ -96,7 +95,7 @@ class DataRgListeners extends Aux {
       const attrVal = elem.getAttribute(attrName); // string 'myFunc(x, y, ...restArgs) @@ preventDefault'
       if (!attrVal) { console.error(`Attribute "data-rg-click" has bad definition (data-rg-click="${attrVal}").`); continue; }
 
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
       const funcDef = attrValSplited[0].trim();
       const tf = !!attrValSplited[1] && attrValSplited[1].trim() === 'preventDefault';
 
@@ -109,8 +108,8 @@ class DataRgListeners extends Aux {
 
       const eventName = 'click';
       elem.addEventListener(eventName, handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName });
-      this._debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | preventDefault: ${tf} | rgListeners: ${this.rgListeners.length}`, 'orange');
+      this.$rg.listeners.push({ attrName, elem, handler, eventName });
+      this._debug('rgClick', `pushed::  tag: ${elem.localName} | data-rg-click="${attrVal}" | preventDefault: ${tf} | rgListeners: ${this.$rg.listeners.length}`, 'orange');
     }
   }
 
@@ -132,7 +131,7 @@ class DataRgListeners extends Aux {
 
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName);
-      const attrValSplited = attrVal.split(this.separator);
+      const attrValSplited = attrVal.split(this.$rg.separator);
 
       if (!attrValSplited[0]) { console.error(`Attribute "data-rg-keyup" has bad definition (data-rg-keyup="${attrVal}").`); continue; }
       const funcDef = attrValSplited[0].trim();
@@ -153,8 +152,8 @@ class DataRgListeners extends Aux {
 
       const eventName = 'keyup';
       elem.addEventListener(eventName, handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName });
-      this._debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | ctrl="${this.constructor.name}" | rgListeners: ${this.rgListeners.length}`, 'orange');
+      this.$rg.listeners.push({ attrName, elem, handler, eventName });
+      this._debug('rgKeyup', `pushed::  tag: ${elem.localName} | data-rg-keyup="${attrVal}" | ctrl="${this.constructor.name}" | rgListeners: ${this.$rg.listeners.length}`, 'orange');
     }
   }
 
@@ -187,8 +186,8 @@ class DataRgListeners extends Aux {
 
       const eventName = 'change';
       elem.addEventListener(eventName, handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName });
-      this._debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${attrVal}" | rgListeners: ${this.rgListeners.length}`, 'orange');
+      this.$rg.listeners.push({ attrName, elem, handler, eventName });
+      this._debug('rgChange', `pushed::  tag: ${elem.localName} | data-rg-change="${attrVal}" | rgListeners: ${this.$rg.listeners.length}`, 'orange');
     }
   }
 
@@ -213,7 +212,7 @@ class DataRgListeners extends Aux {
       const directives = attrVal.split('&&');
 
       for (const directive of directives) {
-        const attrValSplited = directive.split(this.separator);
+        const attrValSplited = directive.split(this.$rg.separator);
         if (!attrValSplited[0] || !attrValSplited[1]) { console.error(`Attribute "data-rg-evt" has bad definition (data-rg-evt="${attrVal}").`); continue; }
 
         const eventName = attrValSplited[0].trim();
@@ -226,8 +225,8 @@ class DataRgListeners extends Aux {
         };
 
         elem.addEventListener(eventName, handler);
-        this.rgListeners.push({ eventName, attrName, elem, handler, eventName });
-        this._debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-evt | event: ${eventName} | rgListeners: ${this.rgListeners.length}`, 'orange');
+        this.$rg.listeners.push({ eventName, attrName, elem, handler, eventName });
+        this._debug('rgEvt', `pushed::  tag: ${elem.localName} | data-rg-evt | event: ${eventName} | rgListeners: ${this.$rg.listeners.length}`, 'orange');
       }
     }
   }
@@ -264,8 +263,8 @@ class DataRgListeners extends Aux {
 
       const eventName = 'input';
       elem.addEventListener(eventName, handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName });
-      this._debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> | rgListeners: ${this.rgListeners.length}`, 'orange');
+      this.$rg.listeners.push({ attrName, elem, handler, eventName });
+      this._debug('rgSet', `pushed::  <${elem.localName} ${attrName}="${attrVal}"> | rgListeners: ${this.$rg.listeners.length}`, 'orange');
     }
   }
 
@@ -308,8 +307,8 @@ class DataRgListeners extends Aux {
 
       const eventName = 'input';
       elem.addEventListener(eventName, handler);
-      this.rgListeners.push({ attrName, elem, handler, eventName });
-      this._debug('rgModel', `rgModel listener -- pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- rgListeners: ${this.rgListeners.length}`, 'orange');
+      this.$rg.listeners.push({ attrName, elem, handler, eventName });
+      this._debug('rgModel', `rgModel listener -- pushed::  <${elem.localName} ${attrName}="${attrVal}"> -- rgListeners: ${this.$rg.listeners.length}`, 'orange');
     }
 
   }

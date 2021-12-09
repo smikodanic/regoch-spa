@@ -52,7 +52,7 @@ app
   .const('myObj', { a: 22 })
   .freeze();
 
-app.libInject({ StringExt, Rand });
+app.libInject({ StringExt, Rand }); // use it as app.lib.Rand
 
 app
   .controllersInject([
@@ -99,4 +99,4 @@ const postf2 = async (trx) => { console.log('POSTFLIGHT 2 - trx::', trx); };
 // app.postflight(postf1, postf2);
 
 
-app.routes(routes);
+app.routes(routes, true);

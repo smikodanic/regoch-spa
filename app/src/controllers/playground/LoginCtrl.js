@@ -5,7 +5,7 @@ class LoginCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.formLogin = new syslib.Form('loginForm');
+    this.$fridge.formLogin = new syslib.Form('loginForm');
   }
 
   async loader(trx) {
@@ -14,13 +14,18 @@ class LoginCtrl extends Controller {
     await this.loadView('#primary', 'playground/login/primary.html', 'inner');
   }
 
+  async init() {
+    // this.formLogin = new syslib.Form('loginForm');
+  }
+
   async tryLogin() {
-    const username = this.formLogin.getControl('username');
-    const password = this.formLogin.getControl('password');
+    const username = this.$fridge.formLogin.getControl('username', false); // false will not convert the type, for example: 12345 will stay string
+    const password = this.$fridge.formLogin.getControl('password', false); // false will not convert the type, for example: 12345 will stay string
     try {
-      const creds = {username, password};
-      const jsonContent = await this.auth.login(creds);
-      console.log('tryLogin::', username, password, jsonContent);
+      const creds = { username, password };
+      console.log('creds::', creds);
+      const resp = await this.auth.login(creds);
+      console.log('tryLogin::', username, password, resp);
     } catch (err) {
       console.error(err);
     }
@@ -31,4 +36,4 @@ class LoginCtrl extends Controller {
 }
 
 
-module.exports =  LoginCtrl;
+module.exports = LoginCtrl;

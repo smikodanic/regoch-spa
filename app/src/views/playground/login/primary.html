@@ -1,20 +1,19 @@
 <h1>Login Test</h1>
 <p>The login test i.e. test the <b>Auth</b> system library.
-<br>
-<br>1) Click <a href="/playground/customer/dashboard" data-rg-href>/playground/customer/dashboard</a> to test
-<b>Auth::isLogged()</b> and <b>Auth::hasRole()</b> route guards.
-If the user is already logged and has 'customer' role then the page will open. If not the route should redirect to the <i>afterBadlogin</i> URL.
-<br>
-<br>2) To test the method <b>Auth::autoLogin()</b> just <a href="/playground/login" data-rg-href>reload this URL</a>.
-If the user is logged redirect to <i>afterGoodLogin</i> URL.
+  <br>
+  <br>1) Click <a href="/playground/customer/dashboard" data-rg-href>/playground/customer/dashboard</a> to test
+  <b>Auth::isLogged()</b> and <b>Auth::hasRole()</b> route guards.
+  If the user is already logged and has 'customer' role then the page will open. If not the route should redirect to the <i>afterBadlogin</i> URL.
+  <br>
+  <br>2) To test the method <b>Auth::autoLogin()</b> just <a href="/playground/login" data-rg-href>reload this URL</a>.
+  If the user is logged redirect to <i>afterGoodLogin</i> URL.
 </p>
 
 <br><br><br>
 
 <form data-rg-form="loginForm">
-  username: <input type="text" name="username">
-  <br>password: <input type="text" name="password">
+  username: <input type="text" name="username" value="demo">
+  <br>password: <input type="text" name="password" value="12345">
   <br>
-  <br><button data-rg-click="tryLogin()">Login</button>
+  <br><button type="button" data-rg-click="tryLogin()">Login</button>
 </form>
-

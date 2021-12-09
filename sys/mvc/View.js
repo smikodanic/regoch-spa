@@ -6,7 +6,7 @@ class View extends DataRg {
 
   constructor() {
     super();
-    this.baseURIhost = `${window.location.protocol}//${window.location.host}`; // http://localhost:4400
+    const baseURIhost = `${window.location.protocol}//${window.location.host}`; // http://localhost:4400
 
     const opts = {
       encodeURI: true,
@@ -20,7 +20,10 @@ class View extends DataRg {
         'content-type': 'text/html; charset=UTF-8'
       }
     };
-    this.httpClient = new HTTPClient(opts);
+    const httpClient = new HTTPClient(opts);
+
+    this.$view = { baseURIhost, httpClient };
+
     // window.regochGlob.viewsCached is defined by the App:controllerViewsCached()
   }
 
@@ -62,7 +65,7 @@ class View extends DataRg {
     for (const elem of elems) {
       // extract attribute data
       const attrValue = elem.getAttribute('data-rg-inc');
-      const path_dest_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.separator); // remove empty spaces and leading /
+      const path_dest_cssSel = attrValue.replace(/\s+/g, '').replace(/^\//, '').split(this.$rg.separator); // remove empty spaces and leading /
       const viewPath = !!path_dest_cssSel && !!path_dest_cssSel.length ? 'inc/' + path_dest_cssSel[0] : '';
       const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
       const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
@@ -321,8 +324,8 @@ class View extends DataRg {
    */
   async fetchRemoteView(viewPath, cssSel) {
     const path = `/views/${viewPath}`; // /views/pages/home/main.html
-    const url = new URL(path, this.baseURIhost).toString(); // resolve the URL
-    const answer = await this.httpClient.askHTML(url, cssSel);
+    const url = new URL(path, this.$view.baseURIhost).toString(); // resolve the URL
+    const answer = await this.$view.httpClient.askHTML(url, cssSel);
     const content = answer.res.content;
     if (answer.status !== 200 || !content) { throw new Error(`Status isn't 200 or content is empty for ${viewPath}`); }
 
@@ -396,11 +399,11 @@ class View extends DataRg {
       // correct the URL
       url = url.trim();
       if (!/^http/.test(url)) {
-        url = new URL(url, this.baseURIhost).toString(); // resolve the URL
+        url = new URL(url, this.$view.baseURIhost).toString(); // resolve the URL
       }
 
       const jsContents = [];
-      const answer = await this.hc.askJS(url);
+      const answer = await this.$view.httpClient.askJS(url);
       jsContents.push(answer.res.content);
       for (const jsContent of jsContents) { eval(jsContent); }
     }
