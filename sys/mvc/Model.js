@@ -6,8 +6,8 @@ class Model extends View {
   constructor() {
     super();
     this.$model = {};
-    this._proxer();
     this._modelMethods();
+    this._proxer();
   }
 
 
@@ -33,11 +33,11 @@ class Model extends View {
 
 
   /**
-   * Define model methods, for example: this.model('pets').push('dog');
+   * Define model methods, for example: this.$model.use('pets').push('dog');
    * @returns [any[]]
    */
   _modelMethods() {
-    this.model = (modelName) => {
+    this.$model.use = (modelName) => {
       const methods = {
         schema: (schemaDef) => {
           this.$schema[modelName] = schemaDef;
@@ -85,6 +85,14 @@ class Model extends View {
       return methods;
     };
 
+
+    // reset the $model properties except properties which are functions
+    this.$model.reset = () => {
+      for (const modelProp of Object.keys(this.$model)) {
+        if (typeof this.$model[modelProp] !== 'function') { delete this.$model[modelProp]; }
+      }
+    };
+
   }
 
 
@@ -93,7 +101,11 @@ class Model extends View {
    * @returns {boolean}
    */
   isModelEmpty() {
-    return !Object.keys(this.$model).length;
+    let countProps = 0;
+    for (const modelProp of Object.keys(this.$model)) {
+      if (typeof this.$model[modelProp] !== 'function') { countProps++; } // don't count proerties which are functions, like $model.use()
+    }
+    return !countProps;
   }
 
 

@@ -107,7 +107,7 @@ class Controller extends Model {
    */
   async processing(trx) {
     // prechecks
-    if (!this.isModelEmpty()) { console.log(`%c ControllerWarn(${this.constructor.name}):: The $model is set before the loader() method so it runs render() before loader(). The preflight functions and the controller constructor should not contain $model.`); }
+    if (!this.isModelEmpty()) { console.log(`%c ControllerWarn(${this.constructor.name}):: The $model is set before the loader() method so it runs render() before loader(). The preflight functions and the controller constructor should not contain $model.`, `color:Maroon; background:LightYellow`); }
 
     // navig operations
     navig.setPrevious();

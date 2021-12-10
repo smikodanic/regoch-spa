@@ -27,9 +27,9 @@ class ModelCtrl extends Controller {
   async str() {
     this.$model.first_name = 'Saša';
     await new Promise(r => setTimeout(r, 1300));
-    this.model('first_name').setValue('Saša');
+    this.$model.use('first_name').setValue('Saša');
     await new Promise(r => setTimeout(r, 1300));
-    this.$model.first_name = 'Petar'; // shortcut for  this.model('first_name').setValue('Petar');
+    this.$model.first_name = 'Petar'; // shortcut for  this.$model.use('first_name').setValue('Petar');
   }
 
   async obj() {
@@ -41,20 +41,20 @@ class ModelCtrl extends Controller {
   async arr() {
     this.$model.pets = ['dog', 'cat'];
     await new Promise(r => setTimeout(r, 1300));
-    this.model('pets').mpush('rabbit');
+    this.$model.use('pets').mpush('rabbit');
     await new Promise(r => setTimeout(r, 1300));
-    this.model('pets').mpop();
+    this.$model.use('pets').mpop();
     await new Promise(r => setTimeout(r, 1300));
-    this.model('pets').munshift('anaconda');
+    this.$model.use('pets').munshift('anaconda');
     await new Promise(r => setTimeout(r, 1300));
-    this.model('pets').mshift();
+    this.$model.use('pets').mshift();
   }
 
 
   async level5() {
     this.$model.car = { x: { y: { z: { w: { year: 2011 } } } } };
     await new Promise(r => setTimeout(r, 1300));
-    this.model('car').setValue(2015, 'x.y.z.w.year');
+    this.$model.use('car').setValue(2015, 'x.y.z.w.year');
   }
 
 

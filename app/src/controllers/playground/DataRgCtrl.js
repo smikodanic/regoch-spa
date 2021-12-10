@@ -149,7 +149,7 @@ class DataRgCtrl extends Controller {
     await syslib.util.sleep(1300);
 
     this.$model.product.colors = ['blue', 'orange'];
-    this.model('product').mrender();
+    this.$model.use('product').mrender();
   }
 
 
