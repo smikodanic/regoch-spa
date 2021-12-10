@@ -1,7 +1,7 @@
 const { Controller } = require('../../../../sys');
 
 
-class Page_LazyJSCtrl extends Controller {
+class View_LazyJSCtrl extends Controller {
 
   constructor(app) {
     super();
@@ -10,7 +10,7 @@ class Page_LazyJSCtrl extends Controller {
   async loader(trx) {
     this.setTitle('lazyJS() Test');
     this.unloadCSS(['/assets/css/theme.css']);
-    await this.loadView('#primary', 'playground/page-lazyjs/primary.html');
+    await this.loadView('#primary', 'playground/view-lazyjs/primary.html');
   }
 
   async destroy() {
@@ -53,4 +53,4 @@ class Page_LazyJSCtrl extends Controller {
 }
 
 
-module.exports = Page_LazyJSCtrl;
+module.exports = View_LazyJSCtrl;

@@ -18,11 +18,11 @@ module.exports = [
   ['when', '/contact', 'ContactCtrl'],
 
   // playground
-  ['when', '/playground/page-loadinc', 'Page_LoadIncCtrl'],
-  ['when', '/playground/page-loadviews', 'Page_LoadViewsCtrl'],
-  ['when', '/playground/page-lazyjs', 'Page_LazyJSCtrl'],
   ['when', '/playground/controller-hooks', 'Controller_hooksCtrl'],
   ['when', '/playground/controller-hooks-same', 'Controller_hooksCtrl'],
+  ['when', '/playground/view-loadinc', 'View_LoadIncCtrl'],
+  ['when', '/playground/view-loadviews', 'View_LoadViewsCtrl'],
+  ['when', '/playground/view-lazyjs', 'View_LazyJSCtrl'],
   ['when', '/playground/datarg', 'DataRgCtrl'],
   ['when', '/playground/datarglisteners', 'DataRgListenersCtrl'],
   ['when', '/playground/cookie', 'CookieCtrl'],
