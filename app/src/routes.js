@@ -20,7 +20,7 @@ module.exports = [
   // playground
   ['when', '/playground/controller-hooks', 'Controller_hooksCtrl'],
   ['when', '/playground/controller-hooks-same', 'Controller_hooksCtrl'],
-  ['when', '/playground/view-loadinc', 'View_LoadIncCtrl'],
+  ['when', '/playground/view-rginc', 'View_rgIncCtrl'],
   ['when', '/playground/view-loadviews', 'View_LoadViewsCtrl'],
   ['when', '/playground/view-lazyjs', 'View_LazyJSCtrl'],
   ['when', '/playground/datarg', 'DataRgCtrl'],

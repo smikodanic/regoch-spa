@@ -22,7 +22,6 @@ class RouterCtrl extends Controller {
       ['#article-introduction', 'pages/router/article-introduction.html'],
       ['#article-router', 'pages/router/article-router.html'],
     ], true);
-    this.loadInc();
   }
 
 
@@ -50,4 +49,4 @@ class RouterCtrl extends Controller {
 }
 
 
-module.exports =  RouterCtrl;
+module.exports = RouterCtrl;

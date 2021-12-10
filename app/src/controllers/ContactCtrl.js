@@ -18,7 +18,6 @@ class ContactCtrl extends Controller {
       ['#top', 'pages/home/top.html'],
       ['#main', 'pages/contact/main.html']
     ], false);
-    this.loadInc();
   }
 
   async postrend() {
@@ -30,4 +29,4 @@ class ContactCtrl extends Controller {
 }
 
 
-module.exports =  ContactCtrl;
+module.exports = ContactCtrl;

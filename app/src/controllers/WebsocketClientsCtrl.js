@@ -12,7 +12,6 @@ class WebsocketClientsCtrl extends Controller {
     this.setTitle('Regoch Websocket Clients');
     this.setLang('en');
     await this.loadView('#primary', 'pages/websocket/clients/primary.html', 'sibling');
-    await this.loadInc();
     await this.loadView('#main', 'pages/websocket/clients/main.html');
     await this.rgLazyjs();
   }
@@ -31,4 +30,4 @@ class WebsocketClientsCtrl extends Controller {
 }
 
 
-module.exports =  WebsocketClientsCtrl;
+module.exports = WebsocketClientsCtrl;

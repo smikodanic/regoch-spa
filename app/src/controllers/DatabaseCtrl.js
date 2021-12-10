@@ -20,7 +20,6 @@ class DatabaseCtrl extends Controller {
       ['#sidebar', 'pages/database/sidebar.html'],
       ['#article-introduction', 'pages/database/article-introduction.html']
     ], true);
-    this.loadInc();
   }
 
 
@@ -48,4 +47,4 @@ class DatabaseCtrl extends Controller {
 }
 
 
-module.exports =  DatabaseCtrl;
+module.exports = DatabaseCtrl;

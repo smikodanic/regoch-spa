@@ -14,7 +14,7 @@ class Controller extends Model {
       navig: false,
 
       // View.js
-      loadInc: false,
+      rgInc: false,
       loadView: false,
       emptyView: false,
       loadHead: false,
@@ -117,6 +117,7 @@ class Controller extends Model {
 
 
     await this.loader(trx);
+    await this.rgInc(true);
     this.rgFlicker(false);
     await this.init(trx);
     await this.rend(trx);
@@ -172,6 +173,9 @@ class Controller extends Model {
     this.rgEvt();
     this.rgSet();
     this.rgModel();
+
+    // Render View
+    await this.rgLazyjs();
 
     this._debug('render', `--------- render (end) -- attrValQuery: ${attrValQuery} ------`, 'green', '#D9FC9B');
   }

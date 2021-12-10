@@ -49,16 +49,16 @@ class View extends DataRg {
    * @param {boolean} delIncgens - delete data-rg-incgen elements (only in the first iteration)
    * @returns {void}
    */
-  async loadInc(delIncgens = true) {
+  async rgInc(delIncgens = true) {
     const elems = document.querySelectorAll('[data-rg-inc]:not([data-rg-cin])');
-    this._debug('loadInc', '--------- loadInc ------', '#8B0892', '#EDA1F1');
-    this._debug('loadInc', `elems found: ${elems.length}`, '#8B0892');
+    this._debug('rgInc', '--------- rgInc ------', '#8B0892', '#EDA1F1');
+    this._debug('rgInc', `elems found: ${elems.length}`, '#8B0892');
     if (!elems.length) { return; }
 
     // remove all data-rg-incgen elements (just first iteration)
     if (delIncgens) {
       const elems2 = document.querySelectorAll('[data-rg-incgen]');
-      this._debug('loadInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
+      this._debug('rgInc', `data-rg-incgen elems deleted: ${elems2.length}`, '#8B0892');
       for (const elem2 of elems2) { elem2.remove(); }
     }
 
@@ -69,7 +69,7 @@ class View extends DataRg {
       const viewPath = !!path_dest_cssSel && !!path_dest_cssSel.length ? 'inc/' + path_dest_cssSel[0] : '';
       const dest = !!path_dest_cssSel && path_dest_cssSel.length >= 2 ? path_dest_cssSel[1] : 'inner';
       const cssSel = !!path_dest_cssSel && path_dest_cssSel.length === 3 ? path_dest_cssSel[2] : '';
-      if (this._debug().loadInc) { console.log('\n******** path_dest_cssSel:: ', viewPath, dest, cssSel, '********'); }
+      if (this._debug().rgInc) { console.log('\n******** path_dest_cssSel:: ', viewPath, dest, cssSel, '********'); }
       if (!viewPath) { console.error('viewPath is not defined'); return; }
 
       // Get HTML content. First try from the cached JSON and if it doesn't exist then request from the server.
@@ -78,15 +78,15 @@ class View extends DataRg {
         const cnt = this.fetchCachedView(viewPath, cssSel);
         nodes = cnt.nodes;
         str = cnt.str;
-        this._debug('loadInc', '--from cached JSON', '#8B0892');
+        this._debug('rgInc', '--from cached JSON', '#8B0892');
       } else { // HTML content by requesting the server
         const cnt = await this.fetchRemoteView(viewPath, cssSel);
         nodes = cnt.nodes;
         str = cnt.str;
-        this._debug('loadInc', '--from server', '#8B0892');
+        this._debug('rgInc', '--from server', '#8B0892');
       }
 
-      if (this._debug().loadInc) {
+      if (this._debug().rgInc) {
         console.log('elem::', elem);
         console.log('nodes loaded::', nodes);
         // console.log('str loaded::', str);
@@ -141,7 +141,7 @@ class View extends DataRg {
 
 
       // continue with the next parse iteration (when data-rg-inc elements are nested)
-      if (/data-rg-inc/.test(str)) { await this.loadInc(false); }
+      if (/data-rg-inc/.test(str)) { await this.rgInc(false); }
 
     }
 

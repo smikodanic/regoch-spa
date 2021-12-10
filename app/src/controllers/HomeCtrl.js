@@ -21,7 +21,6 @@ module.exports = class HomeCtrl extends Controller {
       ['#main', 'pages/home/main.html'],
       ['#bottom', 'pages/home/bottom.html']
     ], false);
-    this.loadInc();
   }
 
 

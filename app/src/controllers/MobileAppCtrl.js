@@ -20,7 +20,6 @@ class MobileAppCtrl extends Controller {
       ['#sidebar', 'pages/mobile-app/sidebar.html'],
       ['#article-introduction', 'pages/mobile-app/article-introduction.html']
     ], true);
-    this.loadInc();
   }
 
 
@@ -49,4 +48,4 @@ class MobileAppCtrl extends Controller {
 }
 
 
-module.exports =  MobileAppCtrl;
+module.exports = MobileAppCtrl;

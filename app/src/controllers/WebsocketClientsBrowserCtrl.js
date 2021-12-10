@@ -24,7 +24,6 @@ class WebsocketClientsBrowserCtrl extends Controller {
       ['#article-helper', 'pages/websocket/clients/browser/article-helper.html'],
       ['#article-router', 'pages/websocket/clients/nodejs/article-router.html']
     ], true);
-    this.loadInc();
 
   }
 
@@ -51,4 +50,4 @@ class WebsocketClientsBrowserCtrl extends Controller {
 }
 
 
-module.exports =  WebsocketClientsBrowserCtrl;
+module.exports = WebsocketClientsBrowserCtrl;

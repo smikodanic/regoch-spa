@@ -31,7 +31,6 @@ class WebsocketServerCtrl extends Controller {
       ['#article-storage', 'pages/websocket/server/article-storage.html'],
       ['#article-subprotocol', 'pages/websocket/server/article-subprotocol.html'],
     ], true);
-    this.loadInc();
   }
 
 
@@ -59,4 +58,4 @@ class WebsocketServerCtrl extends Controller {
 }
 
 
-module.exports =  WebsocketServerCtrl;
+module.exports = WebsocketServerCtrl;

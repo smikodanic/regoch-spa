@@ -3,13 +3,13 @@
   <section class="docs-intro">
     <i>class Page extends DataRg</i>
     <p class="mt-3">
-    This class will load and render views in the <b>data-rg-view</b> and includes in the <b>data-rg-inc</b> elements.
-    <br>- <b>Views</b> are the HTML files located in the /src/views/ directory and loaded only when it is called by the controller.
-    Which controller i.e. view will be taken depends on the current URL. The views are loaded in the element with <b>data-rg-view</b> attribute.
-    The possible load destinations are: inner, outer, sibling, prepend and append.
-    <br>- <b>Includes</b> are HTML files located in the /src/views/inc/ directory and will be rendered every time regardless of the controller and current URL.
-    The inc files are loaded in the elements with the <b>data-rg-inc</b> attribute.
-    The possible load destinations are: inner, outer, sibling, prepend and append.
+      This class will load and render views in the <b>data-rg-view</b> and includes in the <b>data-rg-inc</b> elements.
+      <br>- <b>Views</b> are the HTML files located in the /src/views/ directory and loaded only when it is called by the controller.
+      Which controller i.e. view will be taken depends on the current URL. The views are loaded in the element with <b>data-rg-view</b> attribute.
+      The possible load destinations are: inner, outer, sibling, prepend and append.
+      <br>- <b>Includes</b> are HTML files located in the /src/views/inc/ directory and will be rendered every time regardless of the controller and current URL.
+      The inc files are loaded in the elements with the <b>data-rg-inc</b> attribute.
+      The possible load destinations are: inner, outer, sibling, prepend and append.
     </p>
   </section>
 </header>
@@ -17,62 +17,62 @@
 <section class="docs-section" id="item-4-1">
   <h2 class="section-heading">Properties</h2>
   <table style="width:100%">
-  <tr>
-    <th>Property</th>
-    <th>Description</th>
-    <th>Type</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td>baseURIhost</td>
-    <td>Current browser's base URI, for example: <i>http://localhost:4400</i></td>
-    <td>string</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>httpClient</td>
-    <td>HTTP client, instance of the HTTPClient class</td>
-    <td>object</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>viewsCached</td>
-    <td>cached views, the object injected by the App::controllerViewsCached() method</td>
-    <td>object</td>
-    <td></td>
-  </tr>
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>baseURIhost</td>
+      <td>Current browser's base URI, for example: <i>http://localhost:4400</i></td>
+      <td>string</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>httpClient</td>
+      <td>HTTP client, instance of the HTTPClient class</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>viewsCached</td>
+      <td>cached views, the object injected by the App::controllerViewsCached() method</td>
+      <td>object</td>
+      <td></td>
+    </tr>
   </table>
 </section>
 
 <section class="docs-section" id="item-4-2">
   <h2 class="section-heading">Methods</h2>
-	<ul class="methods">
+  <ul class="methods">
     <h4>HTML</h4>
     <li>
-      <i>async</i> <b>loadInc <i>(delIncgens:boolean = true): Promise&lt;void&gt;</i></b>
+      <i>async</i> <b>rgInc <i>(delIncgens:boolean = true): Promise&lt;void&gt;</i></b>
       <p class="desc">Load /views/inc/file.html HTML file in the element with the
-      <br><b>data-rg-inc="file.html [@@ inner|outer|sibling|prepend|append] [@@ cssSelector]"</b> attribute.
-      <br>This method is called recursively if the "data-rg-inc" elements are nested.
-      <br><b>delIncgens</b> - delete data-rg-incgen elements (only in the first iteration)
-      <br>
-      <br>The render process:
-      <br>1) Select all elements which has data-rg-inc but not data-rg-cin.
-      <br>2) Put data-rg-cin which marks that the data-rg-inc element has beed parsed in the current iteration. This will prevent infinite render loops.
-      <br>3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Elements where sibling, append and prepend is used will get data-rg-incgen attribute to mark elements generated with data-rg-inc.
-      <br>4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
-      <br>
-      <br>Note: Multiple iterations will heppen when data-rg-inc elements are nested. To make reset all data-rg-incgen elements will be deleted but only in the first iteration.
+        <br><b>data-rg-inc="file.html [@@ inner|outer|sibling|prepend|append] [@@ cssSelector]"</b> attribute.
+        <br>This method is called recursively if the "data-rg-inc" elements are nested.
+        <br><b>delIncgens</b> - delete data-rg-incgen elements (only in the first iteration)
+        <br>
+        <br>The render process:
+        <br>1) Select all elements which has data-rg-inc but not data-rg-cin.
+        <br>2) Put data-rg-cin which marks that the data-rg-inc element has beed parsed in the current iteration. This will prevent infinite render loops.
+        <br>3) Load the content in the data-rg-inc element as inner, outer, sibling, append or prepend. Elements where sibling, append and prepend is used will get data-rg-incgen attribute to mark elements generated with data-rg-inc.
+        <br>4) Add data-rg-cin attribute to the element with the data-rg-inc to mark that the content is loaded and prevent load in the next iteration.
+        <br>
+        <br>Note: Multiple iterations will heppen when data-rg-inc elements are nested. To make reset all data-rg-incgen elements will be deleted but only in the first iteration.
     </li>
     <li>
       <i>async</i> <b>loadView <i>(viewName:string, viewPath:string, dest:string = 'inner', cssSel:string): Promise&lt;{elem, str, nodes}&gt;</i></b>
       <p class="desc">Load view file from /views/ directory in the element with the <b>data-rg-view="#viewName"</b> attribute. This method should be used in the controller.
-      <br>IMPORTANT:
-      <br>A) When 'sibling', 'prepend' and 'append' is used, the comment and text nodes will not be injected (only HTML elements i.e. nodeType === 1)).
-      <br>B) Never put data-rg-view inside data-rg-inc !
-      <br><b>viewName</b> - view name, for example: '#home'
-      <br><b>viewPath</b> - view file path (relative to /view/ directory): 'pages/home/main.html'
-      <br><b>dest</b> - destination where to place the view: <i>inner, outer, sibling, prepend, append</i>
-      <br><b>cssSel</b> - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
+        <br>IMPORTANT:
+        <br>A) When 'sibling', 'prepend' and 'append' is used, the comment and text nodes will not be injected (only HTML elements i.e. nodeType === 1)).
+        <br>B) Never put data-rg-view inside data-rg-inc !
+        <br><b>viewName</b> - view name, for example: '#home'
+        <br><b>viewPath</b> - view file path (relative to /view/ directory): 'pages/home/main.html'
+        <br><b>dest</b> - destination where to place the view: <i>inner, outer, sibling, prepend, append</i>
+        <br><b>cssSel</b> - CSS selector to load part of the view file: 'div > p.bolded:nth-child(2)'
       </p>
     </li>
     <li>
@@ -80,16 +80,16 @@
       <p class="desc">Load multiple views. This is shortcut for the <i>loadView()</i> method.
         <br>TIP1: Use this method in the prerender() method if the views contain data-rg- elements. This is because render() will render those elements.
         <br>TIP2: When isAsync=false is used the views should be cached by the regoch.json.
-      <br><b>viewDefs</b> - array of arrays: [[viewName, viewPath, dest, cssSel]]
-      <br><b>isAsync</b> - When <i>true</i> the views are loaded synchronously, one by one (serially).
-      The <i>false</i> is used to load multiple views in parallel. This speeds up the load time but the views should be cached by regoch.json.
+        <br><b>viewDefs</b> - array of arrays: [[viewName, viewPath, dest, cssSel]]
+        <br><b>isAsync</b> - When <i>true</i> the views are loaded synchronously, one by one (serially).
+        The <i>false</i> is used to load multiple views in parallel. This speeds up the load time but the views should be cached by regoch.json.
       </p>
     </li>
     <li>
       <b>emptyView <i>(viewName:string, dest:string = 'inner'): &lt;void&gt;</i></b>
       <p class="desc">Empty the view content in the data-rg-view element.
-      <br><b>viewName</b> - - view name, for example: '#home'
-      <br><b>dest</b> - destination where the view was placed and should be deleted: inner, outer, sibling, prepend, append. Default is inner.
+        <br><b>viewName</b> - - view name, for example: '#home'
+        <br><b>dest</b> - destination where the view was placed and should be deleted: inner, outer, sibling, prepend, append. Default is inner.
       </p>
     </li>
 
@@ -116,7 +116,7 @@
       <p class="desc">Remove all SCRIPT tags with the <i>data-rg-lazyjs</i> attribute. Usually it should be used in the <i>destroy()</i> controller hook.</p>
     </li>
     <li>
-      <i>async</i>  <b>loadJS <i>(urls:string[]): &lt;void&gt;</i></b>
+      <i>async</i> <b>loadJS <i>(urls:string[]): &lt;void&gt;</i></b>
       <p class="desc">Do not create &lt;script&gt; tags, just load js scripts. This can work only for local files due to CORS.
         <br><b>urls</b> - array of JS script URLs
       </p>
@@ -124,8 +124,8 @@
     <li>
       <i>async</i> <b>rgLazyjs <i>(waitMS :number) :Promise&lt;void&gt;</i></b>
       <p class="desc">Parse the <b>data-rg-lazyjs</b> SCRIPT elements. All SCRIPT tags with <i>data-rg-lazyjs</i> attribute will be removed
-      and again loaded on every controller execution after the DOM is loaded.
-      <br><b>waitMS</b> - wait for miliseconds before the lazy load starts</p>
+        and again loaded on every controller execution after the DOM is loaded.
+        <br><b>waitMS</b> - wait for miliseconds before the lazy load starts</p>
     </li>
 
     <br><br>
@@ -196,7 +196,7 @@
 <section class="docs-section" id="item-4-3">
   <h2 class="section-heading">Cache</h2>
   To speed up load time the Regoch SPA is using cached views which are stored in the <i>/app/cache/views.js</i>.
-  <br>Methods <b>loadInc()</b> and <b>loadView()</b> first looks up into the <i>/app/cache/views.json</i> to find the view.
+  <br>Methods <b>rgInc()</b> and <b>loadView()</b> first looks up into the <i>/app/cache/views.json</i> to find the view.
   If the view is not present there it sends request to the server.
   <br>To generate the cached view the developer should use <i>regoch.json</i> and gulp will do the rest:
   <pre><code class="language-js">///// regoch.json tells the gulp which files to cache /////
@@ -221,7 +221,7 @@
 <section class="docs-section" id="item-4-4">
   <h2 class="section-heading">Examples</h2>
   <h4>1. data-rg-inc</h4>
-  The example shows how to use "data-rg-inc" attribute. In the most cases the method loadInc() shouldn't be used in the controller's code because data-rg-inc elements are rendered automatically.
+  The example shows how to use "data-rg-inc" attribute. In the most cases the method rgInc() shouldn't be used in the controller's code because data-rg-inc elements are rendered automatically.
   <pre><code class="language-markup"><xmp>
 <header data-rg-inc="header.html">---load header.html in the innerHTML---</header>
 <header data-rg-inc="header.html @@  @@ h2 > small">---inner load (part of the HTML file)---</header>
@@ -235,7 +235,7 @@
 
   <br>
   <h4>2. Nested data-rg-inc elements</h4>
-  The example shows nested "data-rg-inc" elements. This will cause two iterative calls of loadInc() method.
+  The example shows nested "data-rg-inc" elements. This will cause two iterative calls of rgInc() method.
   In the first iteration it will load article.html in the main.html. As the article.html has also data-rg-inc element in the second iteration the content.html will be loaded.
   <pre><code class="language-markup"><xmp>
 <!-- main.html -->
@@ -248,6 +248,3 @@
 <p>Lorem ipsum ...</p>
   </xmp></code></pre>
 </section>
-
-
-

@@ -5,6 +5,7 @@ class View_LazyJSCtrl extends Controller {
 
   constructor(app) {
     super();
+    this.debugOpts = { rgLazyjs: true };
   }
 
   async loader(trx) {
@@ -15,6 +16,7 @@ class View_LazyJSCtrl extends Controller {
 
   async destroy() {
     this.unlazyAllJS();
+    this.emptyView('#primary');
   }
 
 
@@ -26,6 +28,7 @@ class View_LazyJSCtrl extends Controller {
     $.notify('Hello Regoč');
   }
 
+  // button function
   async lazyAll() {
     await this.lazyJS([
       'https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js',
@@ -35,7 +38,7 @@ class View_LazyJSCtrl extends Controller {
 
   lazyTest() {
     this.lazyJS([
-      '/assets/regoch/js/lazyTest.js'
+      '/assets/regoch/js/lazyTest2.js'
     ], 1000);
   }
 

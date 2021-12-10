@@ -37,7 +37,6 @@ class SinglePageAppCtrl extends Controller {
       ['#article-util', 'pages/single-page-app/article-util.html'],
       // ['#footer', 'pages/single-page-app/footer.html']
     ], true);
-    this.loadInc();
   }
 
 
