@@ -20,9 +20,10 @@ module.exports = [
   // playground
   ['when', '/playground/controller-hooks', 'Controller_hooksCtrl'],
   ['when', '/playground/controller-hooks-same', 'Controller_hooksCtrl'],
+  ['when', '/playground/model', 'ModelCtrl'],
   ['when', '/playground/view-rginc', 'View_rgIncCtrl'],
-  ['when', '/playground/view-loadviews', 'View_LoadViewsCtrl'],
-  ['when', '/playground/view-lazyjs', 'View_LazyJSCtrl'],
+  ['when', '/playground/view-loadviews', 'View_loadViewsCtrl'],
+  ['when', '/playground/view-lazyjs', 'View_lazyJSCtrl'],
   ['when', '/playground/datarg', 'DataRgCtrl'],
   ['when', '/playground/datarglisteners', 'DataRgListenersCtrl'],
   ['when', '/playground/cookie', 'CookieCtrl'],
@@ -32,7 +33,6 @@ module.exports = [
   ['when', '/playground/navig1', 'Navig1Ctrl'],
   ['when', '/playground/navig2', 'Navig2Ctrl'],
   ['redirect', '/playground/navig3', '/playground/navig1'],
-  ['when', '/playground/model', 'ModelCtrl'],
 
   ['notfound', 'NotfoundCtrl'],
   // ['do', func1, func2]

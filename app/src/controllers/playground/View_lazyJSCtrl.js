@@ -1,7 +1,7 @@
 const { Controller } = require('../../../../sys');
 
 
-class View_LazyJSCtrl extends Controller {
+class View_lazyJSCtrl extends Controller {
 
   constructor(app) {
     super();
@@ -56,4 +56,4 @@ class View_LazyJSCtrl extends Controller {
 }
 
 
-module.exports = View_LazyJSCtrl;
+module.exports = View_lazyJSCtrl;

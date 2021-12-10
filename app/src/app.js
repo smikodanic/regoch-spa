@@ -23,10 +23,11 @@ const ContactCtrl = require('./controllers/ContactCtrl');
 const NotfoundCtrl = require('./controllers/NotfoundCtrl');
 
 // controllers - playground
-const View_LazyJSCtrl = require('./controllers/playground/View_LazyJSCtrl');
-const View_rgIncCtrl = require('./controllers/playground/View_rgIncCtrl');
-const View_LoadViewsCtrl = require('./controllers/playground/View_LoadViewsCtrl');
 const Controller_hooksCtrl = require('./controllers/playground/Controller_hooksCtrl');
+const ModelCtrl = require('./controllers/playground/ModelCtrl');
+const View_rgIncCtrl = require('./controllers/playground/View_rgIncCtrl');
+const View_loadViewsCtrl = require('./controllers/playground/View_loadViewsCtrl');
+const View_lazyJSCtrl = require('./controllers/playground/View_lazyJSCtrl');
 const DataRgCtrl = require('./controllers/playground/DataRgCtrl');
 const DataRgListenersCtrl = require('./controllers/playground/DataRgListenersCtrl');
 const CookieCtrl = require('./controllers/playground/CookieCtrl');
@@ -35,7 +36,6 @@ const LoginCtrl = require('./controllers/playground/LoginCtrl');
 const LoginokCtrl = require('./controllers/playground/LoginokCtrl');
 const Navig1Ctrl = require('./controllers/playground/Navig1Ctrl');
 const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
-const ModelCtrl = require('./controllers/playground/ModelCtrl');
 
 
 // auth
@@ -69,10 +69,11 @@ app
     ContactCtrl,
 
     // playground
-    View_LazyJSCtrl,
-    View_rgIncCtrl,
-    View_LoadViewsCtrl,
     Controller_hooksCtrl,
+    ModelCtrl,
+    View_rgIncCtrl,
+    View_loadViewsCtrl,
+    View_lazyJSCtrl,
     DataRgCtrl,
     DataRgListenersCtrl,
     CookieCtrl,
@@ -81,7 +82,6 @@ app
     LoginokCtrl,
     Navig1Ctrl,
     Navig2Ctrl,
-    ModelCtrl,
 
     // not found page
     NotfoundCtrl

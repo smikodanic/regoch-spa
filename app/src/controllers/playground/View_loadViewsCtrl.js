@@ -1,7 +1,7 @@
 const { Controller } = require('../../../../sys');
 
 
-class View_LoadViewsCtrl extends Controller {
+class View_loadViewsCtrl extends Controller {
 
   constructor(app) {
     super();
@@ -17,10 +17,10 @@ class View_LoadViewsCtrl extends Controller {
       ['#primary.html#part1', 'playground/view-loadviews/part1.html'],
       ['#primary.html#part2', 'playground/view-loadviews/part2.html', 'append'],
       ['#primary.html#part3', 'playground/view-loadviews/part3.html', 'prepend']
-    ], true);
+    ], true); // isAsync is true
   }
 
 }
 
 
-module.exports = View_LoadViewsCtrl;
+module.exports = View_loadViewsCtrl;
