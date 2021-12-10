@@ -242,10 +242,10 @@ class View extends DataRg {
    * Load multiple views.
    * TIP: When using isAsync=false cache views in the regoch.json.
    * @param {any[][]} viewDefs - array of arrays: [[viewName, viewPath, dest, cssSel]]
-   * @param {boolean} isAsync - to load asynchronously one by one
+   * @param {boolean} isAsync - to load asynchronously one by one (default: true)
    * @returns {void}
    */
-  async loadViews(viewDefs, isAsync) {
+  async loadViews(viewDefs, isAsync = true) {
     for (const viewDef of viewDefs) {
       const viewName = viewDef[0];
       const viewPath = viewDef[1];
