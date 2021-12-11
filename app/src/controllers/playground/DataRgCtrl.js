@@ -7,6 +7,7 @@ class DataRgCtrl extends Controller {
     super();
     this.debugOpts = {
       rgSet: false,
+      rgSpinner: false,
       rgIf: false,
       render: false
     };
@@ -237,6 +238,11 @@ class DataRgCtrl extends Controller {
 
   setCHECKED() {
     this.$model.checks1 = ['Pin', 'Tin'];
+  }
+
+
+  toggleSPINNER() {
+    this.$model.showSpinner = !this.$model.showSpinner;
   }
 
 }

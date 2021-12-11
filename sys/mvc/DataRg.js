@@ -293,10 +293,110 @@ class DataRg extends DataRgListeners {
         elem.style.display = 'none';
       }
 
-      this._debug('rgIf', `rgIF:: <${elem.tagName} data-rg-if="${attrVal}"> & val=(${typeof val}) ${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
+      this._debug('rgIf', `rgIf:: <${elem.tagName} data-rg-if="${attrVal}"> & val=(${typeof val}) ${val} => tf: ${tf} -- outerHTML: ${elem.outerHTML}`, 'navy');
     }
 
     this._debug('rgIf', '--------- rgIf (end) ------', 'navy', '#B6ECFF');
+  }
+
+
+
+  /**
+   * data-rg-spinner="<controllerProperty>"
+   * Parse the "data-rg-spinner" attribute. Load the spinner inside data-rg-spinner element when expression with $model is true.
+   * This method acts like rgIf.
+   * @param {string} bool - to show or hide the element
+   * @returns {void}
+   */
+  rgSpinner(attrValQuery) {
+    this._debug('rgSpinner', '--------- rgSpinner (start) ------', 'navy', '#B6ECFF');
+
+    const attrName = 'data-rg-spinner';
+    const elems = this._listElements(attrName, attrValQuery);
+    this._debug('rgSpinner', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
+    if (!elems.length) { return; }
+
+    for (const elem of elems) {
+      const attrVal = elem.getAttribute(attrName).trim(); // ifAge
+      if (!attrVal) { console.error(`Attribute "data-rg-spinner" has bad definition (data-rg-spinner="${attrVal}").`); continue; }
+      const propComp = attrVal.trim(); // controller property with comparison function, for example: ifAge $eq(22)
+      const propCompSplitted = propComp.split(/\s+/);
+
+      const prop = propCompSplitted[0].trim(); // ifAge
+      const val = this._getControllerValue('$model.' + prop);
+
+      const funcDef = propCompSplitted[1] ? propCompSplitted[1].trim() : false; // $eq(22)
+      let tf = false;
+      if (!!funcDef) {
+        // parse data-rg-spinner with the comparison operators: $not(), $eq(22), $ne(22), ...
+        const { funcName, funcArgs } = this._funcParse(funcDef, elem);
+        tf = this._calcComparison(val, funcName, funcArgs);
+      } else {
+        // parse data-rg-spinner without the comparison operators
+        tf = !!val;
+      }
+
+      // hide/show spinner
+      if (tf) {
+        const styleScoped = `
+        <span data-rg-spinner-gen>
+          <style scoped>
+            [data-rg-spinner]>span:after {
+              content: '';
+              display: block;
+              font-size: 10px;
+              width: 1em;
+              height: 1em;
+              margin-top: -0.5em;
+              animation: spinner 1500ms infinite linear;
+              border-radius: 0.5em;
+              box-shadow: #BEBEBE 1.5em 0 0 0, #BEBEBE 1.1em 1.1em 0 0, #BEBEBE 0 1.5em 0 0, #BEBEBE -1.1em 1.1em 0 0, #BEBEBE -1.5em 0 0 0, #BEBEBE -1.1em -1.1em 0 0, #BEBEBE 0 -1.5em 0 0, #BEBEBE 1.1em -1.1em 0 0;
+            }
+            @-webkit-keyframes spinner {
+              0% { transform: rotate(0deg);}
+              100% { transform: rotate(360deg); }
+            }
+            @-moz-keyframes spinner {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            @-o-keyframes spinner {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            @keyframes spinner {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          </style>
+        </span>
+        `;
+
+        // 1. add SPAN and STYLE tags
+        elem.insertAdjacentHTML('beforeend', styleScoped);
+
+        // 2. center span spinner in the parent element
+        const elemRect = elem.getBoundingClientRect(); // {x,y,width,height}}
+        const spinnerElem = elem.querySelector('span[data-rg-spinner-gen]');
+
+        spinnerElem.style.position = 'relative';
+
+        const x = elemRect.width / 2;
+        spinnerElem.style.left = x + 'px';
+
+        const y = elemRect.height / 2;
+        spinnerElem.style.top = y + 'px';
+
+        this._debug('rgSpinner', `spinner position:: x=${x}px , y=${y}px`, 'navy');
+
+      } else {
+        elem.innerHTML = '';
+      }
+
+      this._debug('rgSpinner', `rgSpinner:: <${elem.tagName} data-rg-spinner="${attrVal}"> & val=(${typeof val}) ${val} => tf: ${tf}`, 'navy');
+    }
+
+    this._debug('rgSpinner', '--------- rgSpinner (end) ------', 'navy', '#B6ECFF');
   }
 
 
@@ -398,7 +498,7 @@ class DataRg extends DataRgListeners {
       if (tf) { elem.disabled = true; }
       else { elem.disabled = false; }
 
-      this._debug('rgDisabled', `rgDisabled:: data-rg-disabled="${attrVal}" & val=${val} => tf: ${tf} -- elem-before: ${elem.outerHTML}`, 'navy');
+      this._debug('rgDisabled', `rgDisabled:: data-rg-disabled="${attrVal}" & val=${val} => tf: ${tf} -- outerHTML: ${elem.outerHTML}`, 'navy');
     }
 
     this._debug('rgDisabled', '--------- rgDisabled (end) ------', 'navy', '#B6ECFF');
@@ -683,8 +783,8 @@ class DataRg extends DataRgListeners {
 
 
   /**
-   * data-rg-flicker="<boolean>"
-   * Parse the "data-rg-flicker" attribute. Initially when controller start hide elements with data-rg-flicker and show it when render is finished.
+   * data-rg-flicker
+   * Parse the "data-rg-flicker" attribute. Initially when controller starts, hide innerHTML with data-rg-flicker and show it when render is finished.
    * It will prevent element flickering during render process.
    * @param {string} bool - to show or hide the element
    * @returns {void}

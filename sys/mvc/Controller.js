@@ -26,6 +26,7 @@ class Controller extends Model {
       rgPrint: false,
 
       rgIf: false,
+      rgSpinner: false,
       rgSwitch: false,
       rgDisabled: false,
       rgValue: false,
@@ -158,6 +159,7 @@ class Controller extends Model {
 
     // Render DataRg non-generators.
     this.rgIf(attrValQuery);
+    this.rgSpinner(attrValQuery);
     this.rgSwitch(attrValQuery);
     this.rgDisabled(attrValQuery);
     this.rgValue(attrValQuery);

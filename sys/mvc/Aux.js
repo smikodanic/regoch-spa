@@ -249,7 +249,7 @@ class Aux {
    * @returns {boolean}
    */
   _calcComparison(val, funcName, funcArgs) {
-    if (!val) { return false; }
+    // if (val === undefined || val === null) { return false; }
 
     let tf = false;
     const arg = !!funcArgs.length ? this._typeConvertor(funcArgs[0]) : '';
