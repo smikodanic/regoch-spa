@@ -7,15 +7,15 @@ class Model extends View {
     super();
     this.$model = {};
     this.$modeler = {};
-    this._modeler();
-    this._proxer();
+    this.modeler();
+    this.proxifyModel();
   }
 
 
   /**
    * Proxy the this.$model object.
    */
-  _proxer() {
+  proxifyModel() {
     const trapHandler = {
       set: (obj, prop, value) => {
         // console.log('obj-before::', { ...obj });
@@ -34,10 +34,10 @@ class Model extends View {
 
 
   /**
-   * Define model methods, for example: this.$model.use('pets').push('dog');
+   * Define modeler methods, for example: this.$modeler.use('pets').push('dog');
    * @returns [any[]]
    */
-  _modeler() {
+  modeler() {
     this.$modeler.use = (modelName) => {
       const methods = {
         schema: (schemaDef) => {
@@ -88,15 +88,17 @@ class Model extends View {
       return methods;
     };
 
-
-    // delete all $model properties
-    this.$modeler.emptyModel = () => {
-      for (const modelProp of Object.keys(this.$model)) {
-        delete this.$model[modelProp];
-      }
-    };
-
   }
+
+
+
+  /**
+   * Delete all $model properties
+   */
+  emptyModel() {
+    this.$model = {};
+  }
+
 
 
   /**
@@ -104,11 +106,7 @@ class Model extends View {
    * @returns {boolean}
    */
   isModelEmpty() {
-    let countProps = 0;
-    for (const modelProp of Object.keys(this.$model)) {
-      if (typeof this.$model[modelProp] !== 'function') { countProps++; } // don't count proerties which are functions, like $model.use()
-    }
-    return !countProps;
+    return !Object.keys(this.$model).length;
   }
 
 

@@ -107,20 +107,22 @@ class Controller extends Model {
    */
   async processing(trx) {
     // prechecks
-    if (!this.isModelEmpty()) {
-      const err = new Error(`ControllerWarn(${this.constructor.name}):: The $model is set before the loader() method so it runs render() before loader(). The preflight functions and the controller constructor should not contain $model.`);
-      console.error(err);
-      this._printError(err);
-      return;
-    }
+    // if (!this.isModelEmpty()) {
+    //   this._printError(new Error(`ControllerWarn(${this.constructor.name}):: The $model is set before the loader() method so it runs render() before loader(). The preflight functions and the controller constructor should not contain $model.`));
+    //   return;
+    // }
 
-    // navig operations
-    navig.setPrevious();
-    navig.resetPreviousController(trx);
-    navig.setCurrent(this);
+    // model processes
+    this.emptyModel(); // set $model to empty object
+    this.proxifyModel(); // set $model as proxy object
+
+    // navig processes
+    navig.setPrevious(); // set previous uri and ctrl
+    navig.resetPreviousController(trx); // reset previous controller and execute destroy()
+    navig.setCurrent(this); // set the current uri and ctrl
     if (this._debug().navig) { console.log('navig::', navig); }
 
-
+    // controller processes
     await this.loader(trx);
     await this.rgInc(true);
     this.rgFlicker(false);

@@ -623,6 +623,7 @@ class Aux {
         <br><span style="color:Gray;font:12px Verdana;">${errStack}</span>
       </div>
     `;
+    console.error(err);
   }
 
 
