@@ -56,7 +56,7 @@ class Navig {
     if (!!ctrl_prev) {
       ctrl_prev.destroy(trx); // execute destroy() defined in the previous controller
       ctrl_prev.rgKILL(); // kill the previous controller event listeners
-      ctrl_prev.$model.reset(); // reset the previous controller $model
+      ctrl_prev.$modeler.emptyModel(); // empty the previous controller $model
 
       // purge non-standard controller properties
       const ctrlProps = Object.keys(ctrl_prev);
@@ -65,6 +65,7 @@ class Navig {
           ctrlProp !== 'debugOpts' &&
           ctrlProp !== '$fridge' &&
           ctrlProp !== '$model' &&
+          ctrlProp !== '$modeler' &&
           ctrlProp !== '$view' &&
           ctrlProp !== '$rg' &&
           ctrlProp !== 'auth' &&

@@ -6,7 +6,8 @@ class Model extends View {
   constructor() {
     super();
     this.$model = {};
-    this._modelMethods();
+    this.$modeler = {};
+    this._modeler();
     this._proxer();
   }
 
@@ -36,8 +37,8 @@ class Model extends View {
    * Define model methods, for example: this.$model.use('pets').push('dog');
    * @returns [any[]]
    */
-  _modelMethods() {
-    this.$model.use = (modelName) => {
+  _modeler() {
+    this.$modeler.use = (modelName) => {
       const methods = {
         schema: (schemaDef) => {
           this.$schema[modelName] = schemaDef;
@@ -57,8 +58,10 @@ class Model extends View {
           this._setModelValue(prop, val); // see Aux class
         },
 
-        getValue: () => {
-          return this.$model[modelName];
+        getValue: (path) => {
+          const prop = !!path ? `${modelName}.${path}` : modelName;
+          const val = this._getModelValue(prop);
+          return val;
         },
 
         mpush: (arrElem) => {
@@ -86,10 +89,10 @@ class Model extends View {
     };
 
 
-    // reset the $model properties except properties which are functions
-    this.$model.reset = () => {
+    // delete all $model properties
+    this.$modeler.emptyModel = () => {
       for (const modelProp of Object.keys(this.$model)) {
-        if (typeof this.$model[modelProp] !== 'function') { delete this.$model[modelProp]; }
+        delete this.$model[modelProp];
       }
     };
 

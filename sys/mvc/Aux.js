@@ -11,7 +11,7 @@ class Aux {
    */
   _getControllerValue(prop) {
     const reg = new RegExp(`\\(${this.$rg.varnameChars}\\)`);
-    if (reg.test(prop)) { prop = this._solveControllerName(prop); }
+    if (reg.test(prop)) { prop = this._solveControllerName(prop); } // solve round brackets
 
     const propSplitted = prop.split('.'); // ['company', 'name']
     const prop1 = propSplitted[0]; // company
@@ -110,6 +110,17 @@ class Aux {
       this.$model[modelName] = obj;
     }
 
+  }
+
+
+  /**
+   * Get the model value
+   * @param {string} modelProp - model property path, for example 'car.year' is '$model.car.year'
+   */
+  _getModelValue(modelProp) {
+    const prop = '$model.' + modelProp;
+    const val = this._getControllerValue(prop);
+    return val;
   }
 
 
@@ -599,6 +610,19 @@ class Aux {
   _debug(tip, text, color, background) {
     if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
     return this.debugOpts;
+  }
+
+
+  _printError(err) {
+    const errMsg = err.message;
+    const errStack = err.stack.replace(/\n/g, '<br>');
+    document.body.innerHTML = `
+      <div style="margin:0px 13px;">
+        <h5 style="color:Gray">Page Error</h5>
+        <b style="color:Red;font:14px Verdana;">${errMsg}</b>
+        <br><span style="color:Gray;font:12px Verdana;">${errStack}</span>
+      </div>
+    `;
   }
 
 
