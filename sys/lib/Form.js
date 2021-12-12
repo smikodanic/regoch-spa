@@ -6,7 +6,7 @@ class Form {
 
   constructor(formName) {
     this.formName = formName;
-    this.debugOpts = {
+    this.debugOptions = {
       setControl: false,
       setControls: false,
       getControl: false,
@@ -252,8 +252,8 @@ class Form {
 
 
   _debug(tip, text, color, background) {
-    if (this.debugOpts[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
-    return this.debugOpts;
+    if (this.debugOptions[tip]) { console.log(`%c ${text}`, `color: ${color}; background: ${background}`); }
+    return this.debugOptions;
   }
 
 

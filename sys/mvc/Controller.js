@@ -6,54 +6,10 @@ class Controller extends Model {
 
   constructor() {
     super();
-
-    /*** all controller variables ***/
-    this.debugOpts = {
-      // Controller.js
-      render: false,
-      navig: false,
-
-      // View.js
-      rgInc: false,
-      loadView: false,
-      emptyView: false,
-      loadHead: false,
-      rgLazyjs: false,
-
-      // DataRg.js
-      rgFor: false,
-      rgRepeat: false,
-      rgPrint: false,
-
-      rgIf: false,
-      rgSpinner: false,
-      rgSwitch: false,
-      rgDisabled: false,
-      rgValue: false,
-      rgChecked: false,
-      rgClass: false,
-      rgStyle: false,
-      rgSrc: false,
-      rgAttr: false,
-      rgElem: false,
-      rgEcho: false,
-      rgFlicker: false,
-
-      // DataRgListeners.js
-      rgKILL: false,
-      rgHref: false,
-      rgClick: false,
-      rgKeyup: false,
-      rgChange: false,
-      rgEvt: false,
-      rgSet: false,
-      rgModel: false
-    };
-
+    this.$debugOpts = {}; // debug options, setup with App.debugger()
     this.$fridge = {}; // fridged properties will not be deleted during controller processing i.e. in the navig.resetPreviousController()
-    // this.$model;
-    // this.$view;
   }
+
 
 
   /************* LIFECYCLE HOOK METHODS ***********/
@@ -121,7 +77,7 @@ class Controller extends Model {
     navig.setPrevious(); // set previous uri and ctrl
     navig.resetPreviousController(trx); // reset previous controller and execute destroy()
     navig.setCurrent(this); // set the current uri and ctrl
-    if (this._debug().navig) { console.log('navig::', navig); }
+    if (this._debug().navig) { console.log('navigDebug::', navig); }
 
     // controller processes
     await this.loader(trx);

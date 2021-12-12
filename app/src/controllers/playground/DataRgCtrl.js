@@ -5,12 +5,6 @@ class DataRgCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.debugOpts = {
-      rgSet: false,
-      rgSpinner: false,
-      rgIf: false,
-      render: false
-    };
   }
 
   async loader(trx) {

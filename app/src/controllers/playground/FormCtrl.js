@@ -6,18 +6,13 @@ class FormCtrl extends Controller {
   constructor(app) {
     super();
     this.testForm = new syslib.Form('testF');
-    this.testForm.debugOpts = {
+    this.testForm.debugOptions = {
       setControl: true,
       setControls: false,
       getControl: false,
       getControls: false,
       delControl: false,
       delControls: false
-    };
-    this.debugOpts = {
-      rgFor: false,
-      rgPrint: false,
-      rgEcho: false
     };
   }
 

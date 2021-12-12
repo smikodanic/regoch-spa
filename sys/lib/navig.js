@@ -62,12 +62,12 @@ class Navig {
       const ctrlProps = Object.keys(ctrl_prev);
       for (const ctrlProp of ctrlProps) {
         if (
-          ctrlProp !== 'debugOpts' &&
+          ctrlProp !== '$debugOpts' &&
           ctrlProp !== '$fridge' &&
           ctrlProp !== '$model' &&
           ctrlProp !== '$modeler' &&
-          ctrlProp !== '$view' &&
           ctrlProp !== '$rg' &&
+          ctrlProp !== '$view' &&
           ctrlProp !== 'auth' &&
           ctrlProp !== 'viewsCached'
         ) {

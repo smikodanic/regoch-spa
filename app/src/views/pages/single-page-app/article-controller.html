@@ -22,7 +22,7 @@
       <th>Default</th>
     </tr>
     <tr>
-      <td>debugOpts</td>
+      <td>$debugOpts</td>
       <td>the debug options (see below)</td>
       <td>object</td>
       <td></td>
@@ -159,7 +159,7 @@ module.exports = class HomeCtrl extends Controller {
   constructor(app) {
     super();
     this.util = syslib.util;
-    this.debugOpts = {render: true, rgIf: true}
+    this.$debugOpts = {render: true, rgIf: true}
   }
 
   async loader(trx) {

@@ -4,8 +4,8 @@
     <i>class Router</i>
     <br><br>
     <p>The Regoch SPA internal router which is using "regoch-router" npm library.
-    <br><br>
-    <i>There's no need to use this class inside the Controller.</i></p>
+      <br><br>
+      <i>There's no need to use this class inside the Controller.</i></p>
   </section>
 </header>
 
@@ -13,24 +13,24 @@
 <section class="docs-section" id="item-7-1">
   <h2 class="section-heading">Properties</h2>
   <table style="width:100%">
-  <tr>
-    <th>Property</th>
-    <th>Description</th>
-    <th>Type</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td>regochRouter</td>
-    <td>instance of the "regoch-router" npm class</td>
-    <td>object</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>debugOpts</td>
-    <td>{router:boolean}</td>
-    <td>object</td>
-    <td></td>
-  </tr>
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td>regochRouter</td>
+      <td>instance of the "regoch-router" npm class</td>
+      <td>object</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>debug</td>
+      <td>debug the router</td>
+      <td>boolean</td>
+      <td></td>
+    </tr>
   </table>
 </section>
 
@@ -38,7 +38,7 @@
 <section class="docs-section" id="item-7-2">
   <h2 class="section-heading">Methods</h2>
   <p>Do NOT use this methods in the controller unless you know what you'r doing.</p>
-	<ul class="methods">
+  <ul class="methods">
     <li>
       <b>when <i>(route:string, ctrl:object, routeOpts:object = {}): void</i></b>
       <p class="desc">Define the route and give it the controller.</p>
@@ -66,7 +66,7 @@
   <h2 class="section-heading">Route Options</h2>
   <ul>
     <li><b>authGuards :string[]</b> - route guards to do auto login and to protect the route from unauthorised access
-    <br>for example: <small>{authGuards: ['autoLogin']}</small></li>
+      <br>for example: <small>{authGuards: ['autoLogin']}</small></li>
   </ul>
   <br>
   <ol>
@@ -99,7 +99,7 @@ app.router.debugOpts = {router: true};
 <section class="docs-section" id="item-7-4">
   <h2 class="section-heading">Example</h2>
   <p>The example shows how to define routes i.e. how to asscoiate the controller to specific route.
-  There's no need to use the Router methods directly. Instead of that use APP method <b>routes()</b></p>
+    There's no need to use the Router methods directly. Instead of that use APP method <b>routes()</b></p>
   <pre><code class="language-js">
 /******* src/conf/routesCnf.js ***********/
 const log1 = () => { console.log(`1 Host is ${window.location.host}.`); };
@@ -126,6 +126,3 @@ app
 
   </code></pre>
 </section>
-
-
-

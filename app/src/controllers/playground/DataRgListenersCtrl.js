@@ -5,16 +5,6 @@ class DataRgListenersCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.debugOpts = {
-      rgKill: false,
-      rgHref: false,
-      rgClick: false,
-      rgKeyup: false,
-      rgChange: false,
-      rgEvt: false,
-      rgSet: false,
-      rgChange: false
-    };
   }
 
   async loader(trx) {
@@ -40,6 +30,8 @@ class DataRgListenersCtrl extends Controller {
       { name: 'Toy', price: 22.34 },
       { name: 'Flower', price: 88.56 },
     ];
+
+    console.log(this);
   }
 
 

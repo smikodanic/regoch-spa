@@ -5,7 +5,6 @@ class ModelCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.debugOpts = { render: true };
     // this.$model.user = { name: 'John Doe2', age: 12 }; // this will cause the error. Don't use $model in the constructor
   }
 

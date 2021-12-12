@@ -5,7 +5,6 @@ class View_lazyJSCtrl extends Controller {
 
   constructor(app) {
     super();
-    this.debugOpts = { rgLazyjs: true };
   }
 
   async loader(trx) {

@@ -144,6 +144,18 @@ class App {
   }
 
 
+  /**
+   * Define the debugging options. Set the controller's $debugOpts property.
+   * @param {object} $debugOpts - object with the debug parameters -- {rgFor: true, rgIf: false}
+   * @returns {App}
+   */
+  debugger($debugOpts) {
+    $debugOpts = $debugOpts || require('./conf/$debugOpts');
+    this.controllerProp('$debugOpts', $debugOpts);
+    return this;
+  }
+
+
 
 
   /*============================== ROUTES ==============================*/

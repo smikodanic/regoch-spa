@@ -3,7 +3,7 @@ const viewsCached = require('../cache/views.json');
 const routes = require('./routes');
 
 // conf
-const { apiConst, authOpts, cookieOpts, httpClientOpts } = require('./conf');
+const { $debugOpts, apiConst, authOpts, cookieOpts, httpClientOpts } = require('./conf');
 
 // lib
 const StringExt = require('./lib/StringExt');
@@ -87,7 +87,8 @@ app
     NotfoundCtrl
   ])
   .controllerAuth(auth) // needed for route authGuards
-  .controllerViewsCached(viewsCached);
+  .controllerViewsCached(viewsCached)
+  .debugger();
 
 
 // preflight/postflight
@@ -99,4 +100,4 @@ const postf2 = async (trx) => { console.log('POSTFLIGHT 2 - trx::', trx); };
 // app.postflight(postf1, postf2);
 
 
-app.routes(routes, true);
+app.routes(routes, false); // debug = false

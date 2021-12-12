@@ -5,7 +5,6 @@ module.exports = class HomeCtrl extends Controller {
 
   constructor(app) {
     super();
-    // this.debugOpts = { render: true };
     // console.log(app.CONST);
   }
 
