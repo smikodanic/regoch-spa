@@ -8,7 +8,8 @@ const HTTPServer = require('./HTTPServer');
 
 const httpOpts = {
   port: envJs.server.port,
-  timeout: 5*60*1000, // if 0 never timeout
+  timeout: 5 * 60 * 1000, // if 0 never timeout
+  retries: 10,
   indexFile: '/app/dist/views/index.html',
   distDir: '/app/dist',
   assetsDir: '/app/assets',

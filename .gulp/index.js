@@ -9,6 +9,7 @@ const browserifyMinifyMap = require('./tasks/browserifyMinifyMap.js');
 const scss = require('./tasks/scss.js');
 const cacheViews = require('./tasks/cacheViews.js');
 const cacheEnv = require('./tasks/cacheEnv.js');
+const onCtrlC = require('./tasks/onCtrlC.js');
 
 
 
@@ -45,7 +46,7 @@ task('watchers', async () => {
 
   await watch([
     'regoch.json'
-  ], series('cacheViews','cacheEnv', 'browserifyMinifyMap', 'serverRestart'));
+  ], series('cacheViews', 'cacheEnv', 'browserifyMinifyMap', 'serverRestart'));
 
   await watch([
     'env/*.js'
@@ -64,3 +65,6 @@ task('build', series('rimraf', parallel('htmlMinify', 'scss', 'browserifyMinifyM
 
 // defult gulp task
 task('default', parallel('watchers', 'build', 'serverStart'));
+
+// remove /dist content
+onCtrlC();

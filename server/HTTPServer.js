@@ -13,6 +13,7 @@ class HTTPServer {
    ** opts:
    * - port:number - HTTP Server port number
    * - timeout:number - ms of inactivity after ws will be closed. If 0 then the ws will never close. Default is 5 minutes.
+   * - retries:number - how many times the server will retry to send the response
    * - indexFile:string - index html file, default "index.html"
    * - distDir:string - directory with the dist static files: html, css, js
    * - assetsDir:string - directory with the assets static files: img, font, ...
@@ -27,7 +28,8 @@ class HTTPServer {
     if (!!opts) {
       this.opts = opts;
       if (!this.opts.port) { throw new Error('The server port is not defined.'); }
-      else if (this.opts.timeout === undefined) { this.opts.timeout = 5*60*1000; }
+      else if (this.opts.timeout === undefined) { this.opts.timeout = 5 * 60 * 1000; }
+      else if (this.opts.retries === undefined) { this.opts.retries = 10; }
       else if (!this.opts.indexFile) { throw new Error('Parameter "indexFile" is not defined.'); }
       else if (!this.opts.distDir) { throw new Error('Parameter "distDir" is not defined.'); }
       else if (!this.opts.assetsDir) { throw new Error('Parameter "assetsDir" is not defined.'); }
@@ -36,6 +38,8 @@ class HTTPServer {
       throw new Error('HTTP options are not defined.');
     }
     this.httpServer;
+
+    this.retryCount = 0;
   }
 
 
@@ -79,21 +83,21 @@ class HTTPServer {
       const fileExt2 = !!matched2 ? matched2[1] : ''; // on js.map or css.map
       if (/^html$/.test(fileExt)) { contentType = mime.html; encoding = 'utf8'; }
       else if (/^htm$/.test(fileExt)) { contentType = mime.html; encoding = 'utf8'; }
-      else if (/^txt$/.test(fileExt)) { contentType = mime.txt; encoding = 'utf8';  }
-      else if (/^css$/.test(fileExt)) { contentType = mime.css; encoding = 'utf8';  }
-      else if (/^gif$/.test(fileExt)) { contentType = mime.gif; encoding = 'binary';  }
-      else if (/^jpg$/.test(fileExt)) { contentType = mime.jpg; encoding = 'binary';  }
-      else if (/^jpeg$/.test(fileExt)) { contentType = mime.jpg; encoding = 'binary';  }
-      else if (/^svg$/.test(fileExt)) { contentType = mime.svg; encoding = 'binary';  }
-      else if (/^png$/.test(fileExt)) { contentType = mime.png; encoding = 'binary';  }
-      else if (/^ico$/.test(fileExt)) { contentType = mime.ico; encoding = 'binary';  }
-      else if (/^js$/.test(fileExt)) { contentType = mime.js; encoding = 'utf8';  }
-      else if (/^mp4$/.test(fileExt)) { contentType = mime.mp4; encoding = 'binary';  }
-      else if (/^woff$/.test(fileExt)) { contentType = mime.woff; encoding = 'binary';  }
-      else if (/^woff2$/.test(fileExt)) { contentType = mime.woff2; encoding = 'binary';  }
-      else if (/^ttf$/.test(fileExt)) { contentType = mime.ttf; encoding = 'binary';  }
-      else if (/^map$/.test(fileExt) && /^css$/.test(fileExt2)) { contentType = mime.js_map; encoding = 'utf8';  }
-      else if (/^map$/.test(fileExt) && /^js$/.test(fileExt2)) { contentType = mime.css_map; encoding = 'utf8';  }
+      else if (/^txt$/.test(fileExt)) { contentType = mime.txt; encoding = 'utf8'; }
+      else if (/^css$/.test(fileExt)) { contentType = mime.css; encoding = 'utf8'; }
+      else if (/^gif$/.test(fileExt)) { contentType = mime.gif; encoding = 'binary'; }
+      else if (/^jpg$/.test(fileExt)) { contentType = mime.jpg; encoding = 'binary'; }
+      else if (/^jpeg$/.test(fileExt)) { contentType = mime.jpg; encoding = 'binary'; }
+      else if (/^svg$/.test(fileExt)) { contentType = mime.svg; encoding = 'binary'; }
+      else if (/^png$/.test(fileExt)) { contentType = mime.png; encoding = 'binary'; }
+      else if (/^ico$/.test(fileExt)) { contentType = mime.ico; encoding = 'binary'; }
+      else if (/^js$/.test(fileExt)) { contentType = mime.js; encoding = 'utf8'; }
+      else if (/^mp4$/.test(fileExt)) { contentType = mime.mp4; encoding = 'binary'; }
+      else if (/^woff$/.test(fileExt)) { contentType = mime.woff; encoding = 'binary'; }
+      else if (/^woff2$/.test(fileExt)) { contentType = mime.woff2; encoding = 'binary'; }
+      else if (/^ttf$/.test(fileExt)) { contentType = mime.ttf; encoding = 'binary'; }
+      else if (/^map$/.test(fileExt) && /^css$/.test(fileExt2)) { contentType = mime.js_map; encoding = 'utf8'; }
+      else if (/^map$/.test(fileExt) && /^js$/.test(fileExt2)) { contentType = mime.css_map; encoding = 'utf8'; }
 
 
       // define file path
@@ -109,56 +113,16 @@ class HTTPServer {
         filePath = path.join(process.cwd(), this.opts.distDir, reqFile);
       }
 
+      // send response to the client
+      this.sendResponse(res, req, contentType, filePath);
 
+      // debugging
       if (this.opts.debug) {
         console.log('\n\nrequested URL:: ', reqURL);
         console.log('urlNoQuery:: ', urlNoQuery);
         console.log('fileExt::', fileExt, 'fileExt2::', fileExt2, ' contentType::', contentType, ' encoding::', encoding);
         console.log('filePath:: ', filePath);
         console.log('acceptEncoding:: ', this.opts.acceptEncoding);
-      }
-
-
-      if (fs.existsSync(filePath)) {
-
-        try {
-          /*** A) set headers defined in the opts ***/
-          const headerProps = Object.keys(this.opts.headers);
-          for (const headerProp of headerProps) {
-            res.setHeader(headerProp, this.opts.headers[headerProp]);
-          }
-          res.setHeader('Content-Type', contentType);
-
-
-
-          /*** B) compress response ***/
-          let acceptEncodingBrowser = req.headers['accept-encoding']; // defines what browser can accept
-          if (!acceptEncodingBrowser) { acceptEncodingBrowser = ''; }
-
-          const raw = fs.createReadStream(filePath);
-
-          // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
-          if (acceptEncodingBrowser.match(/\bgzip\b/) && this.opts.acceptEncoding === 'gzip') {
-            res.writeHead(200, { 'Content-Encoding': 'gzip' });
-            raw.pipe(zlib.createGzip()).pipe(res);
-          } else if (acceptEncodingBrowser.match(/\bdeflate\b/) && this.opts.acceptEncoding === 'deflate') {
-            res.writeHead(200, { 'Content-Encoding': 'deflate' });
-            raw.pipe(zlib.createDeflate()).pipe(res);
-          } else {
-            res.writeHead(200);
-            raw.pipe(res);
-          }
-
-        } catch (err) {
-          console.log(err);
-        }
-
-
-      } else { // file doesn't exist
-        const errMsg = `NOT FOUND: "${filePath}"`;
-        console.log('\x1b[31m' + errMsg + '\x1b[0m');
-        res.writeHead(404, {'X-Error': errMsg});
-        res.end();
       }
 
     });
@@ -202,6 +166,62 @@ class HTTPServer {
 
 
 
+  async sendResponse(res, req, contentType, filePath) {
+    if (this.retryCount > this.opts.retries) {
+      console.log('\x1b[31m' + 'max retries reached' + '\x1b[0m');
+      res.writeHead(404, { 'X-Error': 'Max retries reached' });
+      res.end();
+      return;
+    }
+
+    if (fs.existsSync(filePath)) {
+
+      try {
+        /*** A) set headers defined in the opts ***/
+        const headerProps = Object.keys(this.opts.headers);
+        for (const headerProp of headerProps) {
+          res.setHeader(headerProp, this.opts.headers[headerProp]);
+        }
+        res.setHeader('Content-Type', contentType);
+
+
+
+        /*** B) compress response ***/
+        let acceptEncodingBrowser = req.headers['accept-encoding']; // defines what browser can accept
+        if (!acceptEncodingBrowser) { acceptEncodingBrowser = ''; }
+
+        const raw = fs.createReadStream(filePath);
+
+        // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
+        if (acceptEncodingBrowser.match(/\bgzip\b/) && this.opts.acceptEncoding === 'gzip') {
+          res.writeHead(200, { 'Content-Encoding': 'gzip' });
+          raw.pipe(zlib.createGzip()).pipe(res);
+        } else if (acceptEncodingBrowser.match(/\bdeflate\b/) && this.opts.acceptEncoding === 'deflate') {
+          res.writeHead(200, { 'Content-Encoding': 'deflate' });
+          raw.pipe(zlib.createDeflate()).pipe(res);
+        } else {
+          res.writeHead(200);
+          raw.pipe(res);
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+
+    } else { // file doesn't exist
+      const errMsg = `NOT FOUND: "${filePath}"  (${this.retryCount} of ${this.opts.retries} retries) `;
+      console.log('\x1b[31m' + errMsg + '\x1b[0m');
+
+      // retry after 1 second
+      this.retryCount++;
+      await new Promise(r => setTimeout(r, 1000));
+      await this.sendResponse(res, req, contentType, filePath);
+    }
+
+  }
+
+
+
 
   /*** HTTP SERVER EVENTS ***/
   events() {
@@ -241,17 +261,17 @@ class HTTPServer {
 
       // handle specific listen errors with friendly messages
       switch (error.code) {
-      case 'EACCES':
-        console.error(bind + ' requires elevated privileges');
-        console.error(error);
-        process.exit(1);
-        break;
-      case 'EADDRINUSE':
-        console.error(bind + ' is already in use');
-        process.exit(1);
-        break;
-      default:
-        throw error;
+        case 'EACCES':
+          console.error(bind + ' requires elevated privileges');
+          console.error(error);
+          process.exit(1);
+          break;
+        case 'EADDRINUSE':
+          console.error(bind + ' is already in use');
+          process.exit(1);
+          break;
+        default:
+          throw error;
       }
     });
 
