@@ -22,13 +22,13 @@ class Router extends RegochRouter {
     // prechecks
     if (!route && !!ctrl) { throw new Error(`Route is not defined for "${ctrl.constructor.name}" controller.`); }
     if (!!route && !ctrl) { throw new Error(`Controller is not defined for route "${route}".`); }
-    if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
+    if (/autoLogin|isLogged|hasRole/.test(authGuards.join()) && !ctrl.$auth) { throw new Error(`Auth guards (autoLogin, isLogged, hasRole) are used but Auth is not injected in the controller ${ctrl.constructor.name}. Use App::controllerAuth().`); }
 
     const guards = [];
-    if (authGuards.length && ctrl.auth) {
-      const autoLogin = ctrl.auth.autoLogin.bind(ctrl.auth);
-      const isLogged = ctrl.auth.isLogged.bind(ctrl.auth);
-      const hasRole = ctrl.auth.hasRole.bind(ctrl.auth);
+    if (authGuards.length && ctrl.$auth) {
+      const autoLogin = ctrl.$auth.autoLogin.bind(ctrl.$auth);
+      const isLogged = ctrl.$auth.isLogged.bind(ctrl.$auth);
+      const hasRole = ctrl.$auth.hasRole.bind(ctrl.$auth);
       if (authGuards.indexOf('autoLogin') !== -1) { guards.push(autoLogin); }
       if (authGuards.indexOf('isLogged') !== -1) { guards.push(isLogged); }
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }

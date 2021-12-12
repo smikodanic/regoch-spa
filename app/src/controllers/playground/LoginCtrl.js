@@ -24,7 +24,7 @@ class LoginCtrl extends Controller {
     try {
       const creds = { username, password };
       console.log('creds::', creds);
-      const resp = await this.auth.login(creds);
+      const resp = await this.$auth.login(creds);
       console.log('tryLogin::', username, password, resp);
     } catch (err) {
       console.error(err);

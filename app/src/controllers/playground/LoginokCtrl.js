@@ -15,7 +15,7 @@ class LoginokCtrl extends Controller {
 
   async tryLogout() {
     try {
-      await this.auth.logout(100);
+      await this.$auth.logout(100);
     } catch (err) {
       console.error(err);
     }
@@ -27,4 +27,4 @@ class LoginokCtrl extends Controller {
 }
 
 
-module.exports =  LoginokCtrl;
+module.exports = LoginokCtrl;

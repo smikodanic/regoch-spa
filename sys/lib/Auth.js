@@ -33,7 +33,7 @@ class Auth {
 
 
 
-  /******* CONTROLLER METHODS (use in the controller's constructor as app.auth) ******/
+  /******* CONTROLLER METHODS - use in the controller's constructor as app.auth() ******/
   /**
    * Send login request to the API.
    * @param {object} creds - credentials object send as body to the API, for example: {username, password}

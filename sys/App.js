@@ -96,13 +96,13 @@ class App {
 
 
   /**
-   * Inject the auth library into the all controllers and use it as this.auth in the controller.
+   * Inject the auth library into the all controllers and use it as this.$auth in the controller.
    * Useful in apps where authentication guards are required in all routes, for example when building a web panel.
    * @param {Auth} auth - Auth class instance
    * @returns {App}
    */
   controllerAuth(auth) {
-    this.controllerProp('auth', auth);
+    this.controllerProp('$auth', auth);
     return this;
   }
 
