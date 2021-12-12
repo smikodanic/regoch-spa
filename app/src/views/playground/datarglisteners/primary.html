@@ -1,6 +1,5 @@
 <h1>DataRgListeners Test</h1>
 
-
 <!-- examples -->
 
 <h4>DATA-RG-HREF</h4>
@@ -87,7 +86,9 @@ Set the controller value on "input" JS DOM event i.e. on every input change.
 &nbsp;&nbsp; <span data-rg-print="mySet2"></span>
 <br>
 <br>
-<select data-rg-set="mySet3">
+<!-- data-rg-setinitial="mySet3" will set $model.mySet3 to "Dara" -->
+<i>Notice: The "Dara" will be default value because of data-rg-setinitial.</i>
+<br><select data-rg-set="mySet3" data-rg-setinitial="mySet3">
   <option value="Lara">Lara</option>
   <option value="Dara" selected>Dara</option>
   <option value="Mara">Mara</option>
@@ -115,3 +116,7 @@ Set the controller value on "input" JS DOM event i.e. on every input change.
 <br>Value is: <b data-rg-print="myMDL"></b>
 <br>
 <br>
+
+Go to <a href="/playground/datarg">/playground/datarg</a>, press Back browser button and the make tests again.
+
+<br><br><br><br><br>

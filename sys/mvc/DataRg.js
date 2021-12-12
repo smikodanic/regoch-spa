@@ -24,15 +24,14 @@ class DataRg extends DataRgListeners {
    * Examples:
    * data-rg-setinitial="product"
    * data-rg-setinitial="employee.name"
-   * @param {string|RegExp} attrValQuery - controller property name, query for the attribute value
    * @returns {void}
    */
-  rgSetinitial(attrValQuery) {
+  rgSetinitial() {
     this._debug('rgSetinitial', '--------- rgSetinitial ------', 'navy', '#B6ECFF');
 
     const attrName = 'data-rg-setinitial';
-    const elems = this._listElements(attrName, attrValQuery);
-    this._debug('rgSetinitial', `found elements:: ${elems.length} | attrValQuery:: ${attrValQuery}`, 'navy');
+    const elems = this._listElements(attrName, '');
+    this._debug('rgSetinitial', `found elements:: ${elems.length}`, 'navy');
     if (!elems.length) { return; }
 
     for (const elem of elems) {

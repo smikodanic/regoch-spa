@@ -127,6 +127,7 @@ class Controller extends Model {
     await this.loader(trx);
     await this.rgInc(true);
     this.rgFlicker(false);
+    this.rgSetinitial(); // parse data-rg-setinitial
     await this.init(trx);
     await this.rend(trx);
     await this.postrend(trx);
@@ -145,10 +146,6 @@ class Controller extends Model {
    */
   async render(attrValQuery, renderDelay = 5) {
     this._debug('render', `--------- render (start) -- attrValQuery: ${attrValQuery} -- renderDelay: ${renderDelay} -- ctrl: ${this.constructor.name} ------`, 'green', '#D9FC9B');
-
-    this.rgSetinitial(attrValQuery);
-
-    await new Promise(r => setTimeout(r, renderDelay));
 
     // Render DataRg generators.
     this.rgFor(attrValQuery);

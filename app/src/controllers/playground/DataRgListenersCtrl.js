@@ -125,8 +125,8 @@ class DataRgListenersCtrl extends Controller {
 
   // change text collor on mouseover and click
   runEVT(elem, evt, boja) {
-    console.log('$element::', elem);
-    console.log('$event::', evt);
+    // console.log('$element::', elem);
+    // console.log('$event::', evt);
     elem.style.color = boja;
   }
 

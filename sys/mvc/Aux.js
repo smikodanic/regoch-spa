@@ -150,7 +150,7 @@ class Aux {
    * Replace iteration variable $i with the number.
    * @param {number} i - number to replace $i with
    * @param {string} txt - text which needs to be replaced, usually it contains HTML tags
-   * @param {string} nameExtension - extension of the variable name. For example if nameExtension is 2p then the $i2p will be replaced.
+   * @param {string} nameExtension - extension of the variable name. For example if nameExtension is 21 then the $i21 will be replaced.
    * @returns {string}
    */
   _numerize_$i(i, txt, nameExtension) {
