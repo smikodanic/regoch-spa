@@ -34,11 +34,11 @@ class Router extends RegochRouter {
       if (authGuards.indexOf('hasRole') !== -1) { guards.push(hasRole); }
     }
 
-    const preflight = !!ctrl.preflight ? ctrl.preflight : []; // array of preflight functions, will be executed on every route before the controller's loader()
-    const ctrl_processing = ctrl.processing.bind(ctrl);
-    const postflight = !!ctrl.postflight ? ctrl.postflight : []; // array of postflight functions, will be executed on every route ater the controller's postrend()
+    const preflight = !!ctrl.$preflight ? ctrl.$preflight : []; // array of preflight functions, will be executed on every route before the controller's loader()
+    const processing = ctrl.processing.bind(ctrl);
+    const postflight = !!ctrl.$postflight ? ctrl.$postflight : []; // array of postflight functions, will be executed on every route ater the controller's postrend()
 
-    this.when(route, ...guards, ...preflight, ctrl_processing, ...postflight);
+    this.when(route, ...guards, ...preflight, processing, ...postflight);
   }
 
 
@@ -49,8 +49,8 @@ class Router extends RegochRouter {
    * @returns {void}
    */
   _notfound(ctrl) {
-    const ctrl_processing = ctrl.processing.bind(ctrl);
-    this.notfound(ctrl_processing);
+    const processing = ctrl.processing.bind(ctrl);
+    this.notfound(processing);
   }
 
 

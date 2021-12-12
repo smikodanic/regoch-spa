@@ -127,7 +127,7 @@ class App {
    * @returns {App}
    */
   preflight(...funcs) {
-    this.controllerProp('preflight', funcs);
+    this.controllerProp('$preflight', funcs);
     return this;
   }
 
@@ -139,7 +139,7 @@ class App {
    * @returns {App}
    */
   postflight(...funcs) {
-    this.controllerProp('postflight', funcs);
+    this.controllerProp('$postflight', funcs);
     return this;
   }
 

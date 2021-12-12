@@ -68,8 +68,7 @@ class Navig {
           ctrlProp !== '$modeler' &&
           ctrlProp !== '$rg' &&
           ctrlProp !== '$view' &&
-          ctrlProp !== '$auth' &&
-          ctrlProp !== 'viewsCached'
+          ctrlProp !== '$auth'
         ) {
           delete ctrl_prev[ctrlProp];
           // console.log('purged::', ctrlProp);

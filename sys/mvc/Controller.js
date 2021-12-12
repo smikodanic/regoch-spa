@@ -4,6 +4,7 @@ const navig = require('../lib/navig');
 
 class Controller extends Model {
 
+  // controller properties: $auth, $debugOpts, $fridge, $model, $modeler, $preflight, $postflight, $rg, $view
   constructor() {
     super();
     this.$debugOpts = {}; // debug options, setup with App.debugger()
@@ -77,7 +78,7 @@ class Controller extends Model {
     navig.setPrevious(); // set previous uri and ctrl
     navig.resetPreviousController(trx); // reset previous controller and execute destroy()
     navig.setCurrent(this); // set the current uri and ctrl
-    if (this._debug().navig) { console.log('navigDebug::', navig); }
+    if (this._debug().navig) { console.log(`%c---navig---`, 'color:green; background:#D9FC9B;', navig); }
 
     // controller processes
     await this.loader(trx);

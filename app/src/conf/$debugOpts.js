@@ -11,7 +11,7 @@ module.exports = {
   rgLazyjs: false,
 
   // DataRg.js
-  rgFor: true,
+  rgFor: false,
   rgRepeat: false,
   rgPrint: false,
 
