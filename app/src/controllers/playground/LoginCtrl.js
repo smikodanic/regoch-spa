@@ -15,7 +15,6 @@ class LoginCtrl extends Controller {
   }
 
   async init() {
-    console.log(this);
     // this.formLogin = new syslib.Form('loginForm');
   }
 

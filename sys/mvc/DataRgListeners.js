@@ -96,14 +96,13 @@ class DataRgListeners extends Aux {
       if (!attrVal) { console.error(`Attribute "data-rg-click" has bad definition (data-rg-click="${attrVal}").`); continue; }
 
       const attrValSplited = attrVal.split(this.$rg.separator);
-      const funcDef = attrValSplited[0].trim();
+      const funcDefs = attrValSplited[0]; // func1();func2();
       const tf = !!attrValSplited[1] && attrValSplited[1].trim() === 'preventDefault';
 
       const handler = async event => {
         if (tf) { event.preventDefault(); }
-        const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
-        await this._funcExe(funcName, funcArgs);
-        this._debug('rgClick', `Executed rgClick listener --> ${funcName}(${funcArgsStr}) | preventDefault: ${tf}`, 'orangered');
+        await this._funcsExe(funcDefs, elem, event);
+        this._debug('rgClick', `Executed rgClick listener --> ${funcDefs} | preventDefault: ${tf}`, 'orangered');
       };
 
       const eventName = 'click';
@@ -134,7 +133,7 @@ class DataRgListeners extends Aux {
       const attrValSplited = attrVal.split(this.$rg.separator);
 
       if (!attrValSplited[0]) { console.error(`Attribute "data-rg-keyup" has bad definition (data-rg-keyup="${attrVal}").`); continue; }
-      const funcDef = attrValSplited[0].trim();
+      const funcDefs = attrValSplited[0]; // func1();func2();
 
       let keyCode = attrValSplited[1] || '';
       keyCode = keyCode.trim().toLowerCase();
@@ -143,11 +142,8 @@ class DataRgListeners extends Aux {
         let eventCode;
         if (event.code) { eventCode = event.code.toLowerCase(); }
         if (!!keyCode && keyCode !== eventCode) { return; }
-
-        const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
-        await this._funcExe(funcName, funcArgs);
-
-        this._debug('rgKeyup', `Executed rgKeyup listener --> ${funcName}(${funcArgsStr}) | eventCode: ${eventCode}`, 'orangered');
+        await this._funcsExe(funcDefs, elem, event);
+        this._debug('rgKeyup', `Executed rgKeyup listener --> ${funcDefs} | eventCode: ${eventCode}`, 'orangered');
       };
 
       const eventName = 'keyup';
@@ -176,12 +172,11 @@ class DataRgListeners extends Aux {
     for (const elem of elems) {
       const attrVal = elem.getAttribute(attrName); // string 'myFunc(x, y, ...restArgs)'
       if (!attrVal) { console.error(`Attribute "data-rg-change" has bad definition (data-rg-change="${attrVal}").`); continue; }
-      const funcDef = attrVal.trim();
+      const funcDefs = attrVal; // func1();func2();
 
       const handler = async event => {
-        const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
-        await this._funcExe(funcName, funcArgs);
-        this._debug('rgChange', `Executed rgChange listener --> ${funcName}(${funcArgsStr})`, 'orangered');
+        await this._funcsExe(funcDefs, elem, event);
+        this._debug('rgChange', `Executed rgChange listener --> ${funcDefs}`, 'orangered');
       };
 
       const eventName = 'change';
@@ -216,12 +211,11 @@ class DataRgListeners extends Aux {
         if (!attrValSplited[0] || !attrValSplited[1]) { console.error(`Attribute "data-rg-evt" has bad definition (data-rg-evt="${attrVal}").`); continue; }
 
         const eventName = attrValSplited[0].trim();
-        const funcDef = attrValSplited[1].trim();
+        const funcDefs = attrValSplited[1]; // func1();func2();
 
         const handler = async event => {
-          const { funcName, funcArgs, funcArgsStr } = this._funcParse(funcDef, elem, event);
-          await this._funcExe(funcName, funcArgs);
-          this._debug('rgEvt', `Executed rgEvt listener --> ${funcName}(${funcArgsStr})`, 'orangered');
+          await this._funcsExe(funcDefs, elem, event);
+          this._debug('rgEvt', `Executed rgEvt listener --> ${funcDefs}`, 'orangered');
         };
 
         elem.addEventListener(eventName, handler);

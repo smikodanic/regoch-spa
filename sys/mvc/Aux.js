@@ -363,6 +363,16 @@ class Aux {
   }
 
 
+  async _funcsExe(funcDefs, elem, event) {
+    const funcDefs_arr = funcDefs.split(';').filter(funcDef => !!funcDef).map(funcDef => funcDef.trim());
+    console.log('funcDefs_arr::', funcDefs_arr);
+    for (const funcDef of funcDefs_arr) {
+      const { funcName, funcArgs } = this._funcParse(funcDef, elem, event);
+      await this._funcExe(funcName, funcArgs);
+    }
+  }
+
+
   /**
    * Clone the original element and place new element in the element sibling position.
    * The original element gets data-rg-xyz-id , unique ID to distinguish the element from other data-rg-xyz elements on the page.

@@ -53,7 +53,7 @@ class DataRgListenersCtrl extends Controller {
 
 
   async callAPI() {
-    const answer = await this.httpClient.askJSON('api.dex8.com');
+    const answer = await this.$view.httpClient.askJSON('api.dex8.com');
     // const answer = await this.httpClient.askJSON('https://jsonplaceholder.typicode.com/todos/1', 'GET');
     // const answer = await this.httpClient.askJSON('https://jsonplaceholder.typicode.com/posts?userId=1', 'GET');
     // const answer = await this.httpClient.askJSON('https://jsonplaceholder.typicode.com/posts', 'POST', {title: 'foo', body: 'bar', userId: 1});
@@ -94,6 +94,15 @@ class DataRgListenersCtrl extends Controller {
   // click on the INPUT tag
   runCLICK4(val) {
     console.log('val::', typeof val, val);
+  }
+
+
+  // run two methods by one click
+  runCLICK5a(val) {
+    console.log('runCLICK5a-val::', typeof val, val);
+  }
+  runCLICK5b(val) {
+    console.log('runCLICK5b-val::', typeof val, val);
   }
 
 

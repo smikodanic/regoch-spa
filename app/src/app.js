@@ -96,8 +96,8 @@ const pref1 = async (trx) => { console.log('PREFLIGHT 1 - trx::', trx); };
 const pref2 = async (trx) => { console.log('PREFLIGHT 2 - trx::', trx); };
 const postf1 = async (trx) => { console.log('POSTFLIGHT 1 - trx::', trx); };
 const postf2 = async (trx) => { console.log('POSTFLIGHT 2 - trx::', trx); };
-app.preflight(pref1, pref2);
-app.postflight(postf1, postf2);
+// app.preflight(pref1, pref2);
+// app.postflight(postf1, postf2);
 
 
 app.routes(routes, false); // debug = false
