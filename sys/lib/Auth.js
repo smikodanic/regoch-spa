@@ -1,6 +1,6 @@
-const HTTPClient = require('./HTTPClient');
-const Cookie = require('./Cookie');
 const navig = require('./navig');
+const Cookie = require('./Cookie');
+const HTTPClient = require('./HTTPClient');
 
 
 
@@ -18,13 +18,34 @@ class Auth {
     afterLogout :string     // URL after logout: '/login'
    }
    * @param {object} authOpts - auth options
-   * @param {Cookie} cookie - Cookie class instance
-   * @param {HTTPClient} httpClient - HTTPClient class instance
    */
-  constructor(authOpts, cookie, httpClient) {
+  constructor(authOpts) {
     this.authOpts = authOpts;
-    this.cookieLib = cookie;
-    this.httpClientLib = httpClient;
+
+    const cookieOpts = {
+      // domain: 'localhost',
+      path: '/',
+      expires: 5, // number of hours or exact date
+      secure: false,
+      httpOnly: false,
+      sameSite: 'strict' // 'strict' for GET and POST, 'lax' only for POST
+    };
+    this.cookie = new Cookie(cookieOpts);
+
+    const opts = {
+      encodeURI: false,
+      timeout: 8000,
+      retry: 3,
+      retryDelay: 5500,
+      maxRedirects: 3,
+      headers: {
+        'authorization': '',
+        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+        'content-type': 'text/html; charset=UTF-8'
+      },
+      responseType: '' // 'blob' for file download (https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType)
+    };
+    this.httpClient = new HTTPClient(opts);
 
     this.jwtToken; // JWT Token string: 'JWT ...'
     this.loggedUser; // the user object: {first_name, last_name, username, ...}
@@ -41,7 +62,7 @@ class Auth {
    */
   async login(creds) {
     const url = this.authOpts.apiLogin;
-    const answer = await this.httpClientLib.askJSON(url, 'POST', creds);
+    const answer = await this.httpClient.askJSON(url, 'POST', creds);
 
     if (answer.status === 200) {
       const apiResp = answer.res.content;
@@ -49,8 +70,8 @@ class Auth {
       this.jwtToken = apiResp.jwtToken;
       this.loggedUser = apiResp.loggedUser;
 
-      this.cookieLib.put('auth_jwtToken', apiResp.jwtToken); // set cookie 'auth_jwtToken': 'JWT xyz...'
-      this.cookieLib.putObject('auth_loggedUser', apiResp.loggedUser); // set cookie 'auth_loggedUser' and class property 'this.loggedUser': {first_name: , last_name: , ...}
+      this.cookie.put('auth_jwtToken', apiResp.jwtToken); // set cookie 'auth_jwtToken': 'JWT xyz...'
+      this.cookie.putObject('auth_loggedUser', apiResp.loggedUser); // set cookie 'auth_loggedUser' and class property 'this.loggedUser': {first_name: , last_name: , ...}
 
       // redirect to URL
       const afterGoodLoginURL = this.authOpts.afterGoodLogin.replace('{loggedUserRole}', apiResp.loggedUser.role);
@@ -60,7 +81,7 @@ class Auth {
 
     } else {
       this.loggedUser = null;
-      this.cookieLib.removeAll();
+      this.cookie.removeAll();
       const errMSg = !!answer.res.content ? answer.res.content.message : 'No answer from the server. Probably the API server is down.';
       throw new Error(errMSg);
     }
@@ -74,7 +95,7 @@ class Auth {
    * @returns {void}
    */
   async logout(ms) {
-    this.cookieLib.removeAll(); // delete all cookies
+    this.cookie.removeAll(); // delete all cookies
     this.loggedUser = undefined; // remove class property
     await new Promise(r => setTimeout(r, ms));
     navig.goto(this.authOpts.afterLogout); // change URL
@@ -86,7 +107,7 @@ class Auth {
    * @returns {object} - {first_name, last_name, ...}
    */
   getLoggedUserInfo() {
-    const loggedUser = this.loggedUser || this.cookieLib.getObject('auth_loggedUser');
+    const loggedUser = this.loggedUser || this.cookie.getObject('auth_loggedUser');
     return loggedUser;
   }
 
@@ -96,7 +117,7 @@ class Auth {
    * @return {string} - JWT eyJhbGciOiJIUzI1NiIsInR...
    */
   getJWTtoken() {
-    const jwtToken = this.jwtToken || this.cookieLib.get('auth_jwtToken');
+    const jwtToken = this.jwtToken || this.cookie.get('auth_jwtToken');
     return jwtToken;
   }
 

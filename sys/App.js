@@ -5,67 +5,9 @@ const navig = require('./lib/navig');
 class App {
 
   constructor() {
-    this.CONST = {};
-    this.lib = {};
     this.controllers = {}; // { ctrlName1: {}, ctrlName2: {}}
     window.regochGlob = {}; // define global variable
   }
-
-
-  /*============================== CONSTANTS ==============================*/
-  /**
-   * Set constants.
-   * @param {string} name
-   * @param {any} val
-   * @returns {App}
-   */
-  const(name, val) {
-    const controllersCount = Object.keys(this.controllers).length;
-    if (controllersCount > 0) { throw new Error('The method const() should be defined before the method controller().'); }
-    this.CONST[name] = val;
-    return this;
-  }
-
-  /**
-   * Freeze constant objects what prevents accidental modifications in the controllers.
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
-   * @returns {void}
-   */
-  freeze() {
-    Object.freeze(this.CONST);
-  }
-
-  /**
-   * Remove all constants.
-   * @returns {void}
-   */
-  constEmpty() {
-    this.CONST = {};
-  }
-
-
-
-  /*============================== LIBRARIES ==============================*/
-  /**
-   * Add libraries to libraries already injected by libInject()
-   * @param {object} libs - libraries which will be added to existing this.lib -  {Lib1, lib2}
-   * @returns {void}
-   */
-  libInject(libs) {
-    const controllersCount = Object.keys(this.controllers).length;
-    if (controllersCount > 0) { throw new Error('The method libInject() should be defined before the method controller().'); }
-    this.lib = Object.assign(this.lib, libs);
-  }
-
-  /**
-   * Remove all libraries.
-   * @returns {void}
-   */
-  libEmpty() {
-    this.lib = {};
-  }
-
-
 
   /*============================== CONTROLLERS ==============================*/
   /**
@@ -85,12 +27,28 @@ class App {
   /**
    * Define controller property/value. Sometimes it's useful that all controllers have same property with the same value.
    * @param {string} name - controller property name
+   * @param {any} val - value
    * @returns
    */
-  controllerProp(name, val) {
+  _controllerProp(name, val) {
     const controllersCount = Object.keys(this.controllers).length;
     if (controllersCount === 0) { throw new Error(`The controller property "${name}" should be defined after the method controllersInject().`); }
     for (const ctrlName of Object.keys(this.controllers)) { this.controllers[ctrlName][name] = val; }
+    return this;
+  }
+
+
+  /**
+   * Set the subproperty of the controller's $fridge property in all controllers.
+   * The $fridge object will be preserved during controller processing execution. Other controller's properties will be deleted.
+   * @param {string} name - $fridge property name
+   * @param {any} val - value
+   * @returns {App}
+   */
+  controllerFridge(name, val) {
+    const controllersCount = Object.keys(this.controllers).length;
+    if (controllersCount === 0) { throw new Error(`The $fridge property "${name}" should be defined after the method controllersInject().`); }
+    for (const ctrlName of Object.keys(this.controllers)) { this.controllers[ctrlName]['$fridge'][name] = val; }
     return this;
   }
 
@@ -102,7 +60,7 @@ class App {
    * @returns {App}
    */
   controllerAuth(auth) {
-    this.controllerProp('$auth', auth);
+    this._controllerProp('$auth', auth);
     return this;
   }
 
@@ -127,7 +85,7 @@ class App {
    * @returns {App}
    */
   preflight(...funcs) {
-    this.controllerProp('$preflight', funcs);
+    this._controllerProp('$preflight', funcs);
     return this;
   }
 
@@ -139,7 +97,7 @@ class App {
    * @returns {App}
    */
   postflight(...funcs) {
-    this.controllerProp('$postflight', funcs);
+    this._controllerProp('$postflight', funcs);
     return this;
   }
 
@@ -151,7 +109,7 @@ class App {
    */
   debugger($debugOpts) {
     $debugOpts = $debugOpts || require('./conf/$debugOpts');
-    this.controllerProp('$debugOpts', $debugOpts);
+    this._controllerProp('$debugOpts', $debugOpts);
     return this;
   }
 

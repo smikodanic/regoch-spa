@@ -39,21 +39,10 @@ const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
 
 
 // auth
-const cookie = new syslib.Cookie(cookieOpts);
-const httpClient = new syslib.HTTPClient(httpClientOpts);
-const auth = new syslib.Auth(authOpts, cookie, httpClient);
+const auth = new syslib.Auth(authOpts);
 
+// app
 const app = new App();
-
-app
-  .const('apiConst', apiConst)
-  .const('myNum', 10)
-  .const('myStr', 'some thing')
-  .const('myObj', { a: 22 })
-  .freeze();
-
-app.libInject({ StringExt, Rand }); // use it as app.lib.Rand
-
 app
   .controllersInject([
     // docs

@@ -89,6 +89,9 @@ class Controller extends Model {
     await this.rend(trx);
     await this.postrend(trx);
     this.rgFlicker(true);
+
+    // post-view processes
+    await this.rgLazyjs();
   }
 
 
@@ -137,8 +140,6 @@ class Controller extends Model {
     this.rgSet();
     this.rgModel();
 
-    // Render View
-    await this.rgLazyjs();
 
     this._debug('render', `--------- render (end) -- attrValQuery: ${attrValQuery} ------`, 'green', '#D9FC9B');
   }

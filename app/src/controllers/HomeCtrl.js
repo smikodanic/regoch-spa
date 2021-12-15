@@ -5,7 +5,6 @@ module.exports = class HomeCtrl extends Controller {
 
   constructor(app) {
     super();
-    // console.log(app.CONST);
   }
 
   async loader(trx) {
