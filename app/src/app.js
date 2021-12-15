@@ -42,9 +42,9 @@ const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
 const auth = new syslib.Auth(authOpts);
 
 // app
-const app = new App();
+const app = new App($debugOpts);
 app
-  .controllersInject([
+  .controllers([
     // docs
     HomeCtrl,
     WebsocketServerCtrl,
@@ -75,9 +75,9 @@ app
     // not found page
     NotfoundCtrl
   ])
-  .controllerAuth(auth) // needed for route authGuards
-  .controllerViewsCached(viewsCached)
-  .debugger($debugOpts);
+  .auth(auth) // needed for route authGuards
+  .viewsCached(viewsCached)
+  .debugger();
 
 
 // preflight/postflight
@@ -89,4 +89,4 @@ const postf2 = async (trx) => { console.log('POSTFLIGHT 2 - trx::', trx); };
 // app.postflight(postf1, postf2);
 
 
-app.routes(routes, false); // debug = false
+app.routes(routes); // debug = false

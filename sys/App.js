@@ -4,9 +4,10 @@ const navig = require('./lib/navig');
 
 class App {
 
-  constructor() {
-    this.controllers = {}; // { ctrlName1: {}, ctrlName2: {}}
-    window.regochGlob = {}; // define global variable
+  constructor($debugOpts) {
+    this.$debugOpts = $debugOpts || require('./conf/$debugOpts'); // object with the debug parameters -- {rgFor: true, rgIf: false}
+    this.ctrls = {}; // { ctrlName1: {}, ctrlName2: {} }
+    window.regochGlob = {}; // init global variable
   }
 
   /*============================== CONTROLLERS ==============================*/
@@ -15,10 +16,10 @@ class App {
    * @param  {Class[]} Ctrls - array of controller classes
    * @returns {App}
    */
-  controllersInject(Ctrls) {
+  controllers(Ctrls) {
     for (const Ctrl of Ctrls) {
       const ctrl = new Ctrl(this);
-      this.controllers[Ctrl.name] = ctrl;
+      this.ctrls[Ctrl.name] = ctrl;
     }
     return this;
   }
@@ -31,9 +32,9 @@ class App {
    * @returns
    */
   _controllerProp(name, val) {
-    const controllersCount = Object.keys(this.controllers).length;
+    const controllersCount = Object.keys(this.ctrls).length;
     if (controllersCount === 0) { throw new Error(`The controller property "${name}" should be defined after the method controllersInject().`); }
-    for (const ctrlName of Object.keys(this.controllers)) { this.controllers[ctrlName][name] = val; }
+    for (const ctrlName of Object.keys(this.ctrls)) { this.ctrls[ctrlName][name] = val; }
     return this;
   }
 
@@ -45,10 +46,10 @@ class App {
    * @param {any} val - value
    * @returns {App}
    */
-  controllerFridge(name, val) {
-    const controllersCount = Object.keys(this.controllers).length;
+  fridge(name, val) {
+    const controllersCount = Object.keys(this.ctrls).length;
     if (controllersCount === 0) { throw new Error(`The $fridge property "${name}" should be defined after the method controllersInject().`); }
-    for (const ctrlName of Object.keys(this.controllers)) { this.controllers[ctrlName]['$fridge'][name] = val; }
+    for (const ctrlName of Object.keys(this.ctrls)) { this.ctrls[ctrlName]['$fridge'][name] = val; }
     return this;
   }
 
@@ -59,7 +60,7 @@ class App {
    * @param {Auth} auth - Auth class instance
    * @returns {App}
    */
-  controllerAuth(auth) {
+  auth(auth) {
     this._controllerProp('$auth', auth);
     return this;
   }
@@ -71,7 +72,7 @@ class App {
    * @param {object} viewsCached - the content of the /app/cache/views.json file
    * @returns {App}
    */
-  controllerViewsCached(viewsCached) {
+  viewsCached(viewsCached) {
     // this.controllerProp('viewsCached', viewsCached);
     window.regochGlob.viewsCached = viewsCached;
     return this;
@@ -104,12 +105,10 @@ class App {
 
   /**
    * Define the debugging options. Set the controller's $debugOpts property.
-   * @param {object} $debugOpts - object with the debug parameters -- {rgFor: true, rgIf: false}
    * @returns {App}
    */
-  debugger($debugOpts) {
-    $debugOpts = $debugOpts || require('./conf/$debugOpts');
-    this._controllerProp('$debugOpts', $debugOpts);
+  debugger() {
+    this._controllerProp('$debugOpts', this.$debugOpts);
     return this;
   }
 
@@ -120,11 +119,10 @@ class App {
   /**
    * Define routes
    * @param {string[][]} routesCnf
-   * @param {boolean} debug - debug the Router.js
    * @returns {App}
    */
-  routes(routesCnf, debug) {
-    const router = new Router(debug);
+  routes(routesCnf) {
+    const router = new Router(this.$debugOpts.router, this.$debugOpts.regochRouter);
 
     for (const routeCnf of routesCnf) {
       const cmd = routeCnf[0]; // '_def', '_notfound'
@@ -133,14 +131,14 @@ class App {
         const route = routeCnf[1]; // '/page1'
         const ctrlName = routeCnf[2]; // 'Page1Ctrl'
         const routeOpts = routeCnf[3]; // {authGuards: ['autoLogin', 'isLogged', 'hasRole']}
-        if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
-        const ctrl = this.controllers[ctrlName];
+        if (!this.ctrls[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
+        const ctrl = this.ctrls[ctrlName];
         router._when(route, ctrl, routeOpts);
 
       } else if (cmd === 'notfound') {
         const ctrlName = routeCnf[1]; // 'NotfoundCtrl'
-        if (!this.controllers[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
-        const ctrl = this.controllers[ctrlName];
+        if (!this.ctrls[ctrlName]) { throw new Error(`Controller "${ctrlName}" is not defined or not injected in the App.`); }
+        const ctrl = this.ctrls[ctrlName];
         router._notfound(ctrl);
 
       } else if (cmd === 'do') {

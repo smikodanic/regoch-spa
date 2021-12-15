@@ -2,6 +2,10 @@
  * System Default MVC Debug Options
  */
 module.exports = {
+  // Router
+  router: false,
+  regochRouter: false,
+
   // Controller.js
   render: false,
   navig: false,
