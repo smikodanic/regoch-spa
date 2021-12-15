@@ -9,6 +9,7 @@ class Controller extends Model {
     super();
     this.$debugOpts = {}; // debug options, setup with App.debugger()
     this.$fridge = {}; // fridged properties will not be deleted during controller processing i.e. in the navig.resetPreviousController()
+    this.$navig = navig;
   }
 
 

@@ -66,6 +66,7 @@ class Navig {
           ctrlProp !== '$fridge' &&
           ctrlProp !== '$model' &&
           ctrlProp !== '$modeler' &&
+          ctrlProp !== '$navig' &&
           ctrlProp !== '$rg' &&
           ctrlProp !== '$view' &&
           ctrlProp !== '$auth'
