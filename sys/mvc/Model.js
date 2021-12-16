@@ -97,6 +97,7 @@ class Model extends View {
    */
   emptyModel() {
     this.$model = {};
+    this.proxifyModel(); // because $model must be Proxy
   }
 
 
