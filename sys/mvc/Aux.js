@@ -365,7 +365,6 @@ class Aux {
 
   async _funcsExe(funcDefs, elem, event) {
     const funcDefs_arr = funcDefs.split(';').filter(funcDef => !!funcDef).map(funcDef => funcDef.trim());
-    console.log('funcDefs_arr::', funcDefs_arr);
     for (const funcDef of funcDefs_arr) {
       const { funcName, funcArgs } = this._funcParse(funcDef, elem, event);
       await this._funcExe(funcName, funcArgs);

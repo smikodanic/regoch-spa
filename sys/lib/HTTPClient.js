@@ -205,7 +205,7 @@ class HTTPClient {
     // set the options
     this.xhr.timeout = this.opts.timeout;
     Object.keys(this.headers).forEach(prop => this.xhr.setRequestHeader(prop.toLowerCase(), this.headers[prop]));
-    if (!!this.opts.responseType) { this.xhr.responseType = this.opts.responseType || ''; } else { this.xhr.responseType = ''; }
+    this.xhr.responseType = this.opts.responseType || '';
 
 
     /*** 2) add body to HTTP request ***/
