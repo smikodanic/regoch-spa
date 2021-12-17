@@ -38,8 +38,6 @@ class HTTPServer {
       throw new Error('HTTP options are not defined.');
     }
     this.httpServer;
-
-    this.retryCount = 0;
   }
 
 
@@ -50,6 +48,8 @@ class HTTPServer {
    * @returns {Server} - nodeJS HTTP server instance https://nodejs.org/api/http.html#http_class_http_server
    */
   start() {
+    this.retryCount = 0;
+
     // start HTTP Server
     this.httpServer = http.createServer((req, res) => {
 
@@ -147,8 +147,7 @@ class HTTPServer {
   /**
    * Stop the HTTP Server
    */
-  async stop() {
-    await new Promise(resolve => setTimeout(resolve, 2100));
+  stop() {
     this.httpServer.close();
   }
 
@@ -167,14 +166,16 @@ class HTTPServer {
 
 
   async sendResponse(res, req, contentType, filePath) {
-    if (this.retryCount > this.opts.retries) {
-      console.log('\x1b[31m' + 'max retries reached' + '\x1b[0m');
+    if (this.retryCount >= this.opts.retries) {
+      console.log('\x1b[31m' + 'Max retries reached' + '\x1b[0m');
       res.writeHead(404, { 'X-Error': 'Max retries reached' });
       res.end();
+      this.retryCount = 0;
       return;
     }
 
     if (fs.existsSync(filePath)) {
+      this.retryCount = 0;
 
       try {
         /*** A) set headers defined in the opts ***/
@@ -209,11 +210,12 @@ class HTTPServer {
       }
 
     } else { // file doesn't exist
+      this.retryCount++;
+
       const errMsg = `NOT FOUND: "${filePath}"  (${this.retryCount} of ${this.opts.retries} retries) `;
       console.log('\x1b[31m' + errMsg + '\x1b[0m');
 
-      // retry after 1 second
-      this.retryCount++;
+      // retry every 1 second
       await new Promise(r => setTimeout(r, 1000));
       await this.sendResponse(res, req, contentType, filePath);
     }

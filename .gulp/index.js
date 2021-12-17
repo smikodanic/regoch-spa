@@ -29,11 +29,11 @@ task('cacheEnv', cacheEnv);
 task('watchers', async () => {
   await watch([
     'app/src/**/*.html'
-  ], series('htmlMinify', 'cacheViews', 'browserifyMinifyMap'));
+  ], series('build'));
 
   await watch([
     'app/src/**/*.scss'
-  ], series('scss'));
+  ], series('build'));
 
   await watch([
     'app/src/*.js',
@@ -42,7 +42,7 @@ task('watchers', async () => {
     'app/src/lib/*.js',
     'sys/**/*.js',
     '!sys/HTTPServer.js'
-  ], series('browserifyMinifyMap'));
+  ], series('build'));
 
   await watch([
     'regoch.json'
