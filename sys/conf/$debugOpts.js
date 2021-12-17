@@ -2,6 +2,9 @@
  * System Default MVC Debug Options
  */
 module.exports = {
+  // general
+  warnings: false,
+
   // Router
   router: false,
   regochRouter: false,
@@ -44,5 +47,5 @@ module.exports = {
   rgChange: false,
   rgEvt: false,
   rgSet: false,
-  rgModel: false
+  rgModel: false,
 };

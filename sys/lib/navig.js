@@ -51,10 +51,10 @@ class Navig {
    * Reset the previous controller properties and execute destroy()
    * @param {object} trx - regoch router transitional variable (defined in router.js -> _exe())
    */
-  resetPreviousController(trx) {
+  async resetPreviousController(trx) {
     const ctrl_prev = this.previous.ctrl;
     if (!!ctrl_prev) {
-      ctrl_prev.destroy(trx); // execute destroy() defined in the previous controller
+      await ctrl_prev.destroy(trx); // execute destroy() defined in the previous controller
       ctrl_prev.rgKILL(); // kill the previous controller event listeners
       ctrl_prev.emptyModel(); // empty the previous controller $model
 

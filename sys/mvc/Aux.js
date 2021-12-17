@@ -189,7 +189,7 @@ class Aux {
    */
   _evalMath(txt) {
     const reg = /evalMath\([\d\+\-\*\/\%\(\)\s]+\)/g;
-    const evs = txt.match(reg); // ['eval(0 + 1)', 'eval(0 ^ 2)']
+    const evs = txt.match(reg); // ['evalMath(0 + 1)', 'evalMath(5 / 2)']
     if (!evs) { return txt; }
 
     for (const ev of evs) {
@@ -225,7 +225,7 @@ class Aux {
 
         let val = this._getControllerValue('$model.' + prop);
         if (val === undefined) {
-          console.log(`%c _parseInterpolatedWarn:: Controller property ${prop} is undefined.`, `color:Maroon; background:LightYellow`);
+          this._debug('warnings', `_parseInterpolatedWarn:: Controller property ${prop} is undefined.`, 'Maroon', 'LightYellow');
           val = '';
         }
         txt = txt.replace(interpolation, val);
@@ -249,14 +249,12 @@ class Aux {
    * @returns {boolean}
    */
   _calcComparison(val, funcName, funcArgs) {
-    // if (val === undefined || val === null) { return false; }
-
-    let tf = false;
+    let tf = !!val;
     const arg = !!funcArgs.length ? this._typeConvertor(funcArgs[0]) : '';
 
     if (funcName === '$not') { tf = !val; }
-    else if (funcName === '$eq') { tf = val !== undefined ? val === arg : false; }
-    else if (funcName === '$ne') { tf = val !== undefined ? val !== arg : false; }
+    else if (funcName === '$eq') { tf = val === arg; }
+    else if (funcName === '$ne') { tf = val !== arg; }
     else if (funcName === '$gt') { tf = typeof val === 'number' ? val > arg : false; }
     else if (funcName === '$gte') { tf = typeof val === 'number' ? val >= arg : false; }
     else if (funcName === '$lt') { tf = typeof val === 'number' ? val < arg : false; }

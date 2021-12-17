@@ -771,6 +771,10 @@ class DataRg extends DataRgListeners {
       if (/<[^>]*>/.test(txt)) { console.log(`%c rgEchoWarn:: The text shouldn't contain HTML tags.`, `color:Maroon; background:LightYellow`); }
 
       txt = this._parseInterpolated(txt); // replace {ctrlProp} with the controller property value
+
+      // prevent showing evalMath(...) until rgFor convert controller properties to real numbers, for example in evalMath((this.currentPage - 1) * this.itemsPerPage + $i0 + 1)
+      txt = /evalMath/.test(txt) ? '' : txt;
+
       this._debug('rgEcho', `rgEcho txt after: ${txt}\n`, 'navy', '#B6ECFF');
 
       elem.textContent = txt;
