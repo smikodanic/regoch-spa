@@ -1,13 +1,14 @@
 const Router = require('./router/Router');
 const navig = require('./lib/navig');
+const debugOpts = require('./conf/$debugOpts');
 
 
 class App {
 
-  constructor($debugOpts) {
-    this.$debugOpts = $debugOpts || require('./conf/$debugOpts'); // object with the debug parameters -- {rgFor: true, rgIf: false}
+  constructor() {
     this.ctrls = {}; // { ctrlName1: {}, ctrlName2: {} }
     window.regochGlob = {}; // init global variable
+    this.$debugOpts = debugOpts; // object with the debug parameters -- {rgFor: true, rgIf: false}
   }
 
   /*============================== CONTROLLERS ==============================*/
@@ -105,9 +106,11 @@ class App {
 
   /**
    * Define the debugging options. Set the controller's $debugOpts property.
+   * @param {Function[]} funcs - array of preflight functions (app, trx) => { ... }
    * @returns {App}
    */
-  debugger() {
+  debugger($debugOpts) {
+    if (!!$debugOpts) { this.$debugOpts = $debugOpts; }
     this._controllerProp('$debugOpts', this.$debugOpts);
     return this;
   }

@@ -1,4 +1,7 @@
 module.exports = {
+  // general
+  warnings: false,
+
   // Router
   router: false,
   regochRouter: false,

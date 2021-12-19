@@ -47,5 +47,5 @@ module.exports = {
   rgChange: false,
   rgEvt: false,
   rgSet: false,
-  rgModel: false,
+  rgModel: false
 };

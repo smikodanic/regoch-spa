@@ -42,7 +42,7 @@ const Navig2Ctrl = require('./controllers/playground/Navig2Ctrl');
 const auth = new syslib.Auth(authOpts);
 
 // app
-const app = new App($debugOpts);
+const app = new App();
 app
   .controllers([
     // docs
@@ -77,7 +77,7 @@ app
   ])
   .auth(auth) // needed for route authGuards
   .viewsCached(viewsCached)
-  .debugger();
+  .debugger($debugOpts);
 
 
 // preflight/postflight
