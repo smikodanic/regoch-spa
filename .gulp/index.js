@@ -1,6 +1,7 @@
 const { task, watch, series, parallel } = require('gulp');
 
 // tasks
+const serverBuild = require('./tasks/serverBuild.js');
 const serverNode = require('./tasks/serverNode.js');
 const rimraf = require('./tasks/rimraf.js');
 const htmlMinify = require('./tasks/htmlMinify.js');
@@ -14,6 +15,7 @@ const onCtrlC = require('./tasks/onCtrlC.js');
 
 
 /***** GULP BASIC TASKS *****/
+task('serverBuild', serverBuild);
 task('serverStart', serverNode.start);
 task('serverStop', serverNode.stop);
 task('serverRestart', serverNode.restart);
@@ -61,10 +63,10 @@ task('watchers', async () => {
 
 /***** GULP COMPOUND TASKS *****/
 // first delete then create JS, HTML and CSS files in /app/dist/ directory
-task('build', series('rimraf', parallel('htmlMinify', 'scss', 'browserifyMinifyMap', 'cacheViews', 'cacheEnv')));
+task('build', series('rimraf', 'serverBuild', parallel('htmlMinify', 'scss', 'browserifyMinifyMap', 'cacheViews', 'cacheEnv')));
 
 // defult gulp task
-task('default', parallel('watchers', 'build', 'serverStart'));
+task('default', series('watchers', 'build', 'serverStart'));
 
 // remove /dist content
 onCtrlC();

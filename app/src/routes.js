@@ -18,7 +18,7 @@ module.exports = [
   ['when', '/contact', 'ContactCtrl'],
 
   // playground
-  ['when', '/playground/controller-hooks', 'Controller_hooksCtrl'],
+  ['when', '/playground/controller-hooks', 'Controller_hooksCtrl', {ssr: true}],
   ['when', '/playground/controller-hooks-same', 'Controller_hooksCtrl'],
   ['when', '/playground/model', 'ModelCtrl'],
   ['when', '/playground/view-rginc', 'View_rgIncCtrl'],
