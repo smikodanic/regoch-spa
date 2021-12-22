@@ -3,14 +3,15 @@
  */
 const rimraf = require('rimraf');
 
-module.exports = async () => {
+module.exports = () => {
   const stdin = process.stdin;
   stdin.setRawMode(true);
   stdin.on('data', async data => {
     if (data.length === 1 && data[0] === 0x03) { // 0x03 is CTRL+c
-      await new Promise(resolve => setTimeout(resolve, 400));
       rimraf('./app/dist', async () => { });
-      console.log('Removed /dist content.');
+      rimraf('./app/cache', async () => { });
+      console.log('Removed /dist & /cache folders.');
+      await new Promise(resolve => setTimeout(resolve, 700));
       process.exit(1);
     }
   });
