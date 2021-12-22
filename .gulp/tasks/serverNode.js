@@ -3,7 +3,7 @@ const { spawn } = require("child_process");
 
 
 module.exports.start = async () => {
-  global.nodeProc = spawn('node', ['app/dist/server']);
+  global.nodeProc = spawn('node', ['app/_dist/server']);
 
 
   /*** EVENTS ***/

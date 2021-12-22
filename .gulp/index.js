@@ -62,11 +62,11 @@ task('watchers', async () => {
 
 
 /***** GULP COMPOUND TASKS *****/
-// first delete then create JS, HTML and CSS files in /app/dist/ directory
+// first delete then create JS, HTML and CSS files in /app/_dist/ directory
 task('build', series('rimraf', 'serverBuild', parallel('htmlMinify', 'scss', 'browserifyMinifyMap', 'cacheViews', 'cacheEnv')));
 
 // defult gulp task
 task('default', series('watchers', 'build', 'serverStart'));
 
-// remove /dist content
+// remove /_dist content
 onCtrlC();

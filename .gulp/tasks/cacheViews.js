@@ -21,12 +21,12 @@ module.exports = async () => {
     views[file] = content;
   }
 
-  const fileDest = path.join(cwd, 'app/cache/views.json');
+  const fileDest = path.join(cwd, 'app/_cache/views.json');
   await fse.ensureFile(fileDest);
   await fse.writeFile(fileDest, JSON.stringify(views, null, 2), {encoding: 'utf8'});
 
   delete require.cache[regochJsonPath];
 
-  console.log('👌  Cached views to "app/cache/views.json":\n', files);
+  console.log('👌  Cached views to "app/_cache/views.json":\n', files);
 }
 

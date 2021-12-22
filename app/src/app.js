@@ -1,5 +1,5 @@
 const { App, syslib } = require('../../sys');
-const viewsCached = require('../cache/views.json');
+const viewsCached = require('../_cache/views.json');
 const routes = require('./routes');
 
 // conf

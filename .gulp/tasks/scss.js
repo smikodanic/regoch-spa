@@ -35,17 +35,17 @@ const compile = async () => {
     .pipe(sourcemaps.write({includeContent: false}))
     .pipe(autoprefixer())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('app/dist/styles'));
+    .pipe(gulp.dest('app/_dist/styles'));
 };
 
 
 // create app.min.css file
 const minify = async () => {
-  await gulp.src('app/dist/styles/app.css')
+  await gulp.src('app/_dist/styles/app.css')
     .on('error', err => { console.log('SCSS Error::', err.message); })
     .pipe(cssmin())
     .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest('app/dist/styles'));
+    .pipe(gulp.dest('app/_dist/styles'));
 };
 
 

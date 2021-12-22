@@ -1,4 +1,4 @@
 node_modules
 npm-debug.log
-app/dist
-app/cache
+app/_dist
+app/_cache

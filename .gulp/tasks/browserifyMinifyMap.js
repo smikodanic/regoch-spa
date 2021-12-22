@@ -34,5 +34,5 @@ module.exports = async () => {
     .pipe(header(banner, {pkg: pkg}))
     // .pipe(minify())
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./app/dist/js'));
+    .pipe(gulp.dest('./app/_dist/js'));
 };

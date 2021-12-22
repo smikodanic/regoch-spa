@@ -195,8 +195,8 @@
 
 <section class="docs-section" id="item-4-3">
   <h2 class="section-heading">Cache</h2>
-  To speed up load time the Regoch SPA is using cached views which are stored in the <i>/app/cache/views.js</i>.
-  <br>Methods <b>rgInc()</b> and <b>loadView()</b> first looks up into the <i>/app/cache/views.json</i> to find the view.
+  To speed up load time the Regoch SPA is using cached views which are stored in the <i>/app/_cache/views.js</i>.
+  <br>Methods <b>rgInc()</b> and <b>loadView()</b> first looks up into the <i>/app/_cache/views.json</i> to find the view.
   If the view is not present there it sends request to the server.
   <br>To generate the cached view the developer should use <i>regoch.json</i> and gulp will do the rest:
   <pre><code class="language-js">///// regoch.json tells the gulp which files to cache /////
