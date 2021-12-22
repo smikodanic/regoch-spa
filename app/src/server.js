@@ -3,8 +3,9 @@ const { HTTPServer } = require('../../sys');
 
 const regochPath = `${process.cwd()}/app/regoch.json`;
 const regochJson = require(regochPath);
+
 const env = process.env.NODE_ENV || regochJson.cache.env || 'development';
-const envPath = `${process.cwd()}/app/env/${env}.js`;
+const envPath = `${process.cwd()}/app/src/env/${env}.js`;
 const envJs = require(envPath);
 
 

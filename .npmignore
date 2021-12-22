@@ -1,3 +1,8 @@
+.gulp
 .vscode
 app
 node_modules
+.editorconfig
+.eslintrc
+.gitignore
+gulpfile.js
