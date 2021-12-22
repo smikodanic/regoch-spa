@@ -1,6 +1,3 @@
-.gulp
+.vscode
 app
 node_modules
-server
-regoch.json
-cache

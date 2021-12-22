@@ -8,14 +8,14 @@ const { minify } = require('html-minifier'); // https://github.com/kangax/html-m
 
 module.exports = async () => {
   const cwd = process.cwd();
-  const regochJsonPath = path.join(cwd, 'regoch.json');
+  const regochJsonPath = path.join(cwd, 'app/regoch.json');
   const regochJson = require(regochJsonPath);
   const files = regochJson.cache.views;
 
   let views = {};
   for (const file of files) {
     const filepath = path.join(cwd, 'app/src/views', file);
-    if (!await fse.pathExists(filepath)) { throw new Error(`File "${filepath}" doesn't exist in regoch.json.`)}
+    if (!await fse.pathExists(filepath)) { throw new Error(`File defined in the regoch.json "${filepath}" doesn't exist.`)}
     let content = await fse.readFile(filepath, {encoding: 'utf8'});
     content = minify(content, {collapseWhitespace: true})
     views[file] = content;

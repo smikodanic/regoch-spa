@@ -5,7 +5,7 @@ const fse = require('fs-extra');
 const path = require('path');
 
 module.exports = async () => {
-  const regochJsonPath = `${process.cwd()}/regoch.json`;
+  const regochJsonPath = `${process.cwd()}/app/regoch.json`;
   const regochJson = require(regochJsonPath);
 
   const env = process.env.NODE_ENV || regochJson.cache.env || 'development';
