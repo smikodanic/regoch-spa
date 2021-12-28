@@ -19,8 +19,8 @@ task('serverStop', serverNode.stop);
 task('serverRestart', serverNode.restart);
 task('rimraf', rimraf);
 task('htmlMinify', htmlMinify);
-task('browserifyMinifyMap', browserifyMinifyMap);
 task('scss', scss);
+task('browserifyMinifyMap', browserifyMinifyMap);
 task('cacheViews', cacheViews);
 task('cacheEnv', cacheEnv);
 
@@ -28,33 +28,27 @@ task('cacheEnv', cacheEnv);
 /***** WATCHERS *****/
 task('watchers', async () => {
   await watch([
-    'client/src/**/*.html'
+    'client/src/views/**/*.html'
   ], series('build'));
 
   await watch([
-    'client/src/**/*.scss'
+    'client/src/styles/**/*.scss'
   ], series('build'));
 
   await watch([
-    'client/src/*.js',
-    'client/src/controllers/**/*.js',
-    'client/src/conf/*.js',
-    'client/src/lib/*.js',
-    'sys/**/*.js',
-    '!sys/HTTPServer.js'
+    'client/src/**/*.js',
   ], series('build'));
 
   await watch([
-    '/regoch.json'
-  ], series('cacheViews', 'cacheEnv', 'browserifyMinifyMap', 'serverRestart'));
+    'regoch.json'
+  ], series('cacheViews', 'cacheEnv', 'browserifyMinifyMap'));
 
   await watch([
-    'env/*.js'
+    'client/src/env/*.js'
   ], series('cacheEnv', 'browserifyMinifyMap'));
 
   await watch([
-    'sys/HTTPServer.js',
-    'server.js'
+    'server/*.js'
   ], series('serverRestart'));
 });
 
