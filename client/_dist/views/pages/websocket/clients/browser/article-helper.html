@@ -1,7 +1,0 @@
-<header class="docs-header"><h1 class="docs-heading">helper</h1><section class="docs-intro">The part of the "regoch-websocket" package is the <b>lib</b> library. It's consisted of: subprotocol, raw, jsonRWS, websocket13, helper, getMessageSize, getMessageSizeFromBlob, StringExt<br>The most important is helper and getMessageSize.</section></header><section class="docs-section" id="item-4-1"><h2 class="section-heading">How to use</h2><pre><code class="language-js">
-const { RWClientBrowser, lib } = require('regoch-websocket');
-const helper = lib.helper;
-
-helper.sleep(1300);
-const bytes = lib.getMessageSize('AČ'); // gives 3 because Č is two bytes
-      </code></pre></section>
