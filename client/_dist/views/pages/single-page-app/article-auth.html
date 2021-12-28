@@ -1,0 +1,36 @@
+<header class="docs-header"><h1 class="docs-heading">Auth</h1><section class="docs-intro"><i>class Auth</i><br><br><p>Authentication with the JWT token and cookie.</p></section></header><section class="docs-section" id="item-10-1"><h2 class="section-heading">Auth Properties</h2><table style="width:100%"><tr><th>Property</th><th>Description</th><th>Type</th><th>Default</th></tr><tr><td>authOpts</td><td>auth options (see table below)</td><td>object</td><td></td></tr><tr><td>cookieLib</td><td>Cookie class instance</td><td>object</td><td></td></tr><tr><td>httpClientLib</td><td>HTTPClient class instance</td><td>object</td><td></td></tr><tr><td>jwtToken</td><td>JWT toke, for example: 'JWT aWqwada...'</td><td>string</td><td></td></tr><tr><td>loggedUser</td><td>user object, required fields: {username:string, password:string, role:string}. The role can be 'admin' for example.</td><td>object</td><td></td></tr></table><br><br><h2 class="section-heading">authOpts Properties</h2><table style="width:100%"><tr><th>Property</th><th>Description</th><th>Type</th><th>Default</th></tr><tr><td>apiLogin</td><td>API login url, for example: http://127.0.0.1:8001/users/login</td><td>string</td><td></td></tr><tr><td>afterGoodLogin</td><td>redirect after succesful login, for example '/{loggedUserRole}/dashboard'</td><td>string</td><td></td></tr><tr><td>afterBadLogin</td><td>redirect after unsuccesful login, for example '/login'</td><td>string</td><td></td></tr><tr><td>afterLogout</td><td>URL after logout() method is used, for example '/login'</td><td>string</td><td></td></tr></table><br><i>NOTICE:</i> The parameter <b>afterGoodLogin</b> can contain <b>{loggedUserRole}</b> which will be replaced with the user role. For example <i>/{loggedUserRole}/dashboard</i> will be resolved to <i>/admin/dashboard</i> if the user's role is 'admin'.</section><section class="docs-section" id="item-10-2"><h2 class="section-heading">Methods</h2><p>Use this methods for the authentication and to guard specific routes from unauthorised access.<br>The auth library can be injected in the controller:<br>1) with App::controllerAuth()<br>2) with App:libInject()</p><ul class="methods"><li><i>async</i> <b>login <i>(creds :object): Promise&lt;any&gt;</i></b><p class="desc">Call API's apiLogin URL. The returned value is the API response JS object. On succesful login two cookies are created:<br>a) <i>auth_jwtToken</i> with value for example: 'JWT aWqra...'<br>b) <i>auth_loggedUser</i> with value of the user object which is returned by the API<br><b>creds</b> - credentials object sent as body to the API. Usually it's <i>{username :string, password :string}</i></p></li><li><i>async</i> <b>logout <i>(ms :number): Promise&lt;void&gt;</i></b><p class="desc">Logout by deleting <i>auth_jwtToken</i> and <i>auth_loggedUser</i> cookies.<br><b>ms</b> - the logout delay after the method logout is called</p></li><li><b>getLoggedUserInfo <i>(): object</i></b><p class="desc">Get logged user info returned from the API and saved in the <i>auth_loggedUser</i> cookie.</p></li><li><b>getJWTtoken <i>(): string</i></b><p class="desc">Get JWT token returned from the API and saved in the <i>auth_jwtToken</i> cookie.</p></li></ul><br><br><p>There are also other methods which doesn't need to be used directly but as the route guard options.<br>- <b>autoLogin()</b> --Checks if user is logged and if yes do auto login e.g. redirect to afterGoodLogin URL.<br>Use route guard option: <small>['when' '/login' 'LoginCtrl', {<b>autoLogin: true</b>}]</small><br><br>- <b>isLogged()</b> --Checks if user is logged and if not redirect to afterBadLogin URL.<br>Use route guard option: <small>['when' '/admin/product/:id' 'AdminProductCtrl', {<b>isLogged: true</b>, hasRole: true}]</small><br><br>- <b>hasRole()</b> --Checks if logged user has required role: 'admin', 'customer'...etc which corresponds to the URL. For example role "admin" must have URL starts with /admin/.<br>Use route guard option: <small>['when' '/admin/product/:id' 'AdminProductCtrl', {isLogged: true, <b>hasRole: true</b>}]</small></p></section><section class="docs-section" id="item-10-3"><h2 class="section-heading">Example</h2><pre><code class="language-javascript">
+const { Controller, syslib } = require('regoch-spa');
+
+class LoginCtrl extends Controller {
+
+  constructor(app) {
+    super();
+    this.formLogin = new syslib.Form('loginForm');
+  }
+
+  async prerender(trx) {
+    this.setTitle('Auth Login Test');
+    this.unloadCSS(['/assets/css/theme.css']);
+    await this.loadView('#primary', 'playground/login/primary.html', 'inner');
+  }
+
+  async tryLogin() {
+    const username = this.formLogin.getControl('username');
+    const password = this.formLogin.getControl('password');
+    try {
+      const creds = {username, password};
+      const jsonContent = await this.auth.login(creds);
+      console.log('tryLogin::', username, password, jsonContent);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+}
+  </code></pre><pre><code class="language-markup">
+&lt;form data-rg-form="loginForm"&gt;
+  username: &lt;input type="text" name="username"&gt;
+  password: &lt;input type="text" name="password"&gt;
+  &lt;button data-rg-click="tryLogin()"&gt;Login&lt;/button&gt;
+&lt;/form&gt;
+  </code></pre></section>

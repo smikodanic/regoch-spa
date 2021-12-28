@@ -1,0 +1,19 @@
+<header class="docs-header"><h1 class="docs-heading">Form</h1><section class="docs-intro"><i>class Form</i><br><br><p>Get and set the HTML form field values.</p></section></header><section class="docs-section" id="item-13-1"><h2 class="section-heading">Properties</h2><table style="width:100%"><tr><th>Property</th><th>Description</th><th>Type</th><th>Default</th></tr><tr><td>formName</td><td>the form name used as value in the <b>data-rg-form</b> attribute</td><td>string</td><td></td></tr><tr><td>debugOptions</td><td>{setControl:boolean, setControls:boolean, getControl:boolean, getControls:boolean, delControl:boolean, delControls:boolean}</td><td>object</td><td></td></tr></table></section><section class="docs-section" id="item-13-2"><h2 class="section-heading">Methods</h2><p>Use this methods in the controller after "Cookie" class is instantiated.</p><ul class="methods"><li><b>setControl <i>(key :string, val :string) :void</i></b><p class="desc">Set the form control value.<br><b>key</b> - the value of the "name" HTML attribute<br><b>val</b> - the value</p></li><li><b>setControls <i>(obj :object) :void</i></b><p class="desc">Set multiple form controls with one object.<br><b>obj</b> - the object which represent the object values, or example: <small></small>{name:'John Doe', age:23, employed:true}<br><i>NOTICE:</i> If the <b>obj</b> has subproperty it can be used in the name, for example: <small>const fruit = {seller: {name: 'Drog Ltd'}; this.testForm.setControls(fruit);</small> then in the view can be <small>&lt;input type="text" name="<b style="color:brown">seller.name</b>"&gt;</small></p></li><li><b>getControl <i>(key :string, convertType: boolean) :string|number</i></b><p class="desc">Get the form control value. Returned value is array for checkboxes and select-multiple.<br><b>key</b> - the value of the "name" HTML attribute<br><b>convertType</b> - to convert the type, for example '5' to Number or '{"a": 22}' to Object. Default is true.</p></li><li><b>getControls <i>(keys :string[], convertType: boolean) :object</i></b><p class="desc">Get the form control values. Returned value is the corresponding object.<br><b>keys</b> - the values of the "name" HTML attributes (This is an JS Array!)<br><b>convertType</b> - to convert the type, for example '5' to Number or '{"a": 22}' to Object. Default is true.</p></li><li><b>delControl <i>(key :string) :void</i></b><p class="desc">Empty the form control value.<br><b>key</b> - the value of the "name" HTML attribute</p></li><li><b>delControls <i>(keys :string[]) :void</i></b><p class="desc">Empty the form control values.<br><b>keys</b> - the values of the "name" HTML attributes (This is an JS Array!)</p></li></ul></section><section class="docs-section" id="item-13-3"><h2 class="section-heading">Example</h2><pre><code class="language-javascript">
+const { Controller, syslib } = require('regoch-spa');
+
+class MyCtrl extends Controller {
+  constructor(app) {
+    this.myF = new syslib.Form('myForm');
+  }
+
+  test() {
+    const firstName = this.myF.getControl('first_name');
+    console.log(firstName)
+  }
+
+}
+  </code></pre><pre><code class="language-markup">
+&lt;form data-rg-form="myForm"&gt;
+  &lt;input type="text" name="first_name"&gt;
+&lt;/form&gt;
+  </code></pre></section>

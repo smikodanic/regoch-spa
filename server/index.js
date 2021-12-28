@@ -1,11 +1,11 @@
-const { HTTPServer } = require('../../sys');
+const { HTTPServer } = require('../sys');
 
 
-const regochPath = `${process.cwd()}/app/regoch.json`;
+const regochPath = `${process.cwd()}/client/regoch.json`;
 const regochJson = require(regochPath);
 
 const env = process.env.NODE_ENV || regochJson.cache.env || 'development';
-const envPath = `${process.cwd()}/app/src/env/${env}.js`;
+const envPath = `${process.cwd()}/client/src/env/${env}.js`;
 const envJs = require(envPath);
 
 
@@ -13,9 +13,9 @@ const httpOpts = {
   port: envJs.server.port,
   timeout: 5 * 60 * 1000, // if 0 never timeout
   retries: 10,
-  indexFile: '/app/_dist/views/index.html',
-  distDir: '/app/_dist',
-  assetsDir: '/app/assets',
+  indexFile: '/client/_dist/views/index.html',
+  distDir: '/client/_dist',
+  assetsDir: '/client/assets',
   acceptEncoding: 'gzip', // gzip, deflate or ''
   headers: {
     // CORS Headers

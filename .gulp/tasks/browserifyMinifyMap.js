@@ -23,16 +23,16 @@ banner.join();
 
 
 module.exports = async () => {
-  browserify('./app/src/app.js')
+  browserify('./client/src/app.js')
     .bundle()
     .on('error', (err) => {
       console.log('Browserify Error::', err.message);
     })
     .pipe(source('app.js'))
     .pipe(buffer())
-    .pipe(sourcemaps.init({loadMaps: true}))
-    .pipe(header(banner, {pkg: pkg}))
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(header(banner, { pkg: pkg }))
     // .pipe(minify())
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./app/_dist/js'));
+    .pipe(gulp.dest('./client/_dist/js'));
 };

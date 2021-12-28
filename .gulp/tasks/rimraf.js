@@ -1,16 +1,16 @@
 /**
- * Delete /app/_dist/ directory
+ * Delete /client/_dist/ directory
  */
 const rimraf = require('rimraf');
 
 module.exports = async () => {
 
-  rimraf('./app/_dist', async () => {
+  rimraf('./client/_dist', async () => {
     // await new Promise(resolve => setTimeout(resolve, 2100));
-    // console.log('👌  Folder "/app/_dist" deleted by rimraf');
+    // console.log('👌  Folder "/client/_dist" deleted by rimraf');
   });
 
-  rimraf('./app/_cache', async () => {});
+  rimraf('./client/_cache', async () => { });
 
   await new Promise(resolve => setTimeout(resolve, 1300));
 };

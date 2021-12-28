@@ -1,0 +1,41 @@
+<header class="docs-header"><h1 class="docs-heading">subprotocol</h1><section class="docs-intro"><p>The subprotocol is the "languge" which client and server must speak to understand each other. It defines the format of the sent message when it's sent. Currently the Regoch Websocket Server supports:<br><b>jsonRWS</b> subprotocol &rarr; {id:number, from:number, to:number, cmd:string, payload:any}<br><b>raw</b> subprotocol &rarr; msg:string</p><p>When using 'Regoch-Router' the "jsonRWS" subprotocol have to be implemented.</p></section></header><section class="docs-section" id="item-11-1"><h2 class="section-heading">Handshaking</h2>According to the RFC6455, if the client does not send "Sec-Websocket-Protocol" header then server shouldn't send it in the response. If the client sends "Sec-Websocket-Protocol" the same value must be returned by the server in the "Sec-Websocket-Protocol" HTTP header.</section><section class="docs-section" id="item-11-2"><h2 class="section-heading">Methods</h2><p>When creating a new subprotocol all methods must be defined and included in the class. This is like an interface.<br><small>Examples: <a href="https://github.com/smikodanic/regoch-websocket/blob/master/lib/subprotocol/jsonRWS.js" target="_blank">jsonRWS.js</a> , <a href="https://github.com/smikodanic/regoch-websocket/blob/master/lib/subprotocol/raw.js" target="_blank">raw.js</a></small></p><ul class="methods"><li><b>incoming <i>(msgSTR :string) :any</i></b><p class="desc">Execute the subprotocol for incoming messages. Filter and map incoming messages.<br><b>msgSTR</b> - the message string converted from the buffer format</p></li><li><b>outgoing <i>(msg :any) :string</i></b><p class="desc">Execute the subprotocol for outgoing messages. Filter and map outgoing messages.<br><b>msg</b> - the message which is used in the regoch websocket server</p></li><li><b>process <i>() :void</i></b><p class="desc">Process client messages internally, for example execute the route commands.</p></li></ul></section><section class="docs-section" id="item-11-3"><h2 class="section-heading">jsonRWS Subprotocol Rules</h2>Subprotocol name: <b>jsonRWS</b><br>* HTTP header: "Sec-WebSocket-Protocol": "jsonRWS"<br>*<br>* Subprotocol description:<br>* This subprotocol is created for communication between websocket server and client.<br>*<br>* Subprotocol definitons:<br>* a) Client have to send message in valid JSON format. Allowed fields: id, from, to, cmd, payload.<br>* b) Server have to send message in valid JSON format. Allowed fields: id, from, to, cmd, payload.<br>* c) The message is converted from string to object.</section><section class="docs-section" id="item-11-4"><h2 class="section-heading">Example</h2><pre><code class="language-js">
+// ---------- SERVER SIDE -----------
+const wsOpts = {
+  timeout: 5*60*1000,
+  maxConns: 5,
+  maxIPConns: 3,
+  storage: 'memory',
+  subprotocol: 'jsonRWS', // subprotocol supported by the server
+  tightening: 100,
+  version: 13,
+  debug: false
+};
+const rws = new RWServer(wsOpts);
+rws.socketStorage.init(null);
+rws.bootup(httpServer);
+
+
+// ---------- CLIENT SIDE ------------
+class TestClient extends window.regoch.Client13jsonRWS {
+  constructor(wcOpts) {
+    super(wcOpts);
+  }
+
+  async connectMe() {
+    const wsocket = await this.connect();
+    console.log('+++Connected', wsocket);
+    this.messageReceiver();
+  }
+}
+
+const wcOpts = {
+  wsURL: 'ws://localhost:3211?authkey=TRTmrt',
+  timeout: 3*1000, // wait 3secs for answer
+  reconnectAttempts: 5, // try to reconnect 5 times
+  reconnectDelay: 3000, // delay between reconnections is 3 seconds
+  subprotocols: ['jsonRWS'], // tells server which subprotocols can the client handle
+  debug: true
+};
+
+const testCB = new TestClient(wcOpts);
+  </code></pre><br><br>1) Both client and server must support same subprotocol, otherwise the error on the server side will be thrown:<br><i style="color:red">Error: None of the requested subprotocols "XYZ" is supported by the server.</i><br>2) If <b>raw</b> subprotocol is used then Regoch Websocket Server can not use the Regoch Router.</section>

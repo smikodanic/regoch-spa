@@ -1,7 +1,6 @@
 const { task, watch, series, parallel } = require('gulp');
 
 // tasks
-const serverBuild = require('./tasks/serverBuild.js');
 const serverNode = require('./tasks/serverNode.js');
 const rimraf = require('./tasks/rimraf.js');
 const htmlMinify = require('./tasks/htmlMinify.js');
@@ -15,7 +14,6 @@ const onCtrlC = require('./tasks/onCtrlC.js');
 
 
 /***** GULP BASIC TASKS *****/
-task('serverBuild', serverBuild);
 task('serverStart', serverNode.start);
 task('serverStop', serverNode.stop);
 task('serverRestart', serverNode.restart);
@@ -30,24 +28,24 @@ task('cacheEnv', cacheEnv);
 /***** WATCHERS *****/
 task('watchers', async () => {
   await watch([
-    'app/src/**/*.html'
+    'client/src/**/*.html'
   ], series('build'));
 
   await watch([
-    'app/src/**/*.scss'
+    'client/src/**/*.scss'
   ], series('build'));
 
   await watch([
-    'app/src/*.js',
-    'app/src/controllers/**/*.js',
-    'app/src/conf/*.js',
-    'app/src/lib/*.js',
+    'client/src/*.js',
+    'client/src/controllers/**/*.js',
+    'client/src/conf/*.js',
+    'client/src/lib/*.js',
     'sys/**/*.js',
     '!sys/HTTPServer.js'
   ], series('build'));
 
   await watch([
-    '/app/regoch.json'
+    '/client/regoch.json'
   ], series('cacheViews', 'cacheEnv', 'browserifyMinifyMap', 'serverRestart'));
 
   await watch([
@@ -62,8 +60,8 @@ task('watchers', async () => {
 
 
 /***** GULP COMPOUND TASKS *****/
-// first delete then create JS, HTML and CSS files in /app/_dist/ directory
-task('build', series('rimraf', 'serverBuild', parallel('htmlMinify', 'scss', 'browserifyMinifyMap', 'cacheViews', 'cacheEnv')));
+// first delete then create JS, HTML and CSS files in /client/_dist/ directory
+task('build', series('rimraf', parallel('htmlMinify', 'scss', 'browserifyMinifyMap', 'cacheViews', 'cacheEnv')));
 
 // defult gulp task
 task('default', series('watchers', 'build', 'serverStart'));

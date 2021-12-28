@@ -26,26 +26,26 @@ banner.join();
 
 // compile scss to css files and create .map files for easier debugging of scss files
 const compile = async () => {
-  gulp.src('app/src/styles/app.scss')
+  gulp.src('client/src/styles/app.scss')
     .on('error', err => { console.log('SCSS Error::', err.message); })
-    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(sass())
     // .pipe(sass({outputStyle: 'compressed'}))
-    .pipe(header(banner, {pkg: pkg}))
-    .pipe(sourcemaps.write({includeContent: false}))
+    .pipe(header(banner, { pkg: pkg }))
+    .pipe(sourcemaps.write({ includeContent: false }))
     .pipe(autoprefixer())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('app/_dist/styles'));
+    .pipe(gulp.dest('client/_dist/styles'));
 };
 
 
 // create app.min.css file
 const minify = async () => {
-  await gulp.src('app/_dist/styles/app.css')
+  await gulp.src('client/_dist/styles/app.css')
     .on('error', err => { console.log('SCSS Error::', err.message); })
     .pipe(cssmin())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest('app/_dist/styles'));
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulp.dest('client/_dist/styles'));
 };
 
 

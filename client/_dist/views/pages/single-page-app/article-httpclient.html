@@ -1,0 +1,83 @@
+<header class="docs-header"><h1 class="docs-heading">HTTPClient</h1><section class="docs-intro"><i>class HTTPClient</i><br><br><p>HTTPClient can be used in the controller to send HTTP request to HTTP servers.<br>In most cases it will be used to fetch the JSON data from API.</p></section></header><section class="docs-section" id="item-14-1"><h2 class="section-heading">Properties</h2><table style="width:100%"><tr><th>Property</th><th>Description</th><th>Type</th><th>Default</th></tr><tr><td>opts</td><td>options (see the table below)</td><td>object</td><td></td></tr><tr><td>url</td><td>requested URL, for example: https://jsonplaceholder.typicode.com/todos?page=22</td><td>string</td><td></td></tr><tr><td>protocol</td><td>HTTP protocol</td><td>string</td><td>http:</td></tr><tr><td>hostname</td><td>server, host name</td><td>string</td><td></td></tr><tr><td>port</td><td>HTTP port number</td><td>number</td><td>80</td></tr><tr><td>pathname</td><td>path name</td><td>string</td><td>/</td></tr><tr><td>querystring</td><td>query string, for example ?page=22</td><td>string</td><td>'</td></tr><tr><td>headers</td><td>default request headers</td><td>object</td><td>{'authorization': '', 'accept': '*/*', 'content-type': 'text/html; charset=UTF-8'}</td></tr><tr><td>xhr</td><td>instance of the XMLHttpRequest</td><td>XMLHttpRequest</td><td></td></tr><tr><td>interceptor</td><td>a function which will be executed before the HTTP request is sent. It's defined by the <i>setInterceptor()</i>.</td><td>Function</td><td></td></tr></table><br><br>The <b>opts</b> properties:<table style="width:100%"><tr><th>Property</th><th>Description</th><th>Type</th><th>Default</th></tr><tr><td>encodeURI</td><td>to encode URI, for example ?x=jen dva &rarr; ?x=jen%20dva</td><td>boolean</td><td>false</td></tr><tr><td>timeout</td><td>the request timeout, if 0 or false it will never timeout</td><td>number</td><td>8000</td></tr><tr><td>retry</td><td>the number of retries</td><td>number</td><td>3</td></tr><tr><td>retryDelay</td><td>the delay between retries in ms</td><td>number</td><td>5500</td></tr><tr><td>maxRedirects</td><td>the may number of 310 redirects to follow</td><td>number</td><td>3</td></tr><tr><td>headers</td><td>request headers</td><td>object</td><td>{'authorization': '', 'accept': '*/*', 'content-type': 'text/html; charset=UTF-8'}</td></tr></table></section><section class="docs-section" id="item-14-2"><h2 class="section-heading">Methods</h2><p>Use this methods in the controller after "Cookie" class is instantiated.</p><ul class="methods"><li><i>async</i> <b>askOnce <i>(url :string, method :string = 'GET', body_obj :any) :Promise&lt;answer&gt;</i></b><p class="desc">Sending one HTTP request to HTTP server. The returned value is the Promise with answer object.<br>- 301 redirections are not handled.<br>- retries are not handled<br><b>url</b> - requested URL<br><b>method</b> - GET, POST, PUT, DELETE, ...<br><b>body_obj</b> - body object for POST, PUT, ...</p></li><li><i>async</i> <b>ask <i>(url :string, method :string = 'GET', body_obj :any) :Promise&lt;answer&gt;</i></b><p class="desc">Sending one HTTP request to HTTP server. The returned value is the Promise with answer object.<br>- 301 redirections are handled.<br>- retries are handled<br><b>url</b> - requested URL<br><b>method</b> - GET, POST, PUT, DELETE, ...<br><b>body_obj</b> - body object for POST, PUT, ...</p></li><li><i>async</i> <b>askJSON <i>(url :string, method :string = 'GET', body :any) :Promise&lt;answer&gt;</i></b><p class="desc">Fetch the JSON. Redirections and retries are not handled. The returned value is the Promise with answer object.<br><b>url</b> - requested URL<br><b>method</b> - GET, POST, PUT, DELETE, ...<br><b>body</b> - body object for POST, PUT, ... as string or object</p></li><li><i>async</i> <b>askHTML <i>(url :string, cssSel :string) :Promise&lt;answer&gt;</i></b><p class="desc">Get the HTML file content or part of it filtered by the css selector. Redirections and retries are not handled. The returned value is the Promise with answer object.<br><b>url</b> - requested URL<br><b>cssSel</b> - CSS selector to fetch a part of the HTML file<br>NOTE: The answer.res.content contains a list of nodes and the HTML string <b>{Node[], string}</b>.</p></li><li><i>async</i> <b>askJS <i>(url :string) :Promise&lt;answer&gt;</i></b><p class="desc">Fetch the content of the JS file. Redirections and retries are not handled. The returned value is the Promise with answer object.<br><b>url</b> - requested URL</p></li><li><b>kill <i>(): void</i></b><p class="desc">Stop the sent request immediatelly.</p></li><li><b>setInterceptor <i>(interceptor :Function) :void</i></b><p class="desc">Set the interceptor function which will be executed every time before the HTTP request is sent.<br><b>interceptor</b> - callback function, for example: <small>async () => { httpClient.setHeader('Authorization', 'JWT aswas); }</small></p></li><br><br><h4>HEADERS</h4>The header name is not case sensitive, so "Authorizaton" or "authorization" can be used.<li><b>setReqHeaders <i>(headerObj :object) :void</i></b><p class="desc">Change request header object "this.headers". The <i>headerObj</i> will be appended to previously defined this.headers and headers with the same name will be overwritten.<br><b>headerObj</b> - for example: <small>{'authorization', 'user-agent', accept, 'cache-control', 'host', 'accept-encoding', 'connection'}</small></p></li><li><b>setReqHeader <i>(headerName :string, headerValue :string) :void</i></b><p class="desc">Set a request header.<br><b>headerName</b> - header name (if headerName already exists in <i>this.headers</i> it will be overwritten)<br><b>headerValue</b> - header value</p></li><li><b>delReqHeaders <i>(headerNames :string[]): void</i></b><p class="desc">Delete multiple request headers.<br><b>headerNames</b> - array of header names, for example: <small>['content-type', 'accept']</small></p></li><li><b>getReqHeaders <i>(): object</i></b><p class="desc">Get the object of HTTP request headers i.e. <i>this.headers</i> will be returned.</p></li><li><b>getResHeaders <i>(): object</i></b><p class="desc">Get the object of HTTP response headers.</p></li></ul></section><section class="docs-section" id="item-14-3"><h2 class="section-heading">Answer</h2><p>On every request the answer object is received. It has the same format with the same properties.<pre><code class="language-javascript">
+{
+  requestURL: string;
+  requestMethod: string;
+  status: number;
+  statusMessage: string;
+  https: boolean;
+
+  // request
+  req: {
+    headers: object;
+    payload: any;
+  },
+
+  // response
+  res: {
+    headers: object;
+    content: undefined
+  },
+
+  // request and response time & duration
+  time: {
+    req: string; // ISO string
+    res: string; // ISO string
+    duration: number; // duration when response came back in seconds
+  }
+}
+  </code></pre></p></section><section class="docs-section" id="item-14-4"><h2 class="section-heading">Interceptor</h2><p>The interceptor is callback function which will be executed every time before the HTTP request is sent to the HTTP Server (API). Developer can set up interceptor by using <b>setInterceptor()</b> method, or by setting up <i>httpClient.interceptor</i> property.<br>If the interceptor function throws an <i>Error</i> the HTTP request is never sent to the server. For example: <small>async function interceptor() { throw new Error(); }</small><br>It's not recomended to use arrow function to define inteceptor, because <b>this</b> will be binded to the upper object. For example do not use: <small>async () => { this ...}</small> but use <small>async function interceptor() { this ... }</small><br>By using <i>setInterceptor()</i> method the <b>this</b> is automatically binded to <i>httpClient</i> instance. If you want to bind it to some other object use the <i>httpClient.interceptor</i> property. For example: <small>httpClient.interceptor = interceptor.bind(someOtherObject);</small><br>The interceptor function doesn't have any argument.<br><br>The example below shows how to setup the interceptor which will take JWT token from cookie and set the <b>Authorization</b> header:</p><pre><code class="language-javascript">
+class ApiCall {
+
+  constructor(httpClient, auth) {
+    this.httpClient = httpClient;
+
+    /* set interceptor which will define the "authorization" header on every request */
+    async function interceptor() {
+      const jwtToken = auth.getJWTtoken(); // JWT ...
+      this.setReqHeader('authorization', jwtToken); // this is binded to httpClient
+    }
+    this.httpClient.setInterceptor(interceptor); // will bind this in the interceptor() to httpClient
+    // this.httpClient.interceptor = interceptor.bind(httpClient); // or use property directly
+  }
+
+  async get(url) {
+    const answer = await this.httpClient.askJSON(url, 'GET');
+    if (answer.status === 200) { return answer.res.content; }
+    else { throw new Error(answer.res.content.message); }
+  }
+
+  async post(url, body) {
+    const answer = await this.httpClient.askJSON(url, 'POST', body);
+    if (answer.status === 200) { return answer.res.content; }
+    else { throw new Error(answer.res.content.message); }
+  }
+
+
+}
+
+module.exports = ApiCall;
+  </code></pre></section><section class="docs-section" id="item-14-5"><h2 class="section-heading">Example</h2><pre><code class="language-js">
+const { Controller, syslib } = require('regoch-spa');
+
+class MyCtrl extends Controller {
+  constructor(app) {
+    const opts = {
+        encodeURI: false,
+        timeout: 8000,
+        retry: 3,
+        retryDelay: 5500,
+        maxRedirects: 3,
+        headers: {
+          'authorization': '',
+          'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+          'content-type': 'text/html; charset=UTF-8'
+        }
+      };
+    this.hc = new syslib.HTTPClient(opts);
+  }
+
+  async test() {
+    const answer = await this.hc.askJSON('https://jsonplaceholder.typicode.com/todos/1');
+  }
+}
+  </code></pre></section>

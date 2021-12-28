@@ -1,0 +1,51 @@
+<header class="docs-header"><h1 class="docs-heading">Introduction</h1><section class="docs-intro"><p>Websocket client for browser platform. The client works best with the <a href="/websocket-server" data-rg-href>Regoch Websocket Server</a>. Small, optimised and very powerful library made according to <a href="https://tools.ietf.org/html/rfc6455" target="_blank">RFC6455 Standard</a> for websocket version 13.</p></section></header><section class="docs-section" id="item-1-1"><h2 class="section-heading">Features</h2><ul><li>RFC6455, websocket v.13</li><li>supported subprotocols: <i>jsonRWS, raw</i></li><li>rooms - send group message to a subscribed clients</li><li>small file size, minified (*~7.5kB only*)</li><li>powerful API which saves your development time</li><li>use it in your <a href="http://browserify.org" target="_blank">browserify</a> project</li><li>easy integration with RxJS</li></ul></section><section class="docs-section" id="item-1-2"><h2 class="section-heading">Installation</h2><p>Install the websocket client in your project via npm:</p><pre><code class="language-bash">$ npm install --save regoch-websocket</code></pre><br><br><h4>How to use</h4>A short example how to use Browser Websocket Client after installation:<pre><code class="language-html">
+&lt;script src="node_modules/regoch-websocket/clientBrowser/dist/client13jsonRWS/client13jsonRWS-min.js"&gt;&lt;/script&gt;
+
+&lt;button onclick="testCB.connectMe()"&gt;Connect&lt;/button&gt;
+  </code></pre><pre><code class="language-js">
+class TestClient extends window.regochWebsocket.Client13jsonRWS {
+  constructor(wcOpts) { super(wcOpts); }
+
+  async connectMe() {
+    const wsocket = await this.connect();
+    console.log('+++Connected', wsocket);
+  }
+}
+
+const wcOpts = {
+  wsURL: 'ws://localhost:3211?authkey=TRTmrt',
+  questionTimeout: 3*1000, // wait 3 seconds for answer
+  reconnectAttempts: 5, // try to reconnect 5 times
+  reconnectDelay: 3000, // delay between reconnections is 3 seconds
+  subprotocols: ['jsonRWS'],
+  debug: false
+};
+const testCB = new TestClient(wcOpts);
+  </code></pre><br><br>or in the Browserify<pre><code class="language-js">
+const { RWClientBrowser } = require('regoch-websocket')
+class TestClient extends RWClientBrowser { ... }
+  </code></pre></section><section class="docs-section" id="item-1-3"><h2 class="section-heading">Exports in the npm package</h2><pre><code class="language-js">
+module.exports = {
+  RWServer,
+  RWHttpServer,
+  RWClientNodejs,
+  RWClientBrowser,
+  lib
+};
+  </code></pre></section><section class="docs-section" id="item-1-4"><h2 class="section-heading">License</h2>The software is published under <b>MIT License</b>.<pre class="mt-2" style="border:1px solid silver; padding: 5px;">
+The MIT License
+
+Copyright (C) 2021  Saša Mikodanić http://www.regoch.org
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to
+whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</pre></section>

@@ -1,0 +1,44 @@
+<header class="docs-header"><h1 class="docs-heading">App</h1><section class="docs-intro"><i>class App</i></section></header><section class="docs-section" id="item-2-1"><h2 class="section-heading">Properties</h2><table style="width:100%"><tr><th>Property</th><th>Description</th><th>Type</th><th>Default</th></tr><tr><td>CONST</td><td>Injected constants which can be used (but not modified) in the controller.</td><td>any</td><td>{}</td></tr><tr><td>lib</td><td>Injected custom made libraries which can be used the controller.</td><td>object</td><td>{}</td></tr><tr><td>controllers</td><td>A collection of all controllers. This makes possible to use a controller's methods inside another controller.</td><td>object</td><td>{}</td></tr><tr><td>router</td><td>The Router instance.</td><td>object</td><td></td></tr></table><br><br>Beside these properties the global <b style="color:orangered">window.regochGlob = {}</b> variable is initialised and can be used in controllers whenever it's needed.</section><section class="docs-section" id="item-2-2"><h2 class="section-heading">Methods</h2><ul class="methods"><li><b>const <i>(name :string, value :any): App</i></b> - inject constant which can be used in the controller as <i>app.CONST</i><p><b>name</b> - constant name<br><b>val</b> - constant value</p></li><li><b>freeze <i>(): void</i></b> - freeze app.CONST to prevent unwanted modifications in the controller</li><li><b>constEmpty <i>(): void</i></b> - empty the app.CONST property</li><li><b>libInject <i>(libs :object): void</i></b> - append libraries which can be used in the controller as <i>app.lib</i><p><b>libs</b> - object with the libraries, for example: <i>{StringExt, Rand}</i></p></li><li><b>libEmpty <i>(): void</i></b> - empty the lib property</li><li><b>controllersInject <i>(Ctrls :Class[]): void</i></b> - create controller instances and inject into the app.controllers<p><b>Ctrls</b> - array of controller classes, for example: <i>[HomeCtrl, LoginCtrl]</i></p></li><li><b>controllerProp <i>(name :string, val :any): App</i></b> - Define controller property/value. Sometimes it's needed that all controllers have same property with the same value.<p><b>name</b> - controller property name<br><b>val</b> - controller property value</p></li><li><b>controllerAuth <i>(auth :Auth): App</i></b> - Inject the auth library into the all controllers and use it as <i>this.auth</i>. Useful in apps where authentication guards are required in all routes, for example when building a web panel.<p><b>auth</b> - instance of the Auth class</p></li><li><b>controllerViewsCached <i>(viewsCached :object): App</i></b> - Inject the content of the /app/_cache/views.json. Useful to speed up the HTML view load, especially in data-rg-inc elements.<p><b>viewsCcached</b> - the content of the /app/_cache/views.json file. Use regoch.json to produce /app/_cache/views.json.</p></li><li><b>routes <i>(routesCnf :any[][]): App</i></b> - define the app routes<p><b>routesCnf</b> - route configuration, for example:<br><i>[['when', '/login', 'LoginCtrl'], {autoLogin:true}], ['when', '/customer/product/:id', 'CustomerProductCtrl'], {isLogged:true, hasRole:true}]]</i></p></li><li><b>run <i>(): void</i></b> - run the app, i.e. execute the router</li><li><b>preflight <i>(funcs :Function[]): App</i></b> - execute functions in the preflight, i.e. on every route before controller's loader().<p><b>funcs</b> - array of the preflight functions. Argument of the function is <b>trx</b> (regoch router transitional variable), for example: <i>async (trx) => {...}</i></p></li><br><br><h4>EVENT LISTENERS</h4><li><b>onReady <i>(cb :Function): void</i></b> - Fired when HTML doc with the all resources is loaded. <a href="https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onload" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onload</a></li><li><b>onDOMLoaded <i>(cb :Function): void</i></b> - Fired when HTML doc is loaded without CSS, IMG and other resources. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event</a></li><li><b>createDOMObserver <i>(cb :Function): void</i></b> - Listen for the DOM changes. Creates app.DOMobserver. <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver</a><pre><code class="language-javascript">
+app.createDOMObserver((mutationsList, observer) => { ... });
+const targetNode = document.querySelector('p#my-id);
+const config = { attributes: true, childList: true, subtree: true };
+app.DOMObserver.observe(targetNode, config);
+
+To stop observing the DOM changes use: app.DOMObserver.disconnect();
+      </code></pre></li></ul></section><section class="docs-section" id="item-2-3"><h2 class="section-heading">Example</h2><pre><code class="language-javascript">
+const { App } = require('regoch-spa');
+const viewsCached = require('../_cache/views.json'); // use regoch.json to generate /_cache/views.json
+
+// lib
+const StringExt = require('./lib/StringExt');
+const Rand = require('./lib/Rand');
+
+// controllers
+const HomeCtrl = require('./controllers/HomeCtrl');
+const ProductCtrl = require('./controllers/ProductCtrl');
+const NotfoundCtrl = require('./controllers/NotfoundCtrl');
+
+// routes
+const routesCnf = [
+  ['when', '/', 'HomeCtrl'],
+  ['when', '/product/:id', 'ProductCtrl', {authGuards: ['isLogged', 'hasRole']}],
+  ['notfound', 'NotfoundCtrl']
+]
+
+
+const app = new App();
+app
+  .const('myNum', 10)
+  .const('myStr', 'some thing')
+  .const('myObj', {a: 22})
+  .freeze();
+app
+  .libInject({ StringExt, Rand });
+app
+  .controller([HomeCtrl, SinglePageAppCtrl, NotfoundCtrl])
+  .controllerAuth(auth) // needed for route authGuards
+  .controllerViewsCached(viewsCached);
+app
+  .routes(routesCnf)
+  .run();
+    </code></pre></section>
