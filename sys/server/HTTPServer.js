@@ -35,7 +35,7 @@ class HTTPServer {
       else if (!this.opts.assetsDir) { throw new Error('Parameter "assetsDir" is not defined.'); }
       else if (!this.opts.headers) { this.opts.headers = []; }
     } else {
-      throw new Error('HTTP options are not defined.');
+      throw new Error('HTTP Server options are not defined.');
     }
     this.httpServer;
   }
@@ -135,9 +135,6 @@ class HTTPServer {
 
     // listen for server events
     this.events();
-
-
-    return this.httpServer;
   }
 
 

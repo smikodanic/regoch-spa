@@ -2,12 +2,11 @@ const func1 = (trx) => { console.log(`DO func1 Host is ${window.location.host}.`
 const func2 = (trx) => { console.log(`DO func2 Current URI is ${window.location.pathname}${window.location.search} or ${trx.uri}.`); };
 
 
-
 // route definitions
 module.exports = [
   // docs
-  ['when', '/', 'HomeCtrl'],
-  ['when', '/single-page-app', 'SinglePageAppCtrl'],
+  ['when', '/', 'HomeCtrl', { ssr: true }],
+  ['when', '/single-page-app', 'SinglePageAppCtrl', { ssr: true }],
   ['when', '/websocket/server', 'WebsocketServerCtrl'],
   ['when', '/websocket/clients', 'WebsocketClientsCtrl'],
   ['when', '/websocket/clients/nodejs', 'WebsocketClientsNodejsCtrl'],
@@ -18,7 +17,7 @@ module.exports = [
   ['when', '/contact', 'ContactCtrl'],
 
   // playground
-  ['when', '/playground/controller-hooks', 'Controller_hooksCtrl', {ssr: true}],
+  ['when', '/playground/controller-hooks', 'Controller_hooksCtrl', { ssr: true }],
   ['when', '/playground/controller-hooks-same', 'Controller_hooksCtrl'],
   ['when', '/playground/model', 'ModelCtrl'],
   ['when', '/playground/view-rginc', 'View_rgIncCtrl'],

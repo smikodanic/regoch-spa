@@ -160,7 +160,7 @@ class App {
     const router = new Router(this.$debugOpts.router, this.$debugOpts.regochRouter);
 
     for (const routeCnf of routesCnf) {
-      const cmd = routeCnf[0]; // '_def', '_notfound'
+      const cmd = routeCnf[0]; // 'when', 'notfound', 'do', 'redirect'
 
       if (cmd === 'when') {
         const route = routeCnf[1]; // '/page1'
