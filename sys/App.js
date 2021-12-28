@@ -1,5 +1,6 @@
 const Router = require('./router/Router');
 const navig = require('./lib/navig');
+const HTTPClient = require('./lib/HTTPClient');
 const debugOpts = require('./conf/$debugOpts');
 
 
@@ -22,6 +23,7 @@ class App {
       const ctrl = new Ctrl(this);
       this.ctrls[Ctrl.name] = ctrl;
     }
+    this._httpClient(); // define $httpClient and $baseURIhost
     return this;
   }
 
@@ -36,6 +38,36 @@ class App {
     const controllersCount = Object.keys(this.ctrls).length;
     if (controllersCount === 0) { throw new Error(`The controller property "${name}" should be defined after the method controllersInject().`); }
     for (const ctrlName of Object.keys(this.ctrls)) { this.ctrls[ctrlName][name] = val; }
+    return this;
+  }
+
+
+  /**
+   * Set the $httpClient and $baseURIhost property in all controllers.
+   * The $httpClient is the default controller's HTTP client. It can be invoked with this.$httpClient in the controller.
+   * The $httpClient is used in View.js.
+   * For methods see lib/HttpClient.
+   * @returns {App}
+   */
+  _httpClient() {
+    const opts = {
+      encodeURI: true,
+      timeout: 21000,
+      retry: 0,
+      retryDelay: 1300,
+      maxRedirects: 0,
+      headers: {
+        'authorization': '',
+        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+        'content-type': 'text/html; charset=UTF-8'
+      }
+    };
+    const httpClient = new HTTPClient(opts);
+    this._controllerProp('$httpClient', httpClient);
+
+    const baseURIhost = `${window.location.protocol}//${window.location.host}`; // http://localhost:4400
+    this._controllerProp('$baseURIhost', baseURIhost);
+
     return this;
   }
 

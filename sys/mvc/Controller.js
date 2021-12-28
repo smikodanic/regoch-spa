@@ -4,7 +4,7 @@ const navig = require('../lib/navig');
 
 class Controller extends Model {
 
-  // controller properties: $auth, $debugOpts, $fridge, $model, $modeler, $preflight, $postflight, $rg, $view
+  // controller properties: $auth, $debugOpts, $fridge, $model, $modeler, $preflight, $postflight, $rg, $httpClient, $baseURIhost
   constructor() {
     super();
     this.$debugOpts = {}; // debug options, setup with App.debugger()

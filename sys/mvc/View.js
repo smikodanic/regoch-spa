@@ -6,24 +6,6 @@ class View extends DataRg {
 
   constructor() {
     super();
-    const baseURIhost = `${window.location.protocol}//${window.location.host}`; // http://localhost:4400
-
-    const opts = {
-      encodeURI: true,
-      timeout: 21000,
-      retry: 0,
-      retryDelay: 1300,
-      maxRedirects: 0,
-      headers: {
-        'authorization': '',
-        'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-        'content-type': 'text/html; charset=UTF-8'
-      }
-    };
-    const httpClient = new HTTPClient(opts);
-
-    this.$view = { baseURIhost, httpClient };
-
     // window.regochGlob.viewsCached is defined by the App:controllerViewsCached()
   }
 
@@ -258,7 +240,7 @@ class View extends DataRg {
 
 
   /**
-   * Empty a view.
+   * Empty a
    * @param {string} viewName - view name
    * @param {string} dest - destination where the view was placed: inner, outer, sibling, prepend, append
    * @returns {void}
@@ -324,8 +306,8 @@ class View extends DataRg {
    */
   async fetchRemoteView(viewPath, cssSel) {
     const path = `/views/${viewPath}`; // /views/pages/home/main.html
-    const url = new URL(path, this.$view.baseURIhost).toString(); // resolve the URL
-    const answer = await this.$view.httpClient.askHTML(url, cssSel);
+    const url = new URL(path, this.$baseURIhost).toString(); // resolve the URL
+    const answer = await this.$httpClient.askHTML(url, cssSel);
     const content = answer.res.content;
     if (answer.status !== 200 || !content) { throw new Error(`Status isn't 200 or content is empty for ${viewPath}`); }
 
@@ -399,11 +381,11 @@ class View extends DataRg {
       // correct the URL
       url = url.trim();
       if (!/^http/.test(url)) {
-        url = new URL(url, this.$view.baseURIhost).toString(); // resolve the URL
+        url = new URL(url, this.$baseURIhost).toString(); // resolve the URL
       }
 
       const jsContents = [];
-      const answer = await this.$view.httpClient.askJS(url);
+      const answer = await this.$httpClient.askJS(url);
       jsContents.push(answer.res.content);
       for (const jsContent of jsContents) { eval(jsContent); }
     }
