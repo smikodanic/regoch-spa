@@ -8,7 +8,7 @@ const { minify } = require('html-minifier'); // https://github.com/kangax/html-m
 
 module.exports = async () => {
   const cwd = process.cwd();
-  const regochJsonPath = path.join(cwd, 'client/regoch.json');
+  const regochJsonPath = path.join(cwd, 'regoch.json');
   const regochJson = require(regochJsonPath);
   const files = regochJson.cache.views;
 

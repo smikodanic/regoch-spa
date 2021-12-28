@@ -45,7 +45,7 @@ task('watchers', async () => {
   ], series('build'));
 
   await watch([
-    '/client/regoch.json'
+    '/regoch.json'
   ], series('cacheViews', 'cacheEnv', 'browserifyMinifyMap', 'serverRestart'));
 
   await watch([
