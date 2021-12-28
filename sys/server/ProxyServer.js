@@ -81,13 +81,15 @@ class ProxyServer {
       if (!!routeDef_found && !!routeDef_found.routeOpts && !!routeDef_found.routeOpts.ssr) {
         console.log('SERVER SIDE RENDER', req.url);
 
+        this.page = await this.browser.newPage();
         const url = `http://${this.opts.request_host}:${this.opts.request_port}${req.url}`;
         await this.page.goto(url);
         const html = await this.page.content();
-        this.page.close();
 
         res.write(html, 'utf8');
         res.end();
+
+        await this.page.close();
 
       } else {
         console.log('NOT SSR');
@@ -162,7 +164,7 @@ class ProxyServer {
   async browser_page() {
     const pptrOpts = {
       executablePath,
-      headless: false,
+      headless: true,
       devtools: false,  // Open Chrome devtools at the beginning of the test
       dumpio: false,
       slowMo: 130,  // Wait 130 ms each step of execution, for example chars typing
@@ -180,7 +182,6 @@ class ProxyServer {
       ]
     };
     this.browser = await puppeteer.launch(pptrOpts);
-    this.page = await this.browser.newPage();
   }
 
 

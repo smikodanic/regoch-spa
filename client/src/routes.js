@@ -6,7 +6,7 @@ const func2 = (trx) => { console.log(`DO func2 Current URI is ${window.location.
 module.exports = [
   // docs
   ['when', '/', 'HomeCtrl', { ssr: true }],
-  ['when', '/single-page-app', 'SinglePageAppCtrl', { ssr: true }],
+  ['when', '/single-page-app', 'SinglePageAppCtrl'],
   ['when', '/websocket/server', 'WebsocketServerCtrl'],
   ['when', '/websocket/clients', 'WebsocketClientsCtrl'],
   ['when', '/websocket/clients/nodejs', 'WebsocketClientsNodejsCtrl'],
