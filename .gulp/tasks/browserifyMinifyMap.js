@@ -24,6 +24,12 @@ banner.join();
 
 module.exports = async () => {
   browserify('./client/src/app.js')
+    .ignore('http')
+    .ignore('fs')
+    .ignore('path')
+    .ignore('zlib')
+    .ignore('os')
+    .ignore('puppeteer')
     .bundle()
     .on('error', (err) => {
       console.log('Browserify Error::', err.message);

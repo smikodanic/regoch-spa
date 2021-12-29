@@ -1,4 +1,5 @@
 const RegochRouter = require('./RegochRouter');
+const navig = require('../lib/navig');
 
 
 class Router extends RegochRouter {
@@ -18,6 +19,7 @@ class Router extends RegochRouter {
    */
   _when(route, ctrl, routeOpts = {}) {
     const authGuards = routeOpts.authGuards || [];
+    const ssr = routeOpts.ssr || false;
 
     // prechecks
     if (!route && !!ctrl) { throw new Error(`Route is not defined for "${ctrl.constructor.name}" controller.`); }
@@ -38,7 +40,8 @@ class Router extends RegochRouter {
     const processing = ctrl.processing.bind(ctrl);
     const postflight = !!ctrl.$postflight ? ctrl.$postflight : []; // array of postflight functions, will be executed on every route ater the controller's postrend()
 
-    this.when(route, ...guards, ...preflight, processing, ...postflight);
+    if (ssr === false) { this.when(route, ...guards, ...preflight, processing, ...postflight); }
+    else { this.when(route, () => { if (navig.previous.uri !== navig.current.uri) { window.location.href = 'http://127.0.0.1:4400' + route; } }); }
   }
 
 

@@ -89,7 +89,7 @@ class ProxyServer {
         res.write(html, 'utf8');
         res.end();
 
-        await this.page.close();
+        // await this.page.close();
 
       } else {
         console.log('NOT SSR');
@@ -164,7 +164,7 @@ class ProxyServer {
   async browser_page() {
     const pptrOpts = {
       executablePath,
-      headless: true,
+      headless: false,
       devtools: false,  // Open Chrome devtools at the beginning of the test
       dumpio: false,
       slowMo: 130,  // Wait 130 ms each step of execution, for example chars typing
