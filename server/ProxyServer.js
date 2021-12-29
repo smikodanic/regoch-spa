@@ -1,8 +1,7 @@
 const http = require('http');
-const RegochRouter = require('../router/RegochRouter');
-
-const puppeteer = require('puppeteer');
 const os = require('os');
+const puppeteer = require('puppeteer');
+
 
 
 // define chrome executable path
@@ -46,9 +45,6 @@ class ProxyServer {
       throw new Error('Proxy Server options are not defined.');
     }
     this.proxyServer;
-
-    this.regochRouter = new RegochRouter();
-    this.routeDefs = []; // [{route, routeParsed, routeOpts}]
   }
 
 
@@ -59,40 +55,38 @@ class ProxyServer {
    * @returns {Server} - nodeJS HTTP server instance https://nodejs.org/api/http.html#http_class_http_server
    */
   start() {
-    // open browser
-    this.browser_page();
-
-
     // start Proxy Server and listen requests
     this.proxyServer = http.createServer(async (req, res) => {
-      console.log(`\n ${req.url}`);
+      console.log('\n req.url::', req.url);
+      console.log('req.headers-useragent::', req.headers['user-agent']);
 
-      // get uri parsed
-      const uriParsed = this.regochRouter._uriParser(req.url);
+      const reqURL = req.url;
+      const urlNoQuery = reqURL.trim().replace(/\?.+/, ''); // URL where query is removed, for example for example ?v=4.7.0
+      const matched = urlNoQuery.match(/\.([^.]+)$/i);
+      const fileExt = !!matched ? matched[1] : ''; // html, txt, css, js, png, ...
 
-      // found route definition
-      const routeDef_found = this.routeDefs.find(routeDef => { // {route, routeParsed, funcs}
-        const routeParsed = routeDef.routeParsed; // {full, segments, base}
-        return this.regochRouter._routeRegexMatchNoParams(routeParsed, uriParsed) || this.regochRouter._routeWithParamsMatch(routeParsed, uriParsed);
-      });
+      const userAgent = req.headers['user-agent'];
+      const userAgentContains = ['bot', 'crawl', 'spider', 'moz'];
+      const joined = userAgentContains.join('|'); // bot|crawl
+      const reg = new RegExp(joined, 'i');
 
-      console.log('routeDef_found::', routeDef_found);
-
-      if (!!routeDef_found && !!routeDef_found.routeOpts && !!routeDef_found.routeOpts.ssr) {
-        console.log('SERVER SIDE RENDER', req.url);
+      if (reg.test(userAgent) && !fileExt) {
+        console.log('BOT::', userAgent);
 
         this.page = await this.browser.newPage();
-        const url = `http://${this.opts.request_host}:${this.opts.request_port}${req.url}`;
+        const url = `http://${this.opts.request_host}:${this.opts.request_port}${req.url}?fromproxy=yes`;
         await this.page.goto(url);
         const html = await this.page.content();
 
         res.write(html, 'utf8');
         res.end();
 
-        // await this.page.close();
+        // close the browser tab
+        await new Promise(r => setTimeout(r, 700));
+        await this.page.close();
 
       } else {
-        console.log('NOT SSR');
+        console.log('NOT BOT');
         const requestOpts = {
           host: this.opts.request_host,
           port: this.opts.request_port,
@@ -116,7 +110,9 @@ class ProxyServer {
 
 
     // listen for server events
-    this.events();
+    this._onListening();
+    this._onClose();
+    this._onError();
   }
 
 
@@ -140,28 +136,8 @@ class ProxyServer {
   }
 
 
-  /**
-   * Set route definitions i.e. routeDefs
-   * @param {string[][]} routesCnf
-   * @returns {void}
-   */
-  routes(routesCnf) {
-    for (const routeCnf of routesCnf) {
-      // const cmd = routeCnf[0]; // 'when', 'notfound', 'do', 'redirect'
-      const route = routeCnf[1]; // '/page1'
-      // const ctrlName = routeCnf[2]; // 'Page1Ctrl'
-      const routeOpts = routeCnf[3]; // {authGuards: ['autoLogin', 'isLogged', 'hasRole'], ssr: true}
 
-      this.routeDefs.push({
-        route,
-        routeParsed: this.regochRouter._routeParser(route),
-        routeOpts
-      });
-    }
-  }
-
-
-  async browser_page() {
+  async openBrowser() {
     const pptrOpts = {
       executablePath,
       headless: false,
@@ -182,18 +158,14 @@ class ProxyServer {
       ]
     };
     this.browser = await puppeteer.launch(pptrOpts);
+
+    // prevent closing of the browser
+    this.browser.on('disconnected', async () => { await this.openBrowser(); });
   }
 
 
 
   /*** HTTP SERVER EVENTS ***/
-  events() {
-    this._onListening();
-    this._onClose();
-    this._onError();
-  }
-
-
   _onListening() {
     this.proxyServer.on('listening', () => {
       const addr = this.proxyServer.address();
@@ -207,6 +179,7 @@ class ProxyServer {
   _onClose() {
     this.proxyServer.on('close', () => {
       console.log(`✋  Proxy Server is stopped.`);
+      this.browser.close();
     });
   }
 

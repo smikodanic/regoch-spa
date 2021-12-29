@@ -30,6 +30,8 @@ module.exports = async () => {
     .ignore('zlib')
     .ignore('os')
     .ignore('puppeteer')
+    .exclude('./server/HTTPServer')
+    .exclude('./server/ProxyServer')
     .bundle()
     .on('error', (err) => {
       console.log('Browserify Error::', err.message);
@@ -38,7 +40,7 @@ module.exports = async () => {
     .pipe(buffer())
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(header(banner, { pkg: pkg }))
-    // .pipe(minify())
+    .pipe(minify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./client/_dist/js'));
 };

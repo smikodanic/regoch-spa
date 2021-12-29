@@ -1,4 +1,4 @@
-const { HTTPServer, ProxyServer } = require('../sys/server');
+const HTTPServer = require('./HTTPServer');
 
 
 const regochPath = `${process.cwd()}/regoch.json`;
@@ -36,6 +36,7 @@ httpServer.start();
 
 
 ///// Proxy Server /////
+const ProxyServer = require('./ProxyServer');
 const routes = require('../client/src/routes');
 
 const proxyOpts = {
@@ -54,5 +55,5 @@ const proxyOpts = {
 };
 
 const proxyServer = new ProxyServer(proxyOpts);
-proxyServer.routes(routes);
+proxyServer.openBrowser();
 proxyServer.start();

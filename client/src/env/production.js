@@ -1,8 +1,9 @@
 module.exports = {
   name: 'production',
   proxy: {
-    hostname: '127.0.0.1',
-    port: 4500
+    port: 4400,
+    request_host: '127.0.0.1',
+    request_port: '4401'
   },
   server: {
     port: 4501
