@@ -1,4 +1,4 @@
-const HTTPServer = require('./HTTPServer');
+const { HTTPServer, ProxyServer } = require('../sys').server;
 
 
 const regochPath = `${process.cwd()}/regoch.json`;
@@ -7,6 +7,7 @@ const regochJson = require(regochPath);
 const env = process.env.NODE_ENV || regochJson.cache.env || 'development';
 const envPath = `${process.cwd()}/client/src/env/${env}.js`;
 const envJs = require(envPath);
+
 
 
 ///// HTTP Server /////
@@ -36,7 +37,6 @@ httpServer.start();
 
 
 ///// Proxy Server /////
-const ProxyServer = require('./ProxyServer');
 const routes = require('../client/src/routes');
 
 const proxyOpts = {

@@ -66,7 +66,7 @@ class ProxyServer {
       const fileExt = !!matched ? matched[1] : ''; // html, txt, css, js, png, ...
 
       const userAgent = req.headers['user-agent'];
-      const userAgentContains = ['bot', 'crawl', 'spider', 'moz'];
+      const userAgentContains = ['bot', 'crawl', 'spider'];
       const joined = userAgentContains.join('|'); // bot|crawl
       const reg = new RegExp(joined, 'i');
 

@@ -30,8 +30,10 @@ module.exports = async () => {
     .ignore('zlib')
     .ignore('os')
     .ignore('puppeteer')
-    .exclude('./server/HTTPServer')
-    .exclude('./server/ProxyServer')
+    .ignore('./sys/_server/HTTPServer.js')
+    .ignore('./node-modules/regoch-spa/sys/_server/HTTPServer.js')
+    .ignore('./sys/_server/ProxyServer.js')
+    .ignore('./node-modules/regoch-spa/sys/_server/ProxyServer.js')
     .bundle()
     .on('error', (err) => {
       console.log('Browserify Error::', err.message);
