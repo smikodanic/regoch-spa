@@ -4,19 +4,6 @@ const puppeteer = require('puppeteer');
 
 
 
-// define chrome executable path
-const osPlatform = os.platform(); // possible values are: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
-
-
-let executablePath;
-if (/^win/i.test(osPlatform)) {
-  executablePath = '';
-} else if (/^linux/i.test(osPlatform)) {
-  executablePath = '/usr/bin/google-chrome';
-}
-
-
-
 
 /**
  * The Proxy Server which converts Single Page Application to Server Side Rendered (SSR) Application.
@@ -24,26 +11,27 @@ if (/^win/i.test(osPlatform)) {
 class ProxyServer {
 
   /**
-   ** opts:
-   * - port:number - Proxy Server port number
-   * - timeout:number - ms of inactivity after ws will be closed. If 0 then the ws will never close. Default is 5 minutes.
-   * - headers:object - custom headers
+   ** proxyOpts::
+   * - port:number - proxy server port number
+   * - request_host:string - HTTP server host, 127.0.0.1 or some domain
+   * - request_port:number - HTTP server port, 4401
+   * - regexp:RegExp - open URL via browser when user agent contains this regular expression
    * - debug:boolean - print debug messages
-   * @param  {object} opts - options {port, timeout, distDir, indexFile, assetsDir, acceptEncoding, headers, debug}
+   * @param  {object} proxyOpts - proxy server options
+   * @param {object} browserOpts - puppeteer options {headless:boolean, width:number, height:number, position:string} - {headless:true, width:1300, height:900, position:'700,20'}
    * @returns {void}
    */
-  constructor(opts) {
-    // Proxy server options
-    if (!!opts) {
-      this.opts = opts;
-      if (!this.opts.port) { throw new Error('The server "port" is not defined.'); }
-      else if (this.opts.timeout === undefined) { this.opts.timeout = 5 * 60 * 1000; }
-      else if (!this.opts.headers) { this.opts.headers = []; }
-      else if (!this.opts.request_host) { this.opts.request_port = '127.0.0.1'; }
-      else if (!this.opts.request_port) { this.opts.request_port = 80; }
-    } else {
-      throw new Error('Proxy Server options are not defined.');
-    }
+  constructor(proxyOpts, browserOpts) {
+    // options
+    if (!proxyOpts) { throw new Error('Proxy Server options are not defined.'); }
+    else if (!!proxyOpts && !proxyOpts.port) { throw new Error('The server "port" is not defined.'); }
+    else if (!!proxyOpts && !proxyOpts.request_host) { proxyOpts.request_port = '127.0.0.1'; }
+    else if (!!proxyOpts && !proxyOpts.request_port) { proxyOpts.request_port = 80; }
+    else if (!!proxyOpts && !proxyOpts.regexpUA) { proxyOpts.regexpUA = /bot|spider|crawl/i; }
+    this.proxyOpts = proxyOpts;
+
+    this.browserOpts = browserOpts || { headless: true, width: 1300, height: 900, position: '0,0' };
+
     this.proxyServer;
   }
 
@@ -57,39 +45,38 @@ class ProxyServer {
   start() {
     // start Proxy Server and listen requests
     this.proxyServer = http.createServer(async (req, res) => {
-      console.log('\n req.url::', req.url);
-      console.log('req.headers-useragent::', req.headers['user-agent']);
-
+      // get file extension
       const reqURL = req.url;
       const urlNoQuery = reqURL.trim().replace(/\?.+/, ''); // URL where query is removed, for example for example ?v=4.7.0
       const matched = urlNoQuery.match(/\.([^.]+)$/i);
       const fileExt = !!matched ? matched[1] : ''; // html, txt, css, js, png, ...
 
+      // get useragent
       const userAgent = req.headers['user-agent'];
-      const userAgentContains = ['bot', 'crawl', 'spider'];
-      const joined = userAgentContains.join('|'); // bot|crawl
-      const reg = new RegExp(joined, 'i');
 
-      if (reg.test(userAgent) && !fileExt) {
-        console.log('BOT::', userAgent);
+      let viaBrowser = false;
+      if (!fileExt && this.proxyOpts.regexpUA.test(userAgent)) { // only when file extension doesn't exist for example /shop/product/21 AND when user-agent matched this.proxyOpts.regexp
+        viaBrowser = true;
 
+        // open URL in the proxy browser's tab
         this.page = await this.browser.newPage();
-        const url = `http://${this.opts.request_host}:${this.opts.request_port}${req.url}?fromproxy=yes`;
+        await this.page.setViewport({ width: this.browserOpts.width, height: this.browserOpts.height });
+        const url = `http://${this.proxyOpts.request_host}:${this.proxyOpts.request_port}${req.url}?fromproxy=yes`;
         await this.page.goto(url);
         const html = await this.page.content();
 
+        // send response to the client
         res.write(html, 'utf8');
         res.end();
 
-        // close the browser tab
-        await new Promise(r => setTimeout(r, 700));
-        await this.page.close();
+        // close the proxy browser tab
+        await new Promise(r => setTimeout(r, 400));
+        // await this.page.close();
 
       } else {
-        console.log('NOT BOT');
         const requestOpts = {
-          host: this.opts.request_host,
-          port: this.opts.request_port,
+          host: this.proxyOpts.request_host,
+          port: this.proxyOpts.request_port,
           path: req.url,
           method: req.method,
           headers: req.headers
@@ -97,37 +84,39 @@ class ProxyServer {
 
         http.request(requestOpts, res2 => {
           res.writeHead(res2.statusCode, res2.headers);
-          res2.pipe(res, { end: true });
+          res2.pipe(res);
         }).end();
       }
 
+      this._debugRequest(req, viaBrowser);
     });
 
 
-    // configure HTTP Server
-    this.proxyServer.listen(this.opts.port);
-    this.proxyServer.timeout = this.opts.timeout;
+    // configure Proxy Server
+    this.proxyServer.listen(this.proxyOpts.port);
 
 
     // listen for server events
     this._onListening();
     this._onClose();
+    this._onKILL();
     this._onError();
   }
 
 
 
   /**
-   * Stop the HTTP Server
+   * Stop the Proxy Server
    */
   stop() {
     this.proxyServer.close();
+    this.browser.close();
   }
 
 
 
   /**
-   * Restart the HTTP Server
+   * Restart the Proxy Server
    */
   async restart() {
     this.stop();
@@ -137,30 +126,57 @@ class ProxyServer {
 
 
 
+  /***** PUPPETEER - BROWSER *****/
+
+  /**
+   * Open the browser via puppeteer
+   */
   async openBrowser() {
-    const pptrOpts = {
+    await this.closeBrowser(); // close already opened browser
+
+    // define chrome executable path
+    const osPlatform = os.platform(); // possible values are: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
+    let executablePath;
+    if (/^win/i.test(osPlatform)) {
+      executablePath = '';
+    } else if (/^linux/i.test(osPlatform)) {
+      executablePath = '/usr/bin/google-chrome';
+      // executablePath = '/usr/bin/chromium-browser';
+    }
+
+    const opts = {
       executablePath,
-      headless: false,
+      headless: this.browserOpts.headless || false,
       devtools: false,  // Open Chrome devtools at the beginning of the test
       dumpio: false,
       slowMo: 130,  // Wait 130 ms each step of execution, for example chars typing
 
       // list of all args https://peter.sh/experiments/chromium-command-line-switches/
-      args: [
+      args: this.browserOpts.args || [
         '--disable-dev-shm-usage',
-        `--ash-host-window-bounds=1300x900`,
-        `--window-size=1300,900`,
-        `--window-position=700,20`,
+        '--ash-host-window-bounds=1300x900',
+        `--window-size=${this.browserOpts.width},${this.browserOpts.height}`,
+        `--window-position=${this.browserOpts.position}`,
 
         // required for iframe
         '--disable-web-security',
         '--disable-features=IsolateOrigins,site-per-process'
       ]
     };
-    this.browser = await puppeteer.launch(pptrOpts);
+    this.browser = await puppeteer.launch(opts);
 
     // prevent closing of the browser
-    this.browser.on('disconnected', async () => { await this.openBrowser(); });
+    this.browser.on('disconnected', async () => {
+      await this.openBrowser();
+    });
+  }
+
+
+  async closeBrowser() {
+    if (!this.browser) { return; }
+    await this.browser.close();
+    this.browser.disconnect;
+    delete this.browser;
   }
 
 
@@ -177,40 +193,48 @@ class ProxyServer {
 
 
   _onClose() {
-    this.proxyServer.on('close', () => {
+    this.proxyServer.on('close', async () => {
       console.log(`✋  Proxy Server is stopped.`);
-      this.browser.close();
+      await this.closeBrowser();
+    });
+  }
+
+
+  // on CTRL-C or gulp serverNode::stop()
+  _onKILL() {
+    process.on('SIGINT', () => {
+      console.log('💥  Proxy Server is killed');
+      this.stop();
     });
   }
 
 
   _onError() {
-
-    this.proxyServer.on('error', (error) => {
-      if (error.syscall !== 'listen') {
-        throw error;
-      }
-
-      const bind = (typeof this.opts.port === 'string')
-        ? 'Pipe ' + this.opts.port
-        : 'Port ' + this.opts.port;
-
-      // handle specific listen errors with friendly messages
+    this.proxyServer.on('error', error => {
       switch (error.code) {
         case 'EACCES':
-          console.error(bind + ' requires elevated privileges');
+          console.error(this.proxyOpts.port + ' permission denied');
           console.error(error);
           process.exit(1);
           break;
         case 'EADDRINUSE':
-          console.error(bind + ' is already in use');
+          console.error(this.proxyOpts.port + ' already used');
           process.exit(1);
           break;
         default:
           throw error;
       }
     });
+  }
 
+
+  /*** DEBUGGER ***/
+  _debugRequest(req, viaBrowser) {
+    if (this.proxyOpts.debug) {
+      console.log('\nurl::', req.url);
+      console.log('user-agent::', req.headers['user-agent']);
+      console.log('viaBrowser::', viaBrowser);
+    }
   }
 
 

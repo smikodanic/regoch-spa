@@ -10,7 +10,7 @@ const zlib = require('zlib');
 class HTTPServer {
 
   /**
-   ** opts:
+   ** httpOpts:
    * - port:number - HTTP Server port number
    * - timeout:number - ms of inactivity after ws will be closed. If 0 then the ws will never close. Default is 5 minutes.
    * - retries:number - how many times the server will retry to send the response
@@ -20,20 +20,20 @@ class HTTPServer {
    * - acceptEncoding:string - gzip or deflate
    * - headers:object - custom headers
    * - debug:boolean - print debug messages
-   * @param  {object} opts - options {port, timeout, distDir, indexFile, assetsDir, acceptEncoding, headers, debug}
+   * @param  {object} httpOpts - options {port, timeout, distDir, indexFile, assetsDir, acceptEncoding, headers, debug}
    * @returns {void}
    */
-  constructor(opts) {
+  constructor(httpOpts) {
     // HTTP server options
-    if (!!opts) {
-      this.opts = opts;
-      if (!this.opts.port) { throw new Error('The server port is not defined.'); }
-      else if (this.opts.timeout === undefined) { this.opts.timeout = 5 * 60 * 1000; }
-      else if (this.opts.retries === undefined) { this.opts.retries = 10; }
-      else if (!this.opts.indexFile) { throw new Error('Parameter "indexFile" is not defined.'); }
-      else if (!this.opts.distDir) { throw new Error('Parameter "distDir" is not defined.'); }
-      else if (!this.opts.assetsDir) { throw new Error('Parameter "assetsDir" is not defined.'); }
-      else if (!this.opts.headers) { this.opts.headers = []; }
+    if (!!httpOpts) {
+      this.httpOpts = httpOpts;
+      if (!this.httpOpts.port) { throw new Error('The server port is not defined.'); }
+      else if (this.httpOpts.timeout === undefined) { this.httpOpts.timeout = 5 * 60 * 1000; }
+      else if (this.httpOpts.retries === undefined) { this.httpOpts.retries = 10; }
+      else if (!this.httpOpts.indexFile) { throw new Error('Parameter "indexFile" is not defined.'); }
+      else if (!this.httpOpts.distDir) { throw new Error('Parameter "distDir" is not defined.'); }
+      else if (!this.httpOpts.assetsDir) { throw new Error('Parameter "assetsDir" is not defined.'); }
+      else if (!this.httpOpts.headers) { this.httpOpts.headers = []; }
     } else {
       throw new Error('HTTP Server options are not defined.');
     }
@@ -103,38 +103,41 @@ class HTTPServer {
       // define file path
       let filePath;
       if (!fileExt) { // if request doesn't contain file extension, for example / or /some/thing/ request index.html
-        const reqFile = this.opts.indexFile || 'index.html';
+        const reqFile = this.httpOpts.indexFile || 'index.html';
         filePath = path.join(process.cwd(), reqFile);
       } else if (/^\/assets\//.test(urlNoQuery)) { // if request contains /assets/
         const reqFile = urlNoQuery;
-        filePath = path.join(process.cwd(), this.opts.assetsDir, '../', reqFile);
+        filePath = path.join(process.cwd(), this.httpOpts.assetsDir, '../', reqFile);
       } else { // if there's file extension for example /script.js or /some/style.css
         const reqFile = urlNoQuery;
-        filePath = path.join(process.cwd(), this.opts.distDir, reqFile);
+        filePath = path.join(process.cwd(), this.httpOpts.distDir, reqFile);
       }
 
       // send response to the client
       this.sendResponse(res, req, contentType, filePath);
 
       // debugging
-      if (this.opts.debug) {
+      if (this.httpOpts.debug) {
         console.log('\n\nrequested URL:: ', reqURL);
         console.log('urlNoQuery:: ', urlNoQuery);
         console.log('fileExt::', fileExt, 'fileExt2::', fileExt2, ' contentType::', contentType, ' encoding::', encoding);
         console.log('filePath:: ', filePath);
-        console.log('acceptEncoding:: ', this.opts.acceptEncoding);
+        console.log('acceptEncoding:: ', this.httpOpts.acceptEncoding);
       }
 
     });
 
 
     // configure HTTP Server
-    this.httpServer.listen(this.opts.port);
-    this.httpServer.timeout = this.opts.timeout;
+    this.httpServer.listen(this.httpOpts.port);
+    this.httpServer.timeout = this.httpOpts.timeout;
 
 
     // listen for server events
-    this.events();
+    this._onListening();
+    this._onClose();
+    this._onKILL();
+    this._onError();
   }
 
 
@@ -163,7 +166,7 @@ class HTTPServer {
 
 
   async sendResponse(res, req, contentType, filePath) {
-    if (this.retryCount >= this.opts.retries) {
+    if (this.retryCount >= this.httpOpts.retries) {
       console.log('\x1b[31m' + 'Max retries reached' + '\x1b[0m');
       res.writeHead(404, { 'X-Error': 'Max retries reached' });
       res.end();
@@ -175,10 +178,10 @@ class HTTPServer {
       this.retryCount = 0;
 
       try {
-        /*** A) set headers defined in the opts ***/
-        const headerProps = Object.keys(this.opts.headers);
+        /*** A) set headers defined in the httpOpts ***/
+        const headerProps = Object.keys(this.httpOpts.headers);
         for (const headerProp of headerProps) {
-          res.setHeader(headerProp, this.opts.headers[headerProp]);
+          res.setHeader(headerProp, this.httpOpts.headers[headerProp]);
         }
         res.setHeader('Content-Type', contentType);
 
@@ -191,10 +194,10 @@ class HTTPServer {
         const raw = fs.createReadStream(filePath);
 
         // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
-        if (acceptEncodingBrowser.match(/\bgzip\b/) && this.opts.acceptEncoding === 'gzip') {
+        if (acceptEncodingBrowser.match(/\bgzip\b/) && this.httpOpts.acceptEncoding === 'gzip') {
           res.writeHead(200, { 'Content-Encoding': 'gzip' });
           raw.pipe(zlib.createGzip()).pipe(res);
-        } else if (acceptEncodingBrowser.match(/\bdeflate\b/) && this.opts.acceptEncoding === 'deflate') {
+        } else if (acceptEncodingBrowser.match(/\bdeflate\b/) && this.httpOpts.acceptEncoding === 'deflate') {
           res.writeHead(200, { 'Content-Encoding': 'deflate' });
           raw.pipe(zlib.createDeflate()).pipe(res);
         } else {
@@ -209,7 +212,7 @@ class HTTPServer {
     } else { // file doesn't exist
       this.retryCount++;
 
-      const errMsg = `NOT FOUND: "${filePath}"  (${this.retryCount} of ${this.opts.retries} retries) `;
+      const errMsg = `NOT FOUND: "${filePath}"  (${this.retryCount} of ${this.httpOpts.retries} retries) `;
       console.log('\x1b[31m' + errMsg + '\x1b[0m');
 
       // retry every 1 second
@@ -223,13 +226,6 @@ class HTTPServer {
 
 
   /*** HTTP SERVER EVENTS ***/
-  events() {
-    this._onListening();
-    this._onClose();
-    this._onError();
-  }
-
-
   _onListening() {
     this.httpServer.on('listening', () => {
       const addr = this.httpServer.address();
@@ -247,33 +243,31 @@ class HTTPServer {
   }
 
 
+  // on CTRL-C or gulp serverNode::stop()
+  _onKILL() {
+    process.on('SIGINT', () => {
+      console.log('💥  HTTP Server is killed');
+      this.stop();
+    });
+  }
+
+
   _onError() {
-
-    this.httpServer.on('error', (error) => {
-      if (error.syscall !== 'listen') {
-        throw error;
-      }
-
-      const bind = (typeof this.opts.port === 'string')
-        ? 'Pipe ' + this.opts.port
-        : 'Port ' + this.opts.port;
-
-      // handle specific listen errors with friendly messages
+    this.httpServer.on('error', error => {
       switch (error.code) {
         case 'EACCES':
-          console.error(bind + ' requires elevated privileges');
+          console.error(this.httpOpts.port + ' permission denied');
           console.error(error);
           process.exit(1);
           break;
         case 'EADDRINUSE':
-          console.error(bind + ' is already in use');
+          console.error(this.httpOpts.port + ' already used');
           process.exit(1);
           break;
         default:
           throw error;
       }
     });
-
   }
 
 

@@ -1,12 +1,12 @@
 module.exports = {
   name: 'production',
-  proxy: {
-    port: 4400,
+  proxyServer: {
+    port: 4501,
     request_host: '127.0.0.1',
-    request_port: '4401'
+    request_port: '4500'
   },
-  server: {
-    port: 4501
+  httpServer: {
+    port: 4500
   },
   api: {
     baseURL: 'https://jsonplaceholder.typicode.com'
